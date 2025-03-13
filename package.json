@@ -1,0 +1,58 @@
+{
+  "name": "bunup",
+  "version": "0.1.0",
+  "description": "The fastest, zero-config bundler for TypeScript & JavaScript, powered by Bun.",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "module": "./build/index.mjs",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "bunup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "tsc": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "validate": "pnpm build && pnpm format && pnpm tsc && pnpm lint",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "bin": {
+    "bunup": "build/cli.js"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
+    "@types/bun": "^1.2.5",
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "bumpp": "^10.1.0",
+    "bunup": "workspace:*",
+    "eslint": "^8.57.0",
+    "husky": "^9.1.6",
+    "prettier": "^3.2.5",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.3",
+    "vitest": "^2.0.5"
+  },
+  "keywords": [
+    "bun",
+    "bunup",
+    "bun-bundler"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arshad-yaseen/bunup.git"
+  },
+  "maintainers": [
+    {
+      "name": "Arshad Yaseen",
+      "email": "m@arshadyaseen.com",
+      "url": "https://arshadyaseen.com"
+    }
+  ],
+  "license": "MIT",
+  "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)"
+}
