@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
-import { cliCore } from "./cli-core";
-import { handleError } from "./errors";
+import {cliCore} from './cli-core';
+import {handleError} from './errors';
 
-import "./runtime";
+import './runtime';
 
-cliCore().catch((error) => {
-  handleError(error);
-  process.exit(1);
+cliCore().catch(error => {
+    handleError(error);
+    process.exit(1);
 });

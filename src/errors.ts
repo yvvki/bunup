@@ -1,23 +1,23 @@
 export const parseError = (error: unknown) => {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  return String(error);
+    if (error instanceof Error) {
+        return error.message;
+    }
+    return String(error);
 };
 
 export const handleError = (error: unknown, context?: string): void => {
-  const errorMessage = parseError(error);
-  const contextPrefix = context ? `[${context}] ` : "";
+    const errorMessage = parseError(error);
+    const contextPrefix = context ? `[${context}] ` : '';
 
-  console.error(`\x1B[31m[ERROR]\x1B[0m ${contextPrefix}${errorMessage}`);
+    console.error(`\x1B[31m[ERROR]\x1B[0m ${contextPrefix}${errorMessage}`);
 
-  if (
-    process.env.NODE_ENV !== "production" &&
-    error instanceof Error &&
-    error.stack
-  ) {
-    console.error(
-      "\x1B[2m" + error.stack.split("\n").slice(1).join("\n") + "\x1B[0m",
-    );
-  }
+    if (
+        process.env.NODE_ENV !== 'production' &&
+        error instanceof Error &&
+        error.stack
+    ) {
+        console.error(
+            '\x1B[2m' + error.stack.split('\n').slice(1).join('\n') + '\x1B[0m',
+        );
+    }
 };
