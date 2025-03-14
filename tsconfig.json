@@ -5,22 +5,19 @@
         "strict": true,
         "esModuleInterop": true,
         "moduleResolution": "node",
-        "skipLibCheck": true,
         "noUnusedLocals": true,
         "noImplicitAny": true,
         "allowJs": true,
         "noEmit": true,
         "outDir": "dist",
         "resolveJsonModule": true,
-        "baseUrl": "src",
-        "paths": {
-            "core/*": ["core/*"],
-            "types/*": ["types/*"],
-            "utils/*": ["utils/*"],
-            "constants/*": ["constants/*"]
-        },
-        "types": ["vitest/globals"]
+        "types": ["vitest/globals"],
+        "skipLibCheck": true,
     },
-    "include": ["src", "tests", "tsup.config.ts", "bump.config.ts"],
-    "exclude": ["node_modules", "build", "tests/ui"]
+    "include": [
+        "packages/*/src",
+        "packages/*/tests",
+        "packages/*/tsup.config.ts"
+    ],
+    "exclude": ["node_modules", "dist", "packages/*/build"]
 }

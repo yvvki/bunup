@@ -1,8 +1,6 @@
-declare const Bun: typeof import('bun');
+export type Format = 'esm' | 'cjs';
 
-export type Format = 'esm' | 'cjs' | 'iife';
-
-export type BunBuildOptions = Parameters<typeof Bun.build>[0];
+export type BunBuildOptions = Parameters<typeof import('bun').build>[0];
 
 export interface BunupOptions {
     entry: string[];
@@ -44,18 +42,17 @@ export const createBuildOptions = (
 };
 
 function createMinifyOptions(options: BunupOptions) {
+    if (options.minify === true) {
+        return {
+            whitespace: true,
+            identifiers: true,
+            syntax: true,
+        };
+    }
+
     return {
-        whitespace:
-            options.minifyWhitespace !== undefined
-                ? options.minifyWhitespace
-                : (options.minify ?? false),
-        identifiers:
-            options.minifyIdentifiers !== undefined
-                ? options.minifyIdentifiers
-                : (options.minify ?? false),
-        syntax:
-            options.minifySyntax !== undefined
-                ? options.minifySyntax
-                : (options.minify ?? false),
+        whitespace: options.minifyWhitespace ?? false,
+        identifiers: options.minifyIdentifiers ?? false,
+        syntax: options.minifySyntax ?? false,
     };
 }

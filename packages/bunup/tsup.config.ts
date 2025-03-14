@@ -2,14 +2,15 @@ import {defineConfig} from 'tsup';
 
 export default defineConfig({
     outDir: 'build',
-    entry: ['src/index.ts', 'src/cli.ts'],
-    target: 'es2021',
+    entry: ['./src/index.ts', './src/cli.ts'],
     minify: true,
-    format: ['esm', 'cjs'],
+    format: ['cjs', 'esm'],
     clean: true,
-    treeshake: true,
     dts: {
         resolve: true,
         entry: './src/index.ts',
     },
+    treeshake: true,
+    splitting: true,
+    external: ['@stacksjs/dtsx'],
 });

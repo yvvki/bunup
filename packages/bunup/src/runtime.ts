@@ -1,5 +1,3 @@
-declare const Bun: typeof import('bun');
-
 (() => {
     if (typeof Bun === 'undefined') {
         console.error(

@@ -1,8 +1,6 @@
 import {parseError} from './errors';
-import {logError, logWarn} from './log';
+import {logger} from './logger';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
-
-declare const Bun: typeof import('bun');
 
 export function defineConfig(options: BunupOptions): BunupOptions {
     return options;
@@ -46,7 +44,7 @@ export async function loadConfigs(
                             content = imported.default || imported;
 
                             if (!content) {
-                                logWarn(
+                                logger.warn(
                                     `No default export found in ${filePath}`,
                                 );
                                 content = {};
@@ -59,7 +57,7 @@ export async function loadConfigs(
                         });
                     }
                 } catch (error) {
-                    logError(
+                    logger.error(
                         `Failed to load config from ${filePath}: ${parseError(error)}`,
                     );
                 }

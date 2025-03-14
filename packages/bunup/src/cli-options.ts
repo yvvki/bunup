@@ -1,6 +1,6 @@
-import {logError} from './log';
+import {logger} from './logger';
 import {BunupOptions, Format} from './options';
-import {Without, WithRequired} from './types';
+import {Without} from './types';
 
 type CliOptionHandler = (
     value: string | boolean,
@@ -52,9 +52,7 @@ const cliOptionHandlers: Record<CliOptionHandlerName, CliOptionHandler> = {
 };
 
 export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
-    const cliOptions: WithRequired<Partial<BunupOptions>, 'entry'> = {
-        entry: [],
-    };
+    const cliOptions: Partial<BunupOptions> = {};
 
     for (let i = 0; i < argv.length; i++) {
         const arg = argv[i];
@@ -67,7 +65,7 @@ export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
                 cliOptionHandlers[resolvedKey as CliOptionHandlerName];
 
             if (!handler) {
-                logError(`Unknown option: ${key}`);
+                logger.error(`Unknown option: ${key}`);
                 continue;
             }
 
@@ -80,6 +78,9 @@ export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
                 i++;
             }
         } else {
+            if (!cliOptions.entry) {
+                cliOptions.entry = [];
+            }
             cliOptions.entry.push(arg);
         }
     }
