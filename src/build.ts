@@ -1,5 +1,4 @@
-import dts from 'bun-plugin-dtsx';
-
+import { dts } from './dts';
 import {logger} from './logger';
 import {BunupOptions, createBuildOptions} from './options';
 import {getDefaultExtension, getEntryName} from './utils';

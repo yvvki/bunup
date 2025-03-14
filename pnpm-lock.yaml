@@ -7,42 +7,6 @@ settings:
 importers:
 
   .:
-    devDependencies:
-      '@commitlint/cli':
-        specifier: ^19.5.0
-        version: 19.8.0(@types/node@22.13.10)(typescript@5.8.2)
-      '@commitlint/config-conventional':
-        specifier: ^19.5.0
-        version: 19.8.0
-      '@ianvs/prettier-plugin-sort-imports':
-        specifier: ^4.2.1
-        version: 4.4.1(prettier@3.5.3)
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^7.3.1
-        version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.2))(eslint@8.57.1)(typescript@5.8.2)
-      bumpp:
-        specifier: ^10.0.2
-        version: 10.1.0
-      bunup:
-        specifier: workspace:*
-        version: link:packages/bunup
-      eslint:
-        specifier: ^8.57.0
-        version: 8.57.1
-      husky:
-        specifier: ^9.1.6
-        version: 9.1.7
-      prettier:
-        specifier: ^3.2.5
-        version: 3.5.3
-      typescript:
-        specifier: ^5.4.3
-        version: 5.8.2
-      vitest:
-        specifier: ^2.0.5
-        version: 2.1.9(@types/node@22.13.10)
-
-  packages/bunup:
     dependencies:
       '@stacksjs/dtsx':
         specifier: ^0.8.0
@@ -81,6 +45,9 @@ importers:
       bumpp:
         specifier: ^10.1.0
         version: 10.1.0
+      bunup:
+        specifier: workspace:*
+        version: 'link:'
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
