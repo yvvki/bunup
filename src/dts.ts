@@ -6,7 +6,6 @@ import {rollup} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
 
 import {parseErrorMessage} from './errors';
-import {logger} from './logger';
 import {Format} from './options';
 
 export async function generateDts(
@@ -105,7 +104,6 @@ export async function generateDts(
         const outputPath = path.join(absoluteTempDir, 'bundle.d.ts');
         let bundle;
         try {
-            logger.cli('Bundling types');
             bundle = await rollup({
                 input: dtsEntry,
                 plugins: [dtsPlugin()],

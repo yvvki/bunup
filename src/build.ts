@@ -25,8 +25,6 @@ export async function build(
         return;
     }
 
-    logger.cli('Build started');
-
     const startTime = performance.now();
 
     const buildOptions = normalizeOptions(options, rootDir);
@@ -48,6 +46,7 @@ export async function build(
             },
         );
     } else {
+        logger.cli('Build started');
         for (const fmt of options.format) {
             for (const entry of options.entry) {
                 const extension = getDefaultOutputExtension(fmt);
@@ -95,7 +94,10 @@ export async function build(
 
         logger.cli(`⚡ Build success in ${timeDisplay}`);
 
+        logger.progress('DTS', 'Bundling types');
+
         if (options.dts) {
+            const dtsStartTime = performance.now();
             for (const entry of options.entry) {
                 for (const fmt of options.format) {
                     const content = await generateDts(
@@ -115,6 +117,17 @@ export async function build(
                     );
                 }
             }
+            const dtsEndTime = performance.now();
+            const dtsTimeMs = dtsEndTime - dtsStartTime;
+            const dtsTimeDisplay =
+                dtsTimeMs >= 1000
+                    ? `${(dtsTimeMs / 1000).toFixed(2)}s`
+                    : `${Math.round(dtsTimeMs)}ms`;
+
+            logger.progress(
+                'DTS',
+                `Bundling types success in ${dtsTimeDisplay}`,
+            );
         }
     }
 }
