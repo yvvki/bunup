@@ -1,5 +1,5 @@
 type ColorCode = string;
-type FormatType = 'ESM' | 'CJS' | string;
+type FormatType = 'ESM' | 'CJS' | 'DTS' | string;
 
 interface LogColors {
     cli: ColorCode;
@@ -15,12 +15,13 @@ export const logger = {
 
     colors: {
         cli: '183',
-        info: '75',
+        info: '240',
         warn: '221',
         error: '203',
         progress: {
             ESM: '214',
             CJS: '114',
+            DTS: '75',
         },
         default: '255',
     } as LogColors,

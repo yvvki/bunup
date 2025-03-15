@@ -1,20 +1,32 @@
 import {generateDts} from './dts';
 import {logger} from './logger';
 import {BunupOptions, normalizeOptions} from './options';
-import {getDefaultExtension, getEntryName} from './utils';
+import {
+    getDefaultDtsExtention,
+    getDefaultOutputExtension,
+    getEntryName,
+} from './utils';
 
 /**
- * Build the project, optionally generating a consolidated `.d.ts` file.
- * @param options - Build options.
- * @param rootDir - Root directory of the project.
- * @param watch - Whether to run in watch mode.
+ * Builds the project based on the provided options.
+ *
+ * @param options - Configuration options for the build process
+ * @param rootDir - The root directory of the project
+ * @param watch - Whether to run in watch mode (default: false)
+ * @returns A Promise that resolves when the build process completes
  */
 export async function build(
     options: BunupOptions,
     rootDir: string,
     watch: boolean = false,
 ) {
+    if (!options.entry || options.entry.length === 0) {
+        logger.cli('Nothing to build. Please specify entry points');
+        return;
+    }
+
     logger.cli('Build started');
+
     const startTime = performance.now();
 
     const buildOptions = normalizeOptions(options, rootDir);
@@ -38,7 +50,7 @@ export async function build(
     } else {
         for (const fmt of options.format) {
             for (const entry of options.entry) {
-                const extension = getDefaultExtension(fmt);
+                const extension = getDefaultOutputExtension(fmt);
 
                 const result = await Bun.build({
                     ...buildOptions,
@@ -80,15 +92,29 @@ export async function build(
             buildTimeMs >= 1000
                 ? `${(buildTimeMs / 1000).toFixed(2)}s`
                 : `${Math.round(buildTimeMs)}ms`;
+
         logger.cli(`⚡ Build success in ${timeDisplay}`);
 
         if (options.dts) {
-            const content = await generateDts(
-                rootDir,
-                options.entry[0],
-                `${rootDir}/${options.outdir}/.bunup`,
-            );
-            console.log(content);
+            for (const entry of options.entry) {
+                for (const fmt of options.format) {
+                    const content = await generateDts(
+                        rootDir,
+                        entry,
+                        `${rootDir}/${options.outdir}/.bunup`,
+                        fmt,
+                    );
+
+                    const name = getEntryName(entry);
+                    const extension = getDefaultDtsExtention(fmt);
+                    const outputPath = `${rootDir}/${options.outdir}/${name}${extension}`;
+                    await Bun.write(outputPath, content);
+                    logger.progress(
+                        'DTS',
+                        `${options.outdir}/${name}${extension}`,
+                    );
+                }
+            }
         }
     }
 }

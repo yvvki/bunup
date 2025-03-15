@@ -2,8 +2,8 @@ import {defineConfig} from 'bunup';
 
 export default defineConfig({
     outdir: 'dist',
-    entry: ['index.ts'],
-    minify: true,
+    entry: ['src/index.ts'],
     dts: true,
-    format: ['cjs', 'esm'],
+    minify: true,
+    format: ['esm', 'cjs'],
 });

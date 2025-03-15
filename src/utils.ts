@@ -36,12 +36,21 @@ export const commonPathPrefix = (paths: string[], sep: string) => {
 };
 //
 
-export const getDefaultExtension = (format: Format) => {
+export const getDefaultOutputExtension = (format: Format) => {
     switch (format) {
         case 'esm':
             return '.mjs';
         case 'cjs':
             return '.js';
+    }
+};
+
+export const getDefaultDtsExtention = (format: Format) => {
+    switch (format) {
+        case 'esm':
+            return '.d.mts';
+        case 'cjs':
+            return '.d.ts';
     }
 };
 

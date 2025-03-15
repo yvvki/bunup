@@ -1,4 +1,4 @@
-export const parseError = (error: unknown): string => {
+export const parseErrorMessage = (error: unknown): string => {
     if (error instanceof Error) {
         return error.message;
     }
@@ -6,7 +6,7 @@ export const parseError = (error: unknown): string => {
 };
 
 export const handleError = (error: unknown, context?: string): void => {
-    const errorMessage = parseError(error);
+    const errorMessage = parseErrorMessage(error);
     const contextPrefix = context ? `[${context}] ` : '';
 
     console.error(`\x1B[31m[ERROR]\x1B[0m ${contextPrefix}${errorMessage}`);

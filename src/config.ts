@@ -1,4 +1,4 @@
-import {parseError} from './errors';
+import {parseErrorMessage} from './errors';
 import {logger} from './logger';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
 
@@ -58,7 +58,7 @@ export async function loadConfigs(
                     }
                 } catch (error) {
                     logger.error(
-                        `Failed to load config from ${filePath}: ${parseError(error)}`,
+                        `Failed to load config from ${filePath}: ${parseErrorMessage(error)}`,
                     );
                 }
             }
