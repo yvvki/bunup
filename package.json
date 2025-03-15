@@ -11,7 +11,8 @@
     "scripts": {
         "build": "tsup",
         "dev": "tsup --watch",
-        "b": "bunup"
+        "test-build": "pnpm -C tests build",
+        "test": "vitest run"
     },
     "bin": {
         "bunup": "build/cli.js"
@@ -23,7 +24,6 @@
         "@types/bun": "^1.2.5",
         "@typescript-eslint/eslint-plugin": "^7.3.1",
         "bumpp": "^10.1.0",
-        "bunup": "workspace:*",
         "eslint": "^8.57.0",
         "husky": "^9.1.6",
         "prettier": "^3.2.5",
@@ -50,6 +50,7 @@
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
+        "joycon": "^3.1.1",
         "rollup": "^4.35.0",
         "rollup-plugin-dts": "^6.1.1"
     }

@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import {generateDts} from './dts';
 import {logger} from './logger';
 import {BunupOptions, normalizeOptions} from './options';
@@ -5,6 +8,7 @@ import {
     getDefaultDtsExtention,
     getDefaultOutputExtension,
     getEntryName,
+    getTempDir,
 } from './utils';
 
 /**
@@ -15,13 +19,11 @@ import {
  * @param watch - Whether to run in watch mode (default: false)
  * @returns A Promise that resolves when the build process completes
  */
-export async function build(
-    options: BunupOptions,
-    rootDir: string,
-    watch: boolean = false,
-) {
-    if (!options.entry || options.entry.length === 0) {
-        logger.cli('Nothing to build. Please specify entry points');
+export async function build(options: BunupOptions, rootDir: string) {
+    if (!options.entry || options.entry.length === 0 || !options.outdir) {
+        logger.cli(
+            'Nothing to build. Please make sure you have provided a proper bunup configuration.',
+        );
         return;
     }
 
@@ -29,7 +31,19 @@ export async function build(
 
     const buildOptions = normalizeOptions(options, rootDir);
 
-    if (watch) {
+    const outdirPath = path.join(rootDir, options.outdir);
+    if (fs.existsSync(outdirPath)) {
+        try {
+            fs.rmSync(outdirPath, {recursive: true, force: true});
+            fs.mkdirSync(outdirPath, {recursive: true});
+        } catch (error) {
+            logger.error(`Failed to clean output directory: ${error}`);
+        }
+    } else {
+        fs.mkdirSync(outdirPath, {recursive: true});
+    }
+
+    if (options.watch) {
         logger.cli('Running in watch mode\n');
         Bun.spawn(
             [
@@ -58,6 +72,7 @@ export async function build(
                     naming: {
                         entry: `[dir]/[name]${extension}`,
                     },
+                    throw: false,
                 });
 
                 const name = getEntryName(entry);
@@ -98,13 +113,18 @@ export async function build(
 
         if (options.dts) {
             const dtsStartTime = performance.now();
-            for (const entry of options.entry) {
+            const dtsOptions =
+                typeof options.dts === 'object' ? options.dts : {};
+            const entries = dtsOptions.entry || options.entry;
+
+            for (const entry of entries) {
                 for (const fmt of options.format) {
                     const content = await generateDts(
                         rootDir,
                         entry,
-                        `${rootDir}/${options.outdir}/.bunup`,
+                        getTempDir(rootDir, options.outdir),
                         fmt,
+                        dtsOptions,
                     );
 
                     const name = getEntryName(entry);
@@ -124,10 +144,7 @@ export async function build(
                     ? `${(dtsTimeMs / 1000).toFixed(2)}s`
                     : `${Math.round(dtsTimeMs)}ms`;
 
-            logger.progress(
-                'DTS',
-                `Bundling types success in ${dtsTimeDisplay}`,
-            );
+            logger.cli(`⚡️ Bundling types success in ${dtsTimeDisplay}`);
         }
     }
 }

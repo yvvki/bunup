@@ -8,12 +8,11 @@
         "noUnusedLocals": true,
         "noImplicitAny": true,
         "allowJs": true,
-        "noEmit": true,
         "outDir": "dist",
         "resolveJsonModule": true,
         "types": ["vitest/globals"],
         "skipLibCheck": true,
     },
-    "include": ["src", "tsup.config.ts"],
+    "include": ["bunup.config.ts"],
     "exclude": ["node_modules", "build"]
 }

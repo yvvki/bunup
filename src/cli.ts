@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 import {build} from './build';
 import {parseCliOptions} from './cli-options';
-import {loadConfigs} from './config';
 import {handleError} from './errors';
-import {DEFAULT_OPTIONS} from './options';
+import {loadConfigs} from './load-config';
+import {BunupOptions, DEFAULT_OPTIONS} from './options';
 
 import './runtime';
 
@@ -13,8 +13,11 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
     const configs = await loadConfigs(process.cwd());
 
     if (configs.length === 0) {
-        const mergedConfig = {...DEFAULT_OPTIONS, ...cliOptions};
-        await build(mergedConfig, process.cwd(), cliOptions.watch);
+        const mergedConfig = {
+            ...DEFAULT_OPTIONS,
+            ...cliOptions,
+        } as BunupOptions;
+        await build(mergedConfig, process.cwd());
     } else {
         for (const {options, rootDir} of configs) {
             const mergedConfig = {
@@ -22,7 +25,7 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
                 ...options,
                 ...cliOptions,
             };
-            await build(mergedConfig, rootDir, mergedConfig.watch);
+            await build(mergedConfig, rootDir);
         }
     }
 }

@@ -4,21 +4,26 @@ type Bun = typeof import('bun');
 
 export type BunBuildOptions = Parameters<Bun['build']>[0];
 
+export interface DtsOptions {
+    entry?: string[];
+    preferredTsconfigPath?: string;
+}
+
 export interface BunupOptions {
     entry: string[];
+    outdir?: string;
     format: Format[];
-    outdir: string;
     minify?: boolean;
     minifyWhitespace?: boolean;
     minifyIdentifiers?: boolean;
     minifySyntax?: boolean;
     watch?: boolean;
-    dts?: boolean;
+    dts?: boolean | DtsOptions;
     external?: string[];
 }
 
-export const DEFAULT_OPTIONS: BunupOptions = {
-    entry: ['src/index.ts'],
+export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
+    entry: [],
     format: ['esm'],
     outdir: 'dist',
     minify: false,

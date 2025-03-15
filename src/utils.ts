@@ -1,59 +1,38 @@
-import {sep} from 'path';
+import path from 'path';
 
 import {Format} from './options';
 
-// https://github.com/novemberborn/common-path-prefix/blob/master/index.js
-//https://github.com/wobsoriano/bun-plugin-dts/blob/main/src/index.ts
-export const determineSeparator = (paths: string[]): string => {
-    for (const path of paths) {
-        const match = /(\/|\\)/.exec(path);
-        if (match !== null) return match[0];
-    }
-
-    return sep;
-};
-
-export const commonPathPrefix = (paths: string[], sep: string) => {
-    const [first = '', ...remaining] = paths;
-    if (first === '' || remaining.length === 0) return '';
-
-    const parts = first.split(sep);
-
-    let endOfPrefix = parts.length;
-    for (const path of remaining) {
-        const compare = path.split(sep);
-        for (let i = 0; i < endOfPrefix; i++) {
-            if (compare[i] !== parts[i]) {
-                endOfPrefix = i;
-            }
-        }
-
-        if (endOfPrefix === 0) return '';
-    }
-
-    const prefix = parts.slice(0, endOfPrefix).join(sep);
-    return prefix.endsWith(sep) ? prefix : prefix + sep;
-};
-//
-
-export const getDefaultOutputExtension = (format: Format) => {
+export function getDefaultOutputExtension(format: Format) {
     switch (format) {
         case 'esm':
             return '.mjs';
         case 'cjs':
             return '.js';
     }
-};
+}
 
-export const getDefaultDtsExtention = (format: Format) => {
+export function getDefaultDtsExtention(format: Format) {
     switch (format) {
         case 'esm':
             return '.d.mts';
         case 'cjs':
             return '.d.ts';
     }
-};
+}
 
-export const getEntryName = (entry: string) => {
+export function cleanJsonString(json: string): string {
+    return json
+        .replace(/\/\/.*$/gm, '')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/,\s*}/g, '}')
+        .replace(/,\s*]/g, ']')
+        .trim();
+}
+
+export function getTempDir(rootDir: string, outDir: string) {
+    return path.join(rootDir, outDir, '.bunup');
+}
+
+export function getEntryName(entry: string) {
     return entry.split('/').pop()?.split('.').slice(0, -1).join('.') || '';
-};
+}

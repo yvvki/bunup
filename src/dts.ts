@@ -6,13 +6,17 @@ import {rollup} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
 
 import {parseErrorMessage} from './errors';
-import {Format} from './options';
+import {DtsOptions, Format} from './options';
+import {cleanJsonString} from './utils';
+
+const TEMP_DTS_OUT_DIR = './dts';
 
 export async function generateDts(
     rootDir: string,
     entry: string,
     tempDir: string,
     format: Format,
+    options: Omit<DtsOptions, 'entry'> = {},
 ): Promise<string> {
     const absoluteRootDir = path.resolve(rootDir);
     const absoluteEntry = path.resolve(absoluteRootDir, entry);
@@ -37,23 +41,43 @@ export async function generateDts(
     try {
         fs.mkdirSync(absoluteTempDir, {recursive: true});
 
-        const dtsOutDir = './dts'; // Relative to tempDir
         const relativeRootDir = path.relative(absoluteTempDir, absoluteRootDir);
         const entryRelativeToRoot = path.relative(
             absoluteRootDir,
             absoluteEntry,
         );
 
+        // Load existing tsconfig if provided
+        let existingCompilerOptions = {};
+        const defaultTsconfigPath = path.join(absoluteRootDir, 'tsconfig.json');
+        const preferredTsconfigPath = options.preferredTsconfigPath
+            ? path.resolve(options.preferredTsconfigPath)
+            : defaultTsconfigPath;
+
+        if (fs.existsSync(preferredTsconfigPath)) {
+            try {
+                const tsconfigContent = JSON.parse(
+                    cleanJsonString(
+                        fs.readFileSync(preferredTsconfigPath, 'utf8'),
+                    ),
+                );
+                if (tsconfigContent.compilerOptions) {
+                    existingCompilerOptions = tsconfigContent.compilerOptions;
+                }
+            } catch (error) {
+                console.warn(
+                    `Failed to parse tsconfig at ${preferredTsconfigPath}: ${parseErrorMessage(error)}`,
+                );
+            }
+        }
+
         const tempTsconfigContent = {
             compilerOptions: {
-                target: 'esnext',
-                module: 'esnext',
-                moduleResolution: 'node',
-                strict: true,
+                ...existingCompilerOptions,
                 declaration: true,
                 emitDeclarationOnly: true,
-                skipLibCheck: true,
-                outDir: dtsOutDir,
+                noEmit: false,
+                outDir: TEMP_DTS_OUT_DIR,
                 rootDir: relativeRootDir,
             },
             include: [`${relativeRootDir}/${entryRelativeToRoot}`],
@@ -75,13 +99,13 @@ export async function generateDts(
 
         const relativePath = path.relative(absoluteRootDir, absoluteEntry);
         const dtsEntry = path
-            .join(absoluteTempDir, dtsOutDir, relativePath)
+            .join(absoluteTempDir, TEMP_DTS_OUT_DIR, relativePath)
             .replace(/\.ts$/, '.d.ts');
 
         if (!fs.existsSync(dtsEntry)) {
             const directDtsPath = path.join(
                 absoluteTempDir,
-                dtsOutDir,
+                TEMP_DTS_OUT_DIR,
                 path.basename(absoluteEntry).replace(/\.ts$/, '.d.ts'),
             );
 
@@ -90,7 +114,7 @@ export async function generateDts(
                 return dtsContent;
             }
 
-            const dtsOutDirPath = path.join(absoluteTempDir, dtsOutDir);
+            const dtsOutDirPath = path.join(absoluteTempDir, TEMP_DTS_OUT_DIR);
             const filesInDtsDir = fs.existsSync(dtsOutDirPath)
                 ? fs.readdirSync(dtsOutDirPath, {recursive: true})
                 : [];
