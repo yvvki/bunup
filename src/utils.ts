@@ -50,3 +50,7 @@ export function getDtsTempDir(entryName: string, format: Format) {
 export function getEntryName(entry: string) {
     return entry.split('/').pop()?.split('.').slice(0, -1).join('.') || '';
 }
+
+export function formatTime(ms: number): string {
+    return ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${Math.round(ms)}ms`;
+}

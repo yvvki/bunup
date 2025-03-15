@@ -12,5 +12,4 @@ export default defineConfig({
     },
     treeshake: true,
     splitting: true,
-    external: ['@stacksjs/dtsx'],
 });

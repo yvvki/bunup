@@ -35,7 +35,7 @@ export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
     external: [],
 };
 
-export const normalizeOptions = (
+export const createBunBuildOptions = (
     options: BunupOptions,
     rootDir: string,
 ): BunBuildOptions => {
