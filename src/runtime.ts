@@ -1,6 +1,8 @@
+import {logger} from './logger';
+
 (() => {
     if (typeof Bun === 'undefined') {
-        console.error(
+        logger.error(
             'Bunup requires Bun to run.\nTo install Bun, visit https://bun.sh/docs/installation',
         );
         process.exit(1);

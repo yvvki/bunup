@@ -12,6 +12,7 @@ import {
     getDefaultOutputExtension,
     getDtsTempDir,
     getEntryName,
+    isModulePackage,
 } from './utils';
 
 export async function build(
@@ -61,7 +62,19 @@ export async function build(
                 typeof options.dts === 'object' ? options.dts : {};
             const entries = dtsOptions.entry || options.entry;
 
-            const dtsPromises = options.format.flatMap(fmt =>
+            // Filter out iife format when packageType is not module and cjs format is included
+            const formatsToProcess = options.format.filter(fmt => {
+                if (
+                    fmt === 'iife' &&
+                    !isModulePackage(packageType) &&
+                    options.format.includes('cjs')
+                ) {
+                    return false;
+                }
+                return true;
+            });
+
+            const dtsPromises = formatsToProcess.flatMap(fmt =>
                 entries.map(entry =>
                     generateDtsForEntry(
                         options,

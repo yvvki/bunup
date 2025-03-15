@@ -17,7 +17,6 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
             ...DEFAULT_OPTIONS,
             ...cliOptions,
         } as BunupOptions;
-        console.log(mergedConfig, cliOptions);
         await build(mergedConfig, process.cwd());
     } else {
         for (const {options, rootDir} of configs) {

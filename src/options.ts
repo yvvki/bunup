@@ -1,4 +1,4 @@
-export type Format = 'esm' | 'cjs';
+export type Format = 'esm' | 'cjs' | 'iife';
 
 type Bun = typeof import('bun');
 

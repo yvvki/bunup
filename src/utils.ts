@@ -14,7 +14,9 @@ export function getDefaultOutputExtension(
         case 'esm':
             return '.mjs';
         case 'cjs':
-            return packageType === 'module' ? '.cjs' : '.js';
+            return isModulePackage(packageType) ? '.cjs' : '.js';
+        case 'iife':
+            return '.global.js';
     }
 }
 
@@ -26,7 +28,9 @@ export function getDefaultDtsExtention(
         case 'esm':
             return '.d.mts';
         case 'cjs':
-            return packageType === 'module' ? '.d.cts' : '.d.ts';
+            return isModulePackage(packageType) ? '.d.cts' : '.d.ts';
+        case 'iife':
+            return '.d.ts';
     }
 }
 
@@ -37,6 +41,10 @@ export function cleanJsonString(json: string): string {
         .replace(/,\s*}/g, '}')
         .replace(/,\s*]/g, ']')
         .trim();
+}
+
+export function isModulePackage(packageType: string | undefined) {
+    return packageType === 'module';
 }
 
 export function getBunupTempDir(rootDir: string, outDir: string) {

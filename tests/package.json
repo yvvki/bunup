@@ -4,8 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build:bunup": "bunup",
-    "build:tsup": "tsup"
+    "build": "bunup"
   },
   "devDependencies": {
     "bunup": "workspace:*"
