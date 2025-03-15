@@ -19,14 +19,14 @@ export async function build(
     options: BunupOptions,
     rootDir: string,
 ): Promise<void> {
-    if (!options.entry || options.entry.length === 0 || !options.outdir) {
+    if (!options.entry || options.entry.length === 0 || !options.outDir) {
         logger.cli(
             'Nothing to build. Please make sure you have provided a proper bunup configuration or cli arguments.',
         );
         return;
     }
 
-    setupDirectories(rootDir, options.outdir);
+    setupDirectories(rootDir, options.outDir);
 
     if (options.watch) {
         watchMode(options, rootDir);
@@ -62,7 +62,7 @@ export async function build(
                 typeof options.dts === 'object' ? options.dts : {};
             const entries = dtsOptions.entry || options.entry;
 
-            // Filter out iife format when packageType is not module and cjs format is included
+            // Skip IIFE types when using CJS format in non-module packages (they would be identical)
             const formatsToProcess = options.format.filter(fmt => {
                 if (
                     fmt === 'iife' &&
@@ -97,7 +97,7 @@ export async function build(
             logger.progress('DTS', `Bundled types in ${dtsTimeDisplay}`);
         }
 
-        cleanupTempDir(rootDir, options.outdir);
+        cleanupTempDir(rootDir, options.outDir);
     }
 }
 
@@ -135,16 +135,16 @@ async function generateDtsForEntry(
     const name = getEntryName(entry);
     const content = await generateDts(
         rootDir,
-        options.outdir!,
+        options.outDir,
         entry,
         getDtsTempDir(name, fmt),
         fmt,
         dtsOptions,
     );
     const extension = getDefaultDtsExtention(fmt, packageType);
-    const outputPath = `${rootDir}/${options.outdir}/${name}${extension}`;
+    const outputPath = `${rootDir}/${options.outDir}/${name}${extension}`;
     await Bun.write(outputPath, content);
-    logger.progress('DTS', `${options.outdir}/${name}${extension}`);
+    logger.progress('DTS', `${options.outDir}/${name}${extension}`);
 }
 
 async function buildEntry(
@@ -164,7 +164,7 @@ async function buildEntry(
     });
 
     const name = getEntryName(entry);
-    logger.progress(fmt.toUpperCase(), `${options.outdir}/${name}${extension}`);
+    logger.progress(fmt.toUpperCase(), `${options.outDir}/${name}${extension}`);
 
     if (!result.success) {
         logger.error(`Build failed for ${entry} (${fmt}):`);

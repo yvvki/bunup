@@ -1,6 +1,5 @@
 import {logger} from './logger';
 import {BunupOptions, Format} from './options';
-import {Without} from './types';
 
 type CliOptionHandler = (
     value: string | boolean,
@@ -9,7 +8,7 @@ type CliOptionHandler = (
 
 const cliOptionAliases: Record<string, keyof BunupOptions> = {
     f: 'format',
-    o: 'outdir',
+    o: 'outDir',
     m: 'minify',
     w: 'watch',
     d: 'dts',
@@ -19,14 +18,14 @@ const cliOptionAliases: Record<string, keyof BunupOptions> = {
     ms: 'minifySyntax',
 };
 
-type CliOptionHandlerName = keyof Without<BunupOptions, 'entry'>;
+type CliOptionHandlerName = keyof Omit<BunupOptions, 'entry'>;
 
 const cliOptionHandlers: Record<CliOptionHandlerName, CliOptionHandler> = {
     format: (value, args) => {
         args.format = (value as string).split(',') as Format[];
     },
-    outdir: (value, args) => {
-        args.outdir = value as string;
+    outDir: (value, args) => {
+        args.outDir = value as string;
     },
     minify: (value, args) => {
         args.minify = !!value;

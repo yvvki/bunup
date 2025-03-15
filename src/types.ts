@@ -1,3 +1,2 @@
-export type Without<T, K extends keyof T> = {
-    [P in Exclude<keyof T, K>]: T[P];
-};
+export type WithOptional<T, K extends keyof T> = Omit<T, K> &
+    Partial<Pick<T, K>>;
