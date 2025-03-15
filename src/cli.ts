@@ -2,7 +2,7 @@
 import {build} from './build';
 import {parseCliOptions} from './cli-parse';
 import {handleError} from './errors';
-import {loadConfigs} from './load-config';
+import {loadConfigs} from './loaders';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
 
 import './runtime';

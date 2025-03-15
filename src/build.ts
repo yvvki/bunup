@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {generateDts} from './dts';
+import {loadPackageJson} from './loaders';
 import {logger} from './logger';
 import {BunupOptions, normalizeOptions} from './options';
 import {
@@ -11,14 +12,6 @@ import {
     getTempDir,
 } from './utils';
 
-/**
- * Builds the project based on the provided options.
- *
- * @param options - Configuration options for the build process
- * @param rootDir - The root directory of the project
- * @param watch - Whether to run in watch mode (default: false)
- * @returns A Promise that resolves when the build process completes
- */
 export async function build(options: BunupOptions, rootDir: string) {
     if (!options.entry || options.entry.length === 0 || !options.outdir) {
         logger.cli(
@@ -61,9 +54,13 @@ export async function build(options: BunupOptions, rootDir: string) {
         );
     } else {
         logger.cli('Build started');
+
+        const packageJson = await loadPackageJson(rootDir);
+        const packageType = packageJson?.type;
+
         for (const fmt of options.format) {
             for (const entry of options.entry) {
-                const extension = getDefaultOutputExtension(fmt);
+                const extension = getDefaultOutputExtension(fmt, packageType);
 
                 const result = await Bun.build({
                     ...buildOptions,
@@ -128,7 +125,7 @@ export async function build(options: BunupOptions, rootDir: string) {
                     );
 
                     const name = getEntryName(entry);
-                    const extension = getDefaultDtsExtention(fmt);
+                    const extension = getDefaultDtsExtention(fmt, packageType);
                     const outputPath = `${rootDir}/${options.outdir}/${name}${extension}`;
                     await Bun.write(outputPath, content);
                     logger.progress(

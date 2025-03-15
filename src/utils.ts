@@ -6,21 +6,27 @@ export function splitCommaSeparated(input: string | string[]): string[] {
     return Array.isArray(input) ? input : input.split(',');
 }
 
-export function getDefaultOutputExtension(format: Format) {
+export function getDefaultOutputExtension(
+    format: Format,
+    packageType: string | undefined,
+) {
     switch (format) {
         case 'esm':
             return '.mjs';
         case 'cjs':
-            return '.js';
+            return packageType === 'module' ? '.cjs' : '.js';
     }
 }
 
-export function getDefaultDtsExtention(format: Format) {
+export function getDefaultDtsExtention(
+    format: Format,
+    packageType: string | undefined,
+) {
     switch (format) {
         case 'esm':
             return '.d.mts';
         case 'cjs':
-            return '.d.ts';
+            return packageType === 'module' ? '.d.cts' : '.d.ts';
     }
 }
 
