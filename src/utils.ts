@@ -2,6 +2,10 @@ import path from 'path';
 
 import {Format} from './options';
 
+export function splitCommaSeparated(input: string | string[]): string[] {
+    return Array.isArray(input) ? input : input.split(',');
+}
+
 export function getDefaultOutputExtension(format: Format) {
     switch (format) {
         case 'esm':

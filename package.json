@@ -50,7 +50,7 @@
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
-        "joycon": "^3.1.1",
+        "cac": "^6.7.14",
         "rollup": "^4.35.0",
         "rollup-plugin-dts": "^6.1.1"
     }

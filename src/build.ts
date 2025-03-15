@@ -22,7 +22,7 @@ import {
 export async function build(options: BunupOptions, rootDir: string) {
     if (!options.entry || options.entry.length === 0 || !options.outdir) {
         logger.cli(
-            'Nothing to build. Please make sure you have provided a proper bunup configuration.',
+            'Nothing to build. Please make sure you have provided a proper bunup configuration or cli arguments.',
         );
         return;
     }
@@ -144,7 +144,10 @@ export async function build(options: BunupOptions, rootDir: string) {
                     ? `${(dtsTimeMs / 1000).toFixed(2)}s`
                     : `${Math.round(dtsTimeMs)}ms`;
 
-            logger.cli(`⚡️ Bundling types success in ${dtsTimeDisplay}`);
+            logger.progress(
+                'DTS',
+                `Bundling types success in ${dtsTimeDisplay}`,
+            );
         }
     }
 }

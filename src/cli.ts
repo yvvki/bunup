@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import {build} from './build';
-import {parseCliOptions} from './cli-options';
+import {parseCliOptions} from './cli-parse';
 import {handleError} from './errors';
 import {loadConfigs} from './load-config';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
@@ -17,6 +17,7 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
             ...DEFAULT_OPTIONS,
             ...cliOptions,
         } as BunupOptions;
+        console.log(mergedConfig, cliOptions);
         await build(mergedConfig, process.cwd());
     } else {
         for (const {options, rootDir} of configs) {
