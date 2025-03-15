@@ -1,26 +1,31 @@
-import {execSync} from 'child_process';
+import {exec} from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import {promisify} from 'util';
 
 import {rollup} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
 
 import {parseErrorMessage} from './errors';
 import {DtsOptions, Format} from './options';
-import {cleanJsonString} from './utils';
+import {cleanJsonString, getBunupTempDir} from './utils';
+
+const execAsync = promisify(exec);
 
 const TEMP_DTS_OUT_DIR = './dts';
 
 export async function generateDts(
     rootDir: string,
+    outDir: string,
     entry: string,
-    tempDir: string,
+    dtsTempDir: string,
     format: Format,
     options: Omit<DtsOptions, 'entry'> = {},
 ): Promise<string> {
     const absoluteRootDir = path.resolve(rootDir);
     const absoluteEntry = path.resolve(absoluteRootDir, entry);
-    const absoluteTempDir = path.resolve(tempDir);
+    const bunupTempDir = getBunupTempDir(rootDir, outDir);
+    const absoluteDtsTempDir = path.resolve(bunupTempDir, dtsTempDir);
 
     if (!fs.existsSync(absoluteRootDir)) {
         throw new Error(`Root directory does not exist: ${absoluteRootDir}`);
@@ -39,9 +44,12 @@ export async function generateDts(
     }
 
     try {
-        fs.mkdirSync(absoluteTempDir, {recursive: true});
+        fs.mkdirSync(absoluteDtsTempDir, {recursive: true});
 
-        const relativeRootDir = path.relative(absoluteTempDir, absoluteRootDir);
+        const relativeRootDir = path.relative(
+            absoluteDtsTempDir,
+            absoluteRootDir,
+        );
         const entryRelativeToRoot = path.relative(
             absoluteRootDir,
             absoluteEntry,
@@ -83,14 +91,22 @@ export async function generateDts(
             include: [`${relativeRootDir}/${entryRelativeToRoot}`],
         };
 
-        const tempTsconfigPath = path.join(absoluteTempDir, 'tsconfig.json');
+        const tempTsconfigPath = path.join(absoluteDtsTempDir, 'tsconfig.json');
         fs.writeFileSync(
             tempTsconfigPath,
             JSON.stringify(tempTsconfigContent, null, 2),
         );
 
         try {
-            execSync(`tsc -p ${tempTsconfigPath}`, {stdio: 'inherit'});
+            const {stdout, stderr} = await execAsync(
+                `tsc -p ${tempTsconfigPath}`,
+            );
+            if (stderr) {
+                console.error(stderr);
+            }
+            if (stdout) {
+                console.log(stdout);
+            }
         } catch (tscError) {
             throw new Error(
                 `TypeScript compilation failed: ${parseErrorMessage(tscError)}`,
@@ -99,12 +115,12 @@ export async function generateDts(
 
         const relativePath = path.relative(absoluteRootDir, absoluteEntry);
         const dtsEntry = path
-            .join(absoluteTempDir, TEMP_DTS_OUT_DIR, relativePath)
+            .join(absoluteDtsTempDir, TEMP_DTS_OUT_DIR, relativePath)
             .replace(/\.ts$/, '.d.ts');
 
         if (!fs.existsSync(dtsEntry)) {
             const directDtsPath = path.join(
-                absoluteTempDir,
+                absoluteDtsTempDir,
                 TEMP_DTS_OUT_DIR,
                 path.basename(absoluteEntry).replace(/\.ts$/, '.d.ts'),
             );
@@ -114,7 +130,10 @@ export async function generateDts(
                 return dtsContent;
             }
 
-            const dtsOutDirPath = path.join(absoluteTempDir, TEMP_DTS_OUT_DIR);
+            const dtsOutDirPath = path.join(
+                absoluteDtsTempDir,
+                TEMP_DTS_OUT_DIR,
+            );
             const filesInDtsDir = fs.existsSync(dtsOutDirPath)
                 ? fs.readdirSync(dtsOutDirPath, {recursive: true})
                 : [];
@@ -125,7 +144,7 @@ export async function generateDts(
             );
         }
 
-        const outputPath = path.join(absoluteTempDir, 'bundle.d.ts');
+        const outputPath = path.join(absoluteDtsTempDir, 'bundle.d.ts');
         let bundle;
         try {
             bundle = await rollup({
@@ -157,9 +176,5 @@ export async function generateDts(
         throw error instanceof Error
             ? error
             : new Error(`Unknown error: ${String(error)}`);
-    } finally {
-        if (fs.existsSync(absoluteTempDir)) {
-            fs.rmSync(absoluteTempDir, {recursive: true, force: true});
-        }
     }
 }

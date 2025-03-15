@@ -6,10 +6,11 @@ import {loadPackageJson} from './loaders';
 import {logger} from './logger';
 import {BunupOptions, normalizeOptions} from './options';
 import {
+    getBunupTempDir,
     getDefaultDtsExtention,
     getDefaultOutputExtension,
+    getDtsTempDir,
     getEntryName,
-    getTempDir,
 } from './utils';
 
 export async function build(options: BunupOptions, rootDir: string) {
@@ -106,34 +107,55 @@ export async function build(options: BunupOptions, rootDir: string) {
 
         logger.cli(`⚡ Build success in ${timeDisplay}`);
 
-        logger.progress('DTS', 'Bundling types');
-
         if (options.dts) {
             const dtsStartTime = performance.now();
+            logger.progress('DTS', 'Bundling types');
+
             const dtsOptions =
                 typeof options.dts === 'object' ? options.dts : {};
             const entries = dtsOptions.entry || options.entry;
 
+            const dtsPromises = [];
+
             for (const entry of entries) {
                 for (const fmt of options.format) {
-                    const content = await generateDts(
-                        rootDir,
-                        entry,
-                        getTempDir(rootDir, options.outdir),
-                        fmt,
-                        dtsOptions,
-                    );
-
-                    const name = getEntryName(entry);
-                    const extension = getDefaultDtsExtention(fmt, packageType);
-                    const outputPath = `${rootDir}/${options.outdir}/${name}${extension}`;
-                    await Bun.write(outputPath, content);
-                    logger.progress(
-                        'DTS',
-                        `${options.outdir}/${name}${extension}`,
-                    );
+                    const promise = (async () => {
+                        try {
+                            const name = getEntryName(entry);
+                            const content = await generateDts(
+                                rootDir,
+                                options.outdir!,
+                                entry,
+                                getDtsTempDir(name, fmt),
+                                fmt,
+                                dtsOptions,
+                            );
+                            const extension = getDefaultDtsExtention(
+                                fmt,
+                                packageType,
+                            );
+                            const outputPath = `${rootDir}/${options.outdir}/${name}${extension}`;
+                            await Bun.write(outputPath, content);
+                            logger.progress(
+                                'DTS',
+                                `${options.outdir}/${name}${extension}`,
+                            );
+                            return {success: true, entry, format: fmt};
+                        } catch (error) {
+                            logger.error(
+                                `Failed to generate DTS for ${entry} (${fmt}): ${error}`,
+                            );
+                            return {success: false, entry, format: fmt, error};
+                        }
+                    })();
+                    dtsPromises.push(promise);
                 }
             }
+
+            const results = await Promise.all(dtsPromises);
+            const successful = results.filter(r => r.success).length;
+            const failed = results.filter(r => !r.success).length;
+
             const dtsEndTime = performance.now();
             const dtsTimeMs = dtsEndTime - dtsStartTime;
             const dtsTimeDisplay =
@@ -141,10 +163,21 @@ export async function build(options: BunupOptions, rootDir: string) {
                     ? `${(dtsTimeMs / 1000).toFixed(2)}s`
                     : `${Math.round(dtsTimeMs)}ms`;
 
-            logger.progress(
-                'DTS',
-                `Bundling types success in ${dtsTimeDisplay}`,
-            );
+            if (failed > 0) {
+                logger.warn(
+                    `DTS bundling completed with ${failed} errors and ${successful} successes in ${dtsTimeDisplay}`,
+                );
+            } else {
+                logger.progress(
+                    'DTS',
+                    `Bundling types success in ${dtsTimeDisplay}`,
+                );
+            }
+        }
+
+        const bunupTempDir = getBunupTempDir(rootDir, options.outdir!);
+        if (fs.existsSync(bunupTempDir)) {
+            fs.rmSync(bunupTempDir, {recursive: true, force: true});
         }
     }
 }

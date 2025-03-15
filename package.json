@@ -11,7 +11,8 @@
     "scripts": {
         "build": "tsup",
         "dev": "tsup --watch",
-        "test-build": "pnpm -C tests build",
+        "test-bunup": "pnpm -C tests build:bunup",
+        "test-tsup": "pnpm -C tests build:tsup",
         "test": "vitest run"
     },
     "bin": {

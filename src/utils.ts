@@ -39,8 +39,12 @@ export function cleanJsonString(json: string): string {
         .trim();
 }
 
-export function getTempDir(rootDir: string, outDir: string) {
+export function getBunupTempDir(rootDir: string, outDir: string) {
     return path.join(rootDir, outDir, '.bunup');
+}
+
+export function getDtsTempDir(entryName: string, format: Format) {
+    return path.join(entryName, format);
 }
 
 export function getEntryName(entry: string) {
