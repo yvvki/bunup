@@ -1,5 +1,5 @@
 import {logger} from './logger';
-import {BunupOptions, Format} from './options';
+import {BunupOptions, Format, Target} from './options';
 
 type CliOptionHandler = (
     value: string | boolean,
@@ -13,6 +13,7 @@ const cliOptionAliases: Record<string, keyof BunupOptions> = {
     w: 'watch',
     d: 'dts',
     e: 'external',
+    t: 'target',
     mw: 'minifyWhitespace',
     mi: 'minifyIdentifiers',
     ms: 'minifySyntax',
@@ -47,6 +48,9 @@ const cliOptionHandlers: Record<CliOptionHandlerName, CliOptionHandler> = {
     },
     minifySyntax: (value, args) => {
         args.minifySyntax = !!value;
+    },
+    target: (value, args) => {
+        args.target = value as Target;
     },
 };
 

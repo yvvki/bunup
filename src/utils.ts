@@ -34,6 +34,10 @@ export function getDefaultDtsExtention(
     }
 }
 
+export function getEntryNamingFormat(extension: string) {
+    return `[dir]/[name]${extension}`;
+}
+
 export function cleanJsonString(json: string): string {
     return json
         .replace(/\/\/.*$/gm, '')
@@ -55,7 +59,7 @@ export function getDtsTempDir(entryName: string, format: Format) {
     return path.join(entryName, format);
 }
 
-export function getEntryName(entry: string) {
+export function getEntryNameOnly(entry: string) {
     return entry.split('/').pop()?.split('.').slice(0, -1).join('.') || '';
 }
 

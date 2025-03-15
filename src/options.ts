@@ -1,12 +1,13 @@
-export type Format = 'esm' | 'cjs' | 'iife';
-
 type Bun = typeof import('bun');
 
 export type BunBuildOptions = Parameters<Bun['build']>[0];
 
+export type Format = 'esm' | 'cjs' | 'iife';
+export type Target = 'bun' | 'node' | 'browser';
+
 export interface DtsOptions {
     /**
-     * Entry files to generate declaration files for
+     * Entry files to generate declsaration files for
      * If not specified, the main entry points will be used
      */
     entry?: string[];
@@ -78,6 +79,12 @@ export interface BunupOptions {
      * Useful for dependencies that should be kept as external imports
      */
     external?: string[];
+    /**
+     * The target environment for the bundle
+     * Can be 'browser', 'bun', 'node', etc.
+     * Defaults to 'node' if not specified
+     */
+    target?: Target;
 }
 
 export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
@@ -85,39 +92,37 @@ export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
     format: ['esm'],
     outDir: 'dist',
     minify: false,
-    minifyIdentifiers: false,
-    minifySyntax: false,
-    minifyWhitespace: false,
     watch: false,
     dts: false,
+    target: 'node',
     external: [],
 };
 
-export const createBunBuildOptions = (
+export function createBunBuildOptions(
     options: BunupOptions,
     rootDir: string,
-): BunBuildOptions => {
+): BunBuildOptions {
     return {
         entrypoints: options.entry.map(e => `${rootDir}/${e}`),
         outdir: `${rootDir}/${options.outDir}`,
         format: options.format[0],
         minify: createMinifyOptions(options),
+        target: options.target,
         external: options.external || ['node_modules/*'],
     };
-};
+}
 
-function createMinifyOptions(options: BunupOptions) {
-    if (options.minify === true) {
-        return {
-            whitespace: true,
-            identifiers: true,
-            syntax: true,
-        };
-    }
+function createMinifyOptions(options: BunupOptions): {
+    whitespace: boolean;
+    identifiers: boolean;
+    syntax: boolean;
+} {
+    const {minify, minifyWhitespace, minifyIdentifiers, minifySyntax} = options;
+    const defaultValue = minify === true;
 
     return {
-        whitespace: options.minifyWhitespace ?? false,
-        identifiers: options.minifyIdentifiers ?? false,
-        syntax: options.minifySyntax ?? false,
+        whitespace: minifyWhitespace ?? defaultValue,
+        identifiers: minifyIdentifiers ?? defaultValue,
+        syntax: minifySyntax ?? defaultValue,
     };
 }

@@ -11,7 +11,8 @@ import {
     getDefaultDtsExtention,
     getDefaultOutputExtension,
     getDtsTempDir,
-    getEntryName,
+    getEntryNameOnly,
+    getEntryNamingFormat,
     isModulePackage,
 } from './utils';
 
@@ -132,7 +133,7 @@ async function generateDtsForEntry(
     packageType: string | undefined,
     dtsOptions: any,
 ): Promise<void> {
-    const name = getEntryName(entry);
+    const name = getEntryNameOnly(entry);
     const content = await generateDts(
         rootDir,
         options.outDir,
@@ -160,10 +161,10 @@ async function buildEntry(
         ...bunBuildOptions,
         entrypoints: [`${rootDir}/${entry}`],
         format: fmt,
-        naming: {entry: `[dir]/[name]${extension}`},
+        naming: {entry: getEntryNamingFormat(extension)},
     });
 
-    const name = getEntryName(entry);
+    const name = getEntryNameOnly(entry);
     logger.progress(fmt.toUpperCase(), `${options.outDir}/${name}${extension}`);
 
     if (!result.success) {
@@ -172,7 +173,6 @@ async function buildEntry(
             if (log.level === 'error') logger.error(log.message);
             else if (log.level === 'warning') logger.warn(log.message);
             else if (log.level === 'info') logger.info(log.message);
-            else console.log(log.message);
         });
         throw new Error(`Build failed for ${entry} (${fmt})`);
     }
