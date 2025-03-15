@@ -1,6 +1,8 @@
 export type Format = 'esm' | 'cjs';
 
-export type BunBuildOptions = Parameters<typeof import('bun').build>[0];
+type Bun = typeof import('bun');
+
+export type BunBuildOptions = Parameters<Bun['build']>[0];
 
 export interface BunupOptions {
     entry: string[];
@@ -28,7 +30,7 @@ export const DEFAULT_OPTIONS: BunupOptions = {
     external: [],
 };
 
-export const createBuildOptions = (
+export const normalizeOptions = (
     options: BunupOptions,
     rootDir: string,
 ): BunBuildOptions => {

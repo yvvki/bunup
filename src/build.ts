@@ -1,6 +1,6 @@
-import { dts } from './dts';
+import {generateDts} from './dts';
 import {logger} from './logger';
-import {BunupOptions, createBuildOptions} from './options';
+import {BunupOptions, normalizeOptions} from './options';
 import {getDefaultExtension, getEntryName} from './utils';
 
 /**
@@ -17,7 +17,7 @@ export async function build(
     logger.cli('Build started');
     const startTime = performance.now();
 
-    const buildOptions = createBuildOptions(options, rootDir);
+    const buildOptions = normalizeOptions(options, rootDir);
 
     if (watch) {
         logger.cli('Running in watch mode\n');
@@ -47,7 +47,6 @@ export async function build(
                     naming: {
                         entry: `[dir]/[name]${extension}`,
                     },
-                    plugins: [dts()],
                 });
 
                 const name = getEntryName(entry);
@@ -82,5 +81,14 @@ export async function build(
                 ? `${(buildTimeMs / 1000).toFixed(2)}s`
                 : `${Math.round(buildTimeMs)}ms`;
         logger.cli(`⚡ Build success in ${timeDisplay}`);
+
+        if (options.dts) {
+            const content = await generateDts(
+                rootDir,
+                options.entry[0],
+                `${rootDir}/${options.outdir}/.bunup`,
+            );
+            console.log(content);
+        }
     }
 }
