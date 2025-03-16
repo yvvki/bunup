@@ -10,8 +10,6 @@ export async function watch(
     options: BunupOptions,
     rootDir: string,
 ): Promise<void> {
-    logger.cli('Starting watch mode');
-
     const watchPaths = new Set<string>();
 
     options.entry.forEach(entry => {
@@ -59,10 +57,6 @@ export async function watch(
             clearTimeout(debounceTimer);
         }
         debounceTimer = setTimeout(() => triggerRebuild(changedFile), 300);
-    });
-
-    watcher.on('ready', () => {
-        logger.cli('Watching for file changes\n');
     });
 
     watcher.on('error', error => {

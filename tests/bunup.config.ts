@@ -1,8 +1,19 @@
 import {defineConfig} from 'bunup';
 
-export default defineConfig({
-    entry: ['fixtures/add.ts'],
-    minify: true,
-    format: ['esm'],
-    dts: true,
-});
+export default defineConfig([
+    {
+        name: 'monacopilot',
+        entry: ['fixtures/add.ts'],
+        minify: true,
+        format: ['esm'],
+        dts: true,
+    },
+    {
+        name: 'monacopilot-browser',
+        entry: ['fixtures/add.ts'],
+        minify: true,
+        format: ['iife'],
+        target: 'browser',
+        dts: true,
+    },
+]);

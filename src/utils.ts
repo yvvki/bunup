@@ -55,8 +55,12 @@ export function getBunupTempDir(rootDir: string, outDir: string) {
     return path.join(rootDir, outDir, '.bunup');
 }
 
-export function getDtsTempDir(entryName: string, format: Format) {
-    return path.join(entryName, format);
+export function getDtsTempDir(
+    entryName: string,
+    format: Format,
+    name: string | undefined,
+) {
+    return path.join(entryName, format, name || '');
 }
 
 export function getEntryNameOnly(entry: string) {

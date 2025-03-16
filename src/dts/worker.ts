@@ -2,11 +2,12 @@ import path from 'path';
 
 import {generateDts} from '.';
 import {parseErrorMessage} from '../errors';
-import {logger} from '../logger';
+import {getLoggerProgressLabel, logger} from '../logger';
 import {DtsOptions, Format} from '../options';
 import {getDefaultDtsExtention, getEntryNameOnly} from '../utils';
 
 export type DtsWorkerMessageEventData = {
+    name: string | undefined;
     rootDir: string;
     outDir: string;
     entry: string;
@@ -18,6 +19,7 @@ export type DtsWorkerMessageEventData = {
 
 export type DtsWorkerResponse =
     | {
+          name: string | undefined;
           success: true;
           outputRelativePath: string;
       }
@@ -28,6 +30,7 @@ export type DtsWorkerResponse =
 
 self.onmessage = async (event: MessageEvent<DtsWorkerMessageEventData>) => {
     const {
+        name,
         rootDir,
         outDir,
         entry,
@@ -47,14 +50,15 @@ self.onmessage = async (event: MessageEvent<DtsWorkerMessageEventData>) => {
             dtsOptions,
         );
 
-        const name = getEntryNameOnly(entry);
+        const entryName = getEntryNameOnly(entry);
         const extension = getDefaultDtsExtention(format, packageType);
-        const outputRelativePath = `${outDir}/${name}${extension}`;
+        const outputRelativePath = `${outDir}/${entryName}${extension}`;
         const outputPath = `${rootDir}/${outputRelativePath}`;
 
         await Bun.write(outputPath, content);
 
         const response: DtsWorkerResponse = {
+            name,
             success: true,
             outputRelativePath,
         };
@@ -129,7 +133,10 @@ export class DtsWorker {
 
         worker.onmessage = (event: MessageEvent<DtsWorkerResponse>) => {
             if (event.data.success) {
-                logger.progress('DTS', event.data.outputRelativePath);
+                logger.progress(
+                    getLoggerProgressLabel('DTS', event.data.name),
+                    event.data.outputRelativePath,
+                );
                 resolve();
             } else {
                 logger.error(`DTS generation failed: ${event.data.error}`);

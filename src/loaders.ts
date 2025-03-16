@@ -40,10 +40,19 @@ export async function loadConfigs(
                 }
             }
 
-            configs.push({
-                options: {...DEFAULT_OPTIONS, ...content},
-                rootDir: cwd,
-            });
+            if (Array.isArray(content)) {
+                for (const item of content) {
+                    configs.push({
+                        options: {...DEFAULT_OPTIONS, ...item},
+                        rootDir: cwd,
+                    });
+                }
+            } else {
+                configs.push({
+                    options: {...DEFAULT_OPTIONS, ...content},
+                    rootDir: cwd,
+                });
+            }
 
             break;
         } catch (error) {

@@ -63,9 +63,21 @@ export const logger = {
 
     progress(label: FormatType, message: string): void {
         const labelStr = String(label);
-        const colorCode =
-            this.colors.progress[label as keyof typeof this.colors.progress] ||
-            this.colors.default;
+        let colorCode = this.colors.default;
+
+        for (const [key, value] of Object.entries(this.colors.progress)) {
+            if (labelStr.includes(key)) {
+                colorCode = value;
+                break;
+            }
+        }
         console.log(this.formatMessage(colorCode, labelStr, message));
     },
 };
+
+export function getLoggerProgressLabel(
+    label: string,
+    name: string | undefined,
+): string {
+    return `${name ? `${name.replace(/-/g, '_')}_` : ''}${label}`.toUpperCase();
+}

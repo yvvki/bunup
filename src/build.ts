@@ -1,9 +1,8 @@
 import fs from 'fs';
-import path from 'path';
 
 import {DtsWorker, DtsWorkerMessageEventData} from './dts/worker';
 import {loadPackageJson} from './loaders';
-import {logger} from './logger';
+import {getLoggerProgressLabel, logger} from './logger';
 import {BunupOptions, createBunBuildOptions, Format} from './options';
 import {
     formatTime,
@@ -25,8 +24,6 @@ export async function build(
         );
         return;
     }
-
-    if (options.clean) cleanOutputDir(rootDir, options.outDir);
 
     const startTime = performance.now();
     logger.cli('Build started');
@@ -116,8 +113,13 @@ async function generateDtsForEntry(
     dtsOptions: any,
     dtsWorker: DtsWorker,
 ): Promise<void> {
-    const dtsTempDir = getDtsTempDir(getEntryNameOnly(entry), fmt);
+    const dtsTempDir = getDtsTempDir(
+        getEntryNameOnly(entry),
+        fmt,
+        options.name,
+    );
     const task: DtsWorkerMessageEventData = {
+        name: options.name,
         rootDir,
         outDir: options.outDir,
         entry,
@@ -144,10 +146,9 @@ async function buildEntry(
         entrypoints: [`${rootDir}/${entry}`],
         format: fmt,
         naming: {entry: getEntryNamingFormat(extension)},
-        throw: false,
     });
 
-    const name = getEntryNameOnly(entry);
+    const entryName = getEntryNameOnly(entry);
 
     if (!result.success) {
         result.logs.forEach(log => {
@@ -158,17 +159,8 @@ async function buildEntry(
         throw new Error(`Build failed for ${entry} (${fmt})`);
     }
 
-    logger.progress(fmt.toUpperCase(), `${options.outDir}/${name}${extension}`);
-}
-
-function cleanOutputDir(rootDir: string, outdir: string): void {
-    const outdirPath = path.join(rootDir, outdir);
-    if (fs.existsSync(outdirPath)) {
-        try {
-            fs.rmSync(outdirPath, {recursive: true, force: true});
-        } catch (error) {
-            logger.error(`Failed to clean output directory: ${error}`);
-        }
-    }
-    fs.mkdirSync(outdirPath, {recursive: true});
+    logger.progress(
+        getLoggerProgressLabel(fmt, options.name),
+        `${options.outDir}/${entryName}${extension}`,
+    );
 }

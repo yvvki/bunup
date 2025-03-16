@@ -7,6 +7,7 @@ type CliOptionHandler = (
 ) => void;
 
 const cliOptionAliases: Record<string, keyof BunupOptions> = {
+    n: 'name',
     f: 'format',
     o: 'outDir',
     m: 'minify',
@@ -23,6 +24,9 @@ const cliOptionAliases: Record<string, keyof BunupOptions> = {
 type CliOptionHandlerName = keyof Omit<BunupOptions, 'entry'>;
 
 const cliOptionHandlers: Record<CliOptionHandlerName, CliOptionHandler> = {
+    name: (value, args) => {
+        args.name = value as string;
+    },
     format: (value, args) => {
         args.format = (value as string).split(',') as Format[];
     },

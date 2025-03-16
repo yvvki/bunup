@@ -21,6 +21,11 @@ export interface DtsOptions {
 
 export interface BunupOptions {
     /**
+     * Name of the build configuration
+     * Used for logging and identification purposes
+     */
+    name?: string;
+    /**
      * Entry point files for the build
      * These are the files that will be processed and bundled
      */

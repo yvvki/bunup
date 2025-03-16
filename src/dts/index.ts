@@ -11,7 +11,6 @@ import {DtsOptions, Format} from '../options';
 import {cleanJsonString, getBunupTempDir} from '../utils';
 
 const execAsync = promisify(exec);
-const TEMP_DTS_OUT_DIR = './dts';
 
 export async function generateDts(
     rootDir: string,
@@ -22,31 +21,34 @@ export async function generateDts(
     options: Omit<DtsOptions, 'entry'> = {},
 ): Promise<string> {
     const {absoluteRootDir, absoluteEntry} = validateInputs(rootDir, entry);
-    const bunupTempDir = getBunupTempDir(rootDir, outDir);
-    const absoluteDtsTempDir = path.resolve(bunupTempDir, dtsTempDir);
 
-    fs.mkdirSync(absoluteDtsTempDir, {recursive: true});
+    const bunupTempBaseDir = getBunupTempDir(rootDir, outDir);
+    const tempWorkingDir = path.resolve(bunupTempBaseDir, dtsTempDir);
+    const tempDtsOutputDir = path.join(tempWorkingDir, 'dts-output');
+
+    fs.mkdirSync(tempWorkingDir, {recursive: true});
 
     const tsconfigPath = options.preferredTsconfigPath
         ? path.resolve(options.preferredTsconfigPath)
         : path.join(absoluteRootDir, 'tsconfig.json');
     const existingCompilerOptions = loadTsconfig(tsconfigPath);
 
-    const dtsEntry = await generateDtsFile(
+    const generatedDtsEntryFile = await generateDtsFile(
         absoluteRootDir,
         absoluteEntry,
-        absoluteDtsTempDir,
+        tempWorkingDir,
+        tempDtsOutputDir,
         existingCompilerOptions,
     );
 
-    const outputPath = path.join(absoluteDtsTempDir, 'bundle.d.ts');
-    await bundleDts(dtsEntry, outputPath, format);
+    const finalBundlePath = path.join(tempWorkingDir, 'bundle.d.ts');
+    await bundleDts(generatedDtsEntryFile, finalBundlePath, format);
 
-    return fs.readFileSync(outputPath, 'utf8');
+    return fs.readFileSync(finalBundlePath, 'utf8');
 }
 
 async function bundleDts(
-    dtsEntry: string,
+    dtsEntryFile: string,
     outputPath: string,
     format: Format,
 ): Promise<void> {
@@ -54,7 +56,7 @@ async function bundleDts(
 
     try {
         bundle = await rollup({
-            input: dtsEntry,
+            input: dtsEntryFile,
             plugins: [dtsPlugin()],
         });
         await bundle.write({file: outputPath, format});
@@ -74,11 +76,16 @@ async function bundleDts(
 async function generateDtsFile(
     absoluteRootDir: string,
     absoluteEntry: string,
-    absoluteDtsTempDir: string,
+    tempWorkingDir: string,
+    tempDtsOutputDir: string,
     existingCompilerOptions: object,
 ): Promise<string> {
-    const relativeRootDir = path.relative(absoluteDtsTempDir, absoluteRootDir);
+    const relativeRootDir = path.relative(tempWorkingDir, absoluteRootDir);
     const entryRelativeToRoot = path.relative(absoluteRootDir, absoluteEntry);
+    const relativeDtsOutputDir = path.relative(
+        tempWorkingDir,
+        tempDtsOutputDir,
+    );
 
     const tempTsconfigContent = {
         compilerOptions: {
@@ -86,14 +93,14 @@ async function generateDtsFile(
             declaration: true,
             emitDeclarationOnly: true,
             noEmit: false,
-            outDir: TEMP_DTS_OUT_DIR,
+            outDir: relativeDtsOutputDir,
             rootDir: relativeRootDir,
             skipLibCheck: true,
         },
         include: [`${relativeRootDir}/${entryRelativeToRoot}`],
     };
 
-    const tempTsconfigPath = path.join(absoluteDtsTempDir, 'tsconfig.json');
+    const tempTsconfigPath = path.join(tempWorkingDir, 'tsconfig.json');
     fs.writeFileSync(
         tempTsconfigPath,
         JSON.stringify(tempTsconfigContent, null, 2),
@@ -110,15 +117,17 @@ async function generateDtsFile(
     }
 
     const relativePath = path.relative(absoluteRootDir, absoluteEntry);
-    const dtsEntry = path
-        .join(absoluteDtsTempDir, TEMP_DTS_OUT_DIR, relativePath)
+    const generatedDtsFile = path
+        .join(tempDtsOutputDir, relativePath)
         .replace(/\.ts$/, '.d.ts');
 
-    if (!fs.existsSync(dtsEntry)) {
-        throw new Error(`Generated DTS entry file not found: ${dtsEntry}`);
+    if (!fs.existsSync(generatedDtsFile)) {
+        throw new Error(
+            `Generated DTS entry file not found: ${generatedDtsFile}`,
+        );
     }
 
-    return dtsEntry;
+    return generatedDtsFile;
 }
 
 function loadTsconfig(tsconfigPath: string): object {
