@@ -4,6 +4,7 @@ export type BunBuildOptions = Parameters<Bun['build']>[0];
 
 export type Format = 'esm' | 'cjs' | 'iife';
 export type Target = 'bun' | 'node' | 'browser';
+export type External = string[];
 
 export interface DtsOptions {
     /**
@@ -83,7 +84,7 @@ export interface BunupOptions {
      * External packages that should not be bundled
      * Useful for dependencies that should be kept as external imports
      */
-    external?: string[];
+    external?: External;
     /**
      * The target environment for the bundle
      * Can be 'browser', 'bun', 'node', etc.

@@ -1,7 +1,12 @@
 import {DtsWorker, DtsWorkerMessageEventData} from './dts/worker';
 import {loadPackageJson} from './loaders';
 import {getLoggerProgressLabel, logger} from './logger';
-import {BunupOptions, createBunBuildOptions, Format} from './options';
+import {
+    BunupOptions,
+    createBunBuildOptions,
+    DtsOptions,
+    Format,
+} from './options';
 import {
     formatTime,
     getDefaultOutputExtension,
@@ -97,7 +102,7 @@ async function generateDtsForEntry(
     entry: string,
     fmt: Format,
     packageType: string | undefined,
-    dtsOptions: any,
+    dtsOptions: DtsOptions,
     dtsWorker: DtsWorker,
 ): Promise<void> {
     const task: DtsWorkerMessageEventData = {
@@ -108,6 +113,7 @@ async function generateDtsForEntry(
         format: fmt,
         packageType,
         dtsOptions,
+        options,
     };
 
     await dtsWorker.process(task);

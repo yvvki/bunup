@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import {rollup} from 'rollup';
+import {Plugin, rollup} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
 import {
     CompilerOptions,
@@ -12,20 +12,21 @@ import {
 } from 'typescript';
 
 import {parseErrorMessage} from '../errors';
-import {logger} from '../logger';
-import {DtsOptions, Format} from '../options';
-import {cleanJsonString} from '../utils';
+import {loadPackageJson, loadTsconfig} from '../loaders';
+import {BunupOptions, DtsOptions, Format} from '../options';
+import {getPackageDeps} from '../utils';
 
 export async function generateDts(
     rootDir: string,
     entry: string,
     format: Format,
-    options: Omit<DtsOptions, 'entry'> = {},
+    options: BunupOptions,
+    dtsOptions: Omit<DtsOptions, 'entry'> = {},
 ): Promise<string> {
     const {absoluteRootDir, absoluteEntry} = validateInputs(rootDir, entry);
 
-    const tsconfigPath = options.preferredTsconfigPath
-        ? path.resolve(options.preferredTsconfigPath)
+    const tsconfigPath = dtsOptions.preferredTsconfigPath
+        ? path.resolve(dtsOptions.preferredTsconfigPath)
         : path.join(absoluteRootDir, 'tsconfig.json');
     const existingCompilerOptions = loadTsconfig(tsconfigPath);
 
@@ -38,6 +39,9 @@ export async function generateDts(
         dtsContent,
         absoluteEntry,
         format,
+        rootDir,
+        tsconfigPath,
+        options,
     );
 
     return bundledDts;
@@ -47,6 +51,9 @@ async function bundleDtsInMemory(
     dtsContent: string,
     entryFilePath: string,
     format: Format,
+    rootDir: string,
+    tsconfigPath: string,
+    options: BunupOptions,
 ): Promise<string> {
     let bundle;
     let result = '';
@@ -55,11 +62,39 @@ async function bundleDtsInMemory(
         [entryFilePath.replace(/\.ts$/, '.d.ts')]: dtsContent,
     };
 
+    const packageJson = await loadPackageJson(rootDir);
+    const rollupExternal = [
+        ...(options.external || []),
+        ...getPackageDeps(packageJson).map(
+            dep => new RegExp(`^${dep}($|\\/|\\\\)`),
+        ),
+    ];
+
+    const ignoreFiles: Plugin = {
+        name: 'bunup:ignore-files',
+        load(id) {
+            if (!/\.(js|cjs|mjs|jsx|ts|tsx|mts|json)$/.test(id)) {
+                return '';
+            }
+        },
+    };
+
     try {
         bundle = await rollup({
             input: entryFilePath.replace(/\.ts$/, '.d.ts'),
+            onwarn(warning, handler) {
+                if (
+                    warning.code === 'UNRESOLVED_IMPORT' ||
+                    warning.code === 'CIRCULAR_DEPENDENCY' ||
+                    warning.code === 'EMPTY_BUNDLE'
+                ) {
+                    return;
+                }
+                return handler(warning);
+            },
             plugins: [
-                dtsPlugin(),
+                dtsPlugin({tsconfig: tsconfigPath}),
+                ignoreFiles,
                 {
                     name: 'virtual-fs',
                     resolveId(id) {
@@ -72,6 +107,7 @@ async function bundleDtsInMemory(
                     },
                 },
             ],
+            external: rollupExternal,
         });
 
         const {output} = await bundle.generate({format});
@@ -93,17 +129,21 @@ async function bundleDtsInMemory(
 
 async function generateDtsInMemory(
     absoluteEntry: string,
-    existingCompilerOptions: object,
+    existingCompilerOptions: CompilerOptions,
 ): Promise<string> {
     const compilerOptions: CompilerOptions = {
         ...existingCompilerOptions,
         declaration: true,
-        emitDeclarationOnly: true,
         noEmit: false,
+        emitDeclarationOnly: true,
+        noEmitOnError: true,
+        checkJs: false,
+        declarationMap: false,
         skipLibCheck: true,
+        preserveSymlinks: false,
+        target: ScriptTarget.ESNext,
         module: ModuleKind.ESNext,
         moduleResolution: ModuleResolutionKind.Node10,
-        target: ScriptTarget.ES2020,
     };
 
     let dtsContent = '';
@@ -139,23 +179,6 @@ async function generateDtsInMemory(
     }
 
     return dtsContent;
-}
-
-function loadTsconfig(tsconfigPath: string): object {
-    if (!fs.existsSync(tsconfigPath)) {
-        return {};
-    }
-
-    try {
-        const content = fs.readFileSync(tsconfigPath, 'utf8');
-        const json = JSON.parse(cleanJsonString(content));
-        return json.compilerOptions || {};
-    } catch (error) {
-        logger.warn(
-            `Failed to parse tsconfig at ${tsconfigPath}: ${parseErrorMessage(error)}`,
-        );
-        return {};
-    }
 }
 
 function validateInputs(

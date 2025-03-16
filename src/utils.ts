@@ -56,3 +56,16 @@ export function getEntryNameOnly(entry: string) {
 export function formatTime(ms: number): string {
     return ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${Math.round(ms)}ms`;
 }
+
+export function getPackageDeps(
+    packageJson: Record<string, unknown> | null,
+): string[] {
+    if (!packageJson) return [];
+
+    return Array.from(
+        new Set([
+            ...Object.keys(packageJson.dependencies || {}),
+            ...Object.keys(packageJson.peerDependencies || {}),
+        ]),
+    );
+}

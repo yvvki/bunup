@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+
+import {CompilerOptions} from 'typescript';
+
 import {parseErrorMessage} from './errors';
 import {logger} from './logger';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
@@ -86,5 +90,22 @@ export async function loadPackageJson(
         return content;
     } catch (error) {
         return null;
+    }
+}
+
+export function loadTsconfig(tsconfigPath: string): CompilerOptions {
+    if (!fs.existsSync(tsconfigPath)) {
+        return {};
+    }
+
+    try {
+        const content = fs.readFileSync(tsconfigPath, 'utf8');
+        const json = JSON.parse(cleanJsonString(content));
+        return json.compilerOptions || {};
+    } catch (error) {
+        logger.warn(
+            `Failed to parse tsconfig at ${tsconfigPath}: ${parseErrorMessage(error)}`,
+        );
+        return {};
     }
 }
