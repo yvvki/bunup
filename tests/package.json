@@ -9,6 +9,14 @@
   "devDependencies": {
     "bunup": "workspace:*"
   },
+  "peerDependencies": {
+    "typescript": ">=4.5.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"

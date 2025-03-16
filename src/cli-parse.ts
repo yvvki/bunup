@@ -17,6 +17,7 @@ const cliOptionAliases: Record<string, keyof BunupOptions> = {
     mw: 'minifyWhitespace',
     mi: 'minifyIdentifiers',
     ms: 'minifySyntax',
+    c: 'clean',
 };
 
 type CliOptionHandlerName = keyof Omit<BunupOptions, 'entry'>;
@@ -51,6 +52,9 @@ const cliOptionHandlers: Record<CliOptionHandlerName, CliOptionHandler> = {
     },
     target: (value, args) => {
         args.target = value as Target;
+    },
+    clean: (value, args) => {
+        args.clean = !!value;
     },
 };
 

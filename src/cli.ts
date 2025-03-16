@@ -7,26 +7,37 @@ import {BunupOptions, DEFAULT_OPTIONS} from './options';
 
 import './runtime';
 
+import {watch} from './watch';
+
 export async function main(args: string[] = Bun.argv.slice(2)) {
     const cliOptions = parseCliOptions(args);
 
     const configs = await loadConfigs(process.cwd());
 
     if (configs.length === 0) {
-        const mergedConfig = {
+        const mergedOptions = {
             ...DEFAULT_OPTIONS,
             ...cliOptions,
         } as BunupOptions;
-        await build(mergedConfig, process.cwd());
+        await handleBuild(mergedOptions, process.cwd());
     } else {
         for (const {options, rootDir} of configs) {
-            const mergedConfig = {
+            const mergedOptions = {
                 ...DEFAULT_OPTIONS,
                 ...options,
                 ...cliOptions,
             };
-            await build(mergedConfig, rootDir);
+            await handleBuild(mergedOptions, rootDir);
         }
+    }
+}
+
+async function handleBuild(options: BunupOptions, rootDir: string) {
+    if (options.watch) {
+        await watch(options, rootDir);
+    } else {
+        await build(options, rootDir);
+        process.exit(0);
     }
 }
 

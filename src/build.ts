@@ -1,14 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 
-import {generateDts} from './dts';
+import {DtsWorker, DtsWorkerMessageEventData} from './dts/worker';
 import {loadPackageJson} from './loaders';
 import {logger} from './logger';
 import {BunupOptions, createBunBuildOptions, Format} from './options';
 import {
     formatTime,
     getBunupTempDir,
-    getDefaultDtsExtention,
     getDefaultOutputExtension,
     getDtsTempDir,
     getEntryNameOnly,
@@ -27,54 +26,51 @@ export async function build(
         return;
     }
 
-    setupDirectories(rootDir, options.outDir);
+    if (options.clean) cleanOutputDir(rootDir, options.outDir);
 
-    if (options.watch) {
-        watchMode(options, rootDir);
-    } else {
-        const startTime = performance.now();
-        logger.cli('Build started');
+    const startTime = performance.now();
+    logger.cli('Build started');
 
-        const packageJson = await loadPackageJson(rootDir);
-        const packageType = packageJson?.type;
+    const packageJson = await loadPackageJson(rootDir);
+    const packageType = packageJson?.type;
 
-        const buildPromises = options.format.flatMap(fmt =>
-            options.entry.map(entry =>
-                buildEntry(options, rootDir, entry, fmt, packageType),
-            ),
-        );
+    const buildPromises = options.format.flatMap(fmt =>
+        options.entry.map(entry =>
+            buildEntry(options, rootDir, entry, fmt, packageType),
+        ),
+    );
 
-        try {
-            await Promise.all(buildPromises);
-        } catch (error) {
-            logger.error('Build process encountered errors.');
-            process.exit(1);
-        }
+    try {
+        await Promise.all(buildPromises);
 
         const buildTimeMs = performance.now() - startTime;
         const timeDisplay = formatTime(buildTimeMs);
         logger.cli(`⚡ Build success in ${timeDisplay}`);
+    } catch (error) {
+        logger.error('Build process encountered errors.');
+        process.exit(1);
+    }
 
-        if (options.dts) {
-            const dtsStartTime = performance.now();
-            logger.progress('DTS', 'Bundling types');
+    if (options.dts) {
+        const dtsStartTime = performance.now();
+        logger.progress('DTS', 'Bundling types');
 
-            const dtsOptions =
-                typeof options.dts === 'object' ? options.dts : {};
-            const entries = dtsOptions.entry || options.entry;
+        const dtsOptions = typeof options.dts === 'object' ? options.dts : {};
+        const entries = dtsOptions.entry || options.entry;
 
-            // Skip IIFE types when using CJS format in non-module packages (they would be identical)
-            const formatsToProcess = options.format.filter(fmt => {
-                if (
-                    fmt === 'iife' &&
-                    !isModulePackage(packageType) &&
-                    options.format.includes('cjs')
-                ) {
-                    return false;
-                }
-                return true;
-            });
+        const formatsToProcess = options.format.filter(fmt => {
+            if (
+                fmt === 'iife' &&
+                !isModulePackage(packageType) &&
+                options.format.includes('cjs')
+            ) {
+                return false;
+            }
+            return true;
+        });
 
+        const dtsWorker = new DtsWorker();
+        try {
             const dtsPromises = formatsToProcess.flatMap(fmt =>
                 entries.map(entry =>
                     generateDtsForEntry(
@@ -84,22 +80,24 @@ export async function build(
                         fmt,
                         packageType,
                         dtsOptions,
+                        dtsWorker,
                     ),
                 ),
             );
-            try {
-                await Promise.all(dtsPromises);
-            } catch (error) {
-                logger.warn('DTS bundling encountered errors.');
-            }
+
+            await Promise.all(dtsPromises);
 
             const dtsTimeMs = performance.now() - dtsStartTime;
             const dtsTimeDisplay = formatTime(dtsTimeMs);
             logger.progress('DTS', `Bundled types in ${dtsTimeDisplay}`);
+        } catch (error) {
+            await dtsWorker.cleanup();
         }
 
-        cleanupTempDir(rootDir, options.outDir);
+        await dtsWorker.cleanup();
     }
+
+    cleanupTempDir(rootDir, options.outDir);
 }
 
 function cleanupTempDir(rootDir: string, outdir: string): void {
@@ -109,22 +107,6 @@ function cleanupTempDir(rootDir: string, outdir: string): void {
     }
 }
 
-function watchMode(options: BunupOptions, rootDir: string): void {
-    logger.cli('Running in watch mode\n');
-    const bunBuildOptions = createBunBuildOptions(options, rootDir);
-    Bun.spawn(
-        [
-            'bun',
-            'build',
-            ...(bunBuildOptions.entrypoints || []),
-            '--outdir',
-            bunBuildOptions.outdir || '',
-            '--watch',
-        ],
-        {stdout: 'inherit', stderr: 'inherit'},
-    );
-}
-
 async function generateDtsForEntry(
     options: BunupOptions,
     rootDir: string,
@@ -132,20 +114,20 @@ async function generateDtsForEntry(
     fmt: Format,
     packageType: string | undefined,
     dtsOptions: any,
+    dtsWorker: DtsWorker,
 ): Promise<void> {
-    const name = getEntryNameOnly(entry);
-    const content = await generateDts(
+    const dtsTempDir = getDtsTempDir(getEntryNameOnly(entry), fmt);
+    const task: DtsWorkerMessageEventData = {
         rootDir,
-        options.outDir,
+        outDir: options.outDir,
         entry,
-        getDtsTempDir(name, fmt),
-        fmt,
+        dtsTempDir,
+        format: fmt,
+        packageType,
         dtsOptions,
-    );
-    const extension = getDefaultDtsExtention(fmt, packageType);
-    const outputPath = `${rootDir}/${options.outDir}/${name}${extension}`;
-    await Bun.write(outputPath, content);
-    logger.progress('DTS', `${options.outDir}/${name}${extension}`);
+    };
+
+    await dtsWorker.process(task);
 }
 
 async function buildEntry(
@@ -162,13 +144,12 @@ async function buildEntry(
         entrypoints: [`${rootDir}/${entry}`],
         format: fmt,
         naming: {entry: getEntryNamingFormat(extension)},
+        throw: false,
     });
 
     const name = getEntryNameOnly(entry);
-    logger.progress(fmt.toUpperCase(), `${options.outDir}/${name}${extension}`);
 
     if (!result.success) {
-        logger.error(`Build failed for ${entry} (${fmt}):`);
         result.logs.forEach(log => {
             if (log.level === 'error') logger.error(log.message);
             else if (log.level === 'warning') logger.warn(log.message);
@@ -176,16 +157,17 @@ async function buildEntry(
         });
         throw new Error(`Build failed for ${entry} (${fmt})`);
     }
+
+    logger.progress(fmt.toUpperCase(), `${options.outDir}/${name}${extension}`);
 }
 
-function setupDirectories(rootDir: string, outdir: string): void {
+function cleanOutputDir(rootDir: string, outdir: string): void {
     const outdirPath = path.join(rootDir, outdir);
     if (fs.existsSync(outdirPath)) {
         try {
             fs.rmSync(outdirPath, {recursive: true, force: true});
         } catch (error) {
             logger.error(`Failed to clean output directory: ${error}`);
-            process.exit(1);
         }
     }
     fs.mkdirSync(outdirPath, {recursive: true});

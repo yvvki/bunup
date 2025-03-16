@@ -85,6 +85,12 @@ export interface BunupOptions {
      * Defaults to 'node' if not specified
      */
     target?: Target;
+    /**
+     * Whether to clean the output directory before building
+     * When true, removes all files in the outDir before starting a new build
+     * Defaults to true if not specified
+     */
+    clean?: boolean;
 }
 
 export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
@@ -96,6 +102,7 @@ export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
     dts: false,
     target: 'node',
     external: [],
+    clean: true,
 };
 
 export function createBunBuildOptions(

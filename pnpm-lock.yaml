@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@rollup/plugin-virtual':
+        specifier: ^3.0.2
+        version: 3.0.2(rollup@4.35.0)
       cac:
         specifier: ^6.7.14
         version: 6.7.14
+      chokidar:
+        specifier: ^4.0.3
+        version: 4.0.3
       rollup:
         specifier: ^4.35.0
         version: 4.35.0
@@ -56,6 +62,10 @@ importers:
         version: 2.1.9(@types/node@22.13.10)
 
   tests:
+    dependencies:
+      typescript:
+        specifier: '>=4.5.0'
+        version: 5.8.2
     devDependencies:
       bunup:
         specifier: workspace:*
@@ -530,6 +540,15 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@rollup/plugin-virtual@3.0.2':
+    resolution: {integrity: sha512-10monEYsBp3scM4/ND4LNH5Rxvh3e/cVeL3jWTgZ2SrQ+BmUoQcopVQvnaMcOnykb1VkxUFuDAN+0FnpTFRy2A==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
 
   '@rollup/rollup-android-arm-eabi@4.35.0':
     resolution: {integrity: sha512-uYQ2WfPaqz5QtVgMxfN6NpLD+no0MYHDBywl7itPYd3K5TjjSghNKmX8ic9S8NU8w81NVhJv/XojcHptRly7qQ==}
@@ -2242,6 +2261,10 @@ snapshots:
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
+
+  '@rollup/plugin-virtual@3.0.2(rollup@4.35.0)':
+    optionalDependencies:
+      rollup: 4.35.0
 
   '@rollup/rollup-android-arm-eabi@4.35.0':
     optional: true

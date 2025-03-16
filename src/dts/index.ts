@@ -6,9 +6,9 @@ import {promisify} from 'util';
 import {rollup} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
 
-import {parseErrorMessage} from './errors';
-import {DtsOptions, Format} from './options';
-import {cleanJsonString, getBunupTempDir} from './utils';
+import {parseErrorMessage} from '../errors';
+import {DtsOptions, Format} from '../options';
+import {cleanJsonString, getBunupTempDir} from '../utils';
 
 const execAsync = promisify(exec);
 const TEMP_DTS_OUT_DIR = './dts';
