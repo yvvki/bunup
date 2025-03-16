@@ -12,9 +12,15 @@ export async function watch(
 ): Promise<void> {
     logger.cli('Starting watch mode');
 
-    const entryPaths = options.entry.map(entry => path.resolve(rootDir, entry));
+    const watchPaths = new Set<string>();
 
-    const watcher = chokidar.watch(entryPaths, {
+    options.entry.forEach(entry => {
+        const entryPath = path.resolve(rootDir, entry);
+        const parentDir = path.dirname(entryPath);
+        watchPaths.add(parentDir);
+    });
+
+    const watcher = chokidar.watch(Array.from(watchPaths), {
         persistent: true,
         ignoreInitial: true,
         awaitWriteFinish: {
