@@ -1,14 +1,10 @@
-import fs from 'fs';
-
 import {DtsWorker, DtsWorkerMessageEventData} from './dts/worker';
 import {loadPackageJson} from './loaders';
 import {getLoggerProgressLabel, logger} from './logger';
 import {BunupOptions, createBunBuildOptions, Format} from './options';
 import {
     formatTime,
-    getBunupTempDir,
     getDefaultOutputExtension,
-    getDtsTempDir,
     getEntryNameOnly,
     getEntryNamingFormat,
     isModulePackage,
@@ -93,15 +89,6 @@ export async function build(
 
         await dtsWorker.cleanup();
     }
-
-    cleanupTempDir(rootDir, options.outDir);
-}
-
-function cleanupTempDir(rootDir: string, outdir: string): void {
-    const bunupTempDir = getBunupTempDir(rootDir, outdir);
-    if (fs.existsSync(bunupTempDir)) {
-        fs.rmSync(bunupTempDir, {recursive: true, force: true});
-    }
 }
 
 async function generateDtsForEntry(
@@ -113,17 +100,11 @@ async function generateDtsForEntry(
     dtsOptions: any,
     dtsWorker: DtsWorker,
 ): Promise<void> {
-    const dtsTempDir = getDtsTempDir(
-        getEntryNameOnly(entry),
-        fmt,
-        options.name,
-    );
     const task: DtsWorkerMessageEventData = {
         name: options.name,
         rootDir,
         outDir: options.outDir,
         entry,
-        dtsTempDir,
         format: fmt,
         packageType,
         dtsOptions,

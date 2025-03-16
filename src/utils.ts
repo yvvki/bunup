@@ -1,5 +1,3 @@
-import path from 'path';
-
 import {Format} from './options';
 
 export function splitCommaSeparated(input: string | string[]): string[] {
@@ -49,18 +47,6 @@ export function cleanJsonString(json: string): string {
 
 export function isModulePackage(packageType: string | undefined) {
     return packageType === 'module';
-}
-
-export function getBunupTempDir(rootDir: string, outDir: string) {
-    return path.join(rootDir, outDir, '.bunup');
-}
-
-export function getDtsTempDir(
-    entryName: string,
-    format: Format,
-    name: string | undefined,
-) {
-    return path.join(entryName, format, name || '');
 }
 
 export function getEntryNameOnly(entry: string) {

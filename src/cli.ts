@@ -37,14 +37,16 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
             if (options.clean) cleanOutDir(rootDir, options.outDir);
         }
 
-        for (const {options, rootDir} of configs) {
-            const mergedOptions = {
-                ...DEFAULT_OPTIONS,
-                ...options,
-                ...cliOptions,
-            };
-            await handleBuild(mergedOptions, rootDir);
-        }
+        await Promise.all(
+            configs.map(async ({options, rootDir}) => {
+                const mergedOptions = {
+                    ...DEFAULT_OPTIONS,
+                    ...options,
+                    ...cliOptions,
+                };
+                await handleBuild(mergedOptions, rootDir);
+            }),
+        );
     }
 
     if (!cliOptions.watch) {

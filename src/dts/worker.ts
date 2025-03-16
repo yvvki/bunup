@@ -11,7 +11,6 @@ export type DtsWorkerMessageEventData = {
     rootDir: string;
     outDir: string;
     entry: string;
-    dtsTempDir: string;
     format: Format;
     packageType: string | undefined;
     dtsOptions: DtsOptions;
@@ -29,26 +28,11 @@ export type DtsWorkerResponse =
       };
 
 self.onmessage = async (event: MessageEvent<DtsWorkerMessageEventData>) => {
-    const {
-        name,
-        rootDir,
-        outDir,
-        entry,
-        dtsTempDir,
-        format,
-        packageType,
-        dtsOptions,
-    } = event.data;
+    const {name, rootDir, outDir, entry, format, packageType, dtsOptions} =
+        event.data;
 
     try {
-        const content = await generateDts(
-            rootDir,
-            outDir,
-            entry,
-            dtsTempDir,
-            format,
-            dtsOptions,
-        );
+        const content = await generateDts(rootDir, entry, format, dtsOptions);
 
         const entryName = getEntryNameOnly(entry);
         const extension = getDefaultDtsExtention(format, packageType);

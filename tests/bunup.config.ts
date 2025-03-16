@@ -12,7 +12,7 @@ export default defineConfig([
         name: 'monacopilot-browser',
         entry: ['fixtures/add.ts'],
         minify: true,
-        format: ['iife'],
+        format: ['cjs'],
         target: 'browser',
         dts: true,
     },

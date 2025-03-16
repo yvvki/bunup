@@ -50,10 +50,12 @@
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
+        "@rollup/plugin-typescript": "^12.1.2",
         "@rollup/plugin-virtual": "^3.0.2",
         "cac": "^6.7.14",
         "chokidar": "^4.0.3",
         "rollup": "^4.35.0",
-        "rollup-plugin-dts": "^6.1.1"
+        "rollup-plugin-dts": "^6.1.1",
+        "tslib": "^2.8.1"
     }
 }

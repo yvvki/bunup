@@ -7,7 +7,7 @@ export type Target = 'bun' | 'node' | 'browser';
 
 export interface DtsOptions {
     /**
-     * Entry files to generate declsaration files for
+     * Entry files to generate declaration files for
      * If not specified, the main entry points will be used
      */
     entry?: string[];
