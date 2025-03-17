@@ -12,7 +12,10 @@
         "build": "tsup",
         "dev": "tsup --watch",
         "test-build": "bunup",
-        "test": "vitest run"
+        "test": "vitest run",
+        "tsc": "tsc --noEmit",
+        "lint": "eslint src --fix",
+        "validate": "pnpm run tsc && pnpm run lint"
     },
     "bin": {
         "bunup": "build/cli.js"

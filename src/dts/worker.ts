@@ -75,7 +75,7 @@ export class DtsWorker {
     private workers: Worker[] = [];
     private queue: Array<{
         task: DtsWorkerMessageEventData;
-        resolve: (value: void) => void;
+        resolve: () => void;
         reject: (reason: any) => void;
     }> = [];
     private readonly maxWorkers: number;

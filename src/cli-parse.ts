@@ -19,6 +19,8 @@ const cliOptionAliases: Record<string, keyof BunupOptions> = {
     mi: 'minifyIdentifiers',
     ms: 'minifySyntax',
     c: 'clean',
+    s: 'splitting',
+    ne: 'noExternal',
 };
 
 type CliOptionHandlerName = keyof Omit<BunupOptions, 'entry'>;
@@ -59,6 +61,12 @@ const cliOptionHandlers: Record<CliOptionHandlerName, CliOptionHandler> = {
     },
     clean: (value, args) => {
         args.clean = !!value;
+    },
+    splitting: (value, args) => {
+        args.splitting = !!value;
+    },
+    noExternal: (value, args) => {
+        args.noExternal = (value as string).split(',');
     },
 };
 
