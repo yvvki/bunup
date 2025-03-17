@@ -8,6 +8,7 @@
     "files": [
         "build"
     ],
+     "packageManager": "pnpm@9.15.4",
     "scripts": {
         "build": "tsup",
         "dev": "tsup --watch",
