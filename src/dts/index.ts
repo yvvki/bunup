@@ -1,18 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
-import {Plugin, rollup} from 'rollup';
+import {rollup} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
-import {
-    CompilerOptions,
-    createProgram,
-    ModuleKind,
-    ModuleResolutionKind,
-    ScriptTarget,
-} from 'typescript';
 
 import {parseErrorMessage} from '../errors';
-import {loadPackageJson, loadTsconfig} from '../loaders';
+import {loadPackageJson} from '../loaders';
 import {BunupOptions, DtsOptions, Format} from '../options';
 import {getPackageDeps} from '../utils';
 
@@ -28,41 +21,9 @@ export async function generateDts(
     const tsconfigPath = dtsOptions.preferredTsconfigPath
         ? path.resolve(dtsOptions.preferredTsconfigPath)
         : path.join(absoluteRootDir, 'tsconfig.json');
-    const existingCompilerOptions = loadTsconfig(tsconfigPath);
 
-    const dtsContent = await generateDtsInMemory(
-        absoluteEntry,
-        existingCompilerOptions,
-    );
+    const packageJson = await loadPackageJson(absoluteRootDir);
 
-    const bundledDts = await bundleDtsInMemory(
-        dtsContent,
-        absoluteEntry,
-        format,
-        rootDir,
-        tsconfigPath,
-        options,
-    );
-
-    return bundledDts;
-}
-
-async function bundleDtsInMemory(
-    dtsContent: string,
-    entryFilePath: string,
-    format: Format,
-    rootDir: string,
-    tsconfigPath: string,
-    options: BunupOptions,
-): Promise<string> {
-    let bundle;
-    let result = '';
-
-    const virtualFs = {
-        [entryFilePath.replace(/\.ts$/, '.d.ts')]: dtsContent,
-    };
-
-    const packageJson = await loadPackageJson(rootDir);
     const rollupExternal = [
         ...(options.external || []),
         ...getPackageDeps(packageJson).map(
@@ -70,18 +31,12 @@ async function bundleDtsInMemory(
         ),
     ];
 
-    const ignoreFiles: Plugin = {
-        name: 'bunup:ignore-files',
-        load(id) {
-            if (!/\.(js|cjs|mjs|jsx|ts|tsx|mts|json)$/.test(id)) {
-                return '';
-            }
-        },
-    };
+    let bundle;
+    let result = '';
 
     try {
         bundle = await rollup({
-            input: entryFilePath.replace(/\.ts$/, '.d.ts'),
+            input: absoluteEntry,
             onwarn(warning, handler) {
                 if (
                     warning.code === 'UNRESOLVED_IMPORT' ||
@@ -93,19 +48,9 @@ async function bundleDtsInMemory(
                 return handler(warning);
             },
             plugins: [
-                dtsPlugin({tsconfig: tsconfigPath}),
-                ignoreFiles,
-                {
-                    name: 'virtual-fs',
-                    resolveId(id) {
-                        if (virtualFs[id]) return id;
-                        return null;
-                    },
-                    load(id) {
-                        if (virtualFs[id]) return virtualFs[id];
-                        return null;
-                    },
-                },
+                dtsPlugin({
+                    tsconfig: tsconfigPath,
+                }),
             ],
             external: rollupExternal,
         });
@@ -125,60 +70,6 @@ async function bundleDtsInMemory(
     }
 
     return result;
-}
-
-async function generateDtsInMemory(
-    absoluteEntry: string,
-    existingCompilerOptions: CompilerOptions,
-): Promise<string> {
-    const compilerOptions: CompilerOptions = {
-        ...existingCompilerOptions,
-        declaration: true,
-        noEmit: false,
-        emitDeclarationOnly: true,
-        noEmitOnError: true,
-        checkJs: false,
-        declarationMap: false,
-        skipLibCheck: true,
-        preserveSymlinks: false,
-        target: ScriptTarget.ESNext,
-        module: ModuleKind.ESNext,
-        moduleResolution: ModuleResolutionKind.Node10,
-    };
-
-    let dtsContent = '';
-
-    try {
-        const program = createProgram([absoluteEntry], compilerOptions);
-        const emitResult = program.emit(undefined, (fileName, data) => {
-            if (fileName.endsWith('.d.ts')) {
-                dtsContent = data;
-            }
-        });
-
-        const diagnostics = [
-            ...program.getSyntacticDiagnostics(),
-            ...program.getSemanticDiagnostics(),
-            ...emitResult.diagnostics,
-        ];
-
-        if (diagnostics.length > 0) {
-            const errorMessages = diagnostics
-                .map(diagnostic => diagnostic.messageText.toString())
-                .join('\n');
-            throw new Error(`TypeScript compilation errors:\n${errorMessages}`);
-        }
-    } catch (tscError) {
-        throw new Error(
-            `TypeScript compilation failed: ${parseErrorMessage(tscError)}`,
-        );
-    }
-
-    if (!dtsContent) {
-        throw new Error('Failed to generate DTS content');
-    }
-
-    return dtsContent;
 }
 
 function validateInputs(

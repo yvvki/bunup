@@ -59,7 +59,9 @@
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
         "chokidar": "^4.0.3",
+        "dts-bundle-generator": "^9.5.1",
         "rollup": "^4.35.0",
-        "rollup-plugin-dts": "^6.1.1"
+        "rollup-plugin-dts": "^6.1.1",
+        "unbuild": "^3.5.0"
     }
 }

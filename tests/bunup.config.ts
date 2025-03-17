@@ -3,6 +3,6 @@ import {defineConfig} from 'bunup';
 export default defineConfig({
     entry: ['fixtures/add.ts'],
     minify: true,
-    format: ['esm'],
     dts: true,
+    format: ['esm'],
 });
