@@ -15,7 +15,11 @@
         "test": "vitest run",
         "tsc": "tsc --noEmit",
         "lint": "eslint src --fix",
-        "validate": "pnpm run tsc && pnpm run lint"
+        "validate": "pnpm run tsc && pnpm run lint",
+        "format": "prettier --write .",
+        "release": "bumpp",
+        "publish:ci": "pnpm -r publish --access public --no-git-checks",
+        "prepare": "husky"
     },
     "bin": {
         "bunup": "build/cli.js"
