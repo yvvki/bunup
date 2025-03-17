@@ -127,10 +127,8 @@ export function createDefaultBunBuildOptions(
     return {
         entrypoints: options.entry.map(e => `${rootDir}/${e}`),
         outdir: `${rootDir}/${options.outDir}`,
-        format: options.format[0],
         minify: createMinifyOptions(options),
         target: options.target,
-        external: options.external,
         splitting: options.splitting,
     };
 }

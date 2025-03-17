@@ -1,8 +1,8 @@
 import {defineConfig} from 'bunup';
 
 export default defineConfig({
-    entry: ['src/index.ts', 'src/cli.ts'],
-    format: ['esm', 'cjs', 'iife'],
+    entry: ['src/index.ts'],
+    format: ['esm'],
     minify: true,
     splitting: true,
 });

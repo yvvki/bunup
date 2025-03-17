@@ -34,7 +34,6 @@ export async function build(
     logger.cli('Build started');
 
     const packageJson = loadPackageJson(rootDir);
-    console.log('packageJson', packageJson);
     const packageType = packageJson?.type as string | undefined;
 
     const externalPatterns = getExternalPatterns(options, packageJson);

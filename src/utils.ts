@@ -65,6 +65,7 @@ export function getPackageDeps(
     );
 }
 
+// If splitting is undefined, it will be true if the format is esm
 export function getResolvedSplitting(
     splitting: boolean | undefined,
     format: Format,
