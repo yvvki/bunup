@@ -35,7 +35,6 @@
         "eslint": "^8.57.0",
         "husky": "^9.1.6",
         "prettier": "^3.2.5",
-        "tsdown": "^0.6.8",
         "tsup": "^8.0.2",
         "typescript": "^5.4.3",
         "vitest": "^2.0.5"
@@ -67,12 +66,8 @@
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
-        "bun-plugin-isolated-decl": "^0.1.9",
         "chokidar": "^4.0.3",
-        "dts-bundle-generator": "^9.5.1",
-        "oxc-transform": "^0.58.1",
         "rollup": "^4.35.0",
-        "rollup-plugin-dts": "^6.1.1",
-        "unbuild": "^3.5.0"
+        "rollup-plugin-dts": "^6.1.1"
     }
 }
