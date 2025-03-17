@@ -1,7 +1,9 @@
+import fs from 'fs';
+import path from 'path';
+
 import {parseErrorMessage} from './errors';
 import {logger} from './logger';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
-import {cleanJsonString} from './utils';
 
 export async function loadConfigs(
     cwd: string,
@@ -18,17 +20,14 @@ export async function loadConfigs(
         '.json',
         '.jsonc',
     ]) {
-        const filePath = `${cwd}/bunup.config${ext}`;
+        const filePath = path.join(cwd, `bunup.config${ext}`);
         try {
-            const file = Bun.file(filePath);
-            const exists = await file.exists();
-
-            if (!exists) continue;
+            if (!fs.existsSync(filePath)) continue;
 
             let content;
 
             if (ext === '.json' || ext === '.jsonc') {
-                const text = await file.text();
+                const text = fs.readFileSync(filePath, 'utf8');
                 content = JSON.parse(text);
             } else {
                 const imported = await import(`file://${filePath}`);
@@ -67,24 +66,39 @@ export async function loadConfigs(
     return configs;
 }
 
-export async function loadPackageJson(
-    cwd: string,
-): Promise<Record<string, any> | null> {
-    const packageJsonPath = `${cwd}/package.json`;
+export function loadPackageJson(cwd: string): Record<string, unknown> | null {
+    const packageJsonPath = path.join(cwd, 'package.json');
 
     try {
-        const file = Bun.file(packageJsonPath);
-        const exists = await file.exists();
-
-        if (!exists) {
+        if (!fs.existsSync(packageJsonPath)) {
             return null;
         }
 
-        const text = await file.text();
-        const content = JSON.parse(cleanJsonString(text));
+        const text = fs.readFileSync(packageJsonPath, 'utf8');
+        const content = JSON.parse(text);
 
         return content;
     } catch (error) {
+        logger.error(
+            `Failed to load package.json at ${packageJsonPath}: ${parseErrorMessage(error)}`,
+        );
         return null;
+    }
+}
+
+export function loadTsconfig(tsconfigPath: string) {
+    if (!fs.existsSync(tsconfigPath)) {
+        return {};
+    }
+
+    try {
+        const content = fs.readFileSync(tsconfigPath, 'utf8');
+        const json = JSON.parse(content);
+        return json || {};
+    } catch (error) {
+        logger.warn(
+            `Failed to parse tsconfig at ${tsconfigPath}: ${parseErrorMessage(error)}`,
+        );
+        return {};
     }
 }

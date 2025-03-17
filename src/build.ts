@@ -1,17 +1,21 @@
 import {DtsWorker, DtsWorkerMessageEventData} from './dts/worker';
+import {getExternalPatterns, getNoExternalPatterns} from './helpers/external';
 import {loadPackageJson} from './loaders';
 import {getLoggerProgressLabel, logger} from './logger';
 import {
     BunupOptions,
-    createBunBuildOptions,
+    createDefaultBunBuildOptions,
     DtsOptions,
     Format,
 } from './options';
+import {externalPlugin} from './plugins/external';
+import {BunPlugin} from './types';
 import {
     formatTime,
     getDefaultOutputExtension,
     getEntryNameOnly,
     getEntryNamingFormat,
+    getResolvedSplitting,
     isModulePackage,
 } from './utils';
 
@@ -29,12 +33,19 @@ export async function build(
     const startTime = performance.now();
     logger.cli('Build started');
 
-    const packageJson = await loadPackageJson(rootDir);
-    const packageType = packageJson?.type;
+    const packageJson = loadPackageJson(rootDir);
+    console.log('packageJson', packageJson);
+    const packageType = packageJson?.type as string | undefined;
+
+    const externalPatterns = getExternalPatterns(options, packageJson);
+
+    const noExternalPatterns = getNoExternalPatterns(options);
+
+    const plugins = [externalPlugin(externalPatterns, noExternalPatterns)];
 
     const buildPromises = options.format.flatMap(fmt =>
         options.entry.map(entry =>
-            buildEntry(options, rootDir, entry, fmt, packageType),
+            buildEntry(options, rootDir, entry, fmt, packageType, plugins),
         ),
     );
 
@@ -125,14 +136,20 @@ async function buildEntry(
     entry: string,
     fmt: Format,
     packageType: string | undefined,
+    plugins: BunPlugin[],
 ): Promise<void> {
     const extension = getDefaultOutputExtension(fmt, packageType);
-    const bunBuildOptions = createBunBuildOptions(options, rootDir);
+    const defaultBunBuildOptions = createDefaultBunBuildOptions(
+        options,
+        rootDir,
+    );
     const result = await Bun.build({
-        ...bunBuildOptions,
+        ...defaultBunBuildOptions,
         entrypoints: [`${rootDir}/${entry}`],
         format: fmt,
         naming: {entry: getEntryNamingFormat(extension)},
+        splitting: getResolvedSplitting(options.splitting, fmt),
+        plugins,
     });
 
     const entryName = getEntryNameOnly(entry);

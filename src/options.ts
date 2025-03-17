@@ -1,6 +1,4 @@
-type Bun = typeof import('bun');
-
-export type BunBuildOptions = Parameters<Bun['build']>[0];
+import {BunBuildOptions} from './types';
 
 export type Format = 'esm' | 'cjs' | 'iife';
 export type Target = 'bun' | 'node' | 'browser';
@@ -52,6 +50,12 @@ export interface BunupOptions {
     minify?: boolean;
 
     /**
+     * Whether to enable code splitting
+     * Defaults to true for ESM format, false for CJS format
+     */
+    splitting?: boolean;
+
+    /**
      * Whether to minify whitespace in the output
      * Removes unnecessary whitespace to reduce file size
      */
@@ -86,6 +90,11 @@ export interface BunupOptions {
      */
     external?: External;
     /**
+     * Packages that should be bundled even if they are in external
+     * Useful for dependencies that should be included in the bundle
+     */
+    noExternal?: External;
+    /**
      * The target environment for the bundle
      * Can be 'browser', 'bun', 'node', etc.
      * Defaults to 'node' if not specified
@@ -111,7 +120,7 @@ export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
     clean: true,
 };
 
-export function createBunBuildOptions(
+export function createDefaultBunBuildOptions(
     options: BunupOptions,
     rootDir: string,
 ): BunBuildOptions {
@@ -121,7 +130,8 @@ export function createBunBuildOptions(
         format: options.format[0],
         minify: createMinifyOptions(options),
         target: options.target,
-        external: options.external || ['node_modules/*'],
+        external: options.external,
+        splitting: options.splitting,
     };
 }
 

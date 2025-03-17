@@ -26,6 +26,8 @@ export async function watch(
             pollInterval: 50,
         },
         atomic: true,
+        ignorePermissionErrors: true,
+        ignored: [/[\\/]\.git[\\/]/, /[\\/]node_modules[\\/]/, options.outDir],
     });
 
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;

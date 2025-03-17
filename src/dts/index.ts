@@ -1,13 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 
-import {rollup} from 'rollup';
+import {rollup, RollupBuild} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
+import ts, {ScriptTarget} from 'typescript';
 
 import {parseErrorMessage} from '../errors';
-import {loadPackageJson} from '../loaders';
+import {getExternalPatterns, getNoExternalPatterns} from '../helpers/external';
+import {loadPackageJson, loadTsconfig} from '../loaders';
 import {BunupOptions, DtsOptions, Format} from '../options';
-import {getPackageDeps} from '../utils';
 
 export async function generateDts(
     rootDir: string,
@@ -22,17 +23,16 @@ export async function generateDts(
         ? path.resolve(dtsOptions.preferredTsconfigPath)
         : path.join(absoluteRootDir, 'tsconfig.json');
 
-    const packageJson = await loadPackageJson(absoluteRootDir);
+    const tsconfig = await loadTsconfig(tsconfigPath);
+    const compilerOptions = tsconfig.compilerOptions;
 
-    const rollupExternal = [
-        ...(options.external || []),
-        ...getPackageDeps(packageJson).map(
-            dep => new RegExp(`^${dep}($|\\/|\\\\)`),
-        ),
-    ];
+    const packageJson = loadPackageJson(absoluteRootDir);
 
-    let bundle;
-    let result = '';
+    const externalPatterns = getExternalPatterns(options, packageJson);
+    const noExternalPatterns = getNoExternalPatterns(options);
+
+    let bundle: RollupBuild | undefined;
+    let result: string | undefined;
 
     try {
         bundle = await rollup({
@@ -50,9 +50,29 @@ export async function generateDts(
             plugins: [
                 dtsPlugin({
                     tsconfig: tsconfigPath,
+                    compilerOptions: {
+                        ...(compilerOptions
+                            ? ts.parseJsonConfigFileContent(
+                                  {compilerOptions},
+                                  ts.sys,
+                                  './',
+                              ).options
+                            : {}),
+                        declaration: true,
+                        noEmit: false,
+                        emitDeclarationOnly: true,
+                        noEmitOnError: true,
+                        checkJs: false,
+                        declarationMap: false,
+                        skipLibCheck: true,
+                        preserveSymlinks: false,
+                        target: ScriptTarget.ESNext,
+                    },
                 }),
             ],
-            external: rollupExternal,
+            external: (source: string) =>
+                externalPatterns.some(re => re.test(source)) &&
+                !noExternalPatterns.some(re => re.test(source)),
         });
 
         const {output} = await bundle.generate({format});

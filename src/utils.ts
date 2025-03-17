@@ -1,5 +1,9 @@
 import {Format} from './options';
 
+export function escapeRegExp(string: string): string {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 export function splitCommaSeparated(input: string | string[]): string[] {
     return Array.isArray(input) ? input : input.split(',');
 }
@@ -36,15 +40,6 @@ export function getEntryNamingFormat(extension: string) {
     return `[dir]/[name]${extension}`;
 }
 
-export function cleanJsonString(json: string): string {
-    return json
-        .replace(/\/\/.*$/gm, '')
-        .replace(/\/\*[\s\S]*?\*\//g, '')
-        .replace(/,\s*}/g, '}')
-        .replace(/,\s*]/g, ']')
-        .trim();
-}
-
 export function isModulePackage(packageType: string | undefined) {
     return packageType === 'module';
 }
@@ -68,4 +63,11 @@ export function getPackageDeps(
             ...Object.keys(packageJson.peerDependencies || {}),
         ]),
     );
+}
+
+export function getResolvedSplitting(
+    splitting: boolean | undefined,
+    format: Format,
+) {
+    return splitting === undefined ? format === 'esm' : splitting;
 }
