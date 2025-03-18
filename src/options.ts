@@ -4,6 +4,8 @@ export type Format = 'esm' | 'cjs' | 'iife';
 export type Target = 'bun' | 'node' | 'browser';
 export type External = string[];
 
+export type Entry = string | Record<string, string>;
+
 export interface BunupOptions {
     /**
      * Name of the build configuration
@@ -14,7 +16,7 @@ export interface BunupOptions {
      * Entry point files for the build
      * These are the files that will be processed and bundled
      */
-    entry: string[];
+    entry: Entry[];
 
     /**
      * Output directory for the bundled files

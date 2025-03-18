@@ -4,6 +4,12 @@ export function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+export function generateRandomSuffix(length = 8): string {
+    return Math.random()
+        .toString(36)
+        .substring(2, 2 + length);
+}
+
 export function splitCommaSeparated(input: string | string[]): string[] {
     return Array.isArray(input) ? input : input.split(',');
 }
@@ -36,16 +42,8 @@ export function getDefaultDtsExtention(
     }
 }
 
-export function getEntryNamingFormat(extension: string) {
-    return `[dir]/[name]${extension}`;
-}
-
 export function isModulePackage(packageType: string | undefined) {
     return packageType === 'module';
-}
-
-export function getEntryNameOnly(entry: string) {
-    return entry.split('/').pop()?.split('.').slice(0, -1).join('.') || '';
 }
 
 export function formatTime(ms: number): string {

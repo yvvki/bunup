@@ -3,6 +3,7 @@ import path from 'path';
 import chokidar from 'chokidar';
 
 import {build} from './build';
+import {normalizeEntryToProcessableEntries} from './helpers/entry';
 import {logger} from './logger';
 import {BunupOptions} from './options';
 
@@ -12,8 +13,10 @@ export async function watch(
 ): Promise<void> {
     const watchPaths = new Set<string>();
 
-    options.entry.forEach(entry => {
-        const entryPath = path.resolve(rootDir, entry);
+    const normalizedEntry = normalizeEntryToProcessableEntries(options.entry);
+
+    normalizedEntry.forEach(entry => {
+        const entryPath = path.resolve(rootDir, entry.path);
         const parentDir = path.dirname(entryPath);
         watchPaths.add(parentDir);
     });

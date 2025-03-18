@@ -2,15 +2,16 @@ import path from 'path';
 
 import {generateDts} from '.';
 import {parseErrorMessage} from '../errors';
+import {ProcessableEntry} from '../helpers/entry';
 import {getLoggerProgressLabel, logger} from '../logger';
 import {BunupOptions, Format} from '../options';
-import {getDefaultDtsExtention, getEntryNameOnly} from '../utils';
+import {getDefaultDtsExtention} from '../utils';
 
 export type DtsWorkerMessageEventData = {
     name: string | undefined;
     rootDir: string;
     outDir: string;
-    entry: string;
+    entry: ProcessableEntry;
     format: Format;
     packageType: string | undefined;
     options: BunupOptions;
@@ -32,11 +33,10 @@ self.onmessage = async (event: MessageEvent<DtsWorkerMessageEventData>) => {
         event.data;
 
     try {
-        const content = await generateDts(rootDir, entry, format, options);
+        const content = await generateDts(rootDir, entry.path, format, options);
 
-        const entryName = getEntryNameOnly(entry);
         const extension = getDefaultDtsExtention(format, packageType);
-        const outputRelativePath = `${outDir}/${entryName}${extension}`;
+        const outputRelativePath = `${outDir}/${entry.name}${extension}`;
         const outputPath = `${rootDir}/${outputRelativePath}`;
 
         await Bun.write(outputPath, content);

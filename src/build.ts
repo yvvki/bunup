@@ -1,4 +1,9 @@
 import {DtsWorker, DtsWorkerMessageEventData} from './dts/worker';
+import {
+    getEntryNamingFormat,
+    normalizeEntryToProcessableEntries,
+    ProcessableEntry,
+} from './helpers/entry';
 import {getExternalPatterns, getNoExternalPatterns} from './helpers/external';
 import {loadPackageJson} from './loaders';
 import {getLoggerProgressLabel, logger} from './logger';
@@ -8,8 +13,6 @@ import {BunPlugin} from './types';
 import {
     formatTime,
     getDefaultOutputExtension,
-    getEntryNameOnly,
-    getEntryNamingFormat,
     getResolvedSplitting,
     isModulePackage,
 } from './utils';
@@ -37,8 +40,12 @@ export async function build(
 
     const plugins = [externalPlugin(externalPatterns, noExternalPatterns)];
 
+    const processableEntries = normalizeEntryToProcessableEntries(
+        options.entry,
+    );
+
     const buildPromises = options.format.flatMap(fmt =>
-        options.entry.map(entry =>
+        processableEntries.map(entry =>
             buildEntry(options, rootDir, entry, fmt, packageType, plugins),
         ),
     );
@@ -72,7 +79,7 @@ export async function build(
         const dtsWorker = new DtsWorker();
         try {
             const dtsPromises = formatsToProcess.flatMap(fmt =>
-                options.entry.map(entry =>
+                processableEntries.map(entry =>
                     generateDtsForEntry(
                         options,
                         rootDir,
@@ -100,7 +107,7 @@ export async function build(
 async function generateDtsForEntry(
     options: BunupOptions,
     rootDir: string,
-    entry: string,
+    entry: ProcessableEntry,
     fmt: Format,
     packageType: string | undefined,
     dtsWorker: DtsWorker,
@@ -121,7 +128,7 @@ async function generateDtsForEntry(
 async function buildEntry(
     options: BunupOptions,
     rootDir: string,
-    entry: string,
+    entry: ProcessableEntry,
     fmt: Format,
     packageType: string | undefined,
     plugins: BunPlugin[],
@@ -133,14 +140,12 @@ async function buildEntry(
     );
     const result = await Bun.build({
         ...defaultBunBuildOptions,
-        entrypoints: [`${rootDir}/${entry}`],
+        entrypoints: [`${rootDir}/${entry.path}`],
         format: fmt,
         naming: {entry: getEntryNamingFormat(extension)},
         splitting: getResolvedSplitting(options.splitting, fmt),
         plugins,
     });
-
-    const entryName = getEntryNameOnly(entry);
 
     if (!result.success) {
         result.logs.forEach(log => {
@@ -153,6 +158,6 @@ async function buildEntry(
 
     logger.progress(
         getLoggerProgressLabel(fmt, options.name),
-        `${options.outDir}/${entryName}${extension}`,
+        `${options.outDir}/${entry.name}${extension}`,
     );
 }
