@@ -8,13 +8,11 @@ Built with speed in mind, Bunup aims to provide the fastest bundling experience 
 
 Bunup outperforms other popular bundlers by a significant margin:
 
-| Bundler        | Format   | Build Time   | Relative Speed   |
-| -------------- | -------- | ------------ | ---------------- |
-| bunup          | esm, cjs | **3.65ms**   | **10.8x faster** |
-| bunup (+ dts)  | esm, cjs | **149.51ms** | **4.5x faster**  |
-| tsdown         | esm, cjs | 20.42ms      | 1.9x faster      |
-| tsdown (+ dts) | esm, cjs | 689.33ms     | 0.98x slower     |
-| tsup           | esm, cjs | 39.30ms      | baseline         |
-| tsup (+ dts)   | esm, cjs | 672.67ms     | baseline         |
+| Bundler       | Format   | Build Time   | Relative Speed   |
+| ------------- | -------- | ------------ | ---------------- |
+| bunup         | esm, cjs | **3.65ms**   | **16.0x faster** |
+| bunup (+ dts) | esm, cjs | **149.51ms** | **5.0x faster**  |
+| tsup          | esm, cjs | 58.36ms      | baseline         |
+| tsup (+ dts)  | esm, cjs | 745.23ms     | baseline         |
 
 _Lower build time is better. Benchmark run on the same code with identical output formats._
