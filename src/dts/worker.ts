@@ -1,11 +1,11 @@
-import path from 'path';
+import {cpus} from 'node:os';
+import path from 'node:path';
+import {Worker} from 'node:worker_threads';
 
-import {generateDts} from '.';
 import {parseErrorMessage} from '../errors';
 import {ProcessableEntry} from '../helpers/entry';
 import {getLoggerProgressLabel, logger} from '../logger';
 import {BunupOptions, Format} from '../options';
-import {getDefaultDtsExtention} from '../utils';
 
 export type DtsWorkerMessageEventData = {
     name: string | undefined;
@@ -28,34 +28,6 @@ export type DtsWorkerResponse =
           error: string;
       };
 
-self.onmessage = async (event: MessageEvent<DtsWorkerMessageEventData>) => {
-    const {name, rootDir, outDir, entry, format, packageType, options} =
-        event.data;
-
-    try {
-        const content = await generateDts(rootDir, entry.path, format, options);
-
-        const extension = getDefaultDtsExtention(format, packageType);
-        const outputRelativePath = `${outDir}/${entry.name}${extension}`;
-        const outputPath = `${rootDir}/${outputRelativePath}`;
-
-        await Bun.write(outputPath, content);
-
-        const response: DtsWorkerResponse = {
-            name,
-            success: true,
-            outputRelativePath,
-        };
-        self.postMessage(response);
-    } catch (error) {
-        const response: DtsWorkerResponse = {
-            success: false,
-            error: parseErrorMessage(error),
-        };
-        self.postMessage(response);
-    }
-};
-
 export class DtsWorker {
     private workers: Worker[] = [];
     private queue: Array<{
@@ -67,7 +39,7 @@ export class DtsWorker {
     private busyWorkers = new Set<Worker>();
     private isShuttingDown = false;
 
-    constructor(maxWorkers = navigator.hardwareConcurrency || 4) {
+    constructor(maxWorkers = cpus().length || 4) {
         this.maxWorkers = maxWorkers;
     }
 
@@ -115,26 +87,26 @@ export class DtsWorker {
             }
         };
 
-        worker.onmessage = (event: MessageEvent<DtsWorkerResponse>) => {
-            if (event.data.success) {
+        worker.on('message', (event: DtsWorkerResponse) => {
+            if (event.success) {
                 logger.progress(
-                    getLoggerProgressLabel('DTS', event.data.name),
-                    event.data.outputRelativePath,
+                    getLoggerProgressLabel('DTS', event.name),
+                    event.outputRelativePath,
                 );
                 resolve();
             } else {
-                logger.error(`DTS generation failed: ${event.data.error}`);
-                reject(new Error(event.data.error));
+                logger.error(`DTS generation failed: ${event.error}`);
+                reject(new Error(event.error));
             }
             cleanup();
-        };
+        });
 
-        worker.onerror = (error: unknown) => {
+        worker.on('error', (error: Error) => {
             const errorMessage = parseErrorMessage(error);
             logger.error(`Worker error: ${errorMessage}`);
             reject(error);
             cleanup();
-        };
+        });
 
         worker.postMessage(task);
     }

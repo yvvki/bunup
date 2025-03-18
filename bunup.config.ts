@@ -15,6 +15,7 @@ export default defineConfig([
     {
         name: 'bunup-dts-worker',
         outDir: 'build',
+        format: ['cjs'],
         entry: {
             dtsWorker: './src/dts/worker.ts',
         },

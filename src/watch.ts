@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 import chokidar from 'chokidar';
 
@@ -23,7 +23,6 @@ export async function watch(
 
     const watcher = chokidar.watch(Array.from(watchPaths), {
         persistent: true,
-        ignoreInitial: true,
         awaitWriteFinish: {
             stabilityThreshold: 100,
             pollInterval: 50,

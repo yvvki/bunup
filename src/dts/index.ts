@@ -4,12 +4,13 @@ import path from 'path';
 import oxc from 'oxc-transform';
 import {rollup, RollupBuild} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
+import ts from 'typescript';
 
 import {parseErrorMessage} from '../errors';
 import {getExternalPatterns, getNoExternalPatterns} from '../helpers/external';
-import {loadPackageJson} from '../loaders';
+import {loadPackageJson, loadTsconfig} from '../loaders';
 import {logger} from '../logger';
-import {BunupOptions, Format} from '../options';
+import {BunupOptions, DtsOptions, Format} from '../options';
 
 export async function generateDts(
     rootDir: string,
@@ -160,8 +161,18 @@ async function bundleDtsContent(
     const entryDtsPath = entryFile.replace(/\.tsx?$/, '.d.ts');
     const virtualEntry = `${VIRTUAL_PREFIX}${entryDtsPath}`;
 
+    const dtsOptions =
+        typeof options.dts === 'object' ? options.dts : ({} as DtsOptions);
+
+    const tsconfigPath = dtsOptions.preferredTsconfigPath
+        ? path.resolve(dtsOptions.preferredTsconfigPath)
+        : path.join(rootDir, 'tsconfig.json');
+
+    const tsconfig = await loadTsconfig(tsconfigPath);
+    const compilerOptions = tsconfig.compilerOptions;
+
     const virtualPlugin = {
-        name: 'virtual-dts',
+        name: 'bunup:virtual-dts',
         resolveId(source: string, importer: string | undefined) {
             if (source.startsWith(VIRTUAL_PREFIX)) {
                 return source;
@@ -212,7 +223,30 @@ async function bundleDtsContent(
                 }
                 handler(warning);
             },
-            plugins: [virtualPlugin, dtsPlugin()],
+            plugins: [
+                virtualPlugin,
+                dtsPlugin({
+                    tsconfig: tsconfigPath,
+                    compilerOptions: {
+                        ...(compilerOptions
+                            ? ts.parseJsonConfigFileContent(
+                                  {compilerOptions},
+                                  ts.sys,
+                                  './',
+                              ).options
+                            : {}),
+                        declaration: true,
+                        noEmit: false,
+                        emitDeclarationOnly: true,
+                        noEmitOnError: true,
+                        checkJs: false,
+                        declarationMap: false,
+                        skipLibCheck: true,
+                        preserveSymlinks: false,
+                        target: ts.ScriptTarget.ESNext,
+                    },
+                }),
+            ],
             external: (source: string) =>
                 externalPatterns.some(re => re.test(source)) &&
                 !noExternalPatterns.some(re => re.test(source)),

@@ -1,6 +1,6 @@
-#!/usr/bin/env node
-import fs from 'fs';
-import path from 'path';
+#!/usr/bin/env bun
+import fs from 'node:fs';
+import path from 'node:path';
 
 import {build} from './build';
 import {parseCliOptions} from './cli-parse';
@@ -13,7 +13,7 @@ import './runtime';
 
 import {watch} from './watch';
 
-export async function main(args: string[] = Bun.argv.slice(2)) {
+async function main(args: string[] = Bun.argv.slice(2)) {
     const cliOptions = parseCliOptions(args);
     const configs = await loadConfigs(process.cwd());
     const rootDir = process.cwd();

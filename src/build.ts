@@ -150,6 +150,7 @@ async function buildEntry(
         naming: {entry: getEntryNamingFormat(entry.name, extension)},
         splitting: getResolvedSplitting(options.splitting, fmt),
         plugins,
+        throw: false,
     });
 
     if (!result.success) {
