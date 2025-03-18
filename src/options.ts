@@ -82,7 +82,7 @@ export interface BunupOptions {
     /**
      * Output formats for the bundle
      * Can include 'esm', 'cjs', and/or 'iife'
-     * Defaults to ['esm'] if not specified
+     * Defaults to ['cjs'] if not specified
      */
     format: Format[];
 
@@ -157,7 +157,7 @@ export interface BunupOptions {
 
 export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
     entry: [],
-    format: ['esm'],
+    format: ['cjs'],
     outDir: 'dist',
     minify: false,
     watch: false,
