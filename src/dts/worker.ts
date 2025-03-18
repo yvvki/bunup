@@ -1,6 +1,6 @@
-import {cpus} from 'node:os';
-import path from 'node:path';
-import {Worker} from 'node:worker_threads';
+import {cpus} from 'os';
+import path from 'path';
+import {Worker} from 'worker_threads';
 
 import {parseErrorMessage} from '../errors';
 import {ProcessableEntry} from '../helpers/entry';
