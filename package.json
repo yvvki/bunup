@@ -10,8 +10,8 @@
     ],
     "packageManager": "pnpm@9.15.4",
     "scripts": {
-        "build": "tsup",
-        "dev": "tsup --watch",
+        "build": "bunup",
+        "dev": "bunup --watch",
         "test-build": "pnpm -C tests build",
         "test": "vitest run",
         "tsc": "tsc --noEmit",
@@ -32,11 +32,10 @@
         "@types/bun": "^1.2.5",
         "@typescript-eslint/eslint-plugin": "^7.3.1",
         "bumpp": "^10.1.0",
-        "bunup": "^0.1.5",
+        "bunup": "^0.1.6",
         "eslint": "^8.57.0",
         "husky": "^9.1.6",
         "prettier": "^3.2.5",
-        "tsup": "^8.0.2",
         "typescript": "^5.4.3",
         "vitest": "^2.0.5"
     },
