@@ -41,7 +41,7 @@ importers:
         version: 10.1.0
       bunup:
         specifier: ^0.1.9
-        version: 0.1.9(typescript@5.8.2)
+        version: 0.1.10(typescript@5.8.2)
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -898,8 +898,8 @@ packages:
     peerDependencies:
       esbuild: '>=0.18'
 
-  bunup@0.1.9:
-    resolution: {integrity: sha512-KuT+tJT1rWbx44c5GwLuWqsDe7gAtTH3zz+sri4ohEI7o14koKXiuu7wWjoeyBje+51wMV4JMdz76nM2+FPBhg==}
+  bunup@0.1.10:
+    resolution: {integrity: sha512-gGWcF8oaYF4RVjnXWezRLi6+VtlTMPqVmWE5VlUPf5faoR3M5t76zTrXIyXvTc37+xZUMNKj5PFK5BDf9jUvtg==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -2687,7 +2687,7 @@ snapshots:
       esbuild: 0.25.1
       load-tsconfig: 0.2.5
 
-  bunup@0.1.9(typescript@5.8.2):
+  bunup@0.1.10(typescript@5.8.2):
     dependencies:
       chokidar: 4.0.3
       oxc-transform: 0.58.1

@@ -10,8 +10,8 @@
     ],
     "packageManager": "pnpm@9.15.4",
     "scripts": {
-        "build": "tsup",
-        "dev": "tsup --watch",
+        "build": "bunup",
+        "dev": "bunup --watch",
         "test-build": "pnpm -C tests build",
         "test": "vitest run",
         "tsc": "tsc --noEmit",

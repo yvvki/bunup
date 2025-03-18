@@ -1,4 +1,4 @@
-import {DtsWorker, DtsWorkerMessageEventData} from './dts/worker';
+import {generateDts} from './dts';
 import {
     getEntryNamingFormat,
     normalizeEntryToProcessableEntries,
@@ -12,6 +12,7 @@ import {externalPlugin} from './plugins/external';
 import {BunPlugin} from './types';
 import {
     formatTime,
+    getDefaultDtsExtention,
     getDefaultOutputExtension,
     getResolvedSplitting,
     isModulePackage,
@@ -81,7 +82,6 @@ export async function build(
                 ? processableEntries
                 : normalizeEntryToProcessableEntries(options.dts.entry);
 
-        const dtsWorker = new DtsWorker();
         try {
             const dtsPromises = formatsToProcess.flatMap(fmt =>
                 dtsEntry.map(entry =>
@@ -91,7 +91,6 @@ export async function build(
                         entry,
                         fmt,
                         packageType,
-                        dtsWorker,
                     ),
                 ),
             );
@@ -102,10 +101,8 @@ export async function build(
             const dtsTimeDisplay = formatTime(dtsTimeMs);
             logger.progress('DTS', `Bundled types in ${dtsTimeDisplay}`);
         } catch (error) {
-            await dtsWorker.cleanup();
+            logger.error('DTS build process encountered errors.');
         }
-
-        await dtsWorker.cleanup();
     }
 }
 
@@ -115,19 +112,19 @@ async function generateDtsForEntry(
     entry: ProcessableEntry,
     fmt: Format,
     packageType: string | undefined,
-    dtsWorker: DtsWorker,
 ): Promise<void> {
-    const task: DtsWorkerMessageEventData = {
-        name: options.name,
-        rootDir,
-        outDir: options.outDir,
-        entry,
-        format: fmt,
-        packageType,
-        options,
-    };
+    const content = await generateDts(rootDir, entry.path, fmt, options);
 
-    await dtsWorker.process(task);
+    const extension = getDefaultDtsExtention(fmt, packageType);
+    const outputRelativePath = `${options.outDir}/${entry.name}${extension}`;
+    const outputPath = `${rootDir}/${outputRelativePath}`;
+
+    await Bun.write(outputPath, content);
+
+    logger.progress(
+        getLoggerProgressLabel('DTS', options.name),
+        outputRelativePath,
+    );
 }
 
 async function buildEntry(

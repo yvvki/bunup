@@ -13,7 +13,7 @@ import './runtime';
 
 import {watch} from './watch';
 
-async function main(args: string[] = Bun.argv.slice(2)) {
+export async function main(args: string[] = Bun.argv.slice(2)) {
     const cliOptions = parseCliOptions(args);
     const configs = await loadConfigs(process.cwd());
     const rootDir = process.cwd();

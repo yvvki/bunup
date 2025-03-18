@@ -6,11 +6,11 @@ import {rollup, RollupBuild} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
 import ts from 'typescript';
 
-import {parseErrorMessage} from '../errors';
-import {getExternalPatterns, getNoExternalPatterns} from '../helpers/external';
-import {loadPackageJson, loadTsconfig} from '../loaders';
-import {logger} from '../logger';
-import {BunupOptions, DtsOptions, Format} from '../options';
+import {parseErrorMessage} from './errors';
+import {getExternalPatterns, getNoExternalPatterns} from './helpers/external';
+import {loadPackageJson, loadTsconfig} from './loaders';
+import {logger} from './logger';
+import {BunupOptions, DtsOptions, Format} from './options';
 
 export async function generateDts(
     rootDir: string,
