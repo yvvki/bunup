@@ -1,4 +1,9 @@
-import {isMainThread, parentPort, Worker, workerData} from 'worker_threads';
+import {
+    isMainThread,
+    parentPort,
+    Worker,
+    workerData,
+} from 'node:worker_threads';
 
 import {generateDts} from './dts';
 import {ProcessableEntry} from './helpers/entry';
@@ -67,7 +72,7 @@ if (!isMainThread && parentPort) {
 
     const startTime = performance.now();
 
-    logger.progress('DTS', 'Bundling types in worker thread');
+    logger.progress('DTS', 'Bundling types');
 
     try {
         const dtsPromises = formats.flatMap(fmt =>
