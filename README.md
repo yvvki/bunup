@@ -16,30 +16,3 @@ Bunup outperforms other popular bundlers by a significant margin:
 | tsup (+ dts)  | esm, cjs | 745.23ms    | baseline         |
 
 _Lower build time is better. Benchmark run on the same code with identical output formats._
-
-## Advanced Features
-
-### Worker-based DTS Generation
-
-For large projects, you can enable worker-based DTS generation to improve build performance:
-
-```js
-// bunup.config.js
-import {defineConfig} from 'bunup';
-
-export default defineConfig({
-    // ... other options
-    dts: true,
-    dtsWorker: true, // Run DTS generation in a worker thread
-});
-```
-
-Or via CLI:
-
-```bash
-bunup src/index.ts --dts --dts-worker
-# or using the short alias
-bunup src/index.ts -d -dw
-```
-
-This runs TypeScript declaration file generation in a separate worker thread, which can significantly improve build times for large projects by parallelizing the work and keeping the main thread responsive.
