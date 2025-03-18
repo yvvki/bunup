@@ -100,7 +100,9 @@ export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
             if (!cliOptions.entry) {
                 cliOptions.entry = [];
             }
-            cliOptions.entry.push(arg);
+            if (Array.isArray(cliOptions.entry)) {
+                cliOptions.entry.push(arg);
+            }
         }
     }
 

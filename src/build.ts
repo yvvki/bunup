@@ -76,10 +76,15 @@ export async function build(
             return true;
         });
 
+        const dtsEntry =
+            options.dts === true
+                ? processableEntries
+                : normalizeEntryToProcessableEntries(options.dts.entry);
+
         const dtsWorker = new DtsWorker();
         try {
             const dtsPromises = formatsToProcess.flatMap(fmt =>
-                processableEntries.map(entry =>
+                dtsEntry.map(entry =>
                     generateDtsForEntry(
                         options,
                         rootDir,
@@ -142,7 +147,7 @@ async function buildEntry(
         ...defaultBunBuildOptions,
         entrypoints: [`${rootDir}/${entry.path}`],
         format: fmt,
-        naming: {entry: getEntryNamingFormat(extension)},
+        naming: {entry: getEntryNamingFormat(entry.name, extension)},
         splitting: getResolvedSplitting(options.splitting, fmt),
         plugins,
     });

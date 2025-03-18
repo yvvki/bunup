@@ -4,7 +4,33 @@ export type Format = 'esm' | 'cjs' | 'iife';
 export type Target = 'bun' | 'node' | 'browser';
 export type External = string[];
 
-export type Entry = string | Record<string, string>;
+export type Entry = string[] | Record<string, string>;
+
+export type DtsOptions = {
+    /**
+     * Entry point files for TypeScript declaration file generation
+     *
+     * This can be:
+     * - An array of file paths
+     * - An object where keys are output names and values are input file paths
+     *
+     * The key names are used for the generated declaration files.
+     * For example, {custom: './src/index.ts'} will generate custom.d.ts
+     *
+     * If not specified, the main entry points will be used for declaration file generation.
+     *
+     * If a string path is provided in an array, the file name (without extension)
+     * will be used as the name for the output declaration file.
+     *
+     * @example
+     * // Using string paths in an array
+     * entry: ['./src/index.ts']  // Generates index.d.ts
+     *
+     * // Using named outputs as an object
+     * entry: { myModule: './src/index.ts', utils: './src/utility-functions.ts' } // Generates myModule.d.ts and utils.d.ts
+     */
+    entry: Entry;
+};
 
 export interface BunupOptions {
     /**
@@ -12,11 +38,28 @@ export interface BunupOptions {
      * Used for logging and identification purposes
      */
     name?: string;
+
     /**
      * Entry point files for the build
-     * These are the files that will be processed and bundled
+     *
+     * This can be:
+     * - An array of file paths
+     * - An object where keys are output names and values are input file paths
+     *
+     * The key names are used for the generated output files.
+     * For example, {custom: './src/index.ts'} will generate custom.js
+     *
+     * If a string path is provided in an array, the file name (without extension)
+     * will be used as the name for the output file.
+     *
+     * @example
+     * // Using string paths in an array
+     * entry: ['./src/index.ts']  // Generates index.js
+     *
+     * // Using named outputs as an object
+     * entry: { myModule: './src/index.ts', utils: './src/utility-functions.ts' } // Generates myModule.js and utils.js
      */
-    entry: Entry[];
+    entry: Entry;
 
     /**
      * Output directory for the bundled files
@@ -68,25 +111,30 @@ export interface BunupOptions {
 
     /**
      * Whether to generate TypeScript declaration files (.d.ts)
+     * When set to true, generates declaration files for all entry points
+     * Can also be configured with DtsOptions for more control
      */
-    dts?: boolean;
+    dts?: boolean | DtsOptions;
 
     /**
      * External packages that should not be bundled
      * Useful for dependencies that should be kept as external imports
      */
     external?: External;
+
     /**
      * Packages that should be bundled even if they are in external
      * Useful for dependencies that should be included in the bundle
      */
     noExternal?: External;
+
     /**
      * The target environment for the bundle
      * Can be 'browser', 'bun', 'node', etc.
      * Defaults to 'node' if not specified
      */
     target?: Target;
+
     /**
      * Whether to clean the output directory before building
      * When true, removes all files in the outDir before starting a new build
@@ -110,9 +158,8 @@ export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
 export function createDefaultBunBuildOptions(
     options: BunupOptions,
     rootDir: string,
-): BunBuildOptions {
+): Omit<BunBuildOptions, 'entrypoints'> {
     return {
-        entrypoints: options.entry.map(e => `${rootDir}/${e}`),
         outdir: `${rootDir}/${options.outDir}`,
         minify: createMinifyOptions(options),
         target: options.target,

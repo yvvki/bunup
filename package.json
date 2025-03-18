@@ -12,7 +12,7 @@
     "scripts": {
         "build": "tsup",
         "dev": "tsup --watch",
-        "test-build": "bunup",
+        "test-build": "pnpm -C tests build",
         "test": "vitest run",
         "tsc": "tsc --noEmit",
         "lint": "eslint src --fix",
@@ -32,7 +32,7 @@
         "@types/bun": "^1.2.5",
         "@typescript-eslint/eslint-plugin": "^7.3.1",
         "bumpp": "^10.1.0",
-        "bunup": "workspace:*",
+        "bunup": "^0.1.5",
         "eslint": "^8.57.0",
         "husky": "^9.1.6",
         "prettier": "^3.2.5",

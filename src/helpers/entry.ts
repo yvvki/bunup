@@ -11,7 +11,7 @@ export function getEntryNameOnly(entry: string) {
 }
 
 export function normalizeEntryToProcessableEntries(
-    entries: Entry[],
+    entry: Entry,
 ): ProcessableEntry[] {
     const result: ProcessableEntry[] = [];
     const usedNames = new Set<string>();
@@ -26,20 +26,20 @@ export function normalizeEntryToProcessableEntries(
         }
     }
 
-    for (const entry of entries) {
-        if (typeof entry === 'string') {
-            const name = getEntryNameOnly(entry);
-            addEntry(name, entry);
-        } else {
-            Object.entries(entry).forEach(([name, path]) => {
-                addEntry(name, path);
-            });
+    if (Array.isArray(entry)) {
+        for (const item of entry) {
+            const name = getEntryNameOnly(item);
+            addEntry(name, item);
         }
+    } else {
+        Object.entries(entry).forEach(([name, path]) => {
+            addEntry(name, path as string);
+        });
     }
 
     return result;
 }
 
-export function getEntryNamingFormat(extension: string) {
-    return `[dir]/[name]${extension}`;
+export function getEntryNamingFormat(name: string, extension: string) {
+    return `[dir]/${name}${extension}`;
 }

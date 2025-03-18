@@ -1,0 +1,12 @@
+{
+  "name": "bunup-tests",
+  "private": true,
+  "version": "0.1.5",
+  "type": "module",
+  "scripts": {
+    "build": "bunup"
+  },
+  "devDependencies": {
+    "bunup": "workspace:*"
+  }
+}
