@@ -2,12 +2,7 @@ import {DtsWorker, DtsWorkerMessageEventData} from './dts/worker';
 import {getExternalPatterns, getNoExternalPatterns} from './helpers/external';
 import {loadPackageJson} from './loaders';
 import {getLoggerProgressLabel, logger} from './logger';
-import {
-    BunupOptions,
-    createDefaultBunBuildOptions,
-    DtsOptions,
-    Format,
-} from './options';
+import {BunupOptions, createDefaultBunBuildOptions, Format} from './options';
 import {externalPlugin} from './plugins/external';
 import {BunPlugin} from './types';
 import {
@@ -63,9 +58,6 @@ export async function build(
         const dtsStartTime = performance.now();
         logger.progress('DTS', 'Bundling types');
 
-        const dtsOptions = typeof options.dts === 'object' ? options.dts : {};
-        const entries = dtsOptions.entry || options.entry;
-
         const formatsToProcess = options.format.filter(fmt => {
             if (
                 fmt === 'iife' &&
@@ -80,14 +72,13 @@ export async function build(
         const dtsWorker = new DtsWorker();
         try {
             const dtsPromises = formatsToProcess.flatMap(fmt =>
-                entries.map(entry =>
+                options.entry.map(entry =>
                     generateDtsForEntry(
                         options,
                         rootDir,
                         entry,
                         fmt,
                         packageType,
-                        dtsOptions,
                         dtsWorker,
                     ),
                 ),
@@ -112,7 +103,6 @@ async function generateDtsForEntry(
     entry: string,
     fmt: Format,
     packageType: string | undefined,
-    dtsOptions: DtsOptions,
     dtsWorker: DtsWorker,
 ): Promise<void> {
     const task: DtsWorkerMessageEventData = {
@@ -122,7 +112,6 @@ async function generateDtsForEntry(
         entry,
         format: fmt,
         packageType,
-        dtsOptions,
         options,
     };
 

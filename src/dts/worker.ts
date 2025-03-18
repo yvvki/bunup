@@ -3,7 +3,7 @@ import path from 'path';
 import {generateDts} from '.';
 import {parseErrorMessage} from '../errors';
 import {getLoggerProgressLabel, logger} from '../logger';
-import {BunupOptions, DtsOptions, Format} from '../options';
+import {BunupOptions, Format} from '../options';
 import {getDefaultDtsExtention, getEntryNameOnly} from '../utils';
 
 export type DtsWorkerMessageEventData = {
@@ -13,7 +13,6 @@ export type DtsWorkerMessageEventData = {
     entry: string;
     format: Format;
     packageType: string | undefined;
-    dtsOptions: DtsOptions;
     options: BunupOptions;
 };
 
@@ -29,25 +28,11 @@ export type DtsWorkerResponse =
       };
 
 self.onmessage = async (event: MessageEvent<DtsWorkerMessageEventData>) => {
-    const {
-        name,
-        rootDir,
-        outDir,
-        entry,
-        format,
-        packageType,
-        dtsOptions,
-        options,
-    } = event.data;
+    const {name, rootDir, outDir, entry, format, packageType, options} =
+        event.data;
 
     try {
-        const content = await generateDts(
-            rootDir,
-            entry,
-            format,
-            options,
-            dtsOptions,
-        );
+        const content = await generateDts(rootDir, entry, format, options);
 
         const entryName = getEntryNameOnly(entry);
         const extension = getDefaultDtsExtention(format, packageType);

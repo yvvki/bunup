@@ -4,20 +4,6 @@ export type Format = 'esm' | 'cjs' | 'iife';
 export type Target = 'bun' | 'node' | 'browser';
 export type External = string[];
 
-export interface DtsOptions {
-    /**
-     * Entry files to generate declaration files for
-     * If not specified, the main entry points will be used
-     */
-    entry?: string[];
-
-    /**
-     * Path to a specific tsconfig.json file to use for declaration generation
-     * If not specified, the default tsconfig.json will be used
-     */
-    preferredTsconfigPath?: string;
-}
-
 export interface BunupOptions {
     /**
      * Name of the build configuration
@@ -80,9 +66,8 @@ export interface BunupOptions {
 
     /**
      * Whether to generate TypeScript declaration files (.d.ts)
-     * Can be a boolean or a DtsOptions object for more control
      */
-    dts?: boolean | DtsOptions;
+    dts?: boolean;
 
     /**
      * External packages that should not be bundled

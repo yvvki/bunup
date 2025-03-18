@@ -8,7 +8,7 @@
     "files": [
         "build"
     ],
-     "packageManager": "pnpm@9.15.4",
+    "packageManager": "pnpm@9.15.4",
     "scripts": {
         "build": "tsup",
         "dev": "tsup --watch",
@@ -68,6 +68,7 @@
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
         "chokidar": "^4.0.3",
+        "oxc-transform": "^0.58.1",
         "rollup": "^4.35.0",
         "rollup-plugin-dts": "^6.1.1"
     }
