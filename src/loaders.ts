@@ -87,11 +87,11 @@ export function loadPackageJson(cwd: string): Record<string, unknown> | null {
 }
 
 export function loadTsconfig(tsconfigPath: string) {
-    if (!fs.existsSync(tsconfigPath)) {
-        return {};
-    }
-
     try {
+        if (!fs.existsSync(tsconfigPath)) {
+            return {};
+        }
+
         const content = fs.readFileSync(tsconfigPath, 'utf8');
         const json = JSON.parse(content);
         return json || {};
