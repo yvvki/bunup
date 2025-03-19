@@ -25,29 +25,11 @@ To install Bun, please visit the [official Bun installation page](https://bun.sh
 
 ## Quick Start
 
-Get started with Bunup in seconds - install, configure, and build your TypeScript/JavaScript projects with minimal setup.
-
 ### Installation
 
-::: code-group
-
-```bash [npm]
+```bash
 npm install --save-dev bunup
 ```
-
-```bash [yarn]
-yarn add --dev bunup
-```
-
-```bash [pnpm]
-pnpm add --save-dev bunup
-```
-
-```bash [bun]
-bun add --dev bunup
-```
-
-:::
 
 ### Basic Usage
 
