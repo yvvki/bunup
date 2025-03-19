@@ -172,7 +172,7 @@ export default defineConfig([
 ]);
 ```
 
-### CLI Options
+## CLI Options
 
 Bunup supports various command-line options:
 
