@@ -30,14 +30,37 @@ export async function bundleDtsContent(
                 return null;
 
             const importerPath = importer.slice(virtualPrefix.length);
-            const resolvedPath = path.resolve(
-                path.dirname(importerPath),
-                source,
-            );
-            const fullPath = dtsMap.has(resolvedPath)
-                ? resolvedPath
-                : `${resolvedPath}.d.ts`;
-            return dtsMap.has(fullPath) ? `${virtualPrefix}${fullPath}` : null;
+            let resolvedPath = path.resolve(path.dirname(importerPath), source);
+
+            if (source === '.') {
+                const indexPath = path.join(
+                    path.dirname(importerPath),
+                    'index.d.ts',
+                );
+                if (dtsMap.has(indexPath)) {
+                    return `${virtualPrefix}${indexPath}`;
+                }
+
+                resolvedPath = path.dirname(importerPath);
+            }
+
+            if (dtsMap.has(resolvedPath)) {
+                return `${virtualPrefix}${resolvedPath}`;
+            }
+
+            const fullPath = `${resolvedPath}.d.ts`;
+            if (dtsMap.has(fullPath)) {
+                return `${virtualPrefix}${fullPath}`;
+            }
+
+            if (source.startsWith('.')) {
+                const indexPath = path.join(resolvedPath, 'index.d.ts');
+                if (dtsMap.has(indexPath)) {
+                    return `${virtualPrefix}${indexPath}`;
+                }
+            }
+
+            return null;
         },
         load(id: string) {
             return id.startsWith(virtualPrefix)
