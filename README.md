@@ -28,17 +28,7 @@ To install Bun, please visit the [official Bun installation page](https://bun.sh
 ### Installation
 
 ```bash
-# Install bunup
 npm install --save-dev bunup
-
-# Or with yarn
-yarn add --dev bunup
-
-# Or with pnpm
-pnpm add --save-dev bunup
-
-# Or with bun
-bun add --dev bunup
 ```
 
 ### Basic Usage
