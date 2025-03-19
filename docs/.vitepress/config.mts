@@ -5,8 +5,9 @@ import {version} from '../../package.json';
 export default defineConfig({
     title: 'Bunup',
     description:
-        'A extremely fast, zero-config bundler for TypeScript & JavaScript, powered by Bun.',
+        'An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by Bun.',
     themeConfig: {
+        logo: '/logo.png',
         nav: [
             {
                 text: `v${version}`,
@@ -33,13 +34,6 @@ export default defineConfig({
         footer: {
             message: 'Released under the MIT License.',
         },
-        sidebar: [
-            {
-                text: 'Getting Started',
-                items: [{text: 'Quick Start', link: '/'}],
-            },
-        ],
-
         socialLinks: [
             {
                 icon: 'github',
@@ -49,7 +43,7 @@ export default defineConfig({
     },
     head: [
         ['meta', {name: 'theme-color', content: '#ffffff'}],
-        ['link', {rel: 'icon', href: '/logo.svg', type: 'image/svg+xml'}],
+        ['link', {rel: 'icon', href: '/favicon.ico'}],
         ['meta', {name: 'author', content: 'Arshad Yaseen'}],
         ['meta', {property: 'og:title', content: 'Bunup'}],
         [
@@ -64,7 +58,7 @@ export default defineConfig({
             {
                 property: 'og:description',
                 content:
-                    'A extremely fast, zero-config bundler for TypeScript & JavaScript, powered by Bun.',
+                    'An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by Bun.',
             },
         ],
         ['meta', {name: 'twitter:card', content: 'summary_large_image'}],
