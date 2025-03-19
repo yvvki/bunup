@@ -9,8 +9,8 @@
         "build"
     ],
     "scripts": {
-        "build": "tsup",
-        "dev": "tsup --watch",
+        "build": "bunup",
+        "dev": "bunup --watch",
         "build:docs": "pnpm -C docs build",
         "dev:docs": "pnpm -C docs dev",
         "test-build": "pnpm -C tests build",
@@ -20,7 +20,7 @@
         "validate": "pnpm run tsc && pnpm run lint",
         "format": "prettier --write .",
         "release": "bumpp",
-        "publish:ci": "pnpm -r --filter '!tests' --filter '!docs' publish --access public --no-git-checks",
+        "publish:ci": "pnpm publish --access public --no-git-checks",
         "prepare": "husky"
     },
     "bin": {
@@ -33,7 +33,7 @@
         "@types/bun": "^1.2.5",
         "@typescript-eslint/eslint-plugin": "^7.3.1",
         "bumpp": "^10.1.0",
-        "bunup": "^0.1.16",
+        "bunup": "^0.1.18",
         "eslint": "^8.57.0",
         "husky": "^9.1.6",
         "prettier": "^3.2.5",

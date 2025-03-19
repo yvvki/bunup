@@ -1,7 +1,7 @@
-export function hello() {
-    return 'Hello from test fixture!';
+import {one, two} from '@/utils/numbers';
+
+export function add() {
+    return one + two;
 }
 
-export {add} from './something/math';
-
-console.log(hello());
+console.log(add());
