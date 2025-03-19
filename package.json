@@ -9,8 +9,8 @@
         "build"
     ],
     "scripts": {
-        "build": "bunup",
-        "dev": "bunup --watch",
+        "build": "tsup",
+        "dev": "tsup --watch",
         "build:docs": "pnpm -C docs build",
         "dev:docs": "pnpm -C docs dev",
         "test-build": "pnpm -C tests build",
@@ -37,6 +37,7 @@
         "eslint": "^8.57.0",
         "husky": "^9.1.6",
         "prettier": "^3.2.5",
+        "tsup": "^8.4.0",
         "typescript": "^5.4.3",
         "vitest": "^2.0.5"
     },
