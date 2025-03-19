@@ -62,7 +62,7 @@ export default defineConfig({
 
 ## Documentation
 
-For complete documentation, visit [the full documentation](https://github.com/yourusername/bunup/docs).
+For complete documentation, visit [the full documentation](https://bunup.arshadyaseen.com/).
 
 ## Contributing
 
