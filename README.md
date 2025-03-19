@@ -2,7 +2,7 @@
 
 A extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [Bun](https://bun.sh) and [oxc](https://oxc.rs/).
 
-<img src="https//bunup.arshadyaseen.com/demo.gif" alt="Demo" style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);" />
+<img src="https://bunup.arshadyaseen.com/demo.gif" alt="Demo" style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);" />
 
 ## Benchmarks
 
@@ -25,28 +25,71 @@ To install Bun, please visit the [official Bun installation page](https://bun.sh
 
 ## Quick Start
 
+Get started with Bunup in seconds - install, configure, and build your TypeScript/JavaScript projects with minimal setup.
+
 ### Installation
 
-```bash
+::: code-group
+
+```bash [npm]
 npm install --save-dev bunup
 ```
 
+```bash [yarn]
+yarn add --dev bunup
+```
+
+```bash [pnpm]
+pnpm add --save-dev bunup
+```
+
+```bash [bun]
+bun add --dev bunup
+```
+
+:::
+
 ### Basic Usage
 
+Create a simple TypeScript file:
+
+```typescript
+// src/index.ts
+export function greet(name: string): string {
+    return `Hello, ${name}!`;
+}
+```
+
+Bundle it with bunup:
+
 ```bash
-# Bundle a TypeScript file
 bunup src/index.ts
+```
 
-# Multiple formats with TypeScript declarations
-bunup src/index.ts --format esm,cjs --dts
+This will create a bundled output in the `dist` directory.
 
-# Watch mode
-bunup src/index.ts --watch
+### Using with package.json
+
+Add a build script to your `package.json`:
+
+```json
+{
+    "name": "my-package",
+    "scripts": {
+        "build": "bunup src/index.ts --format esm,cjs --dts"
+    }
+}
+```
+
+Then run:
+
+```bash
+npm run build
 ```
 
 ### Configuration File
 
-Create a `bunup.config.ts` file:
+Create a `bunup.config.ts` file for more control:
 
 ```typescript
 import {defineConfig} from 'bunup';
