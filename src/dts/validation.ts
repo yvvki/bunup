@@ -37,6 +37,8 @@ export function validateInputs(
 export async function validateFilesUsedToBundleDts(
     filesUsedToBundleDts: Set<string>,
 ): Promise<void> {
+    if (filesUsedToBundleDts.size === 0) return;
+
     let hasErrors = false;
 
     console.log('\n');
