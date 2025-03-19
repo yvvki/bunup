@@ -43,8 +43,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.1.25
-        version: 0.1.25(typescript@5.8.2)
+        specifier: ^0.1.26
+        version: 0.1.26(typescript@5.8.2)
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -977,8 +977,8 @@ packages:
   bun-types@1.2.5:
     resolution: {integrity: sha512-3oO6LVGGRRKI4kHINx5PIdIgnLRb7l/SprhzqXapmoYkFl5m4j6EvALvbDVuuBFaamB46Ap6HCUxIXNLCGy+tg==}
 
-  bunup@0.1.25:
-    resolution: {integrity: sha512-7IIUKdkVIxs9h3Q7EdRtbWqhldlNJ+PVGv+U7+4MUYpAUI+VDyvhkDdENTkZ0haTtU/3GWmjJg/eD4K33szDiQ==}
+  bunup@0.1.26:
+    resolution: {integrity: sha512-4vJh6zfsAwdiAzqCw4drX9E97rERsJ1tQSKto+HhnE6T/J1EETluHvdl5t+FZ3P2Su0nwMj/jPT2BlQXbYO9SQ==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -3014,7 +3014,7 @@ snapshots:
       '@types/node': 22.13.10
       '@types/ws': 8.5.14
 
-  bunup@0.1.25(typescript@5.8.2):
+  bunup@0.1.26(typescript@5.8.2):
     dependencies:
       chokidar: 4.0.3
       load-tsconfig: 0.2.5

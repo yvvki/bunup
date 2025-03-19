@@ -37,11 +37,7 @@ export function validateInputs(
 export async function validateFilesUsedToBundleDts(
     filesUsedToBundleDts: Set<string>,
 ): Promise<void> {
-    if (filesUsedToBundleDts.size === 0) return;
-
     let hasErrors = false;
-
-    console.log('\n');
 
     await Promise.all(
         [...filesUsedToBundleDts].map(async file => {
@@ -51,6 +47,9 @@ export async function validateFilesUsedToBundleDts(
                 const {errors} = isolatedDeclaration(tsFile, sourceText);
 
                 errors.forEach(error => {
+                    if (!hasErrors) {
+                        console.log('\n');
+                    }
                     const label = error.labels[0];
                     const position = label
                         ? calculateDtsErrorLineAndColumn(
