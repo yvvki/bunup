@@ -57,6 +57,7 @@
         "type": "git",
         "url": "git+https://github.com/arshad-yaseen/bunup.git"
     },
+    "homepage": "https://bunup.arshadyaseen.com",
     "maintainers": [
         {
             "name": "Arshad Yaseen",
