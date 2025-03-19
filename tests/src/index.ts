@@ -1,7 +1,7 @@
 import {one, two} from '@/utils/numbers';
 
-export function add() {
+export function add(one: number, two: number) {
     return one + two;
 }
 
-console.log(add());
+export const result = add(one, two);

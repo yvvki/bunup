@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import {BunupDTSBuildError} from '../errors';
 import {loadTsconfig} from '../helpers/load-tsconfig';
-import {BunupOptions, Format} from '../options';
+import {BunupOptions} from '../options';
 import {bundleDtsContent} from './bundler';
 import {collectTsFiles} from './collector';
 import {generateDtsContent} from './generator';
@@ -11,7 +11,6 @@ import {generateDtsContent} from './generator';
 export async function generateDts(
     rootDir: string,
     entry: string,
-    format: Format,
     options: BunupOptions,
 ): Promise<string> {
     const {absoluteRootDir, absoluteEntry} = validateInputs(rootDir, entry);
@@ -21,7 +20,6 @@ export async function generateDts(
     return bundleDtsContent(
         absoluteEntry,
         dtsMap,
-        format,
         options,
         absoluteRootDir,
         tsconfig,

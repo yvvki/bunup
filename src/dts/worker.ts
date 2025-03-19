@@ -10,6 +10,7 @@ import {ProcessableEntry} from '../helpers/entry';
 import {logger} from '../logger';
 import {BunupOptions, Format} from '../options';
 import {formatTime, getDefaultDtsExtention} from '../utils';
+import {reportedDtsErrors} from './generator';
 import {generateDts} from './index';
 
 interface DtsWorkerData {
@@ -23,7 +24,6 @@ interface DtsWorkerData {
 interface DtsWorkerResult {
     success: boolean;
     error?: string;
-    timeMs?: number;
 }
 
 export async function runDtsInWorker(
@@ -48,10 +48,6 @@ export async function runDtsInWorker(
 
         worker.on('message', (result: DtsWorkerResult) => {
             if (result.success) {
-                if (result.timeMs) {
-                    const timeDisplay = formatTime(result.timeMs);
-                    logger.progress('DTS', `Bundled types in ${timeDisplay}`);
-                }
                 resolve();
             } else {
                 reject(
@@ -84,28 +80,48 @@ if (!isMainThread && parentPort) {
     logger.progress('DTS', 'Bundling types');
 
     try {
-        const dtsPromises = formats.flatMap(fmt =>
-            entries.map(async entry => {
-                const content = await generateDts(
-                    rootDir,
-                    entry.path,
-                    fmt,
-                    options,
-                );
-                const extension = getDefaultDtsExtention(fmt, packageType);
-                const outputRelativePath = `${options.outDir}/${entry.name}${extension}`;
-                const outputPath = `${rootDir}/${outputRelativePath}`;
+        const dtsPromises = entries.map(async entry => {
+            const content = await generateDts(rootDir, entry.path, options);
 
-                await Bun.write(outputPath, content);
+            return Promise.all(
+                formats.map(async fmt => {
+                    const extension = getDefaultDtsExtention(fmt, packageType);
+                    const outputRelativePath = `${options.outDir}/${entry.name}${extension}`;
+                    const outputPath = `${rootDir}/${outputRelativePath}`;
 
-                logger.progress(`DTS`, outputRelativePath);
-            }),
-        );
+                    await Bun.write(outputPath, content);
+
+                    logger.progress(`DTS`, outputRelativePath);
+                }),
+            );
+        });
 
         Promise.all(dtsPromises)
             .then(() => {
                 const timeMs = performance.now() - startTime;
-                parentPort?.postMessage({success: true, timeMs});
+                parentPort?.postMessage({success: true});
+
+                const timeDisplay = formatTime(timeMs);
+                logger.progress('DTS', `Bundled types in ${timeDisplay}`);
+
+                if (reportedDtsErrors.size > 0) {
+                    console.log('\n');
+
+                    reportedDtsErrors.forEach(errorMessage => {
+                        logger.warn(errorMessage);
+                    });
+
+                    logger.info(
+                        '\nYou may have noticed some TypeScript warnings above related to missing type annotations. ' +
+                            'This is because Bunup uses TypeScript\'s "isolatedDeclarations" approach for generating declaration files. ' +
+                            'This modern approach requires explicit type annotations on exports for better, more accurate type declarations. ' +
+                            'Other bundlers might not show these warnings because they use different, potentially less precise methods. ' +
+                            'Adding the suggested type annotations will not only silence these warnings but also improve the quality ' +
+                            'of your published type definitions, making your library more reliable for consumers.\n',
+                    );
+
+                    reportedDtsErrors.clear();
+                }
             })
             .catch(error => {
                 parentPort?.postMessage({

@@ -37,3 +37,20 @@ export function resolveNonRelativeImport(
     }
     return baseUrl ? path.join(baseUrl, importPath) : null;
 }
+
+export function calculateDtsErrorLineAndColumn(
+    sourceText: string,
+    labelStart: number,
+): string {
+    if (labelStart === undefined) return '';
+
+    const lines = sourceText.slice(0, labelStart).split('\n');
+    const lineNumber = lines.length;
+    const columnStart = lines[lines.length - 1].length + 1;
+
+    return ` (${lineNumber}:${columnStart})`;
+}
+
+export function formatDtsErrorMessage(errorMessage: string): string {
+    return errorMessage.replace(' with --isolatedDeclaration', '');
+}

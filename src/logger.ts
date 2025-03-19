@@ -47,8 +47,7 @@ export const logger = {
     },
 
     info(message: string): void {
-        const label = this.labels.info;
-        console.log(this.formatMessage(this.colors.info, label, message));
+        console.log(`\x1b[38;5;${this.colors.info}m${message}\x1b[0m`);
     },
 
     warn(message: string): void {

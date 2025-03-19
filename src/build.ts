@@ -61,8 +61,6 @@ export async function build(
     }
 
     if (options.dts) {
-        logger.progress('DTS', 'Bundling types');
-
         const formatsToProcess = options.format.filter(fmt => {
             if (
                 fmt === 'iife' &&

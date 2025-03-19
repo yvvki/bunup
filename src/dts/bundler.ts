@@ -8,12 +8,11 @@ import {BunupDTSBuildError, parseErrorMessage} from '../errors';
 import {getExternalPatterns, getNoExternalPatterns} from '../helpers/external';
 import {TsConfig} from '../helpers/load-tsconfig';
 import {loadPackageJson} from '../loaders';
-import {BunupOptions, Format} from '../options';
+import {BunupOptions} from '../options';
 
 export async function bundleDtsContent(
     entryFile: string,
     dtsMap: Map<string, string>,
-    format: Format,
     options: BunupOptions,
     rootDir: string,
     tsconfig: TsConfig,
@@ -95,7 +94,7 @@ export async function bundleDtsContent(
                 !noExternalPatterns.some(re => re.test(source)),
         });
 
-        const {output} = await bundle.generate({format});
+        const {output} = await bundle.generate({});
         if (!output[0]?.code)
             throw new BunupDTSBuildError('Generated bundle is empty');
         return output[0].code;
