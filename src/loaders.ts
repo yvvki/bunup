@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import {parseErrorMessage} from './errors';
+import {BunupBuildError, parseErrorMessage} from './errors';
 import {logger} from './logger';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
 
@@ -55,7 +55,7 @@ export async function loadConfigs(
 
             break;
         } catch (error) {
-            logger.error(
+            throw new BunupBuildError(
                 `Failed to load config from ${filePath}: ${parseErrorMessage(error)}`,
             );
         }
@@ -79,26 +79,9 @@ export function loadPackageJson(cwd: string): Record<string, unknown> | null {
 
         return content;
     } catch (error) {
-        logger.error(
+        logger.warn(
             `Failed to load package.json at ${packageJsonPath}: ${parseErrorMessage(error)}`,
         );
         return null;
-    }
-}
-
-export function loadTsconfig(tsconfigPath: string) {
-    try {
-        if (!fs.existsSync(tsconfigPath)) {
-            return {};
-        }
-
-        const content = fs.readFileSync(tsconfigPath, 'utf8');
-        const json = JSON.parse(content);
-        return json || {};
-    } catch (error) {
-        logger.warn(
-            `Failed to parse tsconfig at ${tsconfigPath}: ${parseErrorMessage(error)}`,
-        );
-        return {};
     }
 }

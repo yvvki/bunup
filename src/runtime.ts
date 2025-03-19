@@ -1,10 +1,9 @@
-import {logger} from './logger';
+import {BunupCLIError} from './errors';
 
 (() => {
     if (typeof Bun === 'undefined') {
-        logger.error(
+        throw new BunupCLIError(
             'Bunup requires Bun to run.\nTo install Bun, visit https://bun.sh/docs/installation',
         );
-        process.exit(1);
     }
 })();

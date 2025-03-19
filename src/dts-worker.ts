@@ -5,7 +5,8 @@ import {
     workerData,
 } from 'node:worker_threads';
 
-import {generateDts} from './dts';
+import {generateDts} from './dts/index';
+import {BunupDTSBuildError, parseErrorMessage} from './errors';
 import {ProcessableEntry} from './helpers/entry';
 import {logger} from './logger';
 import {BunupOptions, Format} from './options';
@@ -53,14 +54,22 @@ export async function runDtsInWorker(
                 }
                 resolve();
             } else {
-                reject(new Error(result.error || 'Unknown DTS worker error'));
+                reject(
+                    new BunupDTSBuildError(
+                        result.error || 'Unknown DTS worker error',
+                    ),
+                );
             }
         });
 
         worker.on('error', reject);
         worker.on('exit', code => {
             if (code !== 0) {
-                reject(new Error(`DTS worker stopped with exit code ${code}`));
+                reject(
+                    new BunupDTSBuildError(
+                        `DTS worker stopped with exit code ${code}`,
+                    ),
+                );
             }
         });
     });
@@ -101,14 +110,13 @@ if (!isMainThread && parentPort) {
             .catch(error => {
                 parentPort?.postMessage({
                     success: false,
-                    error:
-                        error instanceof Error ? error.message : String(error),
+                    error: parseErrorMessage(error),
                 });
             });
     } catch (error) {
         parentPort?.postMessage({
             success: false,
-            error: error instanceof Error ? error.message : String(error),
+            error: parseErrorMessage(error),
         });
     }
 }

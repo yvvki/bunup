@@ -1,3 +1,4 @@
+import {BunupCLIError} from './errors';
 import {logger} from './logger';
 import {BunupOptions, Format} from './options';
 
@@ -17,7 +18,9 @@ function makeStringHandler(optionName: keyof BunupOptions): CliOptionHandler {
         if (typeof value === 'string') {
             (args as any)[optionName] = value;
         } else {
-            logger.error(`Option --${optionName} requires a string value`);
+            throw new BunupCLIError(
+                `Option --${optionName} requires a string value`,
+            );
         }
     };
 }
@@ -27,7 +30,9 @@ function makeArrayHandler(optionName: keyof BunupOptions): CliOptionHandler {
         if (typeof value === 'string') {
             (args as any)[optionName] = value.split(',');
         } else {
-            logger.error(`Option --${optionName} requires a string value`);
+            throw new BunupCLIError(
+                `Option --${optionName} requires a string value`,
+            );
         }
     };
 }
@@ -42,7 +47,9 @@ const optionConfigs: Partial<
             if (typeof value === 'string') {
                 args.format = value.split(',') as Format[];
             } else {
-                logger.error('Option --format requires a string value');
+                throw new BunupCLIError(
+                    'Option --format requires a string value',
+                );
             }
         },
     },
@@ -121,7 +128,9 @@ export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
                     }
                     entries[name] = value;
                 } else {
-                    logger.error('Option --entry requires a string value');
+                    throw new BunupCLIError(
+                        'Option --entry requires a string value',
+                    );
                 }
             } else if (key.startsWith('entry.')) {
                 const name = key.slice(6);
@@ -133,7 +142,7 @@ export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
                     }
                     entries[name] = value;
                 } else {
-                    logger.error(
+                    throw new BunupCLIError(
                         `Option --entry.${name} requires a string value`,
                     );
                 }
@@ -142,7 +151,7 @@ export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
                 if (handler) {
                     handler(value, cliOptions);
                 } else {
-                    logger.error(`Unknown option: --${key}`);
+                    throw new BunupCLIError(`Unknown option: --${key}`);
                 }
             }
         } else if (arg.startsWith('-')) {
@@ -155,7 +164,7 @@ export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
             if (handler) {
                 handler(value, cliOptions);
             } else {
-                logger.error(`Unknown option: -${key}`);
+                throw new BunupCLIError(`Unknown option: -${key}`);
             }
         } else {
             const name = getEntryNameOnly(arg);

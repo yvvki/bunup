@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import {build} from './build';
 import {parseCliOptions} from './cli-parse';
-import {handleError} from './errors';
+import {BunupBuildError, handleErrorAndExit} from './errors';
 import {loadConfigs} from './loaders';
 import {logger} from './logger';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
@@ -68,13 +68,12 @@ function cleanOutDir(rootDir: string, outdir: string): void {
         try {
             fs.rmSync(outdirPath, {recursive: true, force: true});
         } catch (error) {
-            logger.error(`Failed to clean output directory: ${error}`);
+            throw new BunupBuildError(
+                `Failed to clean output directory: ${error}`,
+            );
         }
     }
     fs.mkdirSync(outdirPath, {recursive: true});
 }
 
-main().catch(error => {
-    handleError(error);
-    process.exit(1);
-});
+main().catch(error => handleErrorAndExit(error));

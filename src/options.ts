@@ -30,18 +30,6 @@ export type DtsOptions = {
      * entry: { myModule: './src/index.ts', utils: './src/utility-functions.ts' } // Generates myModule.d.ts and utils.d.ts
      */
     entry: Entry;
-
-    /**
-     * Path to a preferred tsconfig.json file to use for declaration generation
-     *
-     * If not specified, the tsconfig.json in the project root will be used.
-     * This option allows you to use a different TypeScript configuration
-     * specifically for declaration file generation.
-     *
-     * @example
-     * preferredTsconfigPath: './tsconfig.build.json'
-     */
-    preferredTsconfigPath?: string;
 };
 
 export interface BunupOptions {
@@ -127,6 +115,18 @@ export interface BunupOptions {
      * Can also be configured with DtsOptions for more control
      */
     dts?: boolean | DtsOptions;
+
+    /**
+     * Path to a preferred tsconfig.json file to use for declaration generation
+     *
+     * If not specified, the tsconfig.json in the project root will be used.
+     * This option allows you to use a different TypeScript configuration
+     * specifically for declaration file generation.
+     *
+     * @example
+     * preferredTsconfigPath: './tsconfig.build.json'
+     */
+    preferredTsconfigPath?: string;
 
     /**
      * External packages that should not be bundled

@@ -1,5 +1,5 @@
 import {runDtsInWorker} from './dts-worker';
-import {parseErrorMessage} from './errors';
+import {BunupBuildError, BunupDTSBuildError, parseErrorMessage} from './errors';
 import {
     getEntryNamingFormat,
     normalizeEntryToProcessableEntries,
@@ -23,10 +23,9 @@ export async function build(
     rootDir: string,
 ): Promise<void> {
     if (!options.entry || options.entry.length === 0 || !options.outDir) {
-        logger.cli(
+        throw new BunupBuildError(
             'Nothing to build. Please make sure you have provided a proper bunup configuration or cli arguments.',
         );
-        return;
     }
 
     const startTime = performance.now();
@@ -57,9 +56,8 @@ export async function build(
         const buildTimeMs = performance.now() - startTime;
         const timeDisplay = formatTime(buildTimeMs);
         logger.cli(`⚡ Build success in ${timeDisplay}`);
-    } catch (error) {
-        logger.error('Build process encountered errors.');
-        process.exit(1);
+    } catch {
+        throw new BunupBuildError('Build process encountered errors');
     }
 
     if (options.dts) {
@@ -90,7 +88,7 @@ export async function build(
                 packageType,
             );
         } catch (error) {
-            logger.error(
+            throw new BunupDTSBuildError(
                 `DTS build process encountered errors: ${parseErrorMessage(error)}`,
             );
         }
@@ -126,7 +124,7 @@ async function buildEntry(
             else if (log.level === 'warning') logger.warn(log.message);
             else if (log.level === 'info') logger.info(log.message);
         });
-        throw new Error(`Build failed for ${entry} (${fmt})`);
+        throw new BunupBuildError(`Build failed for ${entry} (${fmt})`);
     }
 
     logger.progress(

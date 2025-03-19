@@ -3,6 +3,7 @@ import path from 'node:path';
 import chokidar from 'chokidar';
 
 import {build} from './build';
+import {BunupWatchError, parseErrorMessage} from './errors';
 import {normalizeEntryToProcessableEntries} from './helpers/entry';
 import {logger} from './logger';
 import {BunupOptions} from './options';
@@ -48,7 +49,9 @@ export async function watch(
                 rootDir,
             );
         } catch (error) {
-            logger.error(`Build failed: ${error}`);
+            throw new BunupWatchError(
+                `Build failed: ${parseErrorMessage(error)}`,
+            );
         } finally {
             isRebuilding = false;
         }
@@ -64,6 +67,6 @@ export async function watch(
     });
 
     watcher.on('error', error => {
-        logger.error(`Watcher error: ${error}`);
+        throw new BunupWatchError(`Watcher error: ${parseErrorMessage(error)}`);
     });
 }

@@ -20,7 +20,7 @@
         "validate": "pnpm run tsc && pnpm run lint",
         "format": "prettier --write .",
         "release": "bumpp",
-        "publish:ci": "pnpm -r publish --access public --no-git-checks",
+        "publish:ci": "pnpm -r --filter '!tests' --filter '!docs' publish --access public --no-git-checks",
         "prepare": "husky"
     },
     "bin": {
@@ -70,6 +70,7 @@
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
         "chokidar": "^4.0.3",
+        "load-tsconfig": "^0.2.5",
         "oxc-transform": "^0.58.1",
         "rollup": "^4.35.0",
         "rollup-plugin-dts": "^6.1.1"
