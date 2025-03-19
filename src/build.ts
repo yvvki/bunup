@@ -1,4 +1,4 @@
-import {runDtsInWorker} from './dts-worker';
+import {runDtsInWorker} from './dts/worker';
 import {BunupBuildError, BunupDTSBuildError, parseErrorMessage} from './errors';
 import {
     getEntryNamingFormat,
@@ -55,7 +55,7 @@ export async function build(
 
         const buildTimeMs = performance.now() - startTime;
         const timeDisplay = formatTime(buildTimeMs);
-        logger.cli(`⚡ Build success in ${timeDisplay}`);
+        logger.cli(`📦 Build success in ${timeDisplay}`);
     } catch {
         throw new BunupBuildError('Build process encountered errors');
     }

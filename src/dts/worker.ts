@@ -5,12 +5,12 @@ import {
     workerData,
 } from 'node:worker_threads';
 
-import {generateDts} from './dts/index';
-import {BunupDTSBuildError, parseErrorMessage} from './errors';
-import {ProcessableEntry} from './helpers/entry';
-import {logger} from './logger';
-import {BunupOptions, Format} from './options';
-import {formatTime, getDefaultDtsExtention} from './utils';
+import {BunupDTSBuildError, parseErrorMessage} from '../errors';
+import {ProcessableEntry} from '../helpers/entry';
+import {logger} from '../logger';
+import {BunupOptions, Format} from '../options';
+import {formatTime, getDefaultDtsExtention} from '../utils';
+import {generateDts} from './index';
 
 interface DtsWorkerData {
     rootDir: string;

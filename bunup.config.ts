@@ -25,7 +25,7 @@ export default defineConfig([
         outDir: 'build',
         format: ['cjs'],
         entry: {
-            dtsWorker: './src/dts-worker.ts',
+            dtsWorker: './src/dts/worker.ts',
         },
         minify: true,
         splitting: true,
