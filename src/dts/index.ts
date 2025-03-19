@@ -1,12 +1,9 @@
-import fs from 'node:fs';
-import path from 'node:path';
-
-import {BunupDTSBuildError} from '../errors';
 import {loadTsconfig} from '../helpers/load-tsconfig';
 import {BunupOptions} from '../options';
 import {bundleDtsContent} from './bundler';
 import {collectTsFiles} from './collector';
 import {generateDtsContent} from './generator';
+import {validateInputs} from './validation';
 
 export async function generateDts(
     rootDir: string,
@@ -24,32 +21,4 @@ export async function generateDts(
         absoluteRootDir,
         tsconfig,
     );
-}
-
-function validateInputs(
-    rootDir: string,
-    entry: string,
-): {absoluteRootDir: string; absoluteEntry: string} {
-    const absoluteRootDir = path.resolve(rootDir);
-    const absoluteEntry = path.resolve(absoluteRootDir, entry);
-
-    if (!fs.existsSync(absoluteRootDir))
-        throw new BunupDTSBuildError(
-            `Root directory does not exist: ${absoluteRootDir}`,
-        );
-    if (!fs.existsSync(absoluteEntry))
-        throw new BunupDTSBuildError(
-            `Entry file does not exist: ${absoluteEntry}`,
-        );
-    if (!absoluteEntry.endsWith('.ts'))
-        throw new BunupDTSBuildError(
-            `Entry file must be a TypeScript file (.ts): ${absoluteEntry}`,
-        );
-    if (path.relative(absoluteRootDir, absoluteEntry).startsWith('..')) {
-        throw new BunupDTSBuildError(
-            `Entry file must be within rootDir: ${absoluteEntry}`,
-        );
-    }
-
-    return {absoluteRootDir, absoluteEntry};
 }

@@ -1,5 +1,5 @@
 import {runDtsInWorker} from './dts/worker';
-import {BunupBuildError, BunupDTSBuildError, parseErrorMessage} from './errors';
+import {BunupBuildError, BunupDTSBuildError} from './errors';
 import {
     getEntryNamingFormat,
     normalizeEntryToProcessableEntries,
@@ -45,9 +45,16 @@ export async function build(
     );
 
     const buildPromises = options.format.flatMap(fmt =>
-        processableEntries.map(entry =>
-            buildEntry(options, rootDir, entry, fmt, packageType, plugins),
-        ),
+        processableEntries.map(entry => {
+            return buildEntry(
+                options,
+                rootDir,
+                entry,
+                fmt,
+                packageType,
+                plugins,
+            );
+        }),
     );
 
     try {
@@ -87,7 +94,7 @@ export async function build(
             );
         } catch (error) {
             throw new BunupDTSBuildError(
-                `DTS build process encountered errors: ${parseErrorMessage(error)}`,
+                'DTS build process encountered errors',
             );
         }
     }

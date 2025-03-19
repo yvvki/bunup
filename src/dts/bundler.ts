@@ -4,11 +4,18 @@ import {rollup, RollupBuild} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
 import ts from 'typescript';
 
+import {allFilesUsedToBundleDts as importedFilesSet} from '../cli';
 import {BunupDTSBuildError, parseErrorMessage} from '../errors';
 import {getExternalPatterns, getNoExternalPatterns} from '../helpers/external';
 import {TsConfig} from '../helpers/load-tsconfig';
 import {loadPackageJson} from '../loaders';
 import {BunupOptions} from '../options';
+
+const getFilesUsedSet = (): Set<string> => {
+    return (
+        global.allFilesUsedToBundleDts || importedFilesSet || new Set<string>()
+    );
+};
 
 export async function bundleDtsContent(
     entryFile: string,
@@ -63,9 +70,15 @@ export async function bundleDtsContent(
             return null;
         },
         load(id: string) {
-            return id.startsWith(virtualPrefix)
-                ? dtsMap.get(id.slice(virtualPrefix.length)) || null
-                : null;
+            if (id.startsWith(virtualPrefix)) {
+                const filePath = id.slice(virtualPrefix.length);
+                const content = dtsMap.get(filePath);
+                if (content) {
+                    getFilesUsedSet().add(filePath);
+                    return content;
+                }
+            }
+            return null;
         },
     };
 

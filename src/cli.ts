@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 import fs from 'node:fs';
 import path from 'node:path';
+import {isMainThread} from 'node:worker_threads';
 
 import {build} from './build';
 import {parseCliOptions} from './cli-parse';
@@ -11,7 +12,10 @@ import {BunupOptions, DEFAULT_OPTIONS} from './options';
 
 import './runtime';
 
+import {validateFilesUsedToBundleDts} from './dts/validation';
 import {watch} from './watch';
+
+export const allFilesUsedToBundleDts = new Set<string>();
 
 export async function main(args: string[] = Bun.argv.slice(2)) {
     const cliOptions = parseCliOptions(args);
@@ -49,6 +53,12 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
         );
     }
 
+    // Validate all ts files used to bundle DTS after all builds complete
+    if (allFilesUsedToBundleDts.size > 0) {
+        await validateFilesUsedToBundleDts(allFilesUsedToBundleDts);
+        allFilesUsedToBundleDts.clear();
+    }
+
     if (!cliOptions.watch) {
         process.exit(0);
     }
@@ -76,4 +86,7 @@ function cleanOutDir(rootDir: string, outdir: string): void {
     fs.mkdirSync(outdirPath, {recursive: true});
 }
 
-main().catch(error => handleErrorAndExit(error));
+// Only run main() in the main thread, not when imported in worker threads
+if (isMainThread) {
+    main().catch(error => handleErrorAndExit(error));
+}

@@ -1,12 +1,9 @@
 import fs from 'node:fs';
 
-import oxc from 'oxc-transform';
+import {isolatedDeclaration} from 'oxc-transform';
 
 import {parseErrorMessage} from '../errors';
 import {logger} from '../logger';
-import {calculateDtsErrorLineAndColumn, formatDtsErrorMessage} from './utils';
-
-export const reportedDtsErrors = new Set<string>();
 
 export async function generateDtsContent(
     tsFiles: Set<string>,
@@ -18,28 +15,10 @@ export async function generateDtsContent(
             try {
                 const dtsPath = tsFile.replace(/\.tsx?$/, '.d.ts');
                 const sourceText = await fs.promises.readFile(tsFile, 'utf8');
-                const {code: declaration, errors} = oxc.isolatedDeclaration(
+                const {code: declaration} = isolatedDeclaration(
                     tsFile,
                     sourceText,
                 );
-
-                errors.forEach(error => {
-                    const label = error.labels[0];
-                    const position = label
-                        ? calculateDtsErrorLineAndColumn(
-                              sourceText,
-                              label.start,
-                          )
-                        : '';
-
-                    const fileParts = tsFile.split('/');
-                    const shortPath = fileParts.slice(-3).join('/');
-                    const errorMessage = `${shortPath}${position}: ${formatDtsErrorMessage(error.message)}`;
-
-                    if (!reportedDtsErrors.has(errorMessage)) {
-                        reportedDtsErrors.add(errorMessage);
-                    }
-                });
 
                 if (declaration) {
                     dtsMap.set(dtsPath, declaration);

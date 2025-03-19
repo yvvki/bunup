@@ -5,13 +5,19 @@ import {
     workerData,
 } from 'node:worker_threads';
 
+import {allFilesUsedToBundleDts} from '../cli';
 import {BunupDTSBuildError, parseErrorMessage} from '../errors';
 import {ProcessableEntry} from '../helpers/entry';
 import {logger} from '../logger';
 import {BunupOptions, Format} from '../options';
 import {formatTime, getDefaultDtsExtention} from '../utils';
-import {reportedDtsErrors} from './generator';
 import {generateDts} from './index';
+
+// Global variable to share between main and worker threads
+declare global {
+    // eslint-disable-next-line no-var
+    var allFilesUsedToBundleDts: Set<string> | undefined;
+}
 
 interface DtsWorkerData {
     rootDir: string;
@@ -23,7 +29,9 @@ interface DtsWorkerData {
 
 interface DtsWorkerResult {
     success: boolean;
+    timeMs: number;
     error?: string;
+    filesUsed?: string[];
 }
 
 export async function runDtsInWorker(
@@ -46,8 +54,18 @@ export async function runDtsInWorker(
             workerData,
         });
 
-        worker.on('message', (result: DtsWorkerResult) => {
+        worker.on('message', async (result: DtsWorkerResult) => {
             if (result.success) {
+                const timeDisplay = formatTime(result.timeMs);
+                logger.progress('DTS', `Bundled types in ${timeDisplay}`);
+
+                // Add the files used in worker to the main thread's set
+                if (result.filesUsed) {
+                    result.filesUsed.forEach(file =>
+                        allFilesUsedToBundleDts.add(file),
+                    );
+                }
+
                 resolve();
             } else {
                 reject(
@@ -70,65 +88,59 @@ export async function runDtsInWorker(
         });
     });
 }
-
 if (!isMainThread && parentPort) {
     const {rootDir, entries, formats, options, packageType} =
         workerData as DtsWorkerData;
 
     const startTime = performance.now();
+    const workerFilesUsed = new Set<string>();
+
+    // Replace the imported allFilesUsedToBundleDts with our local version
+    global.allFilesUsedToBundleDts = workerFilesUsed;
 
     logger.progress('DTS', 'Bundling types');
 
     try {
-        const dtsPromises = entries.map(async entry => {
-            const content = await generateDts(rootDir, entry.path, options);
+        (async () => {
+            try {
+                await Promise.all(
+                    entries.map(async entry => {
+                        const content = await generateDts(
+                            rootDir,
+                            entry.path,
+                            options,
+                        );
 
-            return Promise.all(
-                formats.map(async fmt => {
-                    const extension = getDefaultDtsExtention(fmt, packageType);
-                    const outputRelativePath = `${options.outDir}/${entry.name}${extension}`;
-                    const outputPath = `${rootDir}/${outputRelativePath}`;
+                        await Promise.all(
+                            formats.map(async fmt => {
+                                const extension = getDefaultDtsExtention(
+                                    fmt,
+                                    packageType,
+                                );
+                                const outputRelativePath = `${options.outDir}/${entry.name}${extension}`;
+                                const outputPath = `${rootDir}/${outputRelativePath}`;
 
-                    await Bun.write(outputPath, content);
+                                await Bun.write(outputPath, content);
 
-                    logger.progress(`DTS`, outputRelativePath);
-                }),
-            );
-        });
+                                logger.progress(`DTS`, outputRelativePath);
+                            }),
+                        );
+                    }),
+                );
 
-        Promise.all(dtsPromises)
-            .then(() => {
                 const timeMs = performance.now() - startTime;
-                parentPort?.postMessage({success: true});
-
-                const timeDisplay = formatTime(timeMs);
-                logger.progress('DTS', `Bundled types in ${timeDisplay}`);
-
-                if (reportedDtsErrors.size > 0) {
-                    console.log('\n');
-
-                    reportedDtsErrors.forEach(errorMessage => {
-                        logger.warn(errorMessage);
-                    });
-
-                    logger.info(
-                        '\nYou may have noticed some TypeScript warnings above related to missing type annotations. ' +
-                            'This is because Bunup uses TypeScript\'s "isolatedDeclarations" approach for generating declaration files. ' +
-                            'This modern approach requires explicit type annotations on exports for better, more accurate type declarations. ' +
-                            'Other bundlers might not show these warnings because they use different, potentially less precise methods. ' +
-                            'Adding the suggested type annotations will not only silence these warnings but also improve the quality ' +
-                            'of your published type definitions, making your library more reliable for consumers.\n',
-                    );
-
-                    reportedDtsErrors.clear();
-                }
-            })
-            .catch(error => {
+                parentPort?.postMessage({
+                    success: true,
+                    timeMs,
+                    filesUsed: [...workerFilesUsed],
+                });
+            } catch (error) {
                 parentPort?.postMessage({
                     success: false,
                     error: parseErrorMessage(error),
                 });
-            });
+            }
+        })();
     } catch (error) {
         parentPort?.postMessage({
             success: false,

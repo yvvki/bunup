@@ -1,10 +1,7 @@
-// @ts-nocheck
-
 import {defineConfig} from 'bunup';
 
 export default defineConfig([
     {
-        name: 'bunup',
         outDir: 'build',
         entry: ['./src/index.ts'],
         format: ['cjs', 'esm'],
@@ -13,7 +10,7 @@ export default defineConfig([
         splitting: true,
     },
     {
-        name: 'bunup-cli',
+        name: 'cli',
         outDir: 'build',
         entry: ['./src/cli.ts'],
         format: ['esm'],
@@ -21,7 +18,7 @@ export default defineConfig([
         splitting: true,
     },
     {
-        name: 'bunup-dts-worker',
+        name: 'dts-worker',
         outDir: 'build',
         format: ['cjs'],
         entry: {
