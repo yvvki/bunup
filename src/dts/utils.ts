@@ -53,6 +53,6 @@ export function calculateDtsErrorLineAndColumn(
 
 export function formatDtsErrorMessage(errorMessage: string): string {
     return errorMessage
-        .replace(' with --isolatedDeclaration', '')
-        .replace(' with --isolatedDeclarations', '');
+        .replace(' with --isolatedDeclarations', '')
+        .replace(' with --isolatedDeclaration', '');
 }
