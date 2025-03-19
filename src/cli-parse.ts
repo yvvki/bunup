@@ -1,109 +1,177 @@
 import {logger} from './logger';
-import {BunupOptions, Format, Target} from './options';
+import {BunupOptions, Format} from './options';
 
 type CliOptionHandler = (
     value: string | boolean,
     args: Partial<BunupOptions>,
 ) => void;
 
-const cliOptionAliases: Record<string, keyof BunupOptions> = {
-    n: 'name',
-    f: 'format',
-    o: 'outDir',
-    m: 'minify',
-    w: 'watch',
-    d: 'dts',
-    e: 'external',
-    t: 'target',
-    mw: 'minifyWhitespace',
-    mi: 'minifyIdentifiers',
-    ms: 'minifySyntax',
-    c: 'clean',
-    s: 'splitting',
-    ne: 'noExternal',
+function makeBooleanHandler(optionName: keyof BunupOptions): CliOptionHandler {
+    return (value, args) => {
+        (args as any)[optionName] = value === true ? true : value === 'true';
+    };
+}
+
+function makeStringHandler(optionName: keyof BunupOptions): CliOptionHandler {
+    return (value, args) => {
+        if (typeof value === 'string') {
+            (args as any)[optionName] = value;
+        } else {
+            logger.error(`Option --${optionName} requires a string value`);
+        }
+    };
+}
+
+function makeArrayHandler(optionName: keyof BunupOptions): CliOptionHandler {
+    return (value, args) => {
+        if (typeof value === 'string') {
+            (args as any)[optionName] = value.split(',');
+        } else {
+            logger.error(`Option --${optionName} requires a string value`);
+        }
+    };
+}
+
+const optionConfigs: Partial<
+    Record<keyof BunupOptions, {flags: string[]; handler: CliOptionHandler}>
+> = {
+    name: {flags: ['n', 'name'], handler: makeStringHandler('name')},
+    format: {
+        flags: ['f', 'format'],
+        handler: (value, args) => {
+            if (typeof value === 'string') {
+                args.format = value.split(',') as Format[];
+            } else {
+                logger.error('Option --format requires a string value');
+            }
+        },
+    },
+    outDir: {flags: ['o', 'out-dir'], handler: makeStringHandler('outDir')},
+    minify: {flags: ['m', 'minify'], handler: makeBooleanHandler('minify')},
+    watch: {flags: ['w', 'watch'], handler: makeBooleanHandler('watch')},
+    dts: {flags: ['d', 'dts'], handler: makeBooleanHandler('dts')},
+    external: {flags: ['e', 'external'], handler: makeArrayHandler('external')},
+    target: {flags: ['t', 'target'], handler: makeStringHandler('target')},
+    minifyWhitespace: {
+        flags: ['mw', 'minify-whitespace'],
+        handler: makeBooleanHandler('minifyWhitespace'),
+    },
+    minifyIdentifiers: {
+        flags: ['mi', 'minify-identifiers'],
+        handler: makeBooleanHandler('minifyIdentifiers'),
+    },
+    minifySyntax: {
+        flags: ['ms', 'minify-syntax'],
+        handler: makeBooleanHandler('minifySyntax'),
+    },
+    clean: {flags: ['c', 'clean'], handler: makeBooleanHandler('clean')},
+    splitting: {
+        flags: ['s', 'splitting'],
+        handler: makeBooleanHandler('splitting'),
+    },
+    noExternal: {
+        flags: ['ne', 'no-external'],
+        handler: makeArrayHandler('noExternal'),
+    },
 };
 
-type CliOptionHandlerName = keyof Omit<BunupOptions, 'entry'>;
+const flagToHandler: Record<string, CliOptionHandler> = {};
+for (const config of Object.values(optionConfigs)) {
+    if (config) {
+        for (const flag of config.flags) {
+            flagToHandler[flag] = config.handler;
+        }
+    }
+}
 
-const cliOptionHandlers: Record<CliOptionHandlerName, CliOptionHandler> = {
-    name: (value, args) => {
-        args.name = value as string;
-    },
-    format: (value, args) => {
-        args.format = (value as string).split(',') as Format[];
-    },
-    outDir: (value, args) => {
-        args.outDir = value as string;
-    },
-    minify: (value, args) => {
-        args.minify = !!value;
-    },
-    watch: (value, args) => {
-        args.watch = !!value;
-    },
-    dts: (value, args) => {
-        args.dts = !!value;
-    },
-    external: (value, args) => {
-        args.external = (value as string).split(',');
-    },
-    minifyWhitespace: (value, args) => {
-        args.minifyWhitespace = !!value;
-    },
-    minifyIdentifiers: (value, args) => {
-        args.minifyIdentifiers = !!value;
-    },
-    minifySyntax: (value, args) => {
-        args.minifySyntax = !!value;
-    },
-    target: (value, args) => {
-        args.target = value as Target;
-    },
-    clean: (value, args) => {
-        args.clean = !!value;
-    },
-    splitting: (value, args) => {
-        args.splitting = !!value;
-    },
-    noExternal: (value, args) => {
-        args.noExternal = (value as string).split(',');
-    },
-};
+export function getEntryNameOnly(entry: string): string {
+    return entry.split('/').pop()?.split('.').slice(0, -1).join('.') || '';
+}
 
 export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
     const cliOptions: Partial<BunupOptions> = {};
+    const entries: Record<string, string> = {};
 
-    for (let i = 0; i < argv.length; i++) {
+    let i = 0;
+    while (i < argv.length) {
         const arg = argv[i];
 
-        if (arg.startsWith('--') || arg.startsWith('-')) {
-            const isShortOption = arg.startsWith('-') && !arg.startsWith('--');
-            const key = isShortOption ? arg.slice(1) : arg.slice(2);
-            const resolvedKey = isShortOption ? cliOptionAliases[key] : key;
-            const handler =
-                cliOptionHandlers[resolvedKey as CliOptionHandlerName];
+        if (arg.startsWith('--')) {
+            let key: string;
+            let value: string | boolean;
 
-            if (!handler) {
-                logger.error(`Unknown option: ${key}`);
-                continue;
+            if (arg.includes('=')) {
+                const [keyPart, valuePart] = arg.slice(2).split('=', 2);
+                key = keyPart;
+                value = valuePart;
+            } else {
+                key = arg.slice(2);
+                const nextArg = argv[i + 1];
+                value = nextArg && !nextArg.startsWith('-') ? nextArg : true;
+                if (typeof value === 'string') i++;
             }
 
+            if (key === 'entry') {
+                if (typeof value === 'string') {
+                    const name = getEntryNameOnly(value);
+                    if (entries[name]) {
+                        logger.warn(
+                            `Duplicate entry name '${name}' derived from '${value}'. Overwriting previous entry.`,
+                        );
+                    }
+                    entries[name] = value;
+                } else {
+                    logger.error('Option --entry requires a string value');
+                }
+            } else if (key.startsWith('entry.')) {
+                const name = key.slice(6);
+                if (typeof value === 'string') {
+                    if (entries[name]) {
+                        logger.warn(
+                            `Duplicate entry name '${name}' provided via --entry.${name}. Overwriting previous entry.`,
+                        );
+                    }
+                    entries[name] = value;
+                } else {
+                    logger.error(
+                        `Option --entry.${name} requires a string value`,
+                    );
+                }
+            } else {
+                const handler = flagToHandler[key];
+                if (handler) {
+                    handler(value, cliOptions);
+                } else {
+                    logger.error(`Unknown option: --${key}`);
+                }
+            }
+        } else if (arg.startsWith('-')) {
+            const key = arg.slice(1);
             const nextArg = argv[i + 1];
             const value = nextArg && !nextArg.startsWith('-') ? nextArg : true;
+            if (typeof value === 'string') i++;
 
-            handler(value, cliOptions);
-
-            if (typeof value === 'string') {
-                i++;
+            const handler = flagToHandler[key];
+            if (handler) {
+                handler(value, cliOptions);
+            } else {
+                logger.error(`Unknown option: -${key}`);
             }
         } else {
-            if (!cliOptions.entry) {
-                cliOptions.entry = [];
+            const name = getEntryNameOnly(arg);
+            if (entries[name]) {
+                logger.warn(
+                    `Duplicate entry name '${name}' derived from positional argument '${arg}'. Overwriting previous entry.`,
+                );
             }
-            if (Array.isArray(cliOptions.entry)) {
-                cliOptions.entry.push(arg);
-            }
+            entries[name] = arg;
         }
+
+        i++;
+    }
+
+    if (Object.keys(entries).length > 0) {
+        cliOptions.entry = entries;
     }
 
     return cliOptions;
