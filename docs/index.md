@@ -17,9 +17,19 @@ Bunup outperforms other popular bundlers by a significant margin:
 
 _Lower build time is better. Benchmark run on the same code with identical output formats._
 
+## What Can It Bundle?
+
+Bunup handles various file types:
+
+- JavaScript/TypeScript (`.js`, `.jsx`, `.ts`, `.tsx`, `.mjs`, `.cjs`, `.mts`, `.cts`)
+- Data files (`.json`, `.toml`, `.txt`) - Parsed and inlined automatically
+- Assets (images, fonts, etc.) - Handled as external files
+
+Powered by Bun for fast parsing, transpilation and bundling.
+
 ## Prerequisites
 
-Bunup requires [Bun](https://bun.sh) to be installed on your system. Bun is a fast all-in-one JavaScript runtime that powers Bunup's exceptional performance. Without Bun, Bunup cannot execute as it leverages Bun's bundling capabilities and runtime environment.
+Bunup requires [Bun](https://bun.sh) to be installed on your system. Bun is a fast all-in-one JavaScript runtime that powers Bunup's exceptional performance.
 
 To install Bun, please visit the [official Bun installation page](https://bun.sh/docs/installation).
 
@@ -66,7 +76,7 @@ Bundle it with bunup:
 bunup src/index.ts
 ```
 
-This will create a bundled output in the `dist` directory.
+This will create a bundled output in the `dist` directory with CommonJS format (the default).
 
 ### Using with package.json
 
@@ -195,27 +205,51 @@ Bunup supports various command-line options:
 | `--splitting`           | `-s`  | Enable code splitting                          | Format dependent |
 | `--name <name>`         | `-n`  | Name for this build configuration              | -                |
 
-Examples:
-
-```bash
-# Basic usage
-bunup src/index.ts
-
-# Multiple formats with TypeScript declarations
-bunup src/index.ts --format esm,cjs --dts
-
-# Named entries
-bunup --entry.main src/index.ts --entry.cli src/cli.ts
-
-# Watch mode
-bunup src/index.ts --watch
-```
-
 ## Entry Points
 
-Bunup supports multiple ways to define entry points:
+Bunup supports multiple ways to define entry points. Entry points are the source files that Bunup will use as starting points for bundling.
 
-### Array of Paths
+### Single Entry Point
+
+The simplest way to define an entry point is to provide a single file path:
+
+```bash
+bunup src/index.ts
+```
+
+This will generate an output file named after the input file (e.g., `dist/index.js`).
+
+### Multiple Entry Points
+
+You can specify multiple entry points in several ways:
+
+#### Using the CLI with Multiple Positional Arguments
+
+```bash
+bunup src/index.ts src/cli.ts
+```
+
+This will generate output files named after each input file (e.g., `dist/index.js` and `dist/cli.js`).
+
+#### Using the CLI with --entry Flag Multiple Times
+
+```bash
+bunup --entry src/index.ts --entry src/cli.ts
+```
+
+This achieves the same result as using positional arguments.
+
+#### Using Named Entries in the CLI
+
+Named entries allow you to specify custom output filenames:
+
+```bash
+bunup --entry.main src/index.ts --entry.cli src/cli.ts
+```
+
+This will generate output files with the specified names (e.g., `dist/main.js` and `dist/cli.js`).
+
+#### Using a Configuration File with an Array
 
 ```typescript
 export default defineConfig({
@@ -223,9 +257,9 @@ export default defineConfig({
 });
 ```
 
-This will generate output files named after the input files (e.g., `index.js` and `cli.js`).
+This will generate output files named after each input file.
 
-### Named Entries
+#### Using a Configuration File with Named Entries
 
 ```typescript
 export default defineConfig({
@@ -237,7 +271,18 @@ export default defineConfig({
 });
 ```
 
-This will generate output files with the specified names (e.g., `main.js`, `cli.js`, and `utils.js`).
+This will generate output files with the specified names (e.g., `dist/main.js`, `dist/cli.js`, and `dist/utils.js`).
+
+### Why Use Named Entries?
+
+Named entries are useful when:
+
+1. You want to customize the output filenames
+2. Your input filenames don't match your desired output names
+3. You have multiple files with the same basename in different directories
+4. You want to create a specific public API structure
+
+For example, if you have `src/utils/index.ts` and `src/components/index.ts`, using named entries prevents naming conflicts in the output.
 
 ## Output Formats
 
@@ -247,12 +292,32 @@ Bunup supports three output formats:
 - **cjs**: CommonJS modules (`.js` or `.cjs` extension)
 - **iife**: Immediately Invoked Function Expression (`.global.js` extension)
 
+You can specify one or more formats:
+
+### In the CLI
+
+```bash
+# Single format
+bunup src/index.ts --format esm
+
+# Multiple formats (comma-separated, no spaces)
+bunup src/index.ts --format esm,cjs,iife
+```
+
+### In a Configuration File
+
 ```typescript
 export default defineConfig({
     entry: ['src/index.ts'],
-    format: ['esm', 'cjs', 'iife'],
+    // Single format
+    format: ['esm'],
+
+    // Or multiple formats
+    // format: ['esm', 'cjs', 'iife'],
 });
 ```
+
+### Output File Extensions
 
 The file extensions are determined automatically based on the format and your package.json `type` field:
 
@@ -266,12 +331,22 @@ The file extensions are determined automatically based on the format and your pa
 
 Bunup can generate TypeScript declaration files (`.d.ts`) for your code:
 
-```typescript
+### Basic Declaration Generation
+
+To generate declarations for all entry points:
+
+```bash
+# CLI
+bunup src/index.ts --dts
+
+# Configuration file
 export default defineConfig({
     entry: ['src/index.ts'],
     dts: true,
 });
 ```
+
+### Custom Declaration Entry Points
 
 For more control, you can specify custom entry points for declarations:
 
@@ -279,12 +354,15 @@ For more control, you can specify custom entry points for declarations:
 export default defineConfig({
     entry: ['src/index.ts', 'src/cli.ts'],
     dts: {
-        entry: ['src/index.ts'], // Only generate declarations for index.ts
+        // Only generate declarations for index.ts
+        entry: ['src/index.ts'],
     },
 });
 ```
 
-Or use named entries:
+### Named Declaration Entries
+
+You can use named entries for declarations:
 
 ```typescript
 export default defineConfig({
@@ -294,13 +372,16 @@ export default defineConfig({
     },
     dts: {
         entry: {
-            types: 'src/index.ts', // Generate types.d.ts from index.ts
+            // Generate types.d.ts from index.ts
+            types: 'src/index.ts',
         },
     },
 });
 ```
 
-You can also specify a custom tsconfig file for declaration generation:
+### Custom TypeScript Configuration
+
+You can specify a custom tsconfig file for declaration generation:
 
 ```typescript
 export default defineConfig({
@@ -309,6 +390,8 @@ export default defineConfig({
     preferredTsconfigPath: './tsconfig.build.json',
 });
 ```
+
+### Declaration File Extensions
 
 Declaration file extensions follow the same pattern as JavaScript files:
 
@@ -322,7 +405,21 @@ Declaration file extensions follow the same pattern as JavaScript files:
 
 By default, Bunup treats all dependencies from your `package.json` (`dependencies` and `peerDependencies`) as external. This means they won't be included in your bundle.
 
+### Specifying External Dependencies
+
 You can explicitly mark additional packages as external:
+
+#### In the CLI
+
+```bash
+# Single external dependency
+bunup src/index.ts --external lodash
+
+# Multiple external dependencies (comma-separated, no spaces)
+bunup src/index.ts --external lodash,react,react-dom
+```
+
+#### In a Configuration File
 
 ```typescript
 export default defineConfig({
@@ -331,7 +428,17 @@ export default defineConfig({
 });
 ```
 
-You can also force include specific dependencies that would otherwise be external:
+### Including Specific External Dependencies
+
+You can force include specific dependencies that would otherwise be external:
+
+#### In the CLI
+
+```bash
+bunup src/index.ts --external lodash --no-external lodash/merge
+```
+
+#### In a Configuration File
 
 ```typescript
 export default defineConfig({
@@ -345,38 +452,80 @@ Both `external` and `noExternal` support string patterns and regular expressions
 
 ## Code Splitting
 
-Bunup supports code splitting for the ESM format:
+Code splitting allows Bunup to split your code into multiple chunks for better performance and caching.
 
-```typescript
-export default defineConfig({
-    entry: ['src/index.ts'],
-    format: ['esm'],
-    splitting: true, // Default is true for ESM
-});
+### Default Behavior
+
+- Code splitting is **enabled by default** for ESM format
+- Code splitting is **disabled by default** for CJS and IIFE formats
+
+### Configuring Code Splitting
+
+You can explicitly enable or disable code splitting:
+
+#### In the CLI
+
+```bash
+# Enable code splitting
+bunup src/index.ts --splitting
+
+# Disable code splitting
+bunup src/index.ts --splitting=false
 ```
 
-Code splitting is enabled by default for ESM format and disabled for CJS and IIFE formats. You can explicitly enable or disable it:
+#### In a Configuration File
 
 ```typescript
 export default defineConfig({
     entry: ['src/index.ts'],
     format: ['esm', 'cjs'],
-    splitting: false, // Disable code splitting for all formats
+    // Enable for all formats
+    splitting: true,
+
+    // Or disable for all formats
+    // splitting: false,
 });
 ```
 
 ## Minification
 
-Bunup provides several minification options:
+Bunup provides several minification options to reduce the size of your output files.
+
+### Basic Minification
+
+To enable all minification options:
+
+```bash
+# CLI
+bunup src/index.ts --minify
+
+# Configuration file
+export default defineConfig({
+    entry: ['src/index.ts'],
+    minify: true,
+});
+```
+
+### Granular Minification Control
+
+You can configure individual minification options:
+
+#### In the CLI
+
+```bash
+# Minify whitespace only
+bunup src/index.ts --minify-whitespace
+
+# Minify whitespace and syntax, but not identifiers
+bunup src/index.ts --minify-whitespace --minify-syntax
+```
+
+#### In a Configuration File
 
 ```typescript
 export default defineConfig({
     entry: ['src/index.ts'],
-
-    // Enable all minification options
-    minify: true,
-
-    // Or configure individual options
+    // Configure individual options
     minifyWhitespace: true,
     minifyIdentifiers: false,
     minifySyntax: true,
@@ -389,17 +538,102 @@ The `minify` option is a shorthand that enables all three specific options. If y
 
 Bunup can watch your files for changes and rebuild automatically:
 
-```typescript
+```bash
+# CLI
+bunup src/index.ts --watch
+
+# Configuration file
 export default defineConfig({
     entry: ['src/index.ts'],
     watch: true,
 });
 ```
 
-Or use the CLI flag:
+In watch mode, Bunup will monitor your source files and their dependencies, rebuilding only what's necessary when files change.
+
+## Target Environments
+
+Bunup allows you to specify the target environment for your bundle:
 
 ```bash
-bunup src/index.ts --watch
+# CLI
+bunup src/index.ts --target browser
+
+# Configuration file
+export default defineConfig({
+    entry: ['src/index.ts'],
+    target: 'browser',
+});
 ```
 
-In watch mode, Bunup will monitor your source files and their dependencies, rebuilding only what's necessary when files change.
+Available targets:
+
+- `node` (default): Optimized for Node.js
+- `browser`: Optimized for browsers
+- `bun`: Optimized for the Bun runtime
+
+## Output Directory
+
+You can specify where Bunup should output the bundled files:
+
+```bash
+# CLI
+bunup src/index.ts --out-dir build
+
+# Configuration file
+export default defineConfig({
+    entry: ['src/index.ts'],
+    outDir: 'build',
+});
+```
+
+The default output directory is `dist`.
+
+## Cleaning the Output Directory
+
+By default, Bunup cleans the output directory before each build. You can disable this behavior:
+
+```bash
+# CLI
+bunup src/index.ts --clean=false
+
+# Configuration file
+export default defineConfig({
+    entry: ['src/index.ts'],
+    clean: false,
+});
+```
+
+## Named Configurations
+
+You can give your build configurations names for better logging:
+
+```bash
+# CLI
+bunup src/index.ts --name my-library
+
+# Configuration file
+export default defineConfig({
+    name: 'my-library',
+    entry: ['src/index.ts'],
+});
+```
+
+This is especially useful when you have multiple configurations:
+
+```typescript
+export default defineConfig([
+    {
+        name: 'node-build',
+        entry: ['src/index.ts'],
+        format: ['cjs'],
+        target: 'node',
+    },
+    {
+        name: 'browser-build',
+        entry: ['src/index.ts'],
+        format: ['esm', 'iife'],
+        target: 'browser',
+    },
+]);
+```
