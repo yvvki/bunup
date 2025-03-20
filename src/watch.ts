@@ -36,14 +36,14 @@ export async function watch(
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
     let isRebuilding = false;
 
-    const triggerRebuild = async (changedFile: string) => {
+    const triggerRebuild = async () => {
         if (isRebuilding) return;
         isRebuilding = true;
         try {
             await build(
                 {
                     ...options,
-                    entry: [changedFile],
+                    entry: normalizedEntry.map(entry => entry.path),
                     clean: false,
                 },
                 rootDir,
@@ -63,10 +63,12 @@ export async function watch(
         if (debounceTimer) {
             clearTimeout(debounceTimer);
         }
-        debounceTimer = setTimeout(() => triggerRebuild(changedFile), 300);
+        debounceTimer = setTimeout(() => triggerRebuild(), 300);
     });
 
     watcher.on('error', error => {
         throw new BunupWatchError(`Watcher error: ${parseErrorMessage(error)}`);
     });
+
+    await triggerRebuild();
 }
