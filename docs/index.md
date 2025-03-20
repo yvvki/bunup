@@ -25,8 +25,6 @@ Bunup handles various file types:
 - Data files (`.json`, `.toml`, `.txt`) - Parsed and inlined automatically
 - Assets (images, fonts, etc.) - Handled as external files
 
-Powered by Bun for fast parsing, transpilation and bundling.
-
 ## Prerequisites
 
 Bunup requires [Bun](https://bun.sh) to be installed on your system. Bun is a fast all-in-one JavaScript runtime that powers Bunup's exceptional performance.
