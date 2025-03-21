@@ -184,24 +184,25 @@ export default defineConfig([
 
 Bunup supports various command-line options:
 
-| Option                  | Alias | Description                                    | Default          |
-| ----------------------- | ----- | ---------------------------------------------- | ---------------- |
-| `--entry <path>`        |       | Entry file path                                | `[]`             |
-| `--entry.<name> <path>` |       | Named entry file path                          | -                |
-| `--out-dir <dir>`       | `-o`  | Output directory                               | `dist`           |
-| `--format <formats>`    | `-f`  | Output formats (comma-separated: esm,cjs,iife) | `cjs`            |
-| `--minify`              | `-m`  | Enable all minification options                | `false`          |
-| `--minify-whitespace`   | `-mw` | Minify whitespace                              | `false`          |
-| `--minify-identifiers`  | `-mi` | Minify identifiers                             | `false`          |
-| `--minify-syntax`       | `-ms` | Minify syntax                                  | `false`          |
-| `--watch`               | `-w`  | Watch mode                                     | `false`          |
-| `--dts`                 | `-d`  | Generate TypeScript declarations               | `false`          |
-| `--external <deps>`     | `-e`  | External dependencies (comma-separated)        | `[]`             |
-| `--no-external <deps>`  | `-ne` | Force include dependencies (comma-separated)   | -                |
-| `--target <target>`     | `-t`  | Target environment (node, browser, bun)        | `node`           |
-| `--clean`               | `-c`  | Clean output directory before build            | `true`           |
-| `--splitting`           | `-s`  | Enable code splitting                          | Format dependent |
-| `--name <name>`         | `-n`  | Name for this build configuration              | -                |
+| Option                  | Alias | Description                                        | Default          |
+| ----------------------- | ----- | -------------------------------------------------- | ---------------- |
+| `--entry <path>`        |       | Entry file path                                    | `[]`             |
+| `--entry.<name> <path>` |       | Named entry file path                              | -                |
+| `--out-dir <dir>`       | `-o`  | Output directory                                   | `dist`           |
+| `--format <formats>`    | `-f`  | Output formats (comma-separated: esm,cjs,iife)     | `cjs`            |
+| `--minify`              | `-m`  | Enable all minification options                    | `false`          |
+| `--minify-whitespace`   | `-mw` | Minify whitespace                                  | `false`          |
+| `--minify-identifiers`  | `-mi` | Minify identifiers                                 | `false`          |
+| `--minify-syntax`       | `-ms` | Minify syntax                                      | `false`          |
+| `--watch`               | `-w`  | Watch mode                                         | `false`          |
+| `--dts`                 | `-d`  | Generate TypeScript declarations                   | `false`          |
+| `--external <deps>`     | `-e`  | External dependencies (comma-separated)            | `[]`             |
+| `--no-external <deps>`  | `-ne` | Force include dependencies (comma-separated)       | -                |
+| `--target <target>`     | `-t`  | Target environment (node, browser, bun)            | `node`           |
+| `--clean`               | `-c`  | Clean output directory before build                | `true`           |
+| `--splitting`           | `-s`  | Enable code splitting                              | Format dependent |
+| `--sourcemap <type>`    | `-sm` | Sourcemap generation (none,linked,external,inline) | `none`           |
+| `--name <name>`         | `-n`  | Name for this build configuration                  | -                |
 
 ## Entry Points
 
