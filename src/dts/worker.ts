@@ -43,6 +43,7 @@ export async function runDtsInWorker(
 ): Promise<void> {
     return new Promise((resolve, reject) => {
         // Create a copy of options without the onBuildEnd function to avoid 'The object can not be cloned' error
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {onBuildEnd, ...optionsWithoutCallbacks} = options;
 
         const workerData: DtsWorkerData = {
