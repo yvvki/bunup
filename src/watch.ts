@@ -48,6 +48,7 @@ export async function watch(
                 },
                 rootDir,
             );
+            options.onBuildEnd?.();
         } catch (error) {
             throw new BunupWatchError(
                 `Build failed: ${parseErrorMessage(error)}`,

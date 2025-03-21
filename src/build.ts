@@ -1,5 +1,5 @@
 import {runDtsInWorker} from './dts/worker';
-import {BunupBuildError, BunupDTSBuildError} from './errors';
+import {BunupBuildError, BunupDTSBuildError, parseErrorMessage} from './errors';
 import {
     getEntryNamingFormat,
     normalizeEntryToProcessableEntries,
@@ -94,7 +94,7 @@ export async function build(
             );
         } catch (error) {
             throw new BunupDTSBuildError(
-                'DTS build process encountered errors',
+                `DTS build process encountered errors: ${parseErrorMessage(error)}`,
             );
         }
     }

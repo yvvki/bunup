@@ -42,11 +42,14 @@ export async function runDtsInWorker(
     packageType: string | undefined,
 ): Promise<void> {
     return new Promise((resolve, reject) => {
+        // Create a copy of options without the onBuildEnd function to avoid 'The object can not be cloned' error
+        const {onBuildEnd, ...optionsWithoutCallbacks} = options;
+
         const workerData: DtsWorkerData = {
             rootDir,
             entries,
             formats,
-            options,
+            options: optionsWithoutCallbacks,
             packageType,
         };
 

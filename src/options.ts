@@ -166,6 +166,14 @@ export interface BunupOptions {
      * sourcemap: 'linked'
      */
     sourcemap?: Sourcemap;
+    /**
+     * A callback function that runs after the build process completes
+     * This can be used for custom post-build operations like copying files,
+     * running additional tools, or logging build information
+     *
+     * If watch mode is enabled, this callback runs after each rebuild
+     */
+    onBuildEnd?: () => void | Promise<void>;
 }
 
 export const DEFAULT_OPTIONS: Partial<BunupOptions> = {

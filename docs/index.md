@@ -627,6 +627,27 @@ export default defineConfig({
 });
 ```
 
+## Build Callbacks
+
+Bunup provides callback functions that allow you to execute custom logic during the build process.
+
+### onBuildEnd
+
+The `onBuildEnd` callback runs after the build process completes. This is useful for performing custom post-build operations:
+
+```typescript
+export default defineConfig({
+    entry: ['src/index.ts'],
+    onBuildEnd: () => {
+        console.log('Build completed successfully!');
+        // Perform post-build operations here
+        // e.g., copying files, running additional tools, etc.
+    },
+});
+```
+
+In watch mode, the `onBuildEnd` callback is executed after each successful rebuild.
+
 ## Named Configurations
 
 You can give your build configurations names for better logging:

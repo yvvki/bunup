@@ -69,6 +69,7 @@ async function handleBuild(options: BunupOptions, rootDir: string) {
         await watch(options, rootDir);
     } else {
         await build(options, rootDir);
+        options.onBuildEnd?.();
     }
 }
 
