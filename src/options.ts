@@ -3,6 +3,7 @@ import {BunBuildOptions} from './types';
 export type Format = 'esm' | 'cjs' | 'iife';
 export type Target = 'bun' | 'node' | 'browser';
 export type External = string[];
+export type Sourcemap = 'none' | 'linked' | 'external' | 'inline';
 
 export type Entry = string[] | Record<string, string>;
 
@@ -153,6 +154,18 @@ export interface BunupOptions {
      * Defaults to true if not specified
      */
     clean?: boolean;
+    /**
+     * Specifies the type of sourcemap to generate
+     * Can be 'none', 'linked', 'external', or 'inline'
+     *
+     * @see https://bun.sh/docs/bundler#sourcemap
+     *
+     * @default 'none'
+     *
+     * @example
+     * sourcemap: 'linked'
+     */
+    sourcemap?: Sourcemap;
 }
 
 export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
@@ -165,6 +178,7 @@ export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
     target: 'node',
     external: [],
     clean: true,
+    sourcemap: 'none',
 };
 
 export function createDefaultBunBuildOptions(
@@ -176,6 +190,7 @@ export function createDefaultBunBuildOptions(
         minify: createMinifyOptions(options),
         target: options.target,
         splitting: options.splitting,
+        sourcemap: options.sourcemap,
     };
 }
 

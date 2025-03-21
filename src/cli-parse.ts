@@ -58,6 +58,10 @@ const optionConfigs: Partial<
     watch: {flags: ['w', 'watch'], handler: makeBooleanHandler('watch')},
     dts: {flags: ['d', 'dts'], handler: makeBooleanHandler('dts')},
     external: {flags: ['e', 'external'], handler: makeArrayHandler('external')},
+    sourcemap: {
+        flags: ['sm', 'sourcemap'],
+        handler: makeStringHandler('sourcemap'),
+    },
     target: {flags: ['t', 'target'], handler: makeStringHandler('target')},
     minifyWhitespace: {
         flags: ['mw', 'minify-whitespace'],

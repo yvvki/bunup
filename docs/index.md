@@ -532,6 +532,30 @@ export default defineConfig({
 
 The `minify` option is a shorthand that enables all three specific options. If you set individual options, they take precedence over the `minify` setting.
 
+## Source Maps
+
+Bunup can generate source maps for your bundled code:
+
+```bash
+# CLI
+bunup src/index.ts --sourcemap linked
+
+# Configuration file
+export default defineConfig({
+    entry: ['src/index.ts'],
+    sourcemap: 'linked',
+});
+```
+
+Available sourcemap values:
+
+- `none`
+- `linked`
+- `external`
+- `inline`
+
+For detailed explanations of these values, see the [Bun documentation on source maps](https://bun.sh/docs/bundler#sourcemap).
+
 ## Watch Mode
 
 Bunup can watch your files for changes and rebuild automatically:
