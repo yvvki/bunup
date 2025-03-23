@@ -10,7 +10,7 @@ import {BunupDTSBuildError, parseErrorMessage} from '../errors';
 import {ProcessableEntry} from '../helpers/entry';
 import {logger} from '../logger';
 import {BunupOptions, Format} from '../options';
-import {formatTime, getDefaultDtsExtention} from '../utils';
+import {formatFileSize, formatTime, getDefaultDtsExtention} from '../utils';
 import {generateDts} from './index';
 
 // Global variable to share between main and worker threads
@@ -126,7 +126,13 @@ if (!isMainThread && parentPort) {
 
                                 await Bun.write(outputPath, content);
 
-                                logger.progress(`DTS`, outputRelativePath);
+                                const fileSize = Bun.file(outputPath).size || 0;
+
+                                logger.progress(
+                                    `DTS`,
+                                    outputRelativePath,
+                                    formatFileSize(fileSize),
+                                );
                             }),
                         );
                     }),

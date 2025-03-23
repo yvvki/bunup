@@ -12,6 +12,7 @@ import {BunupOptions, createDefaultBunBuildOptions, Format} from './options';
 import {externalPlugin} from './plugins/external';
 import {BunPlugin} from './types';
 import {
+    formatFileSize,
     formatTime,
     getDefaultOutputExtension,
     getResolvedSplitting,
@@ -132,8 +133,12 @@ async function buildEntry(
         throw new BunupBuildError(`Build failed for ${entry} (${fmt})`);
     }
 
+    const outputPath = `${options.outDir}/${entry.name}${extension}`;
+    const fileSize = Bun.file(outputPath).size || 0;
+
     logger.progress(
         getLoggerProgressLabel(fmt, options.name),
-        `${options.outDir}/${entry.name}${extension}`,
+        outputPath,
+        formatFileSize(fileSize),
     );
 }

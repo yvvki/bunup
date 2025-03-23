@@ -8,6 +8,7 @@ interface LogColors {
     error: ColorCode;
     progress: Record<FormatType, ColorCode>;
     default: ColorCode;
+    size: ColorCode;
 }
 
 export const logger = {
@@ -25,6 +26,7 @@ export const logger = {
             DTS: '75',
         },
         default: '255',
+        size: '72',
     } as LogColors,
 
     labels: {
@@ -34,10 +36,19 @@ export const logger = {
         error: 'ERROR',
     },
 
-    formatMessage(colorCode: string, label: string, message: string): string {
+    formatMessage(
+        colorCode: string,
+        label: string,
+        message: string,
+        size?: string,
+    ): string {
         const padding = ' '.repeat(
             Math.max(0, this.MAX_LABEL_LENGTH - label.length),
         );
+        if (size) {
+            const [path, ...rest] = message.split(' ');
+            return `\x1b[38;5;${colorCode}m[${label}]\x1b[0m ${padding}${path} \x1b[38;5;${this.colors.size}m${size}\x1b[0m ${rest.join(' ')}`;
+        }
         return `\x1b[38;5;${colorCode}m[${label}]\x1b[0m ${padding}${message}`;
     },
 
@@ -60,7 +71,7 @@ export const logger = {
         console.error(this.formatMessage(this.colors.error, label, message));
     },
 
-    progress(label: FormatType, message: string): void {
+    progress(label: FormatType, message: string, size?: string): void {
         const labelStr = String(label);
         let colorCode = this.colors.default;
 
@@ -70,7 +81,7 @@ export const logger = {
                 break;
             }
         }
-        console.log(this.formatMessage(colorCode, labelStr, message));
+        console.log(this.formatMessage(colorCode, labelStr, message, size));
     },
 };
 
