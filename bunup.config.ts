@@ -1,6 +1,6 @@
-import {defineConfig} from 'bunup';
+import {defineConfig, type Options} from 'bunup';
 
-const commonOptions = {
+const COMMON_OPTIONS: Partial<Options> = {
     outDir: 'build',
     minify: true,
     splitting: true,
@@ -8,19 +8,19 @@ const commonOptions = {
 
 export default defineConfig([
     {
-        ...commonOptions,
+        ...COMMON_OPTIONS,
         entry: ['./src/index.ts'],
         format: ['cjs', 'esm'],
         dts: true,
     },
     {
-        ...commonOptions,
+        ...COMMON_OPTIONS,
         name: 'cli',
         entry: ['./src/cli.ts'],
         format: ['esm'],
     },
     {
-        ...commonOptions,
+        ...COMMON_OPTIONS,
         name: 'dts-worker',
         format: ['cjs'],
         entry: {
