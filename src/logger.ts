@@ -15,18 +15,18 @@ export const logger = {
     MAX_LABEL_LENGTH: 5,
 
     colors: {
-        cli: '183',
-        info: '240',
-        warn: '221',
-        error: '203',
+        cli: '147', // Reduced from 183 (bright cyan) to 147 (softer cyan)
+        info: '245', // Increased from 240 (dark gray) to 245 (lighter gray)
+        warn: '179', // Reduced from 221 (bright yellow) to 179 (softer yellow)
+        error: '174', // Reduced from 203 (bright red) to 174 (softer red)
         progress: {
-            ESM: '214',
-            CJS: '114',
-            IIFE: '105',
-            DTS: '75',
+            ESM: '172', // Reduced from 214 (bright orange) to 172 (softer orange)
+            CJS: '108', // Reduced from 114 (bright green) to 108 (softer green)
+            IIFE: '146', // Reduced from 105 (bright purple) to 146 (softer purple)
+            DTS: '110', // Changed from 75 (teal) to 110 (softer blue-green)
         },
-        default: '255',
-        size: '72',
+        default: '252', // Reduced from 255 (bright white) to 252 (softer white)
+        size: '65', // Reduced from 72 (bright green) to 65 (softer green)
     } as LogColors,
 
     labels: {
