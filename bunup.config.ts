@@ -1,30 +1,30 @@
 import {defineConfig} from 'bunup';
 
+const commonOptions = {
+    outDir: 'build',
+    minify: true,
+    splitting: true,
+};
+
 export default defineConfig([
     {
-        outDir: 'build',
+        ...commonOptions,
         entry: ['./src/index.ts'],
         format: ['cjs', 'esm'],
         dts: true,
-        minify: true,
-        splitting: true,
     },
     {
+        ...commonOptions,
         name: 'cli',
-        outDir: 'build',
         entry: ['./src/cli.ts'],
         format: ['esm'],
-        minify: true,
-        splitting: true,
     },
     {
+        ...commonOptions,
         name: 'dts-worker',
-        outDir: 'build',
         format: ['cjs'],
         entry: {
             dtsWorker: './src/dts/worker.ts',
         },
-        minify: true,
-        splitting: true,
     },
 ]);
