@@ -30,7 +30,6 @@ export async function build(
     }
 
     const startTime = performance.now();
-    logger.cli('Build started');
 
     const packageJson = loadPackageJson(rootDir);
     const packageType = packageJson?.type as string | undefined;

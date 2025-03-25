@@ -41,6 +41,8 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
             if (options.clean) cleanOutDir(rootDir, options.outDir);
         }
 
+        logger.cli('Build started');
+
         await Promise.all(
             configs.map(async ({options, rootDir}) => {
                 const mergedOptions = {
