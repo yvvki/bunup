@@ -77,8 +77,6 @@ export default defineConfig({
 
 For complete documentation, visit [the full documentation](https://bunup.arshadyaseen.com/).
 
-For options API reference, visit [the API documentation](https://tsdocs.dev/docs/bunup/latest/interfaces/_internal_.BunupOptions.html).
-
 ## Contributing
 
 For guidelines on contributing, please read the [contributing guide](https://github.com/arshad-yaseen/bunup/blob/main/CONTRIBUTING.md).
