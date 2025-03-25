@@ -1,12 +1,12 @@
 {
-      "name": "bunup-test",
-      "version": "1.0.0",
-      "description": "Test file for Bunup bundler",
-      "main": "index.js",
-      "author": "Bunup Team",
-      "license": "MIT",
-      "dependencies": {
-            "example-package": "^1.0.0"
-      },
-      "keywords": ["test", "bundle", "json"]
+        "name": "bunup-test",
+        "version": "1.0.0",
+        "description": "Test file for Bunup bundler",
+        "main": "index.js",
+        "author": "Bunup Team",
+        "license": "MIT",
+        "dependencies": {
+                "example-package": "^1.0.0"
+        },
+        "keywords": ["test", "bundle", "json"]
 }

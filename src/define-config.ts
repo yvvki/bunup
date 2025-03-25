@@ -5,7 +5,7 @@ type DefineConfigOption = WithOptional<BunupOptions, 'outDir' | 'format'>;
 type DefineConfigOptions = DefineConfigOption | DefineConfigOption[];
 
 export function defineConfig(
-      options: DefineConfigOptions,
+        options: DefineConfigOptions,
 ): DefineConfigOptions {
-      return options;
+        return options;
 }
