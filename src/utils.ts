@@ -81,3 +81,9 @@ export function formatFileSize(bytes: number): string {
 
     return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
 }
+
+export function getShortFilePath(filePath: string, maxLength = 3): string {
+    const fileParts = filePath.split('/');
+    const shortPath = fileParts.slice(-maxLength).join('/');
+    return shortPath;
+}

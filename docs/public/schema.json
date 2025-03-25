@@ -129,7 +129,6 @@
                     "description": "Type of sourcemap to generate."
                 }
             },
-            "required": ["entry", "outDir", "format"],
             "additionalProperties": false
         }
     }

@@ -5,6 +5,7 @@ import {isolatedDeclaration} from 'oxc-transform';
 
 import {BunupDTSBuildError} from '../errors';
 import {logger} from '../logger';
+import {getShortFilePath} from '../utils';
 
 export function validateInputs(
     rootDir: string,
@@ -58,8 +59,7 @@ export async function validateFilesUsedToBundleDts(
                           )
                         : '';
 
-                    const fileParts = tsFile.split('/');
-                    const shortPath = fileParts.slice(-3).join('/');
+                    const shortPath = getShortFilePath(tsFile);
                     const errorMessage = `${shortPath}${position}: ${formatDtsErrorMessage(error.message)}`;
 
                     logger.warn(errorMessage);

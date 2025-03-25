@@ -13,13 +13,17 @@ import {BunupOptions, DEFAULT_OPTIONS} from './options';
 import './runtime';
 
 import {validateFilesUsedToBundleDts} from './dts/validation';
+import {getShortFilePath} from './utils';
 import {watch} from './watch';
 
 export const allFilesUsedToBundleDts = new Set<string>();
 
 export async function main(args: string[] = Bun.argv.slice(2)) {
     const cliOptions = parseCliOptions(args);
-    const configs = await loadConfigs(process.cwd());
+    const {configs, configFilePath} = await loadConfigs(process.cwd());
+
+    logger.cli(`Using config file: ${getShortFilePath(configFilePath, 2)}`);
+
     const rootDir = process.cwd();
 
     if (cliOptions.watch) {

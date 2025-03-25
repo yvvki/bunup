@@ -5,10 +5,12 @@ import {BunupBuildError, parseErrorMessage} from './errors';
 import {logger} from './logger';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
 
-export async function loadConfigs(
-    cwd: string,
-): Promise<{options: BunupOptions; rootDir: string}[]> {
+export async function loadConfigs(cwd: string): Promise<{
+    configs: {options: BunupOptions; rootDir: string}[];
+    configFilePath: string;
+}> {
     const configs: {options: BunupOptions; rootDir: string}[] = [];
+    let configFilePath = '';
 
     for (const ext of [
         '.ts',
@@ -25,10 +27,13 @@ export async function loadConfigs(
             if (!fs.existsSync(filePath)) continue;
 
             let content;
+            configFilePath = filePath;
 
             if (ext === '.json' || ext === '.jsonc') {
                 const text = fs.readFileSync(filePath, 'utf8');
-                content = JSON.parse(text);
+                const parsed = JSON.parse(text);
+
+                content = parsed.bunup || parsed;
             } else {
                 const imported = await import(`file://${filePath}`);
                 content = imported.default || imported;
@@ -59,11 +64,12 @@ export async function loadConfigs(
                 `Failed to load config from ${filePath}: ${parseErrorMessage(error)}`,
             );
         }
-
-        if (configs.length > 0) break;
     }
 
-    return configs;
+    return {
+        configs,
+        configFilePath,
+    };
 }
 
 export function loadPackageJson(cwd: string): Record<string, unknown> | null {
