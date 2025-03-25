@@ -11,12 +11,6 @@ Bunup outperforms other popular bundlers by a significant margin:
 
 _Lower build time is better. Benchmark run on the same code with identical output formats._
 
-## Prerequisites
-
-Bunup requires [Bun](https://bun.sh) to be installed on your system. Bun is a fast all-in-one JavaScript runtime that powers Bunup's exceptional performance. Without Bun, Bunup cannot execute as it leverages Bun's bundling capabilities and runtime environment.
-
-To install Bun, please visit the [official Bun installation page](https://bun.sh/docs/installation).
-
 ## Quick Start
 
 ### Installation
