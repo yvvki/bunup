@@ -11,12 +11,16 @@ Bunup outperforms other popular bundlers by a significant margin:
 
 _Lower build time is better. Benchmark run on the same code with identical output formats._
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Installation
 
 ```bash
-npm install --save-dev bunup
+npm i bunup -D
+# Or Yarn
+yarn add bunup --dev
+# Or pnpm
+pnpm add bunup -D
 ```
 
 ### Basic Usage
@@ -57,7 +61,7 @@ Then run:
 npm run build
 ```
 
-### Configuration File
+### ⚙️ Configuration File
 
 Create a `bunup.config.ts` file for more control:
 
@@ -73,11 +77,11 @@ export default defineConfig({
 });
 ```
 
-## Documentation
+## 📚 Documentation
 
 For complete documentation, visit [the full documentation](https://bunup.arshadyaseen.com/).
 
-## Contributing
+## ❤️ Contributing
 
 For guidelines on contributing, please read the [contributing guide](https://github.com/arshad-yaseen/bunup/blob/main/CONTRIBUTING.md).
 
