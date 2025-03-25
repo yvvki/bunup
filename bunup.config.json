@@ -1,0 +1,11 @@
+[
+    {
+        "$schema": "./schema.json",
+        "outDir": "build",
+        "splitting": true,
+        "entry": ["./src/index.ts"],
+        "dts": {
+            "entry": ["./src/index.ts"]
+        }
+    }
+]
