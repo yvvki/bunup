@@ -64,7 +64,7 @@ Create a simple TypeScript file:
 ```typescript
 // src/index.ts
 export function greet(name: string): string {
-    return `Hello, ${name}!`;
+      return `Hello, ${name}!`;
 }
 ```
 
@@ -82,10 +82,10 @@ Add a build script to your `package.json`:
 
 ```json
 {
-    "name": "my-package",
-    "scripts": {
-        "build": "bunup src/index.ts --format esm,cjs --dts"
-    }
+      "name": "my-package",
+      "scripts": {
+            "build": "bunup src/index.ts --format esm,cjs --dts"
+      }
 }
 ```
 
@@ -103,11 +103,11 @@ Create a `bunup.config.ts` file for more control:
 import {defineConfig} from 'bunup';
 
 export default defineConfig({
-    entry: ['src/index.ts'],
-    outDir: 'dist',
-    format: ['esm', 'cjs'],
-    dts: true,
-    minify: true,
+      entry: ['src/index.ts'],
+      outDir: 'dist',
+      format: ['esm', 'cjs'],
+      dts: true,
+      minify: true,
 });
 ```
 
@@ -132,32 +132,32 @@ Example configuration:
 import {defineConfig} from 'bunup';
 
 export default defineConfig({
-    // Name for this build configuration (used in logs)
-    name: 'my-library',
+      // Name for this build configuration (used in logs)
+      name: 'my-library',
 
-    // Entry points (can be an array or object)
-    entry: ['src/index.ts', 'src/cli.ts'],
+      // Entry points (can be an array or object)
+      entry: ['src/index.ts', 'src/cli.ts'],
 
-    // Output directory
-    outDir: 'dist',
+      // Output directory
+      outDir: 'dist',
 
-    // Output formats
-    format: ['esm', 'cjs'],
+      // Output formats
+      format: ['esm', 'cjs'],
 
-    // TypeScript declaration generation
-    dts: true,
+      // TypeScript declaration generation
+      dts: true,
 
-    // Target environment
-    target: 'node',
+      // Target environment
+      target: 'node',
 
-    // Minification options
-    minify: true,
+      // Minification options
+      minify: true,
 
-    // External dependencies
-    external: ['react', 'react-dom'],
+      // External dependencies
+      external: ['react', 'react-dom'],
 
-    // Clean output directory before build
-    clean: true,
+      // Clean output directory before build
+      clean: true,
 });
 ```
 
@@ -165,18 +165,18 @@ You can also export an array of configurations:
 
 ```typescript
 export default defineConfig([
-    {
-        name: 'node',
-        entry: ['src/index.ts'],
-        format: ['cjs'],
-        target: 'node',
-    },
-    {
-        name: 'browser',
-        entry: ['src/index.ts'],
-        format: ['esm', 'iife'],
-        target: 'browser',
-    },
+      {
+            name: 'node',
+            entry: ['src/index.ts'],
+            format: ['cjs'],
+            target: 'node',
+      },
+      {
+            name: 'browser',
+            entry: ['src/index.ts'],
+            format: ['esm', 'iife'],
+            target: 'browser',
+      },
 ]);
 ```
 
@@ -186,15 +186,15 @@ If you prefer using a JSON configuration file (`bunup.config.json` or `bunup.con
 
 ```json
 {
-    "name": "my-library",
-    "entry": ["src/index.ts", "src/cli.ts"],
-    "outDir": "dist",
-    "format": ["esm", "cjs"],
-    "dts": true,
-    "target": "node",
-    "minify": true,
-    "external": ["react", "react-dom"],
-    "clean": true
+      "name": "my-library",
+      "entry": ["src/index.ts", "src/cli.ts"],
+      "outDir": "dist",
+      "format": ["esm", "cjs"],
+      "dts": true,
+      "target": "node",
+      "minify": true,
+      "external": ["react", "react-dom"],
+      "clean": true
 }
 ```
 
@@ -202,20 +202,20 @@ To define multiple configurations in JSON, use the `bunup` property with an arra
 
 ```json
 {
-    "bunup": [
-        {
-            "name": "node",
-            "entry": ["src/index.ts"],
-            "format": ["cjs"],
-            "target": "node"
-        },
-        {
-            "name": "browser",
-            "entry": ["src/index.ts"],
-            "format": ["esm", "iife"],
-            "target": "browser"
-        }
-    ]
+      "bunup": [
+            {
+                  "name": "node",
+                  "entry": ["src/index.ts"],
+                  "format": ["cjs"],
+                  "target": "node"
+            },
+            {
+                  "name": "browser",
+                  "entry": ["src/index.ts"],
+                  "format": ["esm", "iife"],
+                  "target": "browser"
+            }
+      ]
 }
 ```
 
@@ -223,9 +223,9 @@ For autocomplete and validation in your JSON configuration files, you can refere
 
 ```json
 {
-    "$schema": "https://bunup.arshadyaseen.com/schema.json",
-    "name": "my-library",
-    "entry": ["src/index.ts"]
+      "$schema": "https://bunup.arshadyaseen.com/schema.json",
+      "name": "my-library",
+      "entry": ["src/index.ts"]
 }
 ```
 
@@ -301,7 +301,7 @@ This will generate output files with the specified names (e.g., `dist/main.js` a
 
 ```typescript
 export default defineConfig({
-    entry: ['src/index.ts', 'src/cli.ts'],
+      entry: ['src/index.ts', 'src/cli.ts'],
 });
 ```
 
@@ -311,11 +311,11 @@ This will generate output files named after each input file.
 
 ```typescript
 export default defineConfig({
-    entry: {
-        main: 'src/index.ts',
-        cli: 'src/cli.ts',
-        utils: 'src/utils/index.ts',
-    },
+      entry: {
+            main: 'src/index.ts',
+            cli: 'src/cli.ts',
+            utils: 'src/utils/index.ts',
+      },
 });
 ```
 
@@ -356,12 +356,12 @@ bunup src/index.ts --format esm,cjs,iife
 
 ```typescript
 export default defineConfig({
-    entry: ['src/index.ts'],
-    // Single format
-    format: ['esm'],
+      entry: ['src/index.ts'],
+      // Single format
+      format: ['esm'],
 
-    // Or multiple formats
-    // format: ['esm', 'cjs', 'iife'],
+      // Or multiple formats
+      // format: ['esm', 'cjs', 'iife'],
 });
 ```
 
@@ -400,11 +400,11 @@ For more control, you can specify custom entry points for declarations:
 
 ```typescript
 export default defineConfig({
-    entry: ['src/index.ts', 'src/cli.ts'],
-    dts: {
-        // Only generate declarations for index.ts
-        entry: ['src/index.ts'],
-    },
+      entry: ['src/index.ts', 'src/cli.ts'],
+      dts: {
+            // Only generate declarations for index.ts
+            entry: ['src/index.ts'],
+      },
 });
 ```
 
@@ -414,16 +414,16 @@ You can use named entries for declarations:
 
 ```typescript
 export default defineConfig({
-    entry: {
-        main: 'src/index.ts',
-        cli: 'src/cli.ts',
-    },
-    dts: {
-        entry: {
-            // Generate types.d.ts from index.ts
-            types: 'src/index.ts',
-        },
-    },
+      entry: {
+            main: 'src/index.ts',
+            cli: 'src/cli.ts',
+      },
+      dts: {
+            entry: {
+                  // Generate types.d.ts from index.ts
+                  types: 'src/index.ts',
+            },
+      },
 });
 ```
 
@@ -433,9 +433,9 @@ You can specify a custom tsconfig file for declaration generation:
 
 ```typescript
 export default defineConfig({
-    entry: ['src/index.ts'],
-    dts: true,
-    preferredTsconfigPath: './tsconfig.build.json',
+      entry: ['src/index.ts'],
+      dts: true,
+      preferredTsconfigPath: './tsconfig.build.json',
 });
 ```
 
@@ -471,8 +471,8 @@ bunup src/index.ts --external lodash,react,react-dom
 
 ```typescript
 export default defineConfig({
-    entry: ['src/index.ts'],
-    external: ['lodash', 'react', '@some/package'],
+      entry: ['src/index.ts'],
+      external: ['lodash', 'react', '@some/package'],
 });
 ```
 
@@ -490,9 +490,9 @@ bunup src/index.ts --external lodash --no-external lodash/merge
 
 ```typescript
 export default defineConfig({
-    entry: ['src/index.ts'],
-    external: ['lodash'],
-    noExternal: ['lodash/merge'], // Include lodash/merge even though lodash is external
+      entry: ['src/index.ts'],
+      external: ['lodash'],
+      noExternal: ['lodash/merge'], // Include lodash/merge even though lodash is external
 });
 ```
 
@@ -525,13 +525,13 @@ bunup src/index.ts --splitting=false
 
 ```typescript
 export default defineConfig({
-    entry: ['src/index.ts'],
-    format: ['esm', 'cjs'],
-    // Enable for all formats
-    splitting: true,
+      entry: ['src/index.ts'],
+      format: ['esm', 'cjs'],
+      // Enable for all formats
+      splitting: true,
 
-    // Or disable for all formats
-    // splitting: false,
+      // Or disable for all formats
+      // splitting: false,
 });
 ```
 
@@ -572,11 +572,11 @@ bunup src/index.ts --minify-whitespace --minify-syntax
 
 ```typescript
 export default defineConfig({
-    entry: ['src/index.ts'],
-    // Configure individual options
-    minifyWhitespace: true,
-    minifyIdentifiers: false,
-    minifySyntax: true,
+      entry: ['src/index.ts'],
+      // Configure individual options
+      minifyWhitespace: true,
+      minifyIdentifiers: false,
+      minifySyntax: true,
 });
 ```
 
@@ -686,12 +686,12 @@ The `onBuildEnd` callback runs after the build process completes. This is useful
 
 ```typescript
 export default defineConfig({
-    entry: ['src/index.ts'],
-    onBuildEnd: () => {
-        console.log('Build completed successfully!');
-        // Perform post-build operations here
-        // e.g., copying files, running additional tools, etc.
-    },
+      entry: ['src/index.ts'],
+      onBuildEnd: () => {
+            console.log('Build completed successfully!');
+            // Perform post-build operations here
+            // e.g., copying files, running additional tools, etc.
+      },
 });
 ```
 
@@ -716,17 +716,17 @@ This is especially useful when you have multiple configurations:
 
 ```typescript
 export default defineConfig([
-    {
-        name: 'node-build',
-        entry: ['src/index.ts'],
-        format: ['cjs'],
-        target: 'node',
-    },
-    {
-        name: 'browser-build',
-        entry: ['src/index.ts'],
-        format: ['esm', 'iife'],
-        target: 'browser',
-    },
+      {
+            name: 'node-build',
+            entry: ['src/index.ts'],
+            format: ['cjs'],
+            target: 'node',
+      },
+      {
+            name: 'browser-build',
+            entry: ['src/index.ts'],
+            format: ['esm', 'iife'],
+            target: 'browser',
+      },
 ]);
 ```

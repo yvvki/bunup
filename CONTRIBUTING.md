@@ -14,24 +14,24 @@ Before you begin, make sure you have:
 
 1. **Fork the repository**
 
-    Start by forking the [Bunup repository](https://github.com/arshad-yaseen/bunup).
+      Start by forking the [Bunup repository](https://github.com/arshad-yaseen/bunup).
 
 2. **Clone your fork**
 
-    ```bash
-    git clone https://github.com/YOUR-USERNAME/bunup.git
-    cd bunup
-    ```
+      ```bash
+      git clone https://github.com/YOUR-USERNAME/bunup.git
+      cd bunup
+      ```
 
 3. **Install dependencies**
 
-    ```bash
-    pnpm install
-    ```
+      ```bash
+      pnpm install
+      ```
 
 4. **Set up the development environment**
 
-    Bunup uses itself to build itself! The development setup is already configured in the `bunup.config.ts` file.
+      Bunup uses itself to build itself! The development setup is already configured in the `bunup.config.ts` file.
 
 ## Development Workflow
 
@@ -91,56 +91,56 @@ pnpm format
 
 1. **Create a new branch**
 
-    ```bash
-    git checkout -b feature/your-feature-name
-    ```
+      ```bash
+      git checkout -b feature/your-feature-name
+      ```
 
 2. **Make your changes**
 
-    Implement your feature or bug fix.
+      Implement your feature or bug fix.
 
 3. **Commit your changes**
 
-    Bunup uses conventional commit messages. Please follow this format:
+      Bunup uses conventional commit messages. Please follow this format:
 
-    ```
-    type(scope): description
+      ```
+      type(scope): description
 
-    [optional body]
+      [optional body]
 
-    [optional footer]
-    ```
+      [optional footer]
+      ```
 
-    Types include:
+      Types include:
 
-    - `feat`: A new feature
-    - `fix`: A bug fix
-    - `docs`: Documentation changes
-    - `style`: Code style changes (formatting, etc.)
-    - `refactor`: Code changes that neither fix bugs nor add features
-    - `perf`: Performance improvements
-    - `test`: Adding or updating tests
-    - `chore`: Changes to the build process or auxiliary tools
+      - `feat`: A new feature
+      - `fix`: A bug fix
+      - `docs`: Documentation changes
+      - `style`: Code style changes (formatting, etc.)
+      - `refactor`: Code changes that neither fix bugs nor add features
+      - `perf`: Performance improvements
+      - `test`: Adding or updating tests
+      - `chore`: Changes to the build process or auxiliary tools
 
 4. **Push your changes**
 
-    ```bash
-    git push origin feature/your-feature-name
-    ```
+      ```bash
+      git push origin feature/your-feature-name
+      ```
 
 5. **Create a pull request**
 
-    Open a pull request against the `main` branch of the Bunup repository.
+      Open a pull request against the `main` branch of the Bunup repository.
 
-    In your PR description:
+      In your PR description:
 
-    - Clearly describe the changes and their purpose
-    - Reference any related issues
-    - Include screenshots or examples if applicable
+      - Clearly describe the changes and their purpose
+      - Reference any related issues
+      - Include screenshots or examples if applicable
 
 6. **Address review feedback**
 
-    Be responsive to review comments and make necessary changes.
+      Be responsive to review comments and make necessary changes.
 
 ## Documentation
 
@@ -171,11 +171,11 @@ Bunup focuses on performance. When contributing:
 Here's a brief overview of the project structure:
 
 - `src/` - Source code
-    - `cli.ts` - Command-line interface
-    - `build.ts` - Core build functionality
-    - `watch.ts` - Watch mode functionality
-    - `plugins/` - Bundler plugins
-    - `dts/` - TypeScript declaration file generation
+     - `cli.ts` - Command-line interface
+     - `build.ts` - Core build functionality
+     - `watch.ts` - Watch mode functionality
+     - `plugins/` - Bundler plugins
+     - `dts/` - TypeScript declaration file generation
 
 ## License
 
@@ -187,6 +187,6 @@ If you have any questions or need help, feel free to:
 
 - Open an issue on GitHub
 - Reach out to the maintainers:
-    - Arshad Yaseen (m@arshadyaseen.com)
+     - Arshad Yaseen (m@arshadyaseen.com)
 
 Thank you for contributing to make Bunup better!

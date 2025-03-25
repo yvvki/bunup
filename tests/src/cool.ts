@@ -1,3 +1,3 @@
 export function cool(name: string) {
-    return name;
+      return name;
 }
