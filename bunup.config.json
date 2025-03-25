@@ -1,6 +1,5 @@
 [
     {
-        "$schema": "./schema.json",
         "outDir": "build",
         "splitting": true,
         "entry": ["./src/index.ts"],
