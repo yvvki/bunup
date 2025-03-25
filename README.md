@@ -1,6 +1,6 @@
-![Og](https://bunup.arshadyaseen.com/og.png)
+# Bunup
 
-## Benchmarks
+⚡️ An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [Bun](https://bun.sh/) and [Oxc](https://oxc.rs).
 
 Bunup outperforms other popular bundlers by a significant margin:
 
