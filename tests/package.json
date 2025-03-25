@@ -1,11 +1,11 @@
 {
-        "name": "bunup-tests",
-        "private": true,
-        "version": "0.1.38",
-        "scripts": {
-                "build": "bunup"
-        },
-        "devDependencies": {
-                "bunup": "workspace:*"
-        }
+      "name": "bunup-tests",
+      "private": true,
+      "version": "0.1.38",
+      "scripts": {
+            "build": "bunup"
+      },
+      "devDependencies": {
+            "bunup": "workspace:*"
+      }
 }
