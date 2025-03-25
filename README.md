@@ -85,4 +85,4 @@ For complete documentation, visit [the full documentation](https://bunup.arshady
 
 For guidelines on contributing, please read the [contributing guide](https://github.com/arshad-yaseen/bunup/blob/main/CONTRIBUTING.md).
 
-We welcome contributions from the community to enhance Bunup's capabilities and make it even more powerful. ❤️
+We welcome contributions from the community to enhance Bunup's capabilities and make it even more powerful.
