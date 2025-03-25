@@ -39,20 +39,20 @@ Get started with Bunup in seconds - install, configure, and build your TypeScrip
 
 ::: code-group
 
-```bash [npm]
-npm install --save-dev bunup
-```
-
-```bash [yarn]
-yarn add --dev bunup
+```bash [bun]
+bun add --dev bunup
 ```
 
 ```bash [pnpm]
 pnpm add --save-dev bunup
 ```
 
-```bash [bun]
-bun add --dev bunup
+```bash [npm]
+npm install --save-dev bunup
+```
+
+```bash [yarn]
+yarn add --dev bunup
 ```
 
 :::
