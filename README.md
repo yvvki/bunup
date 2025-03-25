@@ -18,10 +18,13 @@ _Lower build time is better. Benchmark run on the same code with identical outpu
 ```bash
 # Using Bun
 bun add bunup -d
+
 # Using pnpm
 pnpm add bunup -D
+
 # Using npm
 npm i bunup -D
+
 # Using Yarn
 yarn add bunup --dev
 ```
