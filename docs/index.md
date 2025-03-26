@@ -221,7 +221,7 @@ To define multiple configurations in JSON, use the `bunup` property with an arra
 
 For autocomplete and validation in your JSON configuration files, you can reference the Bunup JSON schema:
 
-```json
+```json {2}
 {
       "$schema": "https://bunup.arshadyaseen.com/schema.json",
       "name": "my-library",
