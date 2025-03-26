@@ -1,9 +1,7 @@
-# bunup
-
 [![npm version](https://img.shields.io/npm/v/bunup.svg?style=flat-square)](https://www.npmjs.com/package/bunup)
 [![npm downloads](https://img.shields.io/npm/dm/bunup.svg?style=flat-square)](https://www.npmjs.com/package/bunup)
 
-An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [Bun](https://bun.sh) and [Oxc](https://oxc.rs/).
+![Banner](/banner.png)
 
 | Bundler       | Format   | Build Time  | Relative Speed       |
 | ------------- | -------- | ----------- | -------------------- |
