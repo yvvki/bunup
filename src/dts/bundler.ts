@@ -1,94 +1,25 @@
-import path from 'node:path';
-
 import {rollup, RollupBuild} from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
 import ts from 'typescript';
 
-import {allFilesUsedToBundleDts as importedFilesSet} from '../cli';
 import {BunupDTSBuildError, parseErrorMessage} from '../errors';
 import {getExternalPatterns, getNoExternalPatterns} from '../helpers/external';
 import {TsConfig} from '../helpers/load-tsconfig';
 import {loadPackageJson} from '../loaders';
 import {BunupOptions} from '../options';
-
-const getFilesUsedSet = (): Set<string> => {
-      return (
-            global.allFilesUsedToBundleDts ||
-            importedFilesSet ||
-            new Set<string>()
-      );
-};
+import {DtsMap} from './generator';
+import {gerVirtualFilesPlugin, VIRTUAL_FILES_PREFIX} from './virtual-files';
 
 export async function bundleDtsContent(
       entryFile: string,
-      dtsMap: Map<string, string>,
+      dtsMap: DtsMap,
       options: BunupOptions,
       rootDir: string,
       tsconfig: TsConfig,
 ): Promise<string> {
-      const virtualPrefix = '\0virtual:';
       const entryDtsPath = entryFile.replace(/\.tsx?$/, '.d.ts');
-      const virtualEntry = `${virtualPrefix}${entryDtsPath}`;
+      const virtualEntry = `${VIRTUAL_FILES_PREFIX}${entryDtsPath}`;
       const compilerOptions = tsconfig.data?.compilerOptions;
-
-      const virtualPlugin = {
-            name: 'bunup:virtual-dts',
-            resolveId(source: string, importer?: string) {
-                  if (source.startsWith(virtualPrefix)) return source;
-                  if (
-                        !importer?.startsWith(virtualPrefix) ||
-                        !source.startsWith('.')
-                  )
-                        return null;
-
-                  const importerPath = importer.slice(virtualPrefix.length);
-                  let resolvedPath = path.resolve(
-                        path.dirname(importerPath),
-                        source,
-                  );
-
-                  if (source === '.') {
-                        const indexPath = path.join(
-                              path.dirname(importerPath),
-                              'index.d.ts',
-                        );
-                        if (dtsMap.has(indexPath)) {
-                              return `${virtualPrefix}${indexPath}`;
-                        }
-
-                        resolvedPath = path.dirname(importerPath);
-                  }
-
-                  if (dtsMap.has(resolvedPath)) {
-                        return `${virtualPrefix}${resolvedPath}`;
-                  }
-
-                  const fullPath = `${resolvedPath}.d.ts`;
-                  if (dtsMap.has(fullPath)) {
-                        return `${virtualPrefix}${fullPath}`;
-                  }
-
-                  if (source.startsWith('.')) {
-                        const indexPath = path.join(resolvedPath, 'index.d.ts');
-                        if (dtsMap.has(indexPath)) {
-                              return `${virtualPrefix}${indexPath}`;
-                        }
-                  }
-
-                  return null;
-            },
-            load(id: string) {
-                  if (id.startsWith(virtualPrefix)) {
-                        const filePath = id.slice(virtualPrefix.length);
-                        const content = dtsMap.get(filePath);
-                        if (content) {
-                              getFilesUsedSet().add(filePath);
-                              return content;
-                        }
-                  }
-                  return null;
-            },
-      };
 
       const packageJson = loadPackageJson(rootDir);
       const externalPatterns = getExternalPatterns(options, packageJson);
@@ -110,7 +41,7 @@ export async function bundleDtsContent(
                         handler(warning);
                   },
                   plugins: [
-                        virtualPlugin,
+                        gerVirtualFilesPlugin(dtsMap),
                         dtsPlugin({
                               tsconfig: tsconfig.path,
                               compilerOptions: {
