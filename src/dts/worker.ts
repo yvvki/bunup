@@ -110,63 +110,52 @@ if (!isMainThread && parentPort) {
 
       logger.progress('DTS', 'Bundling types');
 
-      try {
-            (async () => {
-                  try {
-                        await Promise.all(
-                              entries.map(async entry => {
-                                    const content = await generateDts(
-                                          rootDir,
-                                          entry.path,
-                                          options,
-                                    );
+      (async () => {
+            try {
+                  await Promise.all(
+                        entries.map(async entry => {
+                              const content = await generateDts(
+                                    rootDir,
+                                    entry.path,
+                                    options,
+                              );
 
-                                    await Promise.all(
-                                          formats.map(async fmt => {
-                                                const extension =
-                                                      getDefaultDtsExtention(
-                                                            fmt,
-                                                            packageType,
-                                                      );
-                                                const outputRelativePath = `${options.outDir}/${entry.name}${extension}`;
-                                                const outputPath = `${rootDir}/${outputRelativePath}`;
-
-                                                await Bun.write(
-                                                      outputPath,
-                                                      content,
+                              await Promise.all(
+                                    formats.map(async fmt => {
+                                          const extension =
+                                                getDefaultDtsExtention(
+                                                      fmt,
+                                                      packageType,
                                                 );
+                                          const outputRelativePath = `${options.outDir}/${entry.name}${extension}`;
+                                          const outputPath = `${rootDir}/${outputRelativePath}`;
 
-                                                const fileSize =
-                                                      Bun.file(outputPath)
-                                                            .size || 0;
+                                          await Bun.write(outputPath, content);
 
-                                                logger.progress(
-                                                      `DTS`,
-                                                      outputRelativePath,
-                                                      formatFileSize(fileSize),
-                                                );
-                                          }),
-                                    );
-                              }),
-                        );
+                                          const fileSize =
+                                                Bun.file(outputPath).size || 0;
 
-                        const timeMs = performance.now() - startTime;
-                        parentPort?.postMessage({
-                              success: true,
-                              timeMs,
-                              filesUsed: [...workerFilesUsed],
-                        });
-                  } catch (error) {
-                        parentPort?.postMessage({
-                              success: false,
-                              error: parseErrorMessage(error),
-                        });
-                  }
-            })();
-      } catch (error) {
-            parentPort?.postMessage({
-                  success: false,
-                  error: parseErrorMessage(error),
-            });
-      }
+                                          logger.progress(
+                                                `DTS`,
+                                                outputRelativePath,
+                                                formatFileSize(fileSize),
+                                          );
+                                    }),
+                              );
+                        }),
+                  );
+
+                  const timeMs = performance.now() - startTime;
+                  parentPort?.postMessage({
+                        success: true,
+                        timeMs,
+                        filesUsed: [...workerFilesUsed],
+                  });
+            } catch (error) {
+                  parentPort?.postMessage({
+                        success: false,
+                        error: parseErrorMessage(error),
+                  });
+            }
+      })();
 }
