@@ -61,11 +61,7 @@ const handleError = (error: unknown, context?: string): void => {
             `\x1B[31m[${errorType}]\x1B[0m ${contextPrefix}${errorMessage}`,
       );
 
-      if (
-            process.env.NODE_ENV !== 'production' &&
-            error instanceof Error &&
-            error.stack
-      ) {
+      if (error instanceof Error && error.stack) {
             console.error(
                   '\x1B[2m' +
                         error.stack.split('\n').slice(1).join('\n') +

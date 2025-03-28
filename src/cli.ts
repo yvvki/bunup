@@ -22,7 +22,11 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
       const cliOptions = parseCliOptions(args);
       const {configs, configFilePath} = await loadConfigs(process.cwd());
 
-      logger.cli(`Using config file: ${getShortFilePath(configFilePath, 2)}`);
+      if (configFilePath) {
+            logger.cli(
+                  `Using config file: ${getShortFilePath(configFilePath, 2)}`,
+            );
+      }
 
       const rootDir = process.cwd();
 

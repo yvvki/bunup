@@ -1,3 +1,4 @@
+import {BUNUP_CLI_OPTIONS_URL} from './constants';
 import {BunupCLIError} from './errors';
 import {logger} from './logger';
 import {BunupOptions, Format} from './options';
@@ -36,6 +37,15 @@ function makeArrayHandler(optionName: keyof BunupOptions): CliOptionHandler {
                   );
             }
       };
+}
+
+function showHelp() {
+      console.log(
+            '\nBunup - An extremely fast, zero-config bundler for JavaScript and TypeScript, powered by Bun.\n',
+      );
+      console.log('For more information on available options, visit:');
+      console.log(`\x1b[36m\x1b[4m${BUNUP_CLI_OPTIONS_URL}\x1b[0m\n`);
+      process.exit(0);
 }
 
 const optionConfigs: Partial<
@@ -90,12 +100,25 @@ const optionConfigs: Partial<
       },
 };
 
+const specialOptions = {
+      help: {
+            flags: ['h', 'help'],
+            handler: () => showHelp(),
+      },
+};
+
 const flagToHandler: Record<string, CliOptionHandler> = {};
 for (const config of Object.values(optionConfigs)) {
       if (config) {
             for (const flag of config.flags) {
                   flagToHandler[flag] = config.handler;
             }
+      }
+}
+
+for (const config of Object.values(specialOptions)) {
+      for (const flag of config.flags) {
+            flagToHandler[flag] = config.handler;
       }
 }
 

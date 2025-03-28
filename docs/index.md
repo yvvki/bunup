@@ -254,6 +254,7 @@ Bunup supports various command-line options:
 | `--splitting`           | `-s`  | Enable code splitting                              | Format dependent |
 | `--sourcemap <type>`    | `-sm` | Sourcemap generation (none,linked,external,inline) | `none`           |
 | `--name <name>`         | `-n`  | Name for this build configuration                  | -                |
+| `--help`                | `-h`  | Display help information                           | -                |
 
 ## Entry Points
 
