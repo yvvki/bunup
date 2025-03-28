@@ -12,7 +12,8 @@ interface LogColors {
 }
 
 export const logger = {
-      MAX_LABEL_LENGTH: 5,
+      MAX_LABEL_LENGTH: 3,
+      MAX_MESSAGE_LENGTH: 20,
 
       colors: {
             cli: '147',
@@ -30,7 +31,7 @@ export const logger = {
       } as LogColors,
 
       labels: {
-            cli: 'BUNUP',
+            cli: 'CLI',
             info: 'INFO',
             warn: 'WARN',
             error: 'ERROR',
@@ -47,9 +48,12 @@ export const logger = {
             );
             if (size) {
                   const [path, ...rest] = message.split(' ');
-                  return `\x1b[38;5;${colorCode}m[${label}]\x1b[0m ${padding}${path} \x1b[38;5;${this.colors.size}m${size}\x1b[0m ${rest.join(' ')}`;
+                  const messagePadding = ' '.repeat(
+                        Math.max(0, this.MAX_MESSAGE_LENGTH - path.length),
+                  );
+                  return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${path}${messagePadding} \x1b[38;5;${this.colors.size}m${size}\x1b[0m ${rest.join(' ')}`;
             }
-            return `\x1b[38;5;${colorCode}m[${label}]\x1b[0m ${padding}${message}`;
+            return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${message}`;
       },
 
       cli(message: string): void {
