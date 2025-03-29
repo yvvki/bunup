@@ -1,0 +1,17 @@
+{
+      "name": "benchmarks",
+      "private": true,
+      "version": "0.2.3",
+      "type": "module",
+      "scripts": {
+            "benchmark": "bun run src/index.ts"
+      },
+      "devDependencies": {
+            "bunup": "workspace:*",
+            "tsdown": "^0.6.10",
+            "tsup": "^8.4.0"
+      },
+      "dependencies": {
+            "@types/node": "^20.0.0"
+      }
+}
