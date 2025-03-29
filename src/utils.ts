@@ -81,17 +81,9 @@ export function formatFileSize(bytes: number): string {
       const units = ['B', 'KB', 'MB', 'GB'];
       const i = Math.floor(Math.log(bytes) / Math.log(1024));
 
-      // Format with consistent spacing for unit alignment
-      if (i === 0) {
-            return bytes < 10
-                  ? `${bytes}   ${units[i]}`
-                  : bytes < 100
-                    ? `${bytes}  ${units[i]}`
-                    : `${bytes} ${units[i]}`;
-      }
+      if (i === 0) return `${bytes} ${units[i]}`;
 
-      const formattedSize = (bytes / Math.pow(1024, i)).toFixed(2);
-      return `${formattedSize} ${units[i]}`;
+      return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
 }
 
 export function getShortFilePath(filePath: string, maxLength = 3): string {
