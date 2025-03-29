@@ -1,6 +1,6 @@
 import {defineConfig, type Options} from 'bunup';
 
-const COMMON_OPTIONS: Partial<Options> = {
+const COMMON_OPTIONS: Options = {
       outDir: 'build',
       minify: true,
       splitting: true,
