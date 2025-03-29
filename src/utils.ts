@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+import {BunupBuildError} from './errors';
 import {Format} from './options';
 
 export function escapeRegExp(string: string): string {
@@ -77,13 +81,35 @@ export function formatFileSize(bytes: number): string {
       const units = ['B', 'KB', 'MB', 'GB'];
       const i = Math.floor(Math.log(bytes) / Math.log(1024));
 
-      if (i === 0) return `${bytes} ${units[i]}`;
+      // Format with consistent spacing for unit alignment
+      if (i === 0) {
+            return bytes < 10
+                  ? `${bytes}   ${units[i]}`
+                  : bytes < 100
+                    ? `${bytes}  ${units[i]}`
+                    : `${bytes} ${units[i]}`;
+      }
 
-      return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
+      const formattedSize = (bytes / Math.pow(1024, i)).toFixed(2);
+      return `${formattedSize} ${units[i]}`;
 }
 
 export function getShortFilePath(filePath: string, maxLength = 3): string {
       const fileParts = filePath.split('/');
       const shortPath = fileParts.slice(-maxLength).join('/');
       return shortPath;
+}
+
+export function cleanOutDir(rootDir: string, outdir: string): void {
+      const outdirPath = path.join(rootDir, outdir);
+      if (fs.existsSync(outdirPath)) {
+            try {
+                  fs.rmSync(outdirPath, {recursive: true, force: true});
+            } catch (error) {
+                  throw new BunupBuildError(
+                        `Failed to clean output directory: ${error}`,
+                  );
+            }
+      }
+      fs.mkdirSync(outdirPath, {recursive: true});
 }

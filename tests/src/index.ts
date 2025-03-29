@@ -1,6 +1,6 @@
 import {one, two} from '@/utils/numbers';
 
-export {cool} from './cool';
+export * from './cool';
 
 export function add(one: number, two: number): number {
       return one + two;

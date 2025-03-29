@@ -9,10 +9,7 @@ export async function loadConfigs(cwd: string): Promise<{
       configs: {options: BunupOptions; rootDir: string}[];
       configFilePath: string;
 }> {
-      const configs: {options: BunupOptions; rootDir: string}[] = [];
-      let configFilePath = '';
-
-      for (const ext of [
+      const supportedExtensions = [
             '.ts',
             '.js',
             '.mjs',
@@ -21,52 +18,23 @@ export async function loadConfigs(cwd: string): Promise<{
             '.cts',
             '.json',
             '.jsonc',
-      ]) {
+      ];
+
+      for (const ext of supportedExtensions) {
             const filePath = path.join(cwd, `bunup.config${ext}`);
+
             try {
                   if (!fs.existsSync(filePath)) continue;
 
-                  let content;
-                  configFilePath = filePath;
+                  const content = await loadConfigFile(filePath, ext);
+                  if (!content) continue;
 
-                  if (ext === '.json' || ext === '.jsonc') {
-                        const text = fs.readFileSync(filePath, 'utf8');
-                        const parsed = JSON.parse(text);
+                  const configs = processConfigContent(content, cwd);
 
-                        content = parsed.bunup || parsed;
-                  } else {
-                        const imported = await import(`file://${filePath}`);
-                        content = imported.default || imported;
-
-                        if (!content) {
-                              logger.warn(
-                                    `No default export found in ${filePath}`,
-                              );
-                              content = {};
-                        }
-                  }
-
-                  if (Array.isArray(content)) {
-                        for (const item of content) {
-                              configs.push({
-                                    options: {
-                                          ...DEFAULT_OPTIONS,
-                                          ...item,
-                                    },
-                                    rootDir: cwd,
-                              });
-                        }
-                  } else {
-                        configs.push({
-                              options: {
-                                    ...DEFAULT_OPTIONS,
-                                    ...content,
-                              },
-                              rootDir: cwd,
-                        });
-                  }
-
-                  break;
+                  return {
+                        configs,
+                        configFilePath: filePath,
+                  };
             } catch (error) {
                   throw new BunupBuildError(
                         `Failed to load config from ${filePath}: ${parseErrorMessage(error)}`,
@@ -75,9 +43,146 @@ export async function loadConfigs(cwd: string): Promise<{
       }
 
       return {
-            configs,
-            configFilePath,
+            configs: [],
+            configFilePath: '',
       };
+}
+
+async function loadConfigFile(filePath: string, ext: string): Promise<any> {
+      if (ext === '.json' || ext === '.jsonc') {
+            return loadJsonConfig(filePath);
+      }
+
+      return loadJsConfig(filePath);
+}
+
+function loadJsonConfig(filePath: string): any {
+      try {
+            const text = fs.readFileSync(filePath, 'utf8');
+            const parsed = JSON.parse(text);
+
+            return parsed.bunup || parsed;
+      } catch (error) {
+            throw new Error(
+                  `Invalid JSON in config file. ${parseErrorMessage(error)}`,
+            );
+      }
+}
+
+async function loadJsConfig(filePath: string): Promise<any> {
+      try {
+            const imported = await import(`file://${filePath}`);
+            const content = imported.default || imported;
+
+            if (!content) {
+                  logger.warn(
+                        `No export found in ${filePath}. Make sure you're exporting your configuration.`,
+                  );
+                  return {};
+            }
+
+            return content;
+      } catch (error) {
+            throw new Error(
+                  `Failed to import config file. ${parseErrorMessage(error)}`,
+            );
+      }
+}
+
+function processConfigContent(
+      content: any,
+      cwd: string,
+): {options: BunupOptions; rootDir: string}[] {
+      const configs: {options: BunupOptions; rootDir: string}[] = [];
+
+      if (isWorkspaceConfig(content)) {
+            processWorkspaceConfig(content, cwd, configs);
+      } else if (Array.isArray(content)) {
+            processConfigArray(content, cwd, configs);
+      } else if (content && typeof content === 'object') {
+            configs.push({
+                  options: {
+                        ...DEFAULT_OPTIONS,
+                        ...content,
+                  },
+                  rootDir: cwd,
+            });
+      } else {
+            throw new Error(
+                  'Invalid configuration format. Expected an object, array, or workspace configuration.',
+            );
+      }
+
+      return configs;
+}
+
+function isWorkspaceConfig(content: any): boolean {
+      return (
+            Array.isArray(content) &&
+            content.length > 0 &&
+            content.every(
+                  item =>
+                        typeof item === 'object' &&
+                        item !== null &&
+                        'name' in item &&
+                        'root' in item &&
+                        'config' in item,
+            )
+      );
+}
+
+function processWorkspaceConfig(
+      workspaces: any[],
+      cwd: string,
+      configs: {options: BunupOptions; rootDir: string}[],
+): void {
+      for (const workspace of workspaces) {
+            const workspaceRoot = path.resolve(cwd, workspace.root);
+
+            if (Array.isArray(workspace.config)) {
+                  for (const item of workspace.config) {
+                        configs.push({
+                              options: {
+                                    ...DEFAULT_OPTIONS,
+                                    name: workspace.name,
+                                    ...item,
+                              },
+                              rootDir: workspaceRoot,
+                        });
+                  }
+            } else {
+                  configs.push({
+                        options: {
+                              ...DEFAULT_OPTIONS,
+                              name: workspace.name,
+                              ...workspace.config,
+                        },
+                        rootDir: workspaceRoot,
+                  });
+            }
+      }
+}
+
+function processConfigArray(
+      configArray: any[],
+      cwd: string,
+      configs: {options: BunupOptions; rootDir: string}[],
+): void {
+      for (const item of configArray) {
+            if (!item || typeof item !== 'object') {
+                  throw new Error(
+                        'Invalid configuration item. Expected an object.',
+                  );
+            }
+
+            configs.push({
+                  options: {
+                        ...DEFAULT_OPTIONS,
+                        ...item,
+                  },
+                  rootDir: cwd,
+            });
+      }
 }
 
 export function loadPackageJson(cwd: string): Record<string, unknown> | null {

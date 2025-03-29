@@ -1,4 +1,4 @@
-import {runDtsInWorker} from './dts/worker';
+import {generateDts} from './dts';
 import {BunupBuildError, BunupDTSBuildError, parseErrorMessage} from './errors';
 import {
       getEntryNamingFormat,
@@ -7,15 +7,16 @@ import {
 } from './helpers/entry';
 import {getExternalPatterns, getNoExternalPatterns} from './helpers/external';
 import {loadPackageJson} from './loaders';
-import {getLoggerProgressLabel, logger} from './logger';
+import {logger} from './logger';
 import {BunupOptions, createDefaultBunBuildOptions, Format} from './options';
 import {externalPlugin} from './plugins/external';
 import {BunPlugin} from './types';
 import {
       formatFileSize,
-      formatTime,
+      getDefaultDtsExtention,
       getDefaultOutputExtension,
       getResolvedSplitting,
+      getShortFilePath,
       isModulePackage,
 } from './utils';
 
@@ -28,8 +29,6 @@ export async function build(
                   'Nothing to build. Please make sure you have provided a proper bunup configuration or cli arguments.',
             );
       }
-
-      const startTime = performance.now();
 
       const packageJson = loadPackageJson(rootDir);
       const packageType = packageJson?.type as string | undefined;
@@ -59,16 +58,12 @@ export async function build(
 
       try {
             await Promise.all(buildPromises);
-
-            const buildTimeMs = performance.now() - startTime;
-            const timeDisplay = formatTime(buildTimeMs);
-            logger.cli(`📦 Build success in ${timeDisplay}`);
       } catch {
             throw new BunupBuildError('Build process encountered errors');
       }
 
       if (options.dts) {
-            const formatsToProcess = options.format.filter(fmt => {
+            const formatsToProcessDts = options.format.filter(fmt => {
                   if (
                         fmt === 'iife' &&
                         !isModulePackage(packageType) &&
@@ -85,12 +80,37 @@ export async function build(
                         : normalizeEntryToProcessableEntries(options.dts.entry);
 
             try {
-                  await runDtsInWorker(
-                        rootDir,
-                        dtsEntry,
-                        formatsToProcess,
-                        options,
-                        packageType,
+                  await Promise.all(
+                        dtsEntry.map(async entry => {
+                              const content = await generateDts(
+                                    rootDir,
+                                    entry.path,
+                                    options,
+                              );
+
+                              await Promise.all(
+                                    formatsToProcessDts.map(async fmt => {
+                                          const extension =
+                                                getDefaultDtsExtention(
+                                                      fmt,
+                                                      packageType,
+                                                );
+                                          const outputPath = `${rootDir}/${options.outDir}/${entry.name}${extension}`;
+
+                                          await Bun.write(outputPath, content);
+
+                                          const fileSize =
+                                                Bun.file(outputPath).size || 0;
+
+                                          logger.progress(
+                                                'DTS',
+                                                getShortFilePath(outputPath),
+                                                formatFileSize(fileSize),
+                                                options.name,
+                                          );
+                                    }),
+                              );
+                        }),
                   );
             } catch (error) {
                   throw new BunupDTSBuildError(
@@ -132,12 +152,13 @@ async function buildEntry(
             throw new BunupBuildError(`Build failed for ${entry} (${fmt})`);
       }
 
-      const outputPath = `${options.outDir}/${entry.name}${extension}`;
+      const outputPath = `${rootDir}/${options.outDir}/${entry.name}${extension}`;
       const fileSize = Bun.file(outputPath).size || 0;
 
       logger.progress(
-            getLoggerProgressLabel(fmt, options.name),
-            outputPath,
+            fmt.toUpperCase(),
+            getShortFilePath(outputPath),
             formatFileSize(fileSize),
+            options.name,
       );
 }

@@ -15,16 +15,7 @@ export default defineConfig([
       },
       {
             ...COMMON_OPTIONS,
-            name: 'cli',
             entry: ['./src/cli.ts'],
             format: ['esm'],
-      },
-      {
-            ...COMMON_OPTIONS,
-            name: 'dts-worker',
-            format: ['cjs'],
-            entry: {
-                  dtsWorker: './src/dts/worker.ts',
-            },
       },
 ]);

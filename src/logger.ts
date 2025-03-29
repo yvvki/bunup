@@ -13,7 +13,7 @@ interface LogColors {
 
 export const logger = {
       MAX_LABEL_LENGTH: 3,
-      MAX_MESSAGE_LENGTH: 20,
+      MAX_MESSAGE_LENGTH: 25,
 
       colors: {
             cli: '147',
@@ -42,6 +42,7 @@ export const logger = {
             label: string,
             message: string,
             size?: string,
+            identifier?: string,
       ): string {
             const padding = ' '.repeat(
                   Math.max(0, this.MAX_LABEL_LENGTH - label.length),
@@ -51,9 +52,15 @@ export const logger = {
                   const messagePadding = ' '.repeat(
                         Math.max(0, this.MAX_MESSAGE_LENGTH - path.length),
                   );
-                  return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${path}${messagePadding} \x1b[38;5;${this.colors.size}m${size}\x1b[0m ${rest.join(' ')}`;
+                  const identifierPart = identifier
+                        ? ` \x1b[48;5;${colorCode};38;5;0m ${identifier} \x1b[0m`
+                        : '';
+                  return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${path}${messagePadding} \x1b[38;5;${this.colors.size}m${size}\x1b[0m ${rest.join(' ')}${identifierPart}`;
             }
-            return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${message}`;
+            const identifierPart = identifier
+                  ? `   \x1b[48;5;${colorCode};38;5;0m ${identifier} \x1b[0m`
+                  : '';
+            return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${message}${identifierPart}`;
       },
 
       cli(message: string): void {
@@ -77,7 +84,12 @@ export const logger = {
             );
       },
 
-      progress(label: FormatType, message: string, size?: string): void {
+      progress(
+            label: FormatType,
+            message: string,
+            size?: string,
+            identifier?: string,
+      ): void {
             const labelStr = String(label);
             let colorCode = this.colors.default;
 
@@ -87,13 +99,14 @@ export const logger = {
                         break;
                   }
             }
-            console.log(this.formatMessage(colorCode, labelStr, message, size));
+            console.log(
+                  this.formatMessage(
+                        colorCode,
+                        labelStr,
+                        message,
+                        size,
+                        identifier,
+                  ),
+            );
       },
 };
-
-export function getLoggerProgressLabel(
-      label: string,
-      name: string | undefined,
-): string {
-      return `${name ? `${name.replace(/-/g, '_')}_` : ''}${label}`.toUpperCase();
-}

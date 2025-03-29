@@ -1,2 +1,5 @@
-export {defineConfig} from './define-config';
-export type {BunupOptions as Options} from './options';
+import {BunupOptions} from './options';
+
+export {defineConfig, defineWorkspace} from './define';
+
+export type Options = Partial<BunupOptions>;

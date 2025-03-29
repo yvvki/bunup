@@ -1,11 +1,7 @@
 #!/usr/bin/env bun
-import fs from 'node:fs';
-import path from 'node:path';
-import {isMainThread} from 'node:worker_threads';
-
 import {build} from './build';
 import {parseCliOptions} from './cli-parse';
-import {BunupBuildError, handleErrorAndExit} from './errors';
+import {handleErrorAndExit} from './errors';
 import {loadConfigs} from './loaders';
 import {logger} from './logger';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
@@ -13,7 +9,7 @@ import {BunupOptions, DEFAULT_OPTIONS} from './options';
 import './runtime';
 
 import {validateFilesUsedToBundleDts} from './dts/validation';
-import {getShortFilePath} from './utils';
+import {cleanOutDir, formatTime, getShortFilePath} from './utils';
 import {watch} from './watch';
 
 export const allFilesUsedToBundleDts = new Set<string>();
@@ -28,18 +24,22 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
             );
       }
 
-      const rootDir = process.cwd();
-
       if (cliOptions.watch) {
             logger.cli('Starting watch mode');
             logger.cli(`Watching for file changes`);
       }
+
+      const startTime = performance.now();
+
+      logger.cli('Build started');
 
       if (configs.length === 0) {
             const mergedOptions = {
                   ...DEFAULT_OPTIONS,
                   ...cliOptions,
             } as BunupOptions;
+
+            const rootDir = process.cwd();
 
             if (mergedOptions.clean) cleanOutDir(rootDir, mergedOptions.outDir);
 
@@ -48,8 +48,6 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
             for (const {options, rootDir} of configs) {
                   if (options.clean) cleanOutDir(rootDir, options.outDir);
             }
-
-            logger.cli('Build started');
 
             await Promise.all(
                   configs.map(async ({options, rootDir}) => {
@@ -63,7 +61,10 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
             );
       }
 
-      // Validate all ts files used to bundle DTS after all builds complete
+      const buildTimeMs = performance.now() - startTime;
+      const timeDisplay = formatTime(buildTimeMs);
+      logger.cli(`⚡️ Build completed in ${timeDisplay}`);
+
       if (allFilesUsedToBundleDts.size > 0) {
             await validateFilesUsedToBundleDts(allFilesUsedToBundleDts);
             allFilesUsedToBundleDts.clear();
@@ -83,21 +84,4 @@ async function handleBuild(options: BunupOptions, rootDir: string) {
       }
 }
 
-function cleanOutDir(rootDir: string, outdir: string): void {
-      const outdirPath = path.join(rootDir, outdir);
-      if (fs.existsSync(outdirPath)) {
-            try {
-                  fs.rmSync(outdirPath, {recursive: true, force: true});
-            } catch (error) {
-                  throw new BunupBuildError(
-                        `Failed to clean output directory: ${error}`,
-                  );
-            }
-      }
-      fs.mkdirSync(outdirPath, {recursive: true});
-}
-
-// Only run main() in the main thread, not when imported in worker threads
-if (isMainThread) {
-      main().catch(error => handleErrorAndExit(error));
-}
+main().catch(error => handleErrorAndExit(error));

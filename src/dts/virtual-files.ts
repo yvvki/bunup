@@ -2,18 +2,10 @@ import path from 'path';
 
 import {Plugin} from 'rollup';
 
-import {allFilesUsedToBundleDts as importedFilesSet} from '../cli';
+import {allFilesUsedToBundleDts} from '../cli';
 import {DtsMap} from './generator';
 
 export const VIRTUAL_FILES_PREFIX = '\0virtual:';
-
-const getFilesUsedSet = (): Set<string> => {
-      return (
-            global.allFilesUsedToBundleDts ||
-            importedFilesSet ||
-            new Set<string>()
-      );
-};
 
 export const gerVirtualFilesPlugin = (dtsMap: DtsMap): Plugin => {
       return {
@@ -70,7 +62,7 @@ export const gerVirtualFilesPlugin = (dtsMap: DtsMap): Plugin => {
                         const filePath = id.slice(VIRTUAL_FILES_PREFIX.length);
                         const content = dtsMap.get(filePath);
                         if (content) {
-                              getFilesUsedSet().add(filePath);
+                              allFilesUsedToBundleDts.add(filePath);
                               return content;
                         }
                   }
