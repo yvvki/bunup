@@ -5,7 +5,7 @@
 
 An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [Bun](https://bun.sh) and [Oxc](https://oxc.rs/).
 
-<video src="/demo.mov" alt="Bunup demo video showing the bundling process" controls muted style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);"></video>
+https://github.com/user-attachments/assets/d64ffc10-da39-4ada-be95-7ba5059fe97a
 
 | Bundler | Format   | Build Time     | Build Time (with dts) |
 | ------- | -------- | -------------- | --------------------- |

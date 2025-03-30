@@ -17,7 +17,7 @@ import {
 } from './utils';
 import {watch} from './watch';
 
-export async function main(args: string[] = Bun.argv.slice(2)) {
+export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
       const cliOptions = parseCliOptions(args);
       const {configs, configFilePath} = await loadConfigs(process.cwd());
 
