@@ -21,7 +21,7 @@ export function splitCommaSeparated(input: string | string[]): string[] {
 export function getDefaultOutputExtension(
       format: Format,
       packageType: string | undefined,
-) {
+): string {
       switch (format) {
             case 'esm':
                   return '.mjs';
@@ -35,7 +35,7 @@ export function getDefaultOutputExtension(
 export function getDefaultDtsExtention(
       format: Format,
       packageType: string | undefined,
-) {
+): string {
       switch (format) {
             case 'esm':
                   return '.d.mts';
@@ -71,7 +71,7 @@ export function getPackageDeps(
 export function getResolvedSplitting(
       splitting: boolean | undefined,
       format: Format,
-) {
+): boolean {
       return splitting === undefined ? format === 'esm' : splitting;
 }
 

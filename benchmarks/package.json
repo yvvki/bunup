@@ -6,7 +6,7 @@
             "benchmark": "bun run src/index.ts"
       },
       "devDependencies": {
-            "bunup": "workspace:*",
+            "bunup": "^0.2.7",
             "tsdown": "^0.6.10",
             "unbuild": "^3.5.0"
       },
