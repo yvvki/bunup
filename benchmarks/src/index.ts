@@ -4,14 +4,13 @@ import {build as bunupBuild} from 'bunup';
 import {build as tsdownBuild} from 'tsdown';
 import {build as unbuildBuild} from 'unbuild';
 
-const ITERATIONS = 5;
 const ENTRY_POINT = 'src/project/index.ts';
 
 interface BenchmarkResult {
       name: string;
       format: string;
       dts: boolean;
-      averageTime: number;
+      buildTime: number;
 }
 
 const bundlers = [
@@ -70,27 +69,24 @@ async function runBenchmarks() {
       for (const dts of [false, true]) {
             for (const bundler of bundlers) {
                   const options = bundler.options(dts);
-                  let totalTime = 0;
 
-                  for (let i = 0; i < ITERATIONS; i++) {
-                        const start = performance.now();
-                        await bundler.buildFn(options);
-                        totalTime += performance.now() - start;
-                  }
+                  console.log(`Benchmarking ${bundler.name} (dts: ${dts})...`);
+                  const start = performance.now();
+                  await bundler.buildFn(options);
+                  const buildTime = performance.now() - start;
 
-                  const averageTime = totalTime / ITERATIONS;
                   results.push({
                         name: bundler.name,
                         format: 'esm, cjs',
                         dts,
-                        averageTime,
+                        buildTime,
                   });
             }
       }
 
       results.sort((a, b) => {
             if (a.dts !== b.dts) return a.dts ? 1 : -1;
-            return a.averageTime - b.averageTime;
+            return a.buildTime - b.buildTime;
       });
 
       const header = [
@@ -99,7 +95,7 @@ async function runBenchmarks() {
       ];
 
       const rows = results.map(result => {
-            const timeStr = `${result.averageTime.toFixed(2)}ms`;
+            const timeStr = `${result.buildTime.toFixed(2)}ms`;
             return `| ${result.name.padEnd(14)} | ${result.format.padEnd(8)} | ${String(result.dts).padEnd(5)} | ${timeStr.padEnd(10)} |`;
       });
 
