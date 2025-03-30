@@ -1,7 +1,7 @@
 {
       "name": "benchmarks",
       "private": true,
-      "version": "0.2.3",
+      "version": "0.2.4",
       "scripts": {
             "benchmark": "bun run src/index.ts"
       },
