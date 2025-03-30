@@ -834,3 +834,11 @@ bunup
 ```
 
 Bunup will automatically detect and build all workspaces defined in your configuration file.
+
+To watch the packages in workspaces and automatically rebuild on file changes, run:
+
+```bash
+bunup --watch
+```
+
+This single command enables continuous monitoring and rebuilding of all packages in your workspaces.

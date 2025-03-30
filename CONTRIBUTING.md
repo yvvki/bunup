@@ -59,6 +59,22 @@ Run tests to ensure your changes don't break existing functionality:
 pnpm test
 ```
 
+To test your changes with a real build:
+
+1. First, build bunup with your changes:
+
+      ```bash
+      pnpm build
+      ```
+
+2. Then run the test build to verify your changes work correctly:
+
+      ```bash
+      pnpm test-build
+      ```
+
+      This command builds the test project located in the `tests` directory using your local version of bunup, allowing you to verify that your changes work correctly in a real-world scenario.
+
 To validate TypeScript types:
 
 ```bash
