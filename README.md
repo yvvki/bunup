@@ -5,8 +5,6 @@
 
 An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [Bun](https://bun.sh) and [Oxc](https://oxc.rs/).
 
-https://github.com/user-attachments/assets/790609f2-89d0-4779-b97d-2e2ffd4f4fa6
-
 | Bundler | Format   | Build Time     | Build Time (with dts) |
 | ------- | -------- | -------------- | --------------------- |
 | bunup   | esm, cjs | **0.86ms ⚡️** | **7.54ms ⚡️**        |
