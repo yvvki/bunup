@@ -109,3 +109,7 @@ export function cleanOutDir(rootDir: string, outDir: string): void {
 export function getResolvedOutDir(outDir: string | undefined): string {
       return outDir || DEFAULT_OPTIONS.outDir;
 }
+
+export function getResolvedClean(clean: boolean | undefined): boolean {
+      return clean === undefined ? DEFAULT_OPTIONS.clean : clean;
+}

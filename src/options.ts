@@ -1,4 +1,4 @@
-import {BunBuildOptions} from './types';
+import {BunBuildOptions, WithRequired} from './types';
 
 export type Format = 'esm' | 'cjs' | 'iife';
 export type Target = 'bun' | 'node' | 'browser';
@@ -176,7 +176,7 @@ export interface BunupOptions {
       onBuildEnd?: () => void | Promise<void>;
 }
 
-export const DEFAULT_OPTIONS: BunupOptions = {
+export const DEFAULT_OPTIONS: WithRequired<BunupOptions, 'clean'> = {
       entry: [],
       format: ['cjs'],
       outDir: 'dist',

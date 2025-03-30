@@ -12,6 +12,7 @@ import {validateFilesUsedToBundleDts} from './dts/validation';
 import {
       cleanOutDir,
       formatTime,
+      getResolvedClean,
       getResolvedOutDir,
       getShortFilePath,
 } from './utils';
@@ -50,7 +51,7 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
             await handleBuild(mergedOptions, rootDir);
       } else {
             for (const {options, rootDir} of configs) {
-                  if (options.clean)
+                  if (getResolvedClean(options.clean))
                         cleanOutDir(rootDir, getResolvedOutDir(options.outDir));
             }
 
@@ -61,6 +62,13 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
                               ...options,
                               ...cliOptions,
                         };
+
+                        console.log(
+                              DEFAULT_OPTIONS,
+                              options,
+                              cliOptions,
+                              mergedOptions,
+                        );
                         await handleBuild(mergedOptions, rootDir);
                   }),
             );
