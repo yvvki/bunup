@@ -176,7 +176,7 @@ export interface BunupOptions {
       onBuildEnd?: () => void | Promise<void>;
 }
 
-export const DEFAULT_OPTIONS: Partial<BunupOptions> = {
+export const DEFAULT_OPTIONS: BunupOptions = {
       entry: [],
       format: ['cjs'],
       outDir: 'dist',

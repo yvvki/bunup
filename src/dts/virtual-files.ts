@@ -2,7 +2,7 @@ import path from 'path';
 
 import {Plugin} from 'rollup';
 
-import {allFilesUsedToBundleDts} from '../cli';
+import {allFilesUsedToBundleDts} from '../build';
 import {DtsMap} from './generator';
 
 export const VIRTUAL_FILES_PREFIX = '\0virtual:';

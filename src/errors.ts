@@ -58,7 +58,7 @@ const handleError = (error: unknown, context?: string): void => {
       }
 
       console.error(
-            `\x1B[31m[${errorType}]\x1B[0m ${contextPrefix}${errorMessage}`,
+            `\x1B[31m${errorType}\x1B[0m ${contextPrefix}${errorMessage}`,
       );
 
       if (error instanceof Error && error.stack) {

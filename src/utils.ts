@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {BunupBuildError} from './errors';
-import {Format} from './options';
+import {DEFAULT_OPTIONS, Format} from './options';
 
 export function escapeRegExp(string: string): string {
       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -92,16 +92,20 @@ export function getShortFilePath(filePath: string, maxLength = 3): string {
       return shortPath;
 }
 
-export function cleanOutDir(rootDir: string, outdir: string): void {
-      const outdirPath = path.join(rootDir, outdir);
-      if (fs.existsSync(outdirPath)) {
+export function cleanOutDir(rootDir: string, outDir: string): void {
+      const outDirPath = path.join(rootDir, outDir);
+      if (fs.existsSync(outDirPath)) {
             try {
-                  fs.rmSync(outdirPath, {recursive: true, force: true});
+                  fs.rmSync(outDirPath, {recursive: true, force: true});
             } catch (error) {
                   throw new BunupBuildError(
                         `Failed to clean output directory: ${error}`,
                   );
             }
       }
-      fs.mkdirSync(outdirPath, {recursive: true});
+      fs.mkdirSync(outDirPath, {recursive: true});
+}
+
+export function getResolvedOutDir(outDir: string | undefined): string {
+      return outDir || DEFAULT_OPTIONS.outDir;
 }

@@ -5,20 +5,22 @@
 
 An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [Bun](https://bun.sh) and [Oxc](https://oxc.rs/).
 
-| Bundler        | Format   | Build Time | Relative Speed       |
-| -------------- | -------- | ---------- | -------------------- |
-| bunup          | esm, cjs | **6ms**    | **⚡️ 9.7x faster**  |
-| bunup (+ dts)  | esm, cjs | **32ms**   | **⚡️ 25.8x faster** |
-| tsdown         | esm, cjs | 22ms       | 2.6x faster          |
-| tsdown (+ dts) | esm, cjs | 52ms       | 15.9x faster         |
-| tsup           | esm, cjs | 58ms       | baseline             |
-| tsup (+ dts)   | esm, cjs | 825ms      | baseline             |
+| Bundler | Format   | dts   | Build Time     |
+| ------- | -------- | ----- | -------------- |
+| bunup   | esm, cjs | false | **0.90ms ⚡️** |
+| tsdown  | esm, cjs | false | 3.78ms         |
+| unbuild | esm, cjs | false | 12.76ms        |
+| bunup   | esm, cjs | true  | **7.38ms ⚡️** |
+| tsdown  | esm, cjs | true  | 15.17ms        |
+| unbuild | esm, cjs | true  | 257.60ms       |
 
 _Lower build time is better. Benchmark run on the same code with identical output formats._
 
+To run the benchmarks yourself, clone this repo and run `pnpm benchmark`.
+
 ## 🚀 Quick Start
 
-### Installation
+### Installations
 
 ```bash
 # Using Bun

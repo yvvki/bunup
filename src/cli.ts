@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import {build} from './build';
+import {allFilesUsedToBundleDts, build} from './build';
 import {parseCliOptions} from './cli-parse';
 import {handleErrorAndExit} from './errors';
 import {loadConfigs} from './loaders';
@@ -9,10 +9,13 @@ import {BunupOptions, DEFAULT_OPTIONS} from './options';
 import './runtime';
 
 import {validateFilesUsedToBundleDts} from './dts/validation';
-import {cleanOutDir, formatTime, getShortFilePath} from './utils';
+import {
+      cleanOutDir,
+      formatTime,
+      getResolvedOutDir,
+      getShortFilePath,
+} from './utils';
 import {watch} from './watch';
-
-export const allFilesUsedToBundleDts = new Set<string>();
 
 export async function main(args: string[] = Bun.argv.slice(2)) {
       const cliOptions = parseCliOptions(args);
@@ -41,12 +44,14 @@ export async function main(args: string[] = Bun.argv.slice(2)) {
 
             const rootDir = process.cwd();
 
-            if (mergedOptions.clean) cleanOutDir(rootDir, mergedOptions.outDir);
+            if (mergedOptions.clean)
+                  cleanOutDir(rootDir, getResolvedOutDir(mergedOptions.outDir));
 
             await handleBuild(mergedOptions, rootDir);
       } else {
             for (const {options, rootDir} of configs) {
-                  if (options.clean) cleanOutDir(rootDir, options.outDir);
+                  if (options.clean)
+                        cleanOutDir(rootDir, getResolvedOutDir(options.outDir));
             }
 
             await Promise.all(

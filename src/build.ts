@@ -10,7 +10,7 @@ import {loadPackageJson} from './loaders';
 import {logger} from './logger';
 import {BunupOptions, createDefaultBunBuildOptions, Format} from './options';
 import {externalPlugin} from './plugins/external';
-import {BunPlugin} from './types';
+import {BunBuildOptions, BunPlugin} from './types';
 import {
       formatFileSize,
       getDefaultDtsExtention,
@@ -19,6 +19,8 @@ import {
       getShortFilePath,
       isModulePackage,
 } from './utils';
+
+export const allFilesUsedToBundleDts: Set<string> = new Set<string>();
 
 export async function build(
       options: BunupOptions,
@@ -32,15 +34,15 @@ export async function build(
 
       const packageJson = loadPackageJson(rootDir);
       const packageType = packageJson?.type as string | undefined;
-
       const externalPatterns = getExternalPatterns(options, packageJson);
-
       const noExternalPatterns = getNoExternalPatterns(options);
-
       const plugins = [externalPlugin(externalPatterns, noExternalPatterns)];
-
       const processableEntries = normalizeEntryToProcessableEntries(
             options.entry,
+      );
+      const defaultBunBuildOptions = createDefaultBunBuildOptions(
+            options,
+            rootDir,
       );
 
       const buildPromises = options.format.flatMap(fmt =>
@@ -52,13 +54,15 @@ export async function build(
                         fmt,
                         packageType,
                         plugins,
+                        defaultBunBuildOptions,
                   );
             }),
       );
 
       try {
             await Promise.all(buildPromises);
-      } catch {
+      } catch (error) {
+            console.error(error);
             throw new BunupBuildError('Build process encountered errors');
       }
 
@@ -98,7 +102,6 @@ export async function build(
                                           const outputPath = `${rootDir}/${options.outDir}/${entry.name}${extension}`;
 
                                           await Bun.write(outputPath, content);
-
                                           const fileSize =
                                                 Bun.file(outputPath).size || 0;
 
@@ -127,14 +130,12 @@ async function buildEntry(
       fmt: Format,
       packageType: string | undefined,
       plugins: BunPlugin[],
+      defaultBuildOptions: Omit<BunBuildOptions, 'entrypoints'>,
 ): Promise<void> {
       const extension = getDefaultOutputExtension(fmt, packageType);
-      const defaultBunBuildOptions = createDefaultBunBuildOptions(
-            options,
-            rootDir,
-      );
+
       const result = await Bun.build({
-            ...defaultBunBuildOptions,
+            ...defaultBuildOptions,
             entrypoints: [`${rootDir}/${entry.path}`],
             format: fmt,
             naming: {entry: getEntryNamingFormat(entry.name, extension)},
@@ -149,7 +150,9 @@ async function buildEntry(
                   else if (log.level === 'warning') logger.warn(log.message);
                   else if (log.level === 'info') logger.info(log.message);
             });
-            throw new BunupBuildError(`Build failed for ${entry} (${fmt})`);
+            throw new BunupBuildError(
+                  `Build failed for ${entry.path} (${fmt})`,
+            );
       }
 
       const outputPath = `${rootDir}/${options.outDir}/${entry.name}${extension}`;

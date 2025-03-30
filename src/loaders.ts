@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import {BunupBuildError, parseErrorMessage} from './errors';
 import {logger} from './logger';
-import {BunupOptions, DEFAULT_OPTIONS} from './options';
+import {BunupOptions} from './options';
 
 export async function loadConfigs(cwd: string): Promise<{
       configs: {options: BunupOptions; rootDir: string}[];
@@ -101,10 +101,7 @@ function processConfigContent(
             processConfigArray(content, cwd, configs);
       } else if (content && typeof content === 'object') {
             configs.push({
-                  options: {
-                        ...DEFAULT_OPTIONS,
-                        ...content,
-                  },
+                  options: content,
                   rootDir: cwd,
             });
       } else {
@@ -143,7 +140,6 @@ function processWorkspaceConfig(
                   for (const item of workspace.config) {
                         configs.push({
                               options: {
-                                    ...DEFAULT_OPTIONS,
                                     name: workspace.name,
                                     ...item,
                               },
@@ -153,7 +149,6 @@ function processWorkspaceConfig(
             } else {
                   configs.push({
                         options: {
-                              ...DEFAULT_OPTIONS,
                               name: workspace.name,
                               ...workspace.config,
                         },
@@ -176,10 +171,7 @@ function processConfigArray(
             }
 
             configs.push({
-                  options: {
-                        ...DEFAULT_OPTIONS,
-                        ...item,
-                  },
+                  options: item,
                   rootDir: cwd,
             });
       }

@@ -2,22 +2,24 @@
 
 An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [Bun](https://bun.sh) and [oxc](https://oxc.rs/).
 
-<img src="/demo.gif" alt="Demo" style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);" />
+<img src="https://bunup.arshadyaseen.com/og.png" alt="Demo" style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);" />
 
 ## Benchmarks
 
 Bunup outperforms other popular bundlers by a significant margin:
 
-| Bundler        | Format   | Build Time | Relative Speed       |
-| -------------- | -------- | ---------- | -------------------- |
-| bunup          | esm, cjs | **6ms**    | **⚡️ 9.7x faster**  |
-| bunup (+ dts)  | esm, cjs | **32ms**   | **⚡️ 25.8x faster** |
-| tsdown         | esm, cjs | 22ms       | 2.6x faster          |
-| tsdown (+ dts) | esm, cjs | 52ms       | 15.9x faster         |
-| tsup           | esm, cjs | 58ms       | baseline             |
-| tsup (+ dts)   | esm, cjs | 825ms      | baseline             |
+| Bundler | Format   | dts   | Build Time     |
+| ------- | -------- | ----- | -------------- |
+| bunup   | esm, cjs | false | **0.90ms ⚡️** |
+| tsdown  | esm, cjs | false | 3.78ms         |
+| unbuild | esm, cjs | false | 12.76ms        |
+| bunup   | esm, cjs | true  | **7.38ms ⚡️** |
+| tsdown  | esm, cjs | true  | 15.17ms        |
+| unbuild | esm, cjs | true  | 257.60ms       |
 
 _Lower build time is better. Benchmark run on the same code with identical output formats._
+
+To run the benchmarks yourself, clone this repo and run `pnpm benchmark`.
 
 ## What Can It Bundle?
 
