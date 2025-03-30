@@ -1,6 +1,16 @@
 type ColorCode = string;
 type FormatType = 'ESM' | 'CJS' | 'IIFE' | 'DTS' | string;
 
+interface LogOptions {
+      muted?: boolean;
+      verticalSpace?: boolean;
+      identifier?: string;
+}
+
+interface ProgressOptions extends LogOptions {
+      size?: string;
+}
+
 interface LogColors {
       cli: ColorCode;
       info: ColorCode;
@@ -37,18 +47,31 @@ export const logger = {
             error: 'ERROR',
       },
 
-      formatMessage(
-            colorCode: string,
-            label: string,
-            message: string,
-            size?: string,
-            identifier?: string,
-      ): string {
+      formatMessage({
+            colorCode,
+            label,
+            message,
+            size,
+            identifier,
+            muted,
+      }: {
+            colorCode: string;
+            label: string;
+            message: string;
+            size?: string;
+            identifier?: string;
+            muted?: boolean;
+      }): string {
             const padding = ' '.repeat(
                   Math.max(0, this.MAX_LABEL_LENGTH - label.length),
             );
+
+            const formattedMessage = muted
+                  ? `\x1b[38;5;${this.colors.info}m${message}\x1b[0m`
+                  : message;
+
             if (size) {
-                  const [path, ...rest] = message.split(' ');
+                  const [path, ...rest] = formattedMessage.split(' ');
                   const messagePadding = ' '.repeat(
                         Math.max(0, this.MAX_MESSAGE_LENGTH - path.length),
                   );
@@ -57,41 +80,88 @@ export const logger = {
                         : '';
                   return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${path}${messagePadding} \x1b[38;5;${this.colors.size}m${size}\x1b[0m ${rest.join(' ')}${identifierPart}`;
             }
+
             const identifierPart = identifier
                   ? `   \x1b[48;5;${colorCode};38;5;0m ${identifier} \x1b[0m`
                   : '';
-            return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${message}${identifierPart}`;
+
+            return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${formattedMessage}${identifierPart}`;
       },
 
-      cli(message: string): void {
-            const label = this.labels.cli;
-            console.log(this.formatMessage(this.colors.cli, label, message));
+      output(
+            message: string,
+            options: LogOptions = {},
+            logFn = console.log,
+      ): void {
+            if (options.verticalSpace) console.log('');
+            logFn(message);
+            if (options.verticalSpace) console.log('');
       },
 
-      info(message: string): void {
-            console.log(`\x1b[38;5;${this.colors.info}m${message}\x1b[0m`);
+      cli(message: string, options: LogOptions = {}): void {
+            const formattedMessage = this.formatMessage({
+                  colorCode: this.colors.cli,
+                  label: this.labels.cli,
+                  message,
+                  identifier: options.identifier,
+                  muted: options.muted,
+            });
+            this.output(formattedMessage, options);
       },
 
-      warn(message: string): void {
-            const label = this.labels.warn;
-            console.warn(this.formatMessage(this.colors.warn, label, message));
+      info(message: string, options: LogOptions = {}): void {
+            const formattedMessage = this.formatMessage({
+                  colorCode: this.colors.info,
+                  label: this.labels.info,
+                  message,
+                  identifier: options.identifier,
+                  muted: options.muted,
+            });
+            this.output(formattedMessage, options);
       },
 
-      error(message: string): void {
-            const label = this.labels.error;
-            console.error(
-                  this.formatMessage(this.colors.error, label, message),
-            );
+      warn(message: string, options: LogOptions = {}): void {
+            const formattedMessage = this.formatMessage({
+                  colorCode: this.colors.warn,
+                  label: this.labels.warn,
+                  message,
+                  identifier: options.identifier,
+                  muted: options.muted,
+            });
+            this.output(formattedMessage, options, console.warn);
+      },
+
+      error(message: string, options: LogOptions = {}): void {
+            const formattedMessage = this.formatMessage({
+                  colorCode: this.colors.error,
+                  label: this.labels.error,
+                  message,
+                  identifier: options.identifier,
+                  muted: options.muted,
+            });
+            this.output(formattedMessage, options, console.error);
       },
 
       progress(
             label: FormatType,
             message: string,
-            size?: string,
+            sizeOrOptions?: string | ProgressOptions,
             identifier?: string,
       ): void {
             const labelStr = String(label);
             let colorCode = this.colors.default;
+            let size: string | undefined;
+            let actualIdentifier: string | undefined;
+            let options: LogOptions = {};
+
+            if (typeof sizeOrOptions === 'string') {
+                  size = sizeOrOptions;
+                  actualIdentifier = identifier;
+            } else if (sizeOrOptions) {
+                  size = sizeOrOptions.size;
+                  actualIdentifier = sizeOrOptions.identifier;
+                  options = sizeOrOptions;
+            }
 
             for (const [key, value] of Object.entries(this.colors.progress)) {
                   if (labelStr.includes(key)) {
@@ -99,14 +169,16 @@ export const logger = {
                         break;
                   }
             }
-            console.log(
-                  this.formatMessage(
-                        colorCode,
-                        labelStr,
-                        message,
-                        size,
-                        identifier,
-                  ),
-            );
+
+            const formattedMessage = this.formatMessage({
+                  colorCode,
+                  label: labelStr,
+                  message,
+                  size,
+                  identifier: actualIdentifier,
+                  muted: options.muted,
+            });
+
+            this.output(formattedMessage, options);
       },
 };

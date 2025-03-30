@@ -63,12 +63,6 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
                               ...cliOptions,
                         };
 
-                        console.log(
-                              DEFAULT_OPTIONS,
-                              options,
-                              cliOptions,
-                              mergedOptions,
-                        );
                         await handleBuild(mergedOptions, rootDir);
                   }),
             );
