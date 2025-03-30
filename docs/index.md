@@ -8,18 +8,16 @@ An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [
 
 Bunup outperforms other popular bundlers by a significant margin:
 
-| Bundler | Format   | dts   | Build Time     |
-| ------- | -------- | ----- | -------------- |
-| bunup   | esm, cjs | false | **0.90ms ⚡️** |
-| tsdown  | esm, cjs | false | 3.78ms         |
-| unbuild | esm, cjs | false | 12.76ms        |
-| bunup   | esm, cjs | true  | **7.38ms ⚡️** |
-| tsdown  | esm, cjs | true  | 15.17ms        |
-| unbuild | esm, cjs | true  | 257.60ms       |
+| Bundler | Format   | Build Time     | Build Time (with dts) |
+| ------- | -------- | -------------- | --------------------- |
+| bunup   | esm, cjs | **0.86ms ⚡️** | **7.54ms ⚡️**        |
+| tsdown  | esm, cjs | 3.57ms         | 15.73ms               |
+| unbuild | esm, cjs | 12.79ms        | 252.01ms              |
+| tsup    | esm, cjs | 10.53ms        | 665.55ms              |
 
 _Lower build time is better. Benchmark run on the same code with identical output formats._
 
-To run the benchmarks yourself, clone this repo and run `pnpm benchmark`.
+To run the benchmarks yourself, clone this repo and run `pnpm benchmark` and check `results.md` in the benchmarks folder.
 
 ## What Can It Bundle?
 

@@ -3,11 +3,12 @@
       "private": true,
       "version": "0.2.8",
       "scripts": {
-            "benchmark": "bun run src/index.ts"
+            "benchmark": "bun run src/main.mjs && node src/tsup.mjs"
       },
       "devDependencies": {
             "bunup": "^0.2.7",
             "tsdown": "^0.6.10",
+            "tsup": "^8.4.0",
             "unbuild": "^3.5.0"
       },
       "dependencies": {
