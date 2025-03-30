@@ -1,5 +1,7 @@
+import {version} from '../package.json';
 import {BUNUP_CLI_OPTIONS_URL} from './constants';
 import {BunupCLIError} from './errors';
+import {getEntryNameOnly} from './helpers/entry';
 import {logger} from './logger';
 import {BunupOptions, Format} from './options';
 
@@ -45,6 +47,11 @@ function showHelp() {
       );
       console.log('For more information on available options, visit:');
       console.log(`\x1b[36m\x1b[4m${BUNUP_CLI_OPTIONS_URL}\x1b[0m\n`);
+      process.exit(0);
+}
+
+function showVersion() {
+      console.log(version);
       process.exit(0);
 }
 
@@ -105,6 +112,10 @@ const specialOptions = {
             flags: ['h', 'help'],
             handler: () => showHelp(),
       },
+      version: {
+            flags: ['v', 'version'],
+            handler: () => showVersion(),
+      },
 };
 
 const flagToHandler: Record<string, CliOptionHandler> = {};
@@ -120,10 +131,6 @@ for (const config of Object.values(specialOptions)) {
       for (const flag of config.flags) {
             flagToHandler[flag] = config.handler;
       }
-}
-
-export function getEntryNameOnly(entry: string): string {
-      return entry.split('/').pop()?.split('.').slice(0, -1).join('.') || '';
 }
 
 export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
