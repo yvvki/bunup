@@ -1,6 +1,6 @@
-import {defineConfig, type Options} from 'bunup';
+import {defineConfig, type DefineConfigEntry} from 'bunup';
 
-const COMMON_OPTIONS: Options = {
+const COMMON_OPTIONS: Partial<DefineConfigEntry> = {
       outDir: 'build',
       minify: true,
       splitting: true,
