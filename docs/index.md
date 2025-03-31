@@ -596,7 +596,7 @@ bunup src/index.ts --sourcemap linked
 # Configuration file
 export default defineConfig({
     entry: ['src/index.ts'],
-    sourcemap: 'linked',
+    sourcemap: 'linked'
 });
 ```
 
@@ -608,6 +608,28 @@ Available sourcemap values:
 - `inline`
 
 For detailed explanations of these values, see the [Bun documentation on source maps](https://bun.sh/docs/bundler#sourcemap).
+
+### Define Global Constants
+
+Bunup allows you to define global constants that will be replaced at build time. This is useful for environment variables, version numbers, or any other build-time constants.
+
+```typescript
+export default defineConfig({
+      entry: ['src/index.ts'],
+      define: {
+            'process.env.NODE_ENV': '"production"',
+            PACKAGE_VERSION: '"1.0.0"',
+            DEBUG: 'false',
+      },
+});
+```
+
+The `define` option takes an object where:
+
+- Keys are the identifiers to replace
+- Values are the strings to replace them with
+
+For more information on how define works, see the [Bun documentation on define](https://bun.sh/docs/bundler#define).
 
 ## Watch Mode
 

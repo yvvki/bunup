@@ -4,6 +4,7 @@ export type Format = 'esm' | 'cjs' | 'iife';
 export type Target = 'bun' | 'node' | 'browser';
 export type External = string[];
 export type Sourcemap = 'none' | 'linked' | 'external' | 'inline';
+export type Define = Record<string, string>;
 
 export type Entry = string[] | Record<string, string>;
 
@@ -167,6 +168,19 @@ export interface BunupOptions {
        */
       sourcemap?: Sourcemap;
       /**
+       * Define global constants for the build
+       * These values will be replaced at build time
+       *
+       * @see https://bun.sh/docs/bundler#define
+       *
+       * @example
+       * define: {
+       *   'process.env.NODE_ENV': '"production"',
+       *   'PACKAGE_VERSION': '"1.0.0"'
+       * }
+       */
+      define?: Define;
+      /**
        * A callback function that runs after the build process completes
        * This can be used for custom post-build operations like copying files,
        * running additional tools, or logging build information
@@ -199,6 +213,7 @@ export function createDefaultBunBuildOptions(
             target: options.target,
             splitting: options.splitting,
             sourcemap: options.sourcemap,
+            define: options.define,
       };
 }
 

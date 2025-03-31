@@ -5,4 +5,8 @@ export default defineConfig({
       format: ['esm', 'cjs'],
       minify: true,
       dts: true,
+      define: {
+            PACKAGE_NAME: '"bunup"',
+            PACKAGE_VERSION: '"1.0.0"',
+      },
 });
