@@ -614,14 +614,7 @@ For detailed explanations of these values, see the [Bun documentation on source 
 Bunup can watch your files for changes and rebuild automatically:
 
 ```bash
-# CLI
 bunup src/index.ts --watch
-
-# Configuration file
-export default defineConfig({
-    entry: ['src/index.ts'],
-    watch: true,
-});
 ```
 
 In watch mode, Bunup will monitor your source files and their dependencies, rebuilding only what's necessary when files change.
@@ -683,14 +676,14 @@ export default defineConfig({
 
 Bunup provides callback functions that allow you to execute custom logic during the build process.
 
-### onBuildEnd
+### onBuildSuccess
 
-The `onBuildEnd` callback runs after the build process completes. This is useful for performing custom post-build operations:
+The `onBuildSuccess` callback runs after the build process successfully completes. This is useful for performing custom post-build operations:
 
 ```typescript
 export default defineConfig({
       entry: ['src/index.ts'],
-      onBuildEnd: () => {
+      onBuildSuccess: () => {
             console.log('Build completed successfully!');
             // Perform post-build operations here
             // e.g., copying files, running additional tools, etc.
@@ -698,7 +691,7 @@ export default defineConfig({
 });
 ```
 
-In watch mode, the `onBuildEnd` callback is executed after each successful rebuild.
+In watch mode, the `onBuildSuccess` callback is executed after each successful rebuild.
 
 ## Named Configurations
 

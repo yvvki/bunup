@@ -52,7 +52,7 @@ export async function watch(
                         },
                         rootDir,
                   );
-                  options.onBuildEnd?.();
+                  options.onBuildSuccess?.();
             } catch (error) {
                   throw new BunupWatchError(
                         `Build failed: ${parseErrorMessage(error)}`,

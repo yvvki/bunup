@@ -173,7 +173,7 @@ export interface BunupOptions {
        *
        * If watch mode is enabled, this callback runs after each rebuild
        */
-      onBuildEnd?: () => void | Promise<void>;
+      onBuildSuccess?: () => void | Promise<void>;
 }
 
 export const DEFAULT_OPTIONS: WithRequired<BunupOptions, 'clean'> = {

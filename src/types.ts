@@ -10,14 +10,13 @@ export type WithOptional<T, K extends keyof T> = Omit<T, K> &
 export type WithRequired<T, K extends keyof T> = Omit<T, K> &
       Required<Pick<T, K>>;
 
-export type DefineConfigOption = WithOptional<
-      BunupOptions,
-      'outDir' | 'format'
+export type DefineConfigEntry = Omit<
+      WithOptional<BunupOptions, 'outDir' | 'format'>,
+      'watch'
 >;
-export type DefineConfigOptions = DefineConfigOption | DefineConfigOption[];
 
-export type DefineWorkspaceOptions = {
+export type DefineWorkspaceEntry = {
       name: string;
       root: string;
-      config: DefineConfigOptions;
-}[];
+      config: DefineConfigEntry | DefineConfigEntry[];
+};
