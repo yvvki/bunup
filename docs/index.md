@@ -609,7 +609,7 @@ Available sourcemap values:
 
 For detailed explanations of these values, see the [Bun documentation on source maps](https://bun.sh/docs/bundler#sourcemap).
 
-### Define Global Constants
+## Define Global Constants
 
 Bunup allows you to define global constants that will be replaced at build time. This is useful for environment variables, version numbers, or any other build-time constants.
 
