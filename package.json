@@ -22,6 +22,7 @@
             "release": "bumpp",
             "publish:ci": "pnpm publish --access public --no-git-checks",
             "benchmark": "pnpm -C benchmarks benchmark",
+            "fresh-deps": "pnpx taze -r -w",
             "prepare": "husky"
       },
       "bin": {
@@ -34,12 +35,12 @@
             "@types/bun": "^1.2.5",
             "@typescript-eslint/eslint-plugin": "^7.3.1",
             "bumpp": "^10.1.0",
-            "bunup": "^0.3.1",
-            "eslint": "^8.57.0",
-            "husky": "^9.1.6",
-            "prettier": "^3.2.5",
-            "typescript": "^5.4.3",
-            "vitest": "^2.0.5"
+            "bunup": "^0.3.3",
+            "eslint": "^8.57.1",
+            "husky": "^9.1.7",
+            "prettier": "^3.5.3",
+            "typescript": "^5.8.2",
+            "vitest": "^2.1.9"
       },
       "peerDependencies": {
             "typescript": ">=4.5.0"
@@ -66,7 +67,7 @@
                   "url": "https://arshadyaseen.com"
             }
       ],
-      "packageManager": "pnpm@9.15.4",
+      "packageManager": "pnpm@9.15.9",
       "license": "MIT",
       "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
       "dependencies": {

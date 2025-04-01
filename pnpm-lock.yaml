@@ -43,32 +43,32 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.3.1
-        version: 0.3.1(typescript@5.8.2)
+        specifier: ^0.3.3
+        version: 0.3.3(typescript@5.8.2)
       eslint:
-        specifier: ^8.57.0
+        specifier: ^8.57.1
         version: 8.57.1
       husky:
-        specifier: ^9.1.6
+        specifier: ^9.1.7
         version: 9.1.7
       prettier:
-        specifier: ^3.2.5
+        specifier: ^3.5.3
         version: 3.5.3
       typescript:
-        specifier: ^5.4.3
+        specifier: ^5.8.2
         version: 5.8.2
       vitest:
-        specifier: ^2.0.5
+        specifier: ^2.1.9
         version: 2.1.9(@types/node@20.17.28)
 
   benchmarks:
     dependencies:
       '@types/node':
-        specifier: ^20.0.0
+        specifier: ^20.17.28
         version: 20.17.28
     devDependencies:
       bunup:
-        specifier: ^0.2.7
+        specifier: ^0.2.12
         version: 0.2.12(typescript@5.8.2)
       tsdown:
         specifier: ^0.6.10
@@ -1656,8 +1656,8 @@ packages:
       typescript:
         optional: true
 
-  bunup@0.3.1:
-    resolution: {integrity: sha512-Cltb3eFhnB8Lra+2bHzEwsj+j6VjNoLWNWyadmLQ1BsXZLDte3HKsf5cx2X+r/Zb4Cfb5QeQlTilZU9j5usGKw==}
+  bunup@0.3.3:
+    resolution: {integrity: sha512-3nRT/gszzXB73Gq18TaVPQH+pLPYErWPNmmDpagNA+cvFMaPfRXF6kRja/yvq76/Btx01my8i4pnnPl+o3FI0g==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -4713,7 +4713,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.2
 
-  bunup@0.3.1(typescript@5.8.2):
+  bunup@0.3.3(typescript@5.8.2):
     dependencies:
       chokidar: 4.0.3
       load-tsconfig: 0.2.5

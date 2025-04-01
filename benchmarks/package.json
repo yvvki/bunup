@@ -6,12 +6,12 @@
             "benchmark": "bun run src/main.mjs && node src/tsup.mjs"
       },
       "devDependencies": {
-            "bunup": "^0.2.7",
+            "bunup": "^0.2.12",
             "tsdown": "^0.6.10",
             "tsup": "^8.4.0",
             "unbuild": "^3.5.0"
       },
       "dependencies": {
-            "@types/node": "^20.0.0"
+            "@types/node": "^20.17.28"
       }
 }
