@@ -9,6 +9,8 @@ export function add(one: number, two: number): number {
       return one + two;
 }
 
+export {numbers} from '../utils/numbers';
+
 const something = PACKAGE_NAME + ' ' + PACKAGE_VERSION;
 
 export const result: number = add(one, two);

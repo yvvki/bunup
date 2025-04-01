@@ -43,8 +43,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.3.3
-        version: 0.3.3(typescript@5.8.2)
+        specifier: ^0.3.5
+        version: 0.3.5(typescript@5.8.2)
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
@@ -1649,6 +1649,15 @@ packages:
 
   bunup@0.3.3:
     resolution: {integrity: sha512-3nRT/gszzXB73Gq18TaVPQH+pLPYErWPNmmDpagNA+cvFMaPfRXF6kRja/yvq76/Btx01my8i4pnnPl+o3FI0g==}
+    hasBin: true
+    peerDependencies:
+      typescript: '>=4.5.0'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  bunup@0.3.5:
+    resolution: {integrity: sha512-bRk3HqzMXjlBUIjaFueSnGz0YqMPUAQk2234buITY6vx/qNOr3SrLW/j5rt61qvnR3lwqHaQlUbQVyZ+P2HgVw==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -4695,6 +4704,16 @@ snapshots:
       load-tsconfig: 0.2.5
 
   bunup@0.3.3(typescript@5.8.2):
+    dependencies:
+      chokidar: 4.0.3
+      load-tsconfig: 0.2.5
+      oxc-transform: 0.58.1
+      rollup: 4.38.0
+      rollup-plugin-dts: 6.2.1(rollup@4.38.0)(typescript@5.8.2)
+    optionalDependencies:
+      typescript: 5.8.2
+
+  bunup@0.3.5(typescript@5.8.2):
     dependencies:
       chokidar: 4.0.3
       load-tsconfig: 0.2.5
