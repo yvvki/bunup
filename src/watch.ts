@@ -7,6 +7,7 @@ import {BunupWatchError, parseErrorMessage} from './errors';
 import {normalizeEntryToProcessableEntries} from './helpers/entry';
 import {logger} from './logger';
 import {BunupOptions} from './options';
+import {formatTime} from './utils';
 
 export async function watch(
       options: BunupOptions,
@@ -28,22 +29,23 @@ export async function watch(
                   stabilityThreshold: 100,
                   pollInterval: 50,
             },
+            ignoreInitial: true,
             atomic: true,
             ignorePermissionErrors: true,
             ignored: [
                   /[\\/]\.git[\\/]/,
                   /[\\/]node_modules[\\/]/,
-                  options.outDir,
+                  path.join(rootDir, options.outDir),
             ],
       });
 
-      let debounceTimer: ReturnType<typeof setTimeout> | null = null;
       let isRebuilding = false;
 
-      const triggerRebuild = async () => {
+      const triggerRebuild = async (initial = false) => {
             if (isRebuilding) return;
             isRebuilding = true;
             try {
+                  const start = performance.now();
                   await build(
                         {
                               ...options,
@@ -53,6 +55,11 @@ export async function watch(
                         rootDir,
                   );
                   options.onBuildSuccess?.();
+                  if (!initial) {
+                        logger.cli(
+                              `📦 Rebuild finished in ${formatTime(performance.now() - start)}`,
+                        );
+                  }
             } catch (error) {
                   throw new BunupWatchError(
                         `Build failed: ${parseErrorMessage(error)}`,
@@ -65,10 +72,7 @@ export async function watch(
       watcher.on('change', filePath => {
             const changedFile = path.relative(rootDir, filePath);
             logger.cli(`File changed: ${changedFile}`);
-            if (debounceTimer) {
-                  clearTimeout(debounceTimer);
-            }
-            debounceTimer = setTimeout(() => triggerRebuild(), 300);
+            triggerRebuild();
       });
 
       watcher.on('error', error => {
@@ -77,5 +81,5 @@ export async function watch(
             );
       });
 
-      await triggerRebuild();
+      await triggerRebuild(true);
 }
