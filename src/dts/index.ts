@@ -1,6 +1,6 @@
 import {loadTsconfig} from '../helpers/load-tsconfig';
 import {BunupOptions} from '../options';
-import {bundleDtsContent} from './bundler';
+import {bundleDts} from './bundler';
 import {collectTsFiles} from './collector';
 import {generateDtsContent} from './generator';
 import {validateInputs} from './validation';
@@ -14,7 +14,7 @@ export async function generateDts(
       const tsconfig = loadTsconfig(options.preferredTsconfigPath);
       const tsFiles = await collectTsFiles(absoluteEntry, tsconfig);
       const dtsMap = await generateDtsContent(tsFiles);
-      return bundleDtsContent(
+      return bundleDts(
             absoluteEntry,
             dtsMap,
             options,

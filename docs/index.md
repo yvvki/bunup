@@ -253,6 +253,8 @@ Bunup supports various command-line options:
 | `--clean`               | `-c`  | Clean output directory before build                | `true`           |
 | `--splitting`           | `-s`  | Enable code splitting                              | Format dependent |
 | `--sourcemap <type>`    | `-sm` | Sourcemap generation (none,linked,external,inline) | `none`           |
+| `--banner <text>`       | `-b`  | Text to add at the beginning of output files       | -                |
+| `--footer <text>`       | `-f`  | Text to add at the end of output files             | -                |
 | `--name <name>`         | `-n`  | Name for this build configuration                  | -                |
 | `--help`                | `-h`  | Display help information                           | -                |
 
@@ -630,6 +632,63 @@ The `define` option takes an object where:
 - Values are the strings to replace them with
 
 For more information on how define works, see the [Bun documentation on define](https://bun.sh/docs/bundler#define).
+
+## Banner and Footer
+
+You can add custom text to the beginning and end of your bundle files:
+
+```bash
+# CLI
+bunup src/index.ts --banner 'use client' --footer '// built with love in SF'
+
+# Configuration file
+export default defineConfig({
+      entry: ['src/index.ts'],
+      // Add text to the beginning of bundle files
+      banner: '"use client";',
+      // Add text to the end of bundle files
+      footer: '// built with love in SF',
+});
+```
+
+The `banner` option adds text to the beginning of the bundle, useful for directives like "use client" for React or license information.
+
+The `footer` option adds text to the end of the bundle, which can be used for license information or other closing comments.
+
+For more information, see the Bun documentation on [banner](https://bun.sh/docs/bundler#banner) and [footer](https://bun.sh/docs/bundler#footer).
+
+## Drop Function Calls
+
+You can remove specific function calls from your bundle:
+
+```typescript
+export default defineConfig({
+      entry: ['src/index.ts'],
+      drop: ['console', 'debugger', 'anyIdentifier.or.propertyAccess'],
+});
+```
+
+The `drop` option removes function calls specified in the array. For example, `drop: ["console"]` will remove all calls to `console.log`. Arguments to calls will also be removed, regardless of if those arguments may have side effects. Dropping `debugger` will remove all `debugger` statements.
+
+For more information, see the [Bun documentation on drop](https://bun.sh/docs/bundler#drop).
+
+## Custom Loaders
+
+You can configure how different file types are loaded:
+
+```typescript
+export default defineConfig({
+      entry: ['src/index.ts'],
+      loader: {
+            '.png': 'dataurl',
+            '.txt': 'file',
+      },
+});
+```
+
+The `loader` option takes a map of file extensions to built-in loader names, allowing you to customize how different file types are processed during bundling.
+
+For more information, see the [Bun documentation on loaders](https://bun.sh/docs/bundler#loader).
 
 ## Watch Mode
 

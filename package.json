@@ -73,6 +73,7 @@
       "dependencies": {
             "chokidar": "^4.0.3",
             "load-tsconfig": "^0.2.5",
+            "oxc-resolver": "^5.0.1",
             "oxc-transform": "^0.58.1",
             "rollup": "^4.35.0",
             "rollup-plugin-dts": "^6.1.1"

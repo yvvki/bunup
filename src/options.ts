@@ -1,11 +1,36 @@
-import {BunBuildOptions, WithRequired} from './types';
+import {BunBuildOptions, PromiseOr, WithRequired} from './types';
 
+/** https://bun.sh/docs/bundler/loaders */
+type Loader =
+      | 'js'
+      | 'jsx'
+      | 'ts'
+      | 'tsx'
+      | 'json'
+      | 'toml'
+      | 'file'
+      | 'napi'
+      | 'wasm'
+      | 'text'
+      | 'css'
+      | 'html';
+
+/** https://bun.sh/docs/bundler#format */
 export type Format = 'esm' | 'cjs' | 'iife';
+
+/** https://bun.sh/docs/bundler#target */
 export type Target = 'bun' | 'node' | 'browser';
+
+/** https://bun.sh/docs/bundler#external */
 export type External = string[];
+
+/** https://bun.sh/docs/bundler#sourcemap */
 export type Sourcemap = 'none' | 'linked' | 'external' | 'inline';
+
+/** https://bun.sh/docs/bundler#define */
 export type Define = Record<string, string>;
 
+/** https://bun.sh/docs/bundler#entry */
 export type Entry = string[] | Record<string, string>;
 
 export type DtsOptions = {
@@ -31,7 +56,11 @@ export type DtsOptions = {
        * // Using named outputs as an object
        * entry: { myModule: './src/index.ts', utils: './src/utility-functions.ts' } // Generates myModule.d.ts and utils.d.ts
        */
-      entry: Entry;
+      entry?: Entry;
+      /**
+       * Resolve external types used in dts files from node_modules
+       */
+      resolve?: boolean | (string | RegExp)[];
 };
 
 export interface BunupOptions {
@@ -187,20 +216,54 @@ export interface BunupOptions {
        *
        * If watch mode is enabled, this callback runs after each rebuild
        */
-      onBuildSuccess?: () => void | Promise<void>;
+      onBuildSuccess?: () => PromiseOr<void>;
+      /**
+       * A banner to be added to the final bundle, this can be a directive like "use client" for react or a comment block such as a license for the code.
+       *
+       * @see https://bun.sh/docs/bundler#banner
+       *
+       * @example
+       * banner: '"use client";'
+       */
+      banner?: string;
+      /**
+       * A footer to be added to the final bundle, this can be something like a comment block for a license or just a fun easter egg.
+       *
+       * @see https://bun.sh/docs/bundler#footer
+       *
+       * @example
+       * footer: '// built with love in SF'
+       */
+      footer?: string;
+      /**
+       * Remove function calls from a bundle. For example, `drop: ["console"]` will remove all calls to `console.log`. Arguments to calls will also be removed, regardless of if those arguments may have side effects. Dropping `debugger` will remove all `debugger` statements.
+       *
+       * @see https://bun.sh/docs/bundler#drop
+       *
+       * @example
+       * drop: ["console", "debugger", "anyIdentifier.or.propertyAccess"]
+       */
+      drop?: string[];
+      /**
+       * A map of file extensions to [built-in loader names](https://bun.sh/docs/bundler/loaders#built-in-loaders). This can be used to quickly customize how certain files are loaded.
+       *
+       * @see https://bun.sh/docs/bundler#loader
+       *
+       * @example
+       * loader: {
+       *   ".png": "dataurl",
+       *   ".txt": "file",
+       * }
+       */
+      loader?: Record<string, Loader>;
 }
 
 export const DEFAULT_OPTIONS: WithRequired<BunupOptions, 'clean'> = {
       entry: [],
       format: ['cjs'],
       outDir: 'dist',
-      minify: false,
-      watch: false,
-      dts: false,
       target: 'node',
-      external: [],
       clean: true,
-      sourcemap: 'none',
 };
 
 export function createDefaultBunBuildOptions(
@@ -214,6 +277,10 @@ export function createDefaultBunBuildOptions(
             splitting: options.splitting,
             sourcemap: options.sourcemap,
             define: options.define,
+            loader: options.loader,
+            drop: options.drop,
+            banner: options.banner,
+            footer: options.footer,
       };
 }
 

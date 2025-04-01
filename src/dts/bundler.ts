@@ -7,10 +7,11 @@ import {getExternalPatterns, getNoExternalPatterns} from '../helpers/external';
 import {TsConfig} from '../helpers/load-tsconfig';
 import {loadPackageJson} from '../loaders';
 import {BunupOptions} from '../options';
+import {typesResolvePlugin} from '../plugins/types-resolve';
 import {DtsMap} from './generator';
 import {gerVirtualFilesPlugin, VIRTUAL_FILES_PREFIX} from './virtual-files';
 
-export async function bundleDtsContent(
+export async function bundleDts(
       entryFile: string,
       dtsMap: DtsMap,
       options: BunupOptions,
@@ -42,6 +43,12 @@ export async function bundleDtsContent(
                   },
                   plugins: [
                         gerVirtualFilesPlugin(dtsMap),
+                        typeof options.dts === 'object' &&
+                              typesResolvePlugin(
+                                    typeof options.dts.resolve === 'boolean'
+                                          ? undefined
+                                          : options.dts.resolve,
+                              ),
                         dtsPlugin({
                               tsconfig: tsconfig.path,
                               compilerOptions: {

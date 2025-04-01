@@ -79,9 +79,9 @@ export async function build(
             });
 
             const dtsEntry =
-                  options.dts === true
-                        ? processableEntries
-                        : normalizeEntryToProcessableEntries(options.dts.entry);
+                  typeof options.dts === 'object' && options.dts.entry
+                        ? normalizeEntryToProcessableEntries(options.dts.entry)
+                        : processableEntries;
 
             try {
                   await Promise.all(
