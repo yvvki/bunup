@@ -44,6 +44,7 @@ export async function bundleDts(
                   plugins: [
                         gerVirtualFilesPlugin(dtsMap),
                         typeof options.dts === 'object' &&
+                              'resolve' in options.dts &&
                               typesResolvePlugin(
                                     typeof options.dts.resolve === 'boolean'
                                           ? undefined
