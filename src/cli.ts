@@ -8,6 +8,7 @@ import {BunupOptions, DEFAULT_OPTIONS} from './options';
 
 import './runtime';
 
+import {version} from '../package.json';
 import {validateFilesUsedToBundleDts} from './dts/validation';
 import {
       cleanOutDir,
@@ -22,15 +23,17 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
       const cliOptions = parseCliOptions(args);
       const {configs, configFilePath} = await loadConfigs(process.cwd());
 
+      logger.cli(`Using bunup v${version} and bun v${Bun.version}`, {
+            muted: true,
+      });
+
       if (configFilePath) {
             logger.cli(
                   `Using config file: ${getShortFilePath(configFilePath, 2)}`,
+                  {
+                        muted: true,
+                  },
             );
-      }
-
-      if (cliOptions.watch) {
-            logger.cli('Starting watch mode');
-            logger.cli(`Watching for file changes`);
       }
 
       const startTime = performance.now();
@@ -75,6 +78,10 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
       if (allFilesUsedToBundleDts.size > 0) {
             await validateFilesUsedToBundleDts(allFilesUsedToBundleDts);
             allFilesUsedToBundleDts.clear();
+      }
+
+      if (cliOptions.watch) {
+            logger.cli(`👀 Watching for file changes`);
       }
 
       if (!cliOptions.watch) {

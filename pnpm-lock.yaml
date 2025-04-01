@@ -66,10 +66,10 @@ importers:
       '@types/node':
         specifier: ^20.17.28
         version: 20.17.28
-    devDependencies:
       bunup:
-        specifier: ^0.2.12
-        version: 0.2.12(typescript@5.8.2)
+        specifier: ^0.3.3
+        version: 0.3.3(typescript@5.8.2)
+    devDependencies:
       tsdown:
         specifier: ^0.6.10
         version: 0.6.10(typescript@5.8.2)
@@ -1646,15 +1646,6 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     peerDependencies:
       esbuild: '>=0.18'
-
-  bunup@0.2.12:
-    resolution: {integrity: sha512-PAAztsXCluQJ1SkxqISVJLcrOm7nOOlhNO3vYlJ/YqYIzT41Vkk6IFxW8xkXWv8aNMR7d4xC+4uD6i4+/h6VYw==}
-    hasBin: true
-    peerDependencies:
-      typescript: '>=4.5.0'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   bunup@0.3.3:
     resolution: {integrity: sha512-3nRT/gszzXB73Gq18TaVPQH+pLPYErWPNmmDpagNA+cvFMaPfRXF6kRja/yvq76/Btx01my8i4pnnPl+o3FI0g==}
@@ -4702,16 +4693,6 @@ snapshots:
     dependencies:
       esbuild: 0.25.2
       load-tsconfig: 0.2.5
-
-  bunup@0.2.12(typescript@5.8.2):
-    dependencies:
-      chokidar: 4.0.3
-      load-tsconfig: 0.2.5
-      oxc-transform: 0.58.1
-      rollup: 4.38.0
-      rollup-plugin-dts: 6.2.1(rollup@4.38.0)(typescript@5.8.2)
-    optionalDependencies:
-      typescript: 5.8.2
 
   bunup@0.3.3(typescript@5.8.2):
     dependencies:
