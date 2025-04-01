@@ -444,6 +444,34 @@ export default defineConfig({
 });
 ```
 
+### Resolving External Types
+
+When generating declaration files, you might need to include type references from external dependencies. Bunup can automatically resolve these external types:
+
+```typescript
+export default defineConfig({
+      entry: ['src/index.ts'],
+      dts: {
+            // Enable resolving all external types
+            resolve: true,
+      },
+});
+```
+
+The `resolve` option helps when your TypeScript code imports types from external packages. Bunup will look for type definitions in `node_modules` and include them in your declaration files.
+
+You can also specify which packages to resolve types for:
+
+```typescript
+export default defineConfig({
+      entry: ['src/index.ts'],
+      dts: {
+            // Only resolve types from these specific packages
+            resolve: ['react', 'lodash', /^@types\//],
+      },
+});
+```
+
 ### Declaration File Extensions
 
 Declaration file extensions follow the same pattern as JavaScript files:
