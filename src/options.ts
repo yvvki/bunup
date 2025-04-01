@@ -1,36 +1,17 @@
 import {BunBuildOptions, PromiseOr, WithRequired} from './types';
 
-/** https://bun.sh/docs/bundler/loaders */
-type Loader =
-      | 'js'
-      | 'jsx'
-      | 'ts'
-      | 'tsx'
-      | 'json'
-      | 'toml'
-      | 'file'
-      | 'napi'
-      | 'wasm'
-      | 'text'
-      | 'css'
-      | 'html';
+export type Loader = NonNullable<BunBuildOptions['loader']>[string];
 
-/** https://bun.sh/docs/bundler#format */
-export type Format = 'esm' | 'cjs' | 'iife';
+export type Define = BunBuildOptions['define'];
 
-/** https://bun.sh/docs/bundler#target */
-export type Target = 'bun' | 'node' | 'browser';
+export type Sourcemap = BunBuildOptions['sourcemap'];
 
-/** https://bun.sh/docs/bundler#external */
-export type External = string[];
+export type Format = Exclude<BunBuildOptions['format'], undefined>;
 
-/** https://bun.sh/docs/bundler#sourcemap */
-export type Sourcemap = 'none' | 'linked' | 'external' | 'inline';
+export type Target = BunBuildOptions['target'];
 
-/** https://bun.sh/docs/bundler#define */
-export type Define = Record<string, string>;
+export type External = (string | RegExp)[];
 
-/** https://bun.sh/docs/bundler#entry */
 export type Entry = string[] | Record<string, string>;
 
 export type DtsOptions = {
