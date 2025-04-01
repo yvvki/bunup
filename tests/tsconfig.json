@@ -17,6 +17,6 @@
                   "@/*": ["./src/*"]
             }
       },
-      "include": ["src", "bunup.config.ts"],
+      "include": ["src", "bunup.config.ts", "utils"],
       "exclude": ["node_modules", "build"]
 }

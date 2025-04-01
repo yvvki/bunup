@@ -3,7 +3,8 @@
       "private": true,
       "version": "0.3.3",
       "scripts": {
-            "build": "bunup"
+            "build": "bunup",
+            "dev": "bunup --watch"
       },
       "devDependencies": {
             "bunup": "workspace:*"

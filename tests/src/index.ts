@@ -1,4 +1,4 @@
-import {one, two} from '@/utils/numbers';
+import {one, two} from '../utils/numbers';
 
 declare const PACKAGE_NAME: string;
 declare const PACKAGE_VERSION: string;
