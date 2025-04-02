@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import {isolatedDeclaration} from 'oxc-transform';
@@ -7,25 +7,35 @@ import {BunupDTSBuildError} from '../errors';
 import {logger} from '../logger';
 import {getShortFilePath} from '../utils';
 
-export function validateInputs(
+export async function validateInputs(
       rootDir: string,
       entry: string,
-): {absoluteRootDir: string; absoluteEntry: string} {
+): Promise<{absoluteRootDir: string; absoluteEntry: string}> {
       const absoluteRootDir = path.resolve(rootDir);
       const absoluteEntry = path.resolve(absoluteRootDir, entry);
 
-      if (!fs.existsSync(absoluteRootDir))
+      const isAbsoluteRootDirExists = await fs.exists(absoluteRootDir);
+
+      if (!isAbsoluteRootDirExists) {
             throw new BunupDTSBuildError(
                   `Root directory does not exist: ${absoluteRootDir}`,
             );
-      if (!fs.existsSync(absoluteEntry))
+      }
+
+      const isAbsoluteEntryExists = await Bun.file(absoluteEntry).exists();
+
+      if (!isAbsoluteEntryExists) {
             throw new BunupDTSBuildError(
                   `Entry file does not exist: ${absoluteEntry}`,
             );
-      if (!absoluteEntry.endsWith('.ts'))
+      }
+
+      if (!absoluteEntry.endsWith('.ts')) {
             throw new BunupDTSBuildError(
                   `Entry file must be a TypeScript file (.ts): ${absoluteEntry}`,
             );
+      }
+
       if (path.relative(absoluteRootDir, absoluteEntry).startsWith('..')) {
             throw new BunupDTSBuildError(
                   `Entry file must be within rootDir: ${absoluteEntry}`,
@@ -44,10 +54,7 @@ export async function validateFilesUsedToBundleDts(
             [...filesUsedToBundleDts].map(async file => {
                   try {
                         const tsFile = file.replace(/\.d\.ts$/, '.ts');
-                        const sourceText = await fs.promises.readFile(
-                              tsFile,
-                              'utf8',
-                        );
+                        const sourceText = await Bun.file(tsFile).text();
                         const {errors} = isolatedDeclaration(
                               tsFile,
                               sourceText,

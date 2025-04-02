@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import path from 'node:path';
 
 import {ResolverFactory} from 'oxc-resolver';
@@ -73,9 +72,7 @@ export function typesResolvePlugin(resolvers?: (string | RegExp)[]): Plugin {
                               /\.([cm]?)jsx?$/,
                               '.d.$1ts',
                         );
-                        return (await fs.promises.exists(dts))
-                              ? dts
-                              : undefined;
+                        return (await Bun.file(dts).exists()) ? dts : undefined;
                   }
 
                   return resolved;

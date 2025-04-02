@@ -1,4 +1,4 @@
-import {loadTsconfig} from '../helpers/load-tsconfig';
+import {TsConfig} from '../helpers/load-tsconfig';
 import {BunupOptions} from '../options';
 import {bundleDts} from './bundler';
 import {collectTsFiles} from './collector';
@@ -9,16 +9,11 @@ export async function generateDts(
       rootDir: string,
       entry: string,
       options: BunupOptions,
+      tsconfig: TsConfig,
+      packageJson: Record<string, unknown> | null,
 ): Promise<string> {
-      const {absoluteRootDir, absoluteEntry} = validateInputs(rootDir, entry);
-      const tsconfig = loadTsconfig(options.preferredTsconfigPath);
+      const {absoluteEntry} = await validateInputs(rootDir, entry);
       const tsFiles = await collectTsFiles(absoluteEntry, tsconfig);
       const dtsMap = await generateDtsContent(tsFiles);
-      return bundleDts(
-            absoluteEntry,
-            dtsMap,
-            options,
-            absoluteRootDir,
-            tsconfig,
-      );
+      return bundleDts(absoluteEntry, dtsMap, options, tsconfig, packageJson);
 }

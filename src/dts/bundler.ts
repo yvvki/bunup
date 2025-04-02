@@ -5,7 +5,6 @@ import ts from 'typescript';
 import {BunupDTSBuildError, parseErrorMessage} from '../errors';
 import {getExternalPatterns, getNoExternalPatterns} from '../helpers/external';
 import {TsConfig} from '../helpers/load-tsconfig';
-import {loadPackageJson} from '../loaders';
 import {BunupOptions} from '../options';
 import {typesResolvePlugin} from '../plugins/types-resolve';
 import {DtsMap} from './generator';
@@ -15,14 +14,13 @@ export async function bundleDts(
       entryFile: string,
       dtsMap: DtsMap,
       options: BunupOptions,
-      rootDir: string,
       tsconfig: TsConfig,
+      packageJson: Record<string, unknown> | null,
 ): Promise<string> {
       const entryDtsPath = entryFile.replace(/\.tsx?$/, '.d.ts');
       const virtualEntry = `${VIRTUAL_FILES_PREFIX}${entryDtsPath}`;
       const compilerOptions = tsconfig.data?.compilerOptions;
 
-      const packageJson = loadPackageJson(rootDir);
       const externalPatterns = getExternalPatterns(options, packageJson);
       const noExternalPatterns = getNoExternalPatterns(options);
 

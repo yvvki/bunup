@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import path from 'node:path';
 
 import {parseErrorMessage} from '../errors';
@@ -24,10 +23,7 @@ export async function collectTsFiles(
             if (!current) continue;
 
             try {
-                  const sourceText = await fs.promises.readFile(
-                        current,
-                        'utf8',
-                  );
+                  const sourceText = await Bun.file(current).text();
                   const imports = extractImports(sourceText);
 
                   for (const importPath of imports) {
@@ -41,7 +37,7 @@ export async function collectTsFiles(
 
                         if (!resolvedPath) continue;
 
-                        const tsFile = resolveTsFile(resolvedPath);
+                        const tsFile = await resolveTsFile(resolvedPath);
                         if (tsFile && !visited.has(tsFile)) {
                               visited.add(tsFile);
                               toVisit.push(tsFile);
@@ -67,14 +63,12 @@ function extractImports(sourceText: string): string[] {
       return Array.from(imports);
 }
 
-function resolveTsFile(basePath: string): string | null {
+async function resolveTsFile(basePath: string): Promise<string | null> {
       const extensions = ['', '.ts', '.tsx', '/index.ts', '/index.tsx'];
       for (const ext of extensions) {
             const file = `${basePath}${ext}`;
-            if (
-                  fs.existsSync(file) &&
-                  (file.endsWith('.ts') || file.endsWith('.tsx'))
-            )
+            const exists = await Bun.file(file).exists();
+            if (exists && (file.endsWith('.ts') || file.endsWith('.tsx')))
                   return file;
       }
       return null;

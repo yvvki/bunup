@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import {BunupBuildError} from './errors';
@@ -92,18 +92,22 @@ export function getShortFilePath(filePath: string, maxLength = 3): string {
       return shortPath;
 }
 
-export function cleanOutDir(rootDir: string, outDir: string): void {
+export async function cleanOutDir(
+      rootDir: string,
+      outDir: string,
+): Promise<void> {
       const outDirPath = path.join(rootDir, outDir);
-      if (fs.existsSync(outDirPath)) {
+      const exists = await fs.exists(outDirPath);
+      if (exists) {
             try {
-                  fs.rmSync(outDirPath, {recursive: true, force: true});
+                  await fs.rm(outDirPath, {recursive: true});
             } catch (error) {
                   throw new BunupBuildError(
                         `Failed to clean output directory: ${error}`,
                   );
             }
       }
-      fs.mkdirSync(outDirPath, {recursive: true});
+      await fs.mkdir(outDirPath, {recursive: true});
 }
 
 export function getResolvedOutDir(outDir: string | undefined): string {

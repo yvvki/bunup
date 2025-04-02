@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import path from 'node:path';
 
 import {BunupBuildError, parseErrorMessage} from './errors';
@@ -24,7 +23,8 @@ export async function loadConfigs(cwd: string): Promise<{
             const filePath = path.join(cwd, `bunup.config${ext}`);
 
             try {
-                  if (!fs.existsSync(filePath)) continue;
+                  const exists = await Bun.file(filePath).exists();
+                  if (!exists) continue;
 
                   const content = await loadConfigFile(filePath, ext);
                   if (!content) continue;
@@ -56,9 +56,9 @@ async function loadConfigFile(filePath: string, ext: string): Promise<any> {
       return loadJsConfig(filePath);
 }
 
-function loadJsonConfig(filePath: string): any {
+async function loadJsonConfig(filePath: string): Promise<any> {
       try {
-            const text = fs.readFileSync(filePath, 'utf8');
+            const text = await Bun.file(filePath).text();
             const parsed = JSON.parse(text);
 
             return parsed.bunup || parsed;
@@ -177,22 +177,34 @@ function processConfigArray(
       }
 }
 
-export function loadPackageJson(cwd: string): Record<string, unknown> | null {
+export async function loadPackageJson(
+      cwd: string,
+): Promise<{packageJson: Record<string, unknown> | null; path: string}> {
       const packageJsonPath = path.join(cwd, 'package.json');
 
       try {
-            if (!fs.existsSync(packageJsonPath)) {
-                  return null;
+            const exists = await Bun.file(packageJsonPath).exists();
+            if (!exists) {
+                  return {
+                        packageJson: null,
+                        path: packageJsonPath,
+                  };
             }
 
-            const text = fs.readFileSync(packageJsonPath, 'utf8');
+            const text = await Bun.file(packageJsonPath).text();
             const content = JSON.parse(text);
 
-            return content;
+            return {
+                  packageJson: content,
+                  path: packageJsonPath,
+            };
       } catch (error) {
             logger.warn(
                   `Failed to load package.json at ${packageJsonPath}: ${parseErrorMessage(error)}`,
             );
-            return null;
+            return {
+                  packageJson: null,
+                  path: packageJsonPath,
+            };
       }
 }

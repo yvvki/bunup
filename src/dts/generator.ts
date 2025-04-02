@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-
 import {isolatedDeclaration} from 'oxc-transform';
 
 import {parseErrorMessage} from '../errors';
@@ -20,10 +18,9 @@ export async function generateDtsContent(
             [...tsFiles].map(async tsFile => {
                   try {
                         const dtsPath = tsFile.replace(/\.tsx?$/, '.d.ts');
-                        const sourceText = await fs.promises.readFile(
-                              tsFile,
-                              'utf8',
-                        );
+                        const exists = await Bun.file(tsFile).exists();
+                        if (!exists) return;
+                        const sourceText = await Bun.file(tsFile).text();
                         const {code: declaration} = isolatedDeclaration(
                               tsFile,
                               sourceText,

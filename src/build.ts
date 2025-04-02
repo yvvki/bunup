@@ -6,6 +6,7 @@ import {
       ProcessableEntry,
 } from './helpers/entry';
 import {getExternalPatterns, getNoExternalPatterns} from './helpers/external';
+import {loadTsconfig} from './helpers/load-tsconfig';
 import {loadPackageJson} from './loaders';
 import {logger} from './logger';
 import {BunupOptions, createDefaultBunBuildOptions, Format} from './options';
@@ -32,7 +33,14 @@ export async function build(
             );
       }
 
-      const packageJson = loadPackageJson(rootDir);
+      const {packageJson, path} = await loadPackageJson(rootDir);
+
+      if (packageJson) {
+            logger.cli(`Using package.json: ${getShortFilePath(path)}`, {
+                  muted: true,
+            });
+      }
+
       const packageType = packageJson?.type as string | undefined;
       const externalPatterns = getExternalPatterns(options, packageJson);
       const noExternalPatterns = getNoExternalPatterns(options);
@@ -67,6 +75,17 @@ export async function build(
       }
 
       if (options.dts) {
+            const tsconfig = loadTsconfig(options.preferredTsconfigPath);
+
+            if (tsconfig.path) {
+                  logger.cli(
+                        `Using tsconfig: ${getShortFilePath(tsconfig.path)}`,
+                        {
+                              muted: true,
+                        },
+                  );
+            }
+
             const formatsToProcessDts = options.format.filter(fmt => {
                   if (
                         fmt === 'iife' &&
@@ -90,6 +109,8 @@ export async function build(
                                     rootDir,
                                     entry.path,
                                     options,
+                                    tsconfig,
+                                    packageJson,
                               );
 
                               await Promise.all(

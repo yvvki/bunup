@@ -672,9 +672,9 @@ bunup src/index.ts --banner 'use client' --footer '// built with love in SF'
 # Configuration file
 export default defineConfig({
       entry: ['src/index.ts'],
-      // Add text to the beginning of bundle files
+      # Add text to the beginning of bundle files
       banner: '"use client";',
-      // Add text to the end of bundle files
+      # Add text to the end of bundle files
       footer: '// built with love in SF',
 });
 ```
