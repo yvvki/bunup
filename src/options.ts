@@ -19,23 +19,27 @@ export type DtsOptions = {
        * Entry point files for TypeScript declaration file generation
        *
        * This can be:
+       * - A string path to a file
        * - An array of file paths
        * - An object where keys are output names and values are input file paths
        *
        * The key names are used for the generated declaration files.
-       * For example, {custom: './src/index.ts'} will generate custom.d.ts
+       * For example, `{custom: 'src/index.ts'}` will generate `custom.d.ts`
        *
        * If not specified, the main entry points will be used for declaration file generation.
        *
-       * If a string path is provided in an array, the file name (without extension)
+       * If it's a string or an array of strings, the file name (without extension)
        * will be used as the name for the output declaration file.
        *
        * @example
+       * // Using a string path
+       * entry: 'src/index.ts' // Generates index.d.ts
+       *
        * // Using string paths in an array
-       * entry: ['./src/index.ts']  // Generates index.d.ts
+       * entry: ['src/index.ts']  // Generates index.d.ts
        *
        * // Using named outputs as an object
-       * entry: { myModule: './src/index.ts', utils: './src/utility-functions.ts' } // Generates myModule.d.ts and utils.d.ts
+       * entry: { myModule: 'src/index.ts', utils: 'src/utility-functions.ts' } // Generates myModule.d.ts and utils.d.ts
        */
       entry?: Entry;
       /**
@@ -55,21 +59,25 @@ export interface BunupOptions {
        * Entry point files for the build
        *
        * This can be:
+       * - A string path to a file
        * - An array of file paths
        * - An object where keys are output names and values are input file paths
        *
        * The key names are used for the generated output files.
-       * For example, {custom: './src/index.ts'} will generate custom.js
+       * For example, `{custom: 'src/index.ts'}` will generate `custom.js`
        *
-       * If a string path is provided in an array, the file name (without extension)
+       * If it's a string or an array of strings, the file name (without extension)
        * will be used as the name for the output file.
        *
        * @example
+       * // Using a string path
+       * entry: 'src/index.ts' // Generates index.js
+       *
        * // Using string paths in an array
-       * entry: ['./src/index.ts']  // Generates index.js
+       * entry: ['src/index.ts']  // Generates index.js
        *
        * // Using named outputs as an object
-       * entry: { myModule: './src/index.ts', utils: './src/utility-functions.ts' } // Generates myModule.js and utils.js
+       * entry: { myModule: 'src/index.ts', utils: 'src/utility-functions.ts' } // Generates myModule.js and utils.js
        */
       entry: Entry;
 

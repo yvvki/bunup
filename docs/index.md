@@ -267,7 +267,13 @@ Bunup supports multiple ways to define entry points. Entry points are the source
 The simplest way to define an entry point is to provide a single file path:
 
 ```bash
+# In CLI
 bunup src/index.ts
+
+# Configuration file
+export default defineConfig({
+      entry: 'src/index.ts',
+});
 ```
 
 This will generate an output file named after the input file (e.g., `dist/index.js`).
@@ -279,7 +285,13 @@ You can specify multiple entry points in several ways:
 #### Using the CLI with Multiple Positional Arguments
 
 ```bash
+# CLI
 bunup src/index.ts src/cli.ts
+
+# Configuration file
+export default defineConfig({
+      entry: ['src/index.ts', 'src/cli.ts'],
+});
 ```
 
 This will generate output files named after each input file (e.g., `dist/index.js` and `dist/cli.js`).
@@ -297,34 +309,17 @@ This achieves the same result as using positional arguments.
 Named entries allow you to specify custom output filenames:
 
 ```bash
+# CLI
 bunup --entry.main src/index.ts --entry.cli src/cli.ts
-```
 
-This will generate output files with the specified names (e.g., `dist/main.js` and `dist/cli.js`).
-
-#### Using a Configuration File with an Array
-
-```typescript
-export default defineConfig({
-      entry: ['src/index.ts', 'src/cli.ts'],
-});
-```
-
-This will generate output files named after each input file.
-
-#### Using a Configuration File with Named Entries
-
-```typescript
+# Configuration file
 export default defineConfig({
       entry: {
             main: 'src/index.ts',
             cli: 'src/cli.ts',
-            utils: 'src/utils/index.ts',
       },
 });
 ```
-
-This will generate output files with the specified names (e.g., `dist/main.js`, `dist/cli.js`, and `dist/utils.js`).
 
 ### Why Use Named Entries?
 
