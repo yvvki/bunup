@@ -282,11 +282,12 @@ This will generate an output file named after the input file (e.g., `dist/index.
 
 You can specify multiple entry points in several ways:
 
-#### Using the CLI with Multiple Positional Arguments
-
 ```bash
-# CLI
+# CLI (method 1)
 bunup src/index.ts src/cli.ts
+
+# CLI (method 2)
+bunup --entry src/index.ts --entry src/cli.ts
 
 # Configuration file
 export default defineConfig({
@@ -296,15 +297,7 @@ export default defineConfig({
 
 This will generate output files named after each input file (e.g., `dist/index.js` and `dist/cli.js`).
 
-#### Using the CLI with --entry Flag Multiple Times
-
-```bash
-bunup --entry src/index.ts --entry src/cli.ts
-```
-
-This achieves the same result as using positional arguments.
-
-#### Using Named Entries in the CLI
+### Named Entries
 
 Named entries allow you to specify custom output filenames:
 
@@ -321,7 +314,9 @@ export default defineConfig({
 });
 ```
 
-### Why Use Named Entries?
+This will generate output files with the specified names (e.g., `dist/main.js` and `dist/cli.js`).
+
+#### Why Use Named Entries?
 
 Named entries are useful when:
 
