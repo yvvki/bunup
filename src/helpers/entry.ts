@@ -35,7 +35,7 @@ export function normalizeEntryToProcessableEntries(
                               `    another_name: "${path}"\n` +
                               `  }\n` +
                               `}\n\n` +
-                              `See: https://bunup.arshadyaseen.com/#using-a-configuration-file-with-named-entries`,
+                              `See: https://bunup.arshadyaseen.com/#named-entries`,
                         {
                               muted: true,
                               verticalSpace: true,
