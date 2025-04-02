@@ -10,10 +10,10 @@ Bunup outperforms other popular bundlers by a significant margin:
 
 | Bundler | Format   | Build Time     | Build Time (with dts) |
 | ------- | -------- | -------------- | --------------------- |
-| bunup   | esm, cjs | **0.86ms ⚡️** | **7.54ms ⚡️**        |
-| tsdown  | esm, cjs | 3.57ms         | 15.73ms               |
-| unbuild | esm, cjs | 12.79ms        | 252.01ms              |
-| tsup    | esm, cjs | 10.53ms        | 665.55ms              |
+| bunup   | esm, cjs | **0.86ms ⚡️** | **5.44ms ⚡️**        |
+| tsdown  | esm, cjs | 3.85ms         | 11.03ms               |
+| unbuild | esm, cjs | 12.90ms        | 252.92ms              |
+| tsup    | esm, cjs | 10.99ms        | 671.39ms              |
 
 _Lower build time is better. Benchmark run on the same code with identical output formats._
 

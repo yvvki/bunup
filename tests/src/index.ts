@@ -3,6 +3,8 @@ import {one, two} from '../utils/numbers';
 declare const PACKAGE_NAME: string;
 declare const PACKAGE_VERSION: string;
 
+export {FSWatcher} from 'chokidar';
+
 export * from './cool';
 
 export function add(one: number, two: number): number {
