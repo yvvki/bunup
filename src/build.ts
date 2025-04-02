@@ -36,7 +36,7 @@ export async function build(
       const {packageJson, path} = await loadPackageJson(rootDir);
 
       if (packageJson) {
-            logger.cli(`Using package.json: ${getShortFilePath(path)}`, {
+            logger.cli(`Using package.json: ${getShortFilePath(path, 2)}`, {
                   muted: true,
             });
       }
@@ -74,7 +74,7 @@ export async function build(
 
             if (tsconfig.path) {
                   logger.cli(
-                        `Using tsconfig: ${getShortFilePath(tsconfig.path)}`,
+                        `Using tsconfig: ${getShortFilePath(tsconfig.path, 2)}`,
                         {
                               muted: true,
                         },
