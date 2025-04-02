@@ -1,6 +1,6 @@
 import path from 'path';
 
-import {Plugin} from 'rollup';
+import {Plugin} from 'rolldown';
 
 import {allFilesUsedToBundleDts} from '../build';
 import {DtsMap} from './generator';

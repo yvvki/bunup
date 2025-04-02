@@ -1,7 +1,7 @@
 import path from 'node:path';
 
 import {ResolverFactory} from 'oxc-resolver';
-import {Plugin} from 'rollup';
+import {Plugin} from 'rolldown';
 
 import {VIRTUAL_FILES_PREFIX} from '../dts/virtual-files';
 

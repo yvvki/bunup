@@ -75,7 +75,7 @@
             "load-tsconfig": "^0.2.5",
             "oxc-resolver": "^5.0.1",
             "oxc-transform": "^0.58.1",
-            "rollup": "^4.35.0",
-            "rollup-plugin-dts": "^6.1.1"
+            "rolldown": "1.0.0-beta.7",
+            "rolldown-plugin-dts": "https://pkg.pr.new/sxzz/rolldown-plugin-dts@main"
       }
 }

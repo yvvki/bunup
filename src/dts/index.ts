@@ -15,5 +15,5 @@ export async function generateDts(
       const {absoluteEntry} = await validateInputs(rootDir, entry);
       const tsFiles = await collectTsFiles(absoluteEntry, tsconfig);
       const dtsMap = await generateDtsContent(tsFiles);
-      return bundleDts(absoluteEntry, dtsMap, options, tsconfig, packageJson);
+      return bundleDts(absoluteEntry, dtsMap, options, packageJson);
 }
