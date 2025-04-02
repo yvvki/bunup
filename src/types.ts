@@ -8,6 +8,8 @@ export type WithOptional<T, K extends keyof T> = Omit<T, K> &
 export type WithRequired<T, K extends keyof T> = Omit<T, K> &
       Required<Pick<T, K>>;
 
+export type Arrayable<T> = T | T[];
+
 export type Bun = typeof import('bun');
 export type BunBuildOptions = Parameters<Bun['build']>[0];
 export type BunPlugin = Exclude<BunBuildOptions['plugins'], undefined>[number];

@@ -54,10 +54,13 @@ export function normalizeEntryToProcessableEntries(
                   const name = getEntryNameOnly(item);
                   addEntry(name, item);
             }
-      } else {
+      } else if (typeof entry === 'object') {
             Object.entries(entry).forEach(([name, path]) => {
                   addEntry(name, path as string);
             });
+      } else {
+            const name = getEntryNameOnly(entry);
+            addEntry(name, entry);
       }
 
       return result;

@@ -1,4 +1,4 @@
-import {BunBuildOptions, PromiseOr, WithRequired} from './types';
+import {Arrayable, BunBuildOptions, PromiseOr, WithRequired} from './types';
 
 export type Loader = NonNullable<BunBuildOptions['loader']>[string];
 
@@ -12,7 +12,7 @@ export type Target = BunBuildOptions['target'];
 
 export type External = (string | RegExp)[];
 
-export type Entry = string[] | Record<string, string>;
+export type Entry = Arrayable<string> | Record<string, string>;
 
 export type DtsOptions = {
       /**

@@ -67,12 +67,7 @@ export async function build(
             }),
       );
 
-      try {
-            await Promise.all(buildPromises);
-      } catch (error) {
-            console.error(error);
-            throw new BunupBuildError('Build process encountered errors');
-      }
+      await Promise.all(buildPromises);
 
       if (options.dts) {
             const tsconfig = loadTsconfig(options.preferredTsconfigPath);
@@ -137,9 +132,7 @@ export async function build(
                         }),
                   );
             } catch (error) {
-                  throw new BunupDTSBuildError(
-                        `DTS build process encountered errors: ${parseErrorMessage(error)}`,
-                  );
+                  throw new BunupDTSBuildError(parseErrorMessage(error));
             }
       }
 }
@@ -167,13 +160,11 @@ async function buildEntry(
 
       if (!result.success) {
             result.logs.forEach(log => {
-                  if (log.level === 'error') logger.error(log.message);
+                  if (log.level === 'error')
+                        throw new BunupBuildError(log.message);
                   else if (log.level === 'warning') logger.warn(log.message);
                   else if (log.level === 'info') logger.info(log.message);
             });
-            throw new BunupBuildError(
-                  `Build failed for ${entry.path} (${fmt})`,
-            );
       }
 
       const outputPath = `${rootDir}/${options.outDir}/${entry.name}${extension}`;
