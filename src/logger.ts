@@ -5,6 +5,7 @@ interface LogOptions {
       muted?: boolean;
       verticalSpace?: boolean;
       identifier?: string;
+      once?: string;
 }
 
 interface ProgressOptions extends LogOptions {
@@ -21,11 +22,14 @@ interface LogColors {
       size: ColorCode;
 }
 
-export const logger = {
-      MAX_LABEL_LENGTH: 3,
-      MAX_MESSAGE_LENGTH: 25,
+class Logger {
+      private static instance: Logger;
+      private loggedOnceMessages = new Set<string>();
 
-      colors: {
+      public readonly MAX_LABEL_LENGTH = 3;
+      public readonly MAX_MESSAGE_LENGTH = 25;
+
+      public colors: LogColors = {
             cli: '147',
             info: '245',
             warn: '179',
@@ -38,16 +42,40 @@ export const logger = {
             },
             default: '252',
             size: '65',
-      } as LogColors,
+      };
 
-      labels: {
+      public labels = {
             cli: 'CLI',
             info: 'INFO',
             warn: 'WARN',
             error: 'ERROR',
-      },
+      };
 
-      formatMessage({
+      private constructor() {}
+
+      public static getInstance(): Logger {
+            if (!Logger.instance) {
+                  Logger.instance = new Logger();
+            }
+            return Logger.instance;
+      }
+
+      public dispose(): void {
+            this.loggedOnceMessages.clear();
+      }
+
+      private shouldLog(options?: LogOptions): boolean {
+            if (!options?.once) return true;
+
+            if (this.loggedOnceMessages.has(options.once)) {
+                  return false;
+            }
+
+            this.loggedOnceMessages.add(options.once);
+            return true;
+      }
+
+      public formatMessage({
             colorCode,
             label,
             message,
@@ -86,19 +114,21 @@ export const logger = {
                   : '';
 
             return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${formattedMessage}${identifierPart}`;
-      },
+      }
 
-      output(
+      public output(
             message: string,
             options: LogOptions = {},
             logFn = console.log,
       ): void {
+            if (!this.shouldLog(options)) return;
+
             if (options.verticalSpace) console.log('');
             logFn(message);
             if (options.verticalSpace) console.log('');
-      },
+      }
 
-      cli(message: string, options: LogOptions = {}): void {
+      public cli(message: string, options: LogOptions = {}): void {
             const formattedMessage = this.formatMessage({
                   colorCode: this.colors.cli,
                   label: this.labels.cli,
@@ -107,9 +137,9 @@ export const logger = {
                   muted: options.muted,
             });
             this.output(formattedMessage, options);
-      },
+      }
 
-      info(message: string, options: LogOptions = {}): void {
+      public info(message: string, options: LogOptions = {}): void {
             const formattedMessage = this.formatMessage({
                   colorCode: this.colors.info,
                   label: this.labels.info,
@@ -118,9 +148,9 @@ export const logger = {
                   muted: options.muted,
             });
             this.output(formattedMessage, options);
-      },
+      }
 
-      warn(message: string, options: LogOptions = {}): void {
+      public warn(message: string, options: LogOptions = {}): void {
             const formattedMessage = this.formatMessage({
                   colorCode: this.colors.warn,
                   label: this.labels.warn,
@@ -129,9 +159,9 @@ export const logger = {
                   muted: options.muted,
             });
             this.output(formattedMessage, options, console.warn);
-      },
+      }
 
-      error(message: string, options: LogOptions = {}): void {
+      public error(message: string, options: LogOptions = {}): void {
             const formattedMessage = this.formatMessage({
                   colorCode: this.colors.error,
                   label: this.labels.error,
@@ -140,9 +170,9 @@ export const logger = {
                   muted: options.muted,
             });
             this.output(formattedMessage, options, console.error);
-      },
+      }
 
-      progress(
+      public progress(
             label: FormatType,
             message: string,
             sizeOrOptions?: string | ProgressOptions,
@@ -180,5 +210,7 @@ export const logger = {
             });
 
             this.output(formattedMessage, options);
-      },
-};
+      }
+}
+
+export const logger = Logger.getInstance();

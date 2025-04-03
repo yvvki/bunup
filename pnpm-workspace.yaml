@@ -3,3 +3,4 @@ packages:
       - 'tests'
       - 'docs'
       - 'benchmarks'
+      - 'create-bunup'

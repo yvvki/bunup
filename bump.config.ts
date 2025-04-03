@@ -6,5 +6,6 @@ export default defineConfig({
             'tests/package.json',
             'docs/package.json',
             'benchmarks/package.json',
+            'create-bunup/package.json',
       ],
 });

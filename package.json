@@ -8,6 +8,9 @@
       "files": [
             "build"
       ],
+      "bin": {
+            "bunup": "build/cli.mjs"
+      },
       "scripts": {
             "build": "bunup",
             "dev": "bunup --watch",
@@ -24,9 +27,6 @@
             "benchmark": "pnpm -C benchmarks benchmark",
             "fresh-deps": "pnpx taze -r -w",
             "prepare": "husky"
-      },
-      "bin": {
-            "bunup": "build/cli.mjs"
       },
       "devDependencies": {
             "@commitlint/cli": "^19.5.0",

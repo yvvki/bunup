@@ -1,0 +1,34 @@
+{
+      "name": "create-bunup",
+      "version": "0.3.18",
+      "files": [
+            "build"
+      ],
+      "bin": {
+            "bunup": "build/index.mjs"
+      },
+      "description": "Quickly scaffold a new TypeScript package with Bunup.",
+      "scripts": {},
+      "keywords": [
+            "bunup",
+            "typescript",
+            "package",
+            "scaffold",
+            "bun"
+      ],
+      "repository": {
+            "type": "git",
+            "url": "git+https://github.com/arshad-yaseen/bunup.git"
+      },
+      "homepage": "https://bunup.arshadyaseen.com/create",
+      "maintainers": [
+            {
+                  "name": "Arshad Yaseen",
+                  "email": "m@arshadyaseen.com",
+                  "url": "https://arshadyaseen.com"
+            }
+      ],
+      "packageManager": "pnpm@9.15.9",
+      "license": "MIT",
+      "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)"
+}

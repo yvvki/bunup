@@ -38,6 +38,7 @@ export async function build(
       if (packageJson) {
             logger.cli(`Using package.json: ${getShortFilePath(path, 2)}`, {
                   muted: true,
+                  once: path,
             });
       }
 
@@ -77,6 +78,7 @@ export async function build(
                         `Using tsconfig: ${getShortFilePath(tsconfig.path, 2)}`,
                         {
                               muted: true,
+                              once: tsconfig.path,
                         },
                   );
             }

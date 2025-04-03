@@ -87,6 +87,9 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
       if (!cliOptions.watch) {
             process.exit(0);
       }
+
+      // cleanups
+      logger.dispose();
 }
 
 async function handleBuild(options: BunupOptions, rootDir: string) {
