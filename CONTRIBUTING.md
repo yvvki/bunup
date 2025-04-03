@@ -81,12 +81,6 @@ To validate TypeScript types:
 pnpm tsc
 ```
 
-To run the complete validation suite:
-
-```bash
-pnpm validate
-```
-
 ### Code Formatting and Linting
 
 Bunup uses ESLint and Prettier for code quality and formatting.

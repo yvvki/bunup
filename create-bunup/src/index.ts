@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-import {execSync} from 'child_process';
+import {exec as execCallback} from 'child_process';
 import {existsSync} from 'fs';
 import {mkdir, writeFile} from 'fs/promises';
 import {basename, join, resolve} from 'path';
+import {promisify} from 'util';
 
 import {
       confirm,
@@ -15,6 +16,8 @@ import {
       text,
 } from '@clack/prompts';
 import colors from 'picocolors';
+
+const exec = promisify(execCallback);
 
 type PackageManager = 'bun' | 'pnpm';
 
@@ -161,9 +164,8 @@ async function main() {
                               ? 'bun run format:fix'
                               : 'pnpm format:fix';
 
-                  execSync(formatCmd, {
+                  await exec(formatCmd, {
                         cwd: projectDir,
-                        stdio: 'ignore',
                   });
                   formatSpinner.stop(`${colors.green('Files formatted')}`);
             } catch (error: any) {
@@ -203,20 +205,17 @@ async function installDependencies(options: ProjectOptions): Promise<void> {
                   : `pnpm add -D ${dependencies.join(' ')}`;
 
       try {
-            execSync(installCmd, {
+            await exec(installCmd, {
                   cwd: projectDir,
-                  stdio: 'ignore',
             });
 
             if (packageManager === 'bun') {
-                  execSync('bun husky init', {
+                  await exec('bun husky init', {
                         cwd: projectDir,
-                        stdio: 'ignore',
                   });
             } else {
-                  execSync('pnpm husky init', {
+                  await exec('pnpm husky init', {
                         cwd: projectDir,
-                        stdio: 'ignore',
                   });
             }
       } catch (error: any) {
@@ -314,13 +313,13 @@ npx --no -- commitlint --edit $1
             `#!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-${packageManager === 'bun' ? 'bun run' : 'pnpm'} lint
+${packageManager === 'bun' ? 'bun run tsc && bun run lint && bun run format' : 'pnpm tsc && pnpm lint && pnpm format'}
 `,
       );
 
       try {
-            execSync(`chmod +x ${join(projectDir, '.husky/commit-msg')}`);
-            execSync(`chmod +x ${join(projectDir, '.husky/pre-commit')}`);
+            await exec(`chmod +x ${join(projectDir, '.husky/commit-msg')}`);
+            await exec(`chmod +x ${join(projectDir, '.husky/pre-commit')}`);
       } catch (error) {}
 
       await writeFile(
@@ -434,7 +433,7 @@ ${
                     run: pnpm install
 
                   - name: Run validation
-                    run: pnpm lint && pnpm format
+                    run: pnpm tsc && pnpm lint && pnpm format
 
                   - name: Run tests
                     run: pnpm test`
@@ -448,7 +447,7 @@ ${
                     run: bun install
 
                   - name: Run validation
-                    run: bun run lint && bun run format
+                    run: bun run tsc && bun run lint && bun run format
 
                   - name: Run tests
                     run: bun run test`
@@ -690,16 +689,6 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
 
       const workspaces = isMonorepo ? {workspaces: ['packages/*']} : {};
 
-      const bumpPaths = isMonorepo
-            ? packages
-                    .map(pkg => `./packages/${pkg}/package.json`)
-                    .concat(['./package.json'])
-            : [];
-
-      const bumpArgs = isMonorepo
-            ? bumpPaths.map(p => `--all ${p}`).join(' ')
-            : '';
-
       return {
             name: isMonorepo ? `${projectName}-monorepo` : projectName,
             version: '0.0.0',
@@ -713,11 +702,12 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
                   'lint:fix': 'biome check --apply .',
                   format: 'biome format .',
                   'format:fix': 'biome format --write .',
+                  tsc: 'tsc --noEmit',
                   test: 'vitest run',
                   'test:watch': 'vitest',
                   'test:coverage': 'vitest run --coverage',
-                  release: `bumpp ${bumpArgs} --commit --push --tag`,
-                  'publish:ci': `${packageManager}${isMonorepo ? ` ${packageManager === 'pnpm' ? ' -r' : `--filter ${packages.join(' --filter ')}`}` : ''} publish --access public --no-git-checks`,
+                  release: `bumpp${isMonorepo ? ' -r' : ''} --commit --push --tag`,
+                  'publish:ci': `${packageManager}${isMonorepo ? ` --filter ${packages.map(pkg => `'${pkg}'`).join(' --filter ')}` : ''} publish --access public --no-git-checks`,
                   prepare: 'husky',
             },
             dependencies: {},
