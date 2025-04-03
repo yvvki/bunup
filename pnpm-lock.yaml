@@ -46,8 +46,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.3.17
-        version: 0.3.17(typescript@5.8.2)
+        specifier: ^0.3.18
+        version: 0.3.18(typescript@5.8.2)
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
@@ -1717,8 +1717,8 @@ packages:
       typescript:
         optional: true
 
-  bunup@0.3.17:
-    resolution: {integrity: sha512-CK8TSNfVDu50TnaU+rtLBcZoBq3v4Ld2LA+X495FvHI5T/ejs1UxxdcjLtNLCXbrd1AG/C1KVsjfUt/x73BufQ==}
+  bunup@0.3.18:
+    resolution: {integrity: sha512-zJXS8+hEd6n6KkZmANxGZoD0LAXq6Irf3HtIv6GZ7klRBgFieGYy1+sEJTipq9mOebCMMBn4VLbWvlkkdwPg2A==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -4840,7 +4840,7 @@ snapshots:
     transitivePeerDependencies:
       - '@oxc-project/runtime'
 
-  bunup@0.3.17(typescript@5.8.2):
+  bunup@0.3.18(typescript@5.8.2):
     dependencies:
       chokidar: 4.0.3
       load-tsconfig: 0.2.5
