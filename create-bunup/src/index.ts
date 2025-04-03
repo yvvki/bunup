@@ -692,6 +692,10 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
             name: isMonorepo ? `${projectName}-monorepo` : projectName,
             version: '0.0.0',
             private: isMonorepo ? true : undefined,
+            main: './dist/index.js',
+            module: './dist/index.mjs',
+            types: './dist/index.d.ts',
+            files: ['dist'],
             ...workspaces,
             scripts: {
                   build: 'bunup',
