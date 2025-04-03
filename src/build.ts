@@ -39,6 +39,7 @@ export async function build(
             logger.cli(`Using package.json: ${getShortFilePath(path, 2)}`, {
                   muted: true,
                   once: path,
+                  identifier: options.name,
             });
       }
 
@@ -79,6 +80,7 @@ export async function build(
                         {
                               muted: true,
                               once: tsconfig.path,
+                              identifier: options.name,
                         },
                   );
             }

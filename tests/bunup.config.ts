@@ -2,6 +2,7 @@ import {defineConfig} from 'bunup';
 
 export default defineConfig([
       {
+            name: 'bunup',
             entry: ['src/index.ts'],
             format: ['esm', 'cjs'],
             minify: true,
@@ -14,6 +15,7 @@ export default defineConfig([
             },
       },
       {
+            name: 'bunup-some',
             entry: ['src/some.ts'],
             format: ['esm', 'cjs'],
             minify: true,
