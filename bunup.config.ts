@@ -3,7 +3,7 @@ import {defineConfig, type DefineConfigEntry} from 'bunup';
 const COMMON_OPTIONS: Partial<DefineConfigEntry> = {
       outDir: 'build',
       minify: true,
-      splitting: true,
+      splitting: false,
 };
 
 export default defineConfig([
@@ -11,9 +11,7 @@ export default defineConfig([
             ...COMMON_OPTIONS,
             entry: ['src/index.ts'],
             format: ['cjs', 'esm'],
-            dts: {
-                  resolve: ['bun-types'],
-            },
+            dts: true,
       },
       {
             ...COMMON_OPTIONS,

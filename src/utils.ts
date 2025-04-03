@@ -1,8 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import {BunupBuildError, parseErrorMessage} from './errors';
-import {logger} from './logger';
+import {BunupBuildError} from './errors';
 import {DEFAULT_OPTIONS, Format} from './options';
 
 export function escapeRegExp(string: string): string {
@@ -98,24 +97,14 @@ export async function cleanOutDir(
       outDir: string,
 ): Promise<void> {
       const outDirPath = path.join(rootDir, outDir);
-      const exists = await fs.exists(outDirPath);
-      if (exists) {
-            try {
-                  await fs.rm(outDirPath, {recursive: true});
-            } catch (error) {
-                  logger.warn(
-                        `Could not clean output directory: ${parseErrorMessage(error)}`,
-                  );
-            }
-      }
-
       try {
-            await fs.mkdir(outDirPath, {recursive: true});
+            await fs.rm(outDirPath, {recursive: true, force: true});
       } catch (error) {
             throw new BunupBuildError(
-                  `Failed to create output directory: ${parseErrorMessage(error)}`,
+                  `Failed to clean output directory: ${error}`,
             );
       }
+      await fs.mkdir(outDirPath, {recursive: true});
 }
 
 export function getResolvedOutDir(outDir: string | undefined): string {
