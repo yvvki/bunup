@@ -11,7 +11,9 @@ export default defineConfig([
             ...COMMON_OPTIONS,
             entry: ['src/index.ts'],
             format: ['cjs', 'esm'],
-            dts: true,
+            dts: {
+                  resolve: ['bun-types'],
+            },
       },
       {
             ...COMMON_OPTIONS,
