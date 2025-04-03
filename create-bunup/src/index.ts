@@ -34,7 +34,6 @@ interface PackageJson {
       name: string;
       version: string;
       private?: boolean;
-      type: string;
       workspaces?: string[];
       main?: string;
       module?: string;
@@ -693,7 +692,6 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
             name: isMonorepo ? `${projectName}-monorepo` : projectName,
             version: '0.0.0',
             private: isMonorepo ? true : undefined,
-            type: 'module',
             ...workspaces,
             scripts: {
                   build: 'bunup',
@@ -754,7 +752,6 @@ function createPackageJson(
       return {
             name: isMonorepo ? `@${projectName}/${packageName}` : packageName,
             version: '0.0.0',
-            type: 'module',
             main: './dist/index.js',
             module: './dist/index.mjs',
             types: './dist/index.d.ts',
