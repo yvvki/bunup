@@ -4,6 +4,7 @@
       "files": [
             "build"
       ],
+      "main": "build/index.js",
       "bin": {
             "create-bunup": "build/index.mjs"
       },
