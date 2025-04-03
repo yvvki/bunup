@@ -46,8 +46,11 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.3.19
-        version: 0.3.19(typescript@5.8.2)
+        specifier: ^0.3.20
+        version: 0.3.20(typescript@5.8.2)
+      create-bunup:
+        specifier: workspace:*
+        version: link:create-bunup
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
@@ -83,7 +86,21 @@ importers:
         specifier: ^3.5.0
         version: 3.5.0(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2))
 
-  create-bunup: {}
+  create-bunup:
+    dependencies:
+      '@clack/prompts':
+        specifier: ^0.7.0
+        version: 0.7.0
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
+    devDependencies:
+      '@types/node':
+        specifier: ^20.9.0
+        version: 20.17.28
+      typescript:
+        specifier: ^5.3.3
+        version: 5.8.2
 
   docs:
     devDependencies:
@@ -203,6 +220,14 @@ packages:
   '@babel/types@7.27.0':
     resolution: {integrity: sha512-H45s8fVLYjbhFH62dIJ3WtmJ6RSPt/3DRO0ZcT2SUiYiQyz3BLVb9ADEnLl91m74aQPS3AzzeajZHYOalWe3bg==}
     engines: {node: '>=6.9.0'}
+
+  '@clack/core@0.3.5':
+    resolution: {integrity: sha512-5cfhQNH+1VQ2xLQlmzXMqUoiaH0lRBq9/CLW9lTyMbuKLC3+xEK01tHVvyut++mLOn5urSHmkm6I0Lg9MaJSTQ==}
+
+  '@clack/prompts@0.7.0':
+    resolution: {integrity: sha512-0MhX9/B4iL6Re04jPrttDm+BsP8y6mS7byuv0BvXgdXhbV5PdlsHt55dvNsuBCPZ7xq1oTAOOuotR9NFbQyMSA==}
+    bundledDependencies:
+      - is-unicode-supported
 
   '@commitlint/cli@19.8.0':
     resolution: {integrity: sha512-t/fCrLVu+Ru01h0DtlgHZXbHV2Y8gKocTR5elDOqIRUzQd0/6hpt2VIWOj9b3NDo7y4/gfxeR2zRtXq/qO6iUg==}
@@ -1719,8 +1744,8 @@ packages:
       typescript:
         optional: true
 
-  bunup@0.3.19:
-    resolution: {integrity: sha512-6gdQUUzKkfvkwzsnUzio/qFqqypvzN5VfsYAbtQIckRKiONDKGf00gO9O6b6tUqqSWNrd5eqL/EzYMhptaLPOw==}
+  bunup@0.3.20:
+    resolution: {integrity: sha512-NuTRLgHatRIRcy+Lsh4Z7uR99Ow3jqUETtEaRKnNa6gAKnxI6EDiMhgr7WsWmfHXJBcp6qS4Fhm1/lgS0NdYMg==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -3013,6 +3038,9 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
+  sisteransi@1.0.5:
+    resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
+
   slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
@@ -3587,6 +3615,17 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
+
+  '@clack/core@0.3.5':
+    dependencies:
+      picocolors: 1.1.1
+      sisteransi: 1.0.5
+
+  '@clack/prompts@0.7.0':
+    dependencies:
+      '@clack/core': 0.3.5
+      picocolors: 1.1.1
+      sisteransi: 1.0.5
 
   '@commitlint/cli@19.8.0(@types/node@20.17.28)(typescript@5.8.2)':
     dependencies:
@@ -4842,7 +4881,7 @@ snapshots:
     transitivePeerDependencies:
       - '@oxc-project/runtime'
 
-  bunup@0.3.19(typescript@5.8.2):
+  bunup@0.3.20(typescript@5.8.2):
     dependencies:
       chokidar: 4.0.3
       load-tsconfig: 0.2.5
@@ -6238,6 +6277,8 @@ snapshots:
   siginfo@2.0.0: {}
 
   signal-exit@4.1.0: {}
+
+  sisteransi@1.0.5: {}
 
   slash@3.0.0: {}
 

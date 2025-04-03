@@ -5,16 +5,16 @@
             "build"
       ],
       "bin": {
-            "bunup": "build/index.mjs"
+            "create-bunup": "build/index.mjs"
       },
       "description": "Quickly scaffold a new TypeScript package with Bunup.",
-      "scripts": {},
       "keywords": [
             "bunup",
             "typescript",
-            "package",
-            "scaffold",
-            "bun"
+            "cli",
+            "bun",
+            "create",
+            "starter"
       ],
       "repository": {
             "type": "git",
@@ -30,5 +30,13 @@
       ],
       "packageManager": "pnpm@9.15.9",
       "license": "MIT",
-      "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)"
+      "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
+      "dependencies": {
+            "@clack/prompts": "^0.7.0",
+            "picocolors": "^1.1.1"
+      },
+      "devDependencies": {
+            "@types/node": "^20.9.0",
+            "typescript": "^5.3.3"
+      }
 }
