@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.PAT_TOKEN }}  # Use PAT to bypass branch protection
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -38,6 +38,9 @@ jobs:
 
       - name: Update starter root dev dependencies
         run: pnpm update-create-bunup-starter-root-dev-dependencies
+
+      - name: Build packages
+        run: pnpm build
 
       - name: Check for changes
         id: check_changes
