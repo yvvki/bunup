@@ -64,4 +64,4 @@ jobs:
         if: steps.check_changes.outputs.changes == 'true'
         run: pnpm release:ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} 
