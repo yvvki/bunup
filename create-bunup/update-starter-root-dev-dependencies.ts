@@ -5,8 +5,6 @@ import path from 'path';
 
 const JSON_FILE = path.join(
       __dirname,
-      '..',
-      'create-bunup',
       'src',
       'starter-root-dev-dependencies.json',
 );
