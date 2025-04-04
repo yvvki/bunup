@@ -79,6 +79,16 @@ async function main() {
 
       if (typeof packageManager !== 'string') process.exit(1);
 
+      const projectDir =
+            projectPath === '.'
+                  ? process.cwd()
+                  : resolve(process.cwd(), projectPath);
+
+      const projectName =
+            projectPath === '.'
+                  ? basename(process.cwd())
+                  : basename(projectPath);
+
       const isMonorepo = await confirm({
             message: 'Set up as a monorepo?',
             initialValue: false,
@@ -90,8 +100,8 @@ async function main() {
       if (isMonorepo) {
             const pkg1 = await text({
                   message: 'Name for first package:',
-                  placeholder: 'core',
-                  initialValue: 'core',
+                  placeholder: projectName,
+                  initialValue: projectName,
                   validate(value) {
                         if (!value) return 'Please enter a package name';
                         return;
@@ -100,32 +110,10 @@ async function main() {
 
             if (typeof pkg1 !== 'string') process.exit(1);
 
-            const pkg2 = await text({
-                  message: 'Name for second package:',
-                  placeholder: 'utils',
-                  initialValue: 'utils',
-                  validate(value) {
-                        if (!value) return 'Please enter a package name';
-                        return;
-                  },
-            });
-
-            if (typeof pkg2 !== 'string') process.exit(1);
-
-            packages = [pkg1, pkg2];
+            packages = [pkg1];
       }
 
       try {
-            const projectDir =
-                  projectPath === '.'
-                        ? process.cwd()
-                        : resolve(process.cwd(), projectPath);
-
-            const projectName =
-                  projectPath === '.'
-                        ? basename(process.cwd())
-                        : basename(projectPath);
-
             const options: ProjectOptions = {
                   projectPath,
                   projectDir,
