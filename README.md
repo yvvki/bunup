@@ -7,10 +7,10 @@ An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [
 
 | Bundler | Format   | Build Time     | Build Time (with dts) |
 | ------- | -------- | -------------- | --------------------- |
-| bunup   | esm, cjs | **0.86ms ⚡️** | **5.44ms ⚡️**        |
-| tsdown  | esm, cjs | 3.85ms         | 11.03ms               |
-| unbuild | esm, cjs | 12.90ms        | 252.92ms              |
-| tsup    | esm, cjs | 10.99ms        | 671.39ms              |
+| bunup   | esm, cjs | **3.09ms ⚡️** | **19.55ms ⚡️**       |
+| tsdown  | esm, cjs | 5.75ms         | 43.89ms               |
+| unbuild | esm, cjs | 42.26ms        | 322.66ms              |
+| tsup    | esm, cjs | 63.81ms        | 948.24ms              |
 
 _Lower build time is better. Benchmark run on the same code with identical output formats._
 
