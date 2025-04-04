@@ -10,6 +10,10 @@ export default defineConfig({
             logo: '/logo.png',
             nav: [
                   {
+                        text: 'Typescript Library Starter',
+                        link: '/typescript-library-starter',
+                  },
+                  {
                         text: `v${version}`,
                         items: [
                               {
@@ -23,6 +27,16 @@ export default defineConfig({
                         ],
                   },
             ],
+            // sidebar: [
+            //       {
+            //             text: 'Bunup',
+            //             link: '/',
+            //       },
+            //       {
+            //             text: 'Typescript Library Starter',
+            //             link: '/typescript-library-starter',
+            //       },
+            // ],
             editLink: {
                   pattern: 'https://github.com/arshad-yaseen/bunup/edit/main/docs/:path',
                   text: 'Suggest changes to this page',

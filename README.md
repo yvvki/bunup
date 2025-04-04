@@ -92,6 +92,23 @@ export default defineConfig({
 
 For complete documentation, visit [the full documentation](https://bunup.arshadyaseen.com/).
 
+## 🔥 Create TypeScript Libraries Faster
+
+Create a complete TypeScript Library Starter in 10 seconds. Just focus on your library code, library ground ready in 10 seconds:
+
+```bash
+# Using bun
+bunx create-bunup@latest
+
+# Using npm
+npx create-bunup@latest
+
+# Using pnpm
+pnpx create-bunup@latest
+```
+
+Check out our [TypeScript Library Starter documentation](https://bunup.arshadyaseen.com/docs/typescript-library-starter) for more details.
+
 ## ❤️ Contributing
 
 For guidelines on contributing, please read the [contributing guide](https://github.com/arshad-yaseen/bunup/blob/main/CONTRIBUTING.md).
