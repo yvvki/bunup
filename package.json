@@ -33,15 +33,15 @@
             "@commitlint/config-conventional": "^19.5.0",
             "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
             "@types/bun": "^1.2.5",
-            "@typescript-eslint/eslint-plugin": "^7.3.1",
+            "@typescript-eslint/eslint-plugin": "^7.18.0",
             "bumpp": "^10.1.0",
-            "bunup": "^0.3.20",
+            "bunup": "^0.3.26",
+            "create-bunup": "workspace:*",
             "eslint": "^8.57.1",
             "husky": "^9.1.7",
             "prettier": "^3.5.3",
             "typescript": "^5.8.2",
-            "vitest": "^2.1.9",
-            "create-bunup": "workspace:*"
+            "vitest": "^2.1.9"
       },
       "peerDependencies": {
             "typescript": ">=4.5.0"
