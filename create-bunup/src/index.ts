@@ -45,7 +45,7 @@ interface PackageJson {
 }
 
 async function main() {
-      intro(colors.bgCyan(colors.black(' create-bunup ')));
+      intro(colors.bgCyan(colors.black(' TypeScript Library Starter ')));
 
       const projectPath = await text({
             message: 'Where would you like to create your project?',

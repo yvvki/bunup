@@ -92,9 +92,9 @@ export default defineConfig({
 
 For complete documentation, visit [the full documentation](https://bunup.arshadyaseen.com/).
 
-## 🔥 Create TypeScript Libraries Faster
+## ⚡️ Create TypeScript Libraries Faster
 
-Create a complete TypeScript Library Starter in 10 seconds. Just focus on your library code, library ground ready in 10 seconds:
+Quickly scaffold modern TypeScript library in 10 seconds. Powered by [Bunup](https://bunup.arshadyaseen.com/) - the fastest TypeScript bundler available.
 
 ```bash
 # Using bun
