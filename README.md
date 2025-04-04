@@ -94,7 +94,7 @@ For complete documentation, visit [the full documentation](https://bunup.arshady
 
 ## ⚡️ Create TypeScript Libraries Faster
 
-Quickly scaffold modern TypeScript library in 10 seconds. Powered by bunup.
+Quickly scaffold modern TypeScript library in 5 seconds. Powered by bunup.
 
 ```bash
 # Using bun
