@@ -8,6 +8,9 @@ const JSON_FILE = path.join(
       'src',
       'starter-root-dev-dependencies.json',
 );
+
+console.log(JSON_FILE);
+
 const DEPENDENCIES = [
       '@biomejs/biome',
       '@commitlint/cli',
