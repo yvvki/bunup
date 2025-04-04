@@ -709,6 +709,7 @@ export default defineWorkspace([
       entry: ['src/index.ts'],
       format: ['esm', 'cjs'],
       dts: true,
+      minify: true,
     },
   }`,
         )
