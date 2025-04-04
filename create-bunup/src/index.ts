@@ -210,12 +210,7 @@ async function createProjectFiles(options: ProjectOptions): Promise<void> {
             join(projectDir, 'vitest.config.ts'),
             `import { defineConfig } from 'vitest/config'
 
-export default defineConfig({
-  test: {
-    globals: true,
-    environment: 'node',
-  },
-})
+export default defineConfig({})
 `,
       );
 
