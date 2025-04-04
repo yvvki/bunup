@@ -107,7 +107,7 @@ npx create-bunup@latest
 pnpx create-bunup@latest
 ```
 
-Check out our [TypeScript Library Starter documentation](https://bunup.arshadyaseen.com/docs/typescript-library-starter) for more details.
+Check out our [TypeScript Library Starter documentation](https://bunup.arshadyaseen.com/typescript-library-starter.html) for more details.
 
 ## ❤️ Contributing
 
