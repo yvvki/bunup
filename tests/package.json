@@ -1,7 +1,7 @@
 {
       "name": "bunup-tests",
       "private": true,
-      "version": "0.3.37",
+      "version": "0.3.39",
       "scripts": {
             "build": "bunup",
             "dev": "bunup --watch"
