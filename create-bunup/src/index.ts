@@ -17,6 +17,8 @@ import {
 } from '@clack/prompts';
 import colors from 'picocolors';
 
+import starterRootDevDependencies from './starter-root-dev-dependencies.json' assert {type: 'json'};
+
 const exec = promisify(execCallback);
 
 type PackageManager = 'bun' | 'pnpm';
@@ -129,84 +131,17 @@ async function main() {
             await createProjectFiles(options);
             createSpinner.stop(`${colors.green('Project created')}`);
 
-            const installSpinner = spinner();
-            installSpinner.start('Installing dependencies');
-
-            try {
-                  await installDependencies(options);
-                  installSpinner.stop(
-                        `${colors.green('Dependencies installed')}`,
-                  );
-            } catch (error: any) {
-                  installSpinner.stop('Failed to install dependencies');
-                  log.error(`Error installing dependencies: ${error.message}`);
-            }
-
-            const formatSpinner = spinner();
-            formatSpinner.start('Formatting files');
-
-            try {
-                  const formatCmd =
-                        packageManager === 'bun'
-                              ? 'bun run format:fix'
-                              : 'pnpm format:fix';
-
-                  await exec(formatCmd, {
-                        cwd: projectDir,
-                  });
-                  formatSpinner.stop(`${colors.green('Files formatted')}`);
-            } catch (error: any) {
-                  formatSpinner.stop('Failed to format files');
-                  log.error(`Error formatting files: ${error.message}`);
-            }
-
-            const nextSteps = `${colors.cyan('cd')} ${projectPath !== '.' ? projectPath : ''}
-${colors.cyan(`${packageManager} run dev`)}`;
-
-            note(nextSteps, 'Next steps');
+            note(
+                  `${colors.cyan('cd')} ${projectPath !== '.' ? projectPath : ''}
+${colors.cyan(`${packageManager} install`)}
+${colors.cyan(`${packageManager} run dev`)}`,
+                  'Next steps',
+            );
 
             outro('Happy coding!');
       } catch (error: any) {
             log.error(`Error: ${error.message}`);
             process.exit(1);
-      }
-}
-
-async function installDependencies(options: ProjectOptions): Promise<void> {
-      const {projectDir, packageManager} = options;
-
-      const dependencies = [
-            '@biomejs/biome',
-            '@commitlint/cli',
-            '@commitlint/config-conventional',
-            'bunup',
-            'bumpp',
-            'husky',
-            'typescript',
-            'vitest',
-      ];
-
-      const installCmd =
-            packageManager === 'bun'
-                  ? `bun add -d ${dependencies.join(' ')}`
-                  : `pnpm add -D ${dependencies.join(' ')}`;
-
-      try {
-            await exec(installCmd, {
-                  cwd: projectDir,
-            });
-
-            if (packageManager === 'bun') {
-                  await exec('bun husky init', {
-                        cwd: projectDir,
-                  });
-            } else {
-                  await exec('pnpm husky init', {
-                        cwd: projectDir,
-                  });
-            }
-      } catch (error: any) {
-            throw new Error(`Failed to install dependencies: ${error.message}`);
       }
 }
 
@@ -701,7 +636,10 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
                   prepare: 'husky',
             },
             dependencies: {},
-            devDependencies: {},
+            devDependencies: starterRootDevDependencies as Record<
+                  string,
+                  string
+            >,
       };
 }
 

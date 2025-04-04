@@ -7,6 +7,9 @@
       "bin": {
             "create-bunup": "build/index.mjs"
       },
+      "scripts": {
+            "update-starter-root-dev-dependencies": "bun run update-starter-root-dev-dependencies.ts && prettier --write starter-root-dev-dependencies.json"
+      },
       "description": "Quickly scaffold a new TypeScript package with Bunup.",
       "keywords": [
             "bunup",

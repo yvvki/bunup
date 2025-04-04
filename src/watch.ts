@@ -4,7 +4,7 @@ import chokidar from 'chokidar';
 
 import {build} from './build';
 import {validateDtsFiles} from './cli';
-import {BunupWatchError, parseErrorMessage} from './errors';
+import {BunupWatchError, handleError, parseErrorMessage} from './errors';
 import {normalizeEntryToProcessableEntries} from './helpers/entry';
 import {logger} from './logger';
 import {BunupOptions} from './options';
@@ -63,9 +63,7 @@ export async function watch(
                   }
                   await validateDtsFiles();
             } catch (error) {
-                  throw new BunupWatchError(
-                        `Build failed: ${parseErrorMessage(error)}`,
-                  );
+                  handleError(error);
             } finally {
                   isRebuilding = false;
             }

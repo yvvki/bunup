@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import {allFilesUsedToBundleDts, build} from './build';
 import {parseCliOptions} from './cli-parse';
-import {handleError, handleErrorAndExit} from './errors';
+import {handleErrorAndExit} from './errors';
 import {loadConfigs} from './loaders';
 import {logger} from './logger';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
@@ -98,12 +98,7 @@ export async function validateDtsFiles() {
 
 async function handleBuild(options: BunupOptions, rootDir: string) {
       if (options.watch) {
-            try {
-                  await watch(options, rootDir);
-            } catch (error) {
-                  handleError(error);
-                  // handle error, but don't exit in watch mode
-            }
+            await watch(options, rootDir);
       } else {
             await build(options, rootDir);
             options.onBuildSuccess?.();
