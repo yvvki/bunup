@@ -38,15 +38,6 @@ jobs:
       - name: Update starter root dev dependencies
         run: pnpm update-create-bunup-starter-root-dev-dependencies
 
-      - name: Check for changes
-        id: check_changes
-        run: |
-          if [[ $(git status --porcelain) ]]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
-          else
-            echo "changes=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Setup Git user
         if: steps.check_changes.outputs.changes == 'true'
         run: |
