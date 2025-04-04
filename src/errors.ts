@@ -40,7 +40,7 @@ export const parseErrorMessage = (error: unknown): string => {
       return String(error);
 };
 
-const handleError = (error: unknown, context?: string): void => {
+export const handleError = (error: unknown, context?: string): void => {
       const errorMessage = parseErrorMessage(error);
       const contextPrefix = context ? `[${context}] ` : '';
 

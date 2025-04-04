@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import {allFilesUsedToBundleDts, build} from './build';
 import {parseCliOptions} from './cli-parse';
-import {handleErrorAndExit} from './errors';
+import {handleError, handleErrorAndExit} from './errors';
 import {loadConfigs} from './loaders';
 import {logger} from './logger';
 import {BunupOptions, DEFAULT_OPTIONS} from './options';
@@ -75,10 +75,7 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
       const timeDisplay = formatTime(buildTimeMs);
       logger.cli(`⚡️ Build completed in ${timeDisplay}`);
 
-      if (allFilesUsedToBundleDts.size > 0) {
-            await validateFilesUsedToBundleDts(allFilesUsedToBundleDts);
-            allFilesUsedToBundleDts.clear();
-      }
+      await validateDtsFiles();
 
       if (cliOptions.watch) {
             logger.cli(`👀 Watching for file changes`);
@@ -92,9 +89,21 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
       logger.dispose();
 }
 
+export async function validateDtsFiles() {
+      if (allFilesUsedToBundleDts.size > 0) {
+            await validateFilesUsedToBundleDts(allFilesUsedToBundleDts);
+            allFilesUsedToBundleDts.clear();
+      }
+}
+
 async function handleBuild(options: BunupOptions, rootDir: string) {
       if (options.watch) {
-            await watch(options, rootDir);
+            try {
+                  await watch(options, rootDir);
+            } catch (error) {
+                  handleError(error);
+                  // handle error, but don't exit in watch mode
+            }
       } else {
             await build(options, rootDir);
             options.onBuildSuccess?.();

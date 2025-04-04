@@ -3,6 +3,7 @@ import path from 'node:path';
 import chokidar from 'chokidar';
 
 import {build} from './build';
+import {validateDtsFiles} from './cli';
 import {BunupWatchError, parseErrorMessage} from './errors';
 import {normalizeEntryToProcessableEntries} from './helpers/entry';
 import {logger} from './logger';
@@ -60,6 +61,7 @@ export async function watch(
                               `📦 Rebuild finished in ${formatTime(performance.now() - start)}`,
                         );
                   }
+                  await validateDtsFiles();
             } catch (error) {
                   throw new BunupWatchError(
                         `Build failed: ${parseErrorMessage(error)}`,
@@ -71,7 +73,9 @@ export async function watch(
 
       watcher.on('change', filePath => {
             const changedFile = path.relative(rootDir, filePath);
-            logger.cli(`File changed: ${changedFile}`);
+            logger.cli(`File changed: ${changedFile}`, {
+                  muted: true,
+            });
             triggerRebuild();
       });
 
