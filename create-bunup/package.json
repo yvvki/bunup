@@ -23,7 +23,7 @@
             "type": "git",
             "url": "git+https://github.com/arshad-yaseen/bunup.git"
       },
-      "homepage": "https://bunup.arshadyaseen.com/create",
+      "homepage": "https://bunup.arshadyaseen.com/typescript-library-starter",
       "maintainers": [
             {
                   "name": "Arshad Yaseen",
