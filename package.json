@@ -79,6 +79,6 @@
             "oxc-resolver": "^5.0.1",
             "oxc-transform": "^0.58.1",
             "rolldown": "1.0.0-beta.7",
-            "rolldown-plugin-dts": "https://pkg.pr.new/sxzz/rolldown-plugin-dts@main"
+            "rolldown-plugin-types": "^0.0.0"
       }
 }
