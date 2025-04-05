@@ -3,7 +3,7 @@ import path from 'node:path';
 import {ResolverFactory} from 'oxc-resolver';
 import {Plugin} from 'rolldown';
 
-import {VIRTUAL_FILES_PREFIX} from '../dts/virtual-files';
+import {removeDtsVirtualPrefix} from '../dts/utils';
 
 let resolver: ResolverFactory;
 
@@ -24,7 +24,9 @@ export function typesResolvePlugin(resolvers?: (string | RegExp)[]): Plugin {
                   });
             },
             async resolveId(id, importer) {
-                  importer = importer?.replace(VIRTUAL_FILES_PREFIX, '');
+                  importer = importer
+                        ? removeDtsVirtualPrefix(importer)
+                        : undefined;
 
                   // skip rollup virtual modules
                   if (/\0/.test(id)) return;

@@ -13,8 +13,9 @@
             "resolveJsonModule": true,
             "types": ["vitest/globals"],
             "skipLibCheck": true,
+            "baseUrl": "src",
             "paths": {
-                  "@/*": ["./src/*"]
+                  "@/*": ["./*"]
             }
       },
       "include": ["src", "bunup.config.ts", "utils"],

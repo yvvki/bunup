@@ -1,17 +1,17 @@
-import {one, two} from '../utils/numbers';
+import {one, two} from 'utils';
 
 declare const PACKAGE_NAME: string;
 declare const PACKAGE_VERSION: string;
 
 export {FSWatcher} from 'chokidar';
 
-export * from './cool';
+export * from 'cool';
 
 export function add(one: number, two: number): number {
       return one + two;
 }
 
-export {numbers} from '../utils/numbers';
+export {numbers} from 'utils';
 
 const something = PACKAGE_NAME + ' ' + PACKAGE_VERSION;
 

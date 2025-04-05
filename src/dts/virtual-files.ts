@@ -1,68 +1,51 @@
-import path from 'path';
-
 import {Plugin} from 'rolldown';
 
 import {allFilesUsedToBundleDts} from '../build';
 import {DtsMap} from './generator';
+import {
+      addDtsVirtualPrefix,
+      getDtsPath,
+      isDtsVirtualFile,
+      removeDtsVirtualPrefix,
+      resolveImportedTsFilePath,
+} from './utils';
 
-export const VIRTUAL_FILES_PREFIX = '\0virtual:';
+export const DTS_VIRTUAL_FILE_PREFIX = '\0dts:';
 
-export const gerVirtualFilesPlugin = (dtsMap: DtsMap): Plugin => {
+export const gerVirtualFilesPlugin = (
+      dtsMap: DtsMap,
+      pathAliases: Map<string, string>,
+      baseUrl: string,
+): Plugin => {
       return {
             name: 'bunup:virtual-dts',
-            resolveId(source: string, importer?: string) {
-                  if (source.startsWith(VIRTUAL_FILES_PREFIX)) return source;
-                  if (
-                        !importer?.startsWith(VIRTUAL_FILES_PREFIX) ||
-                        !source.startsWith('.')
-                  )
-                        return null;
+            async resolveId(source: string, importer?: string) {
+                  if (isDtsVirtualFile(source)) return source;
+                  if (!importer || !isDtsVirtualFile(importer)) return null;
 
-                  const importerPath = importer.slice(
-                        VIRTUAL_FILES_PREFIX.length,
-                  );
-                  let resolvedPath = path.resolve(
-                        path.dirname(importerPath),
+                  const resolvedPath = await resolveImportedTsFilePath(
                         source,
+                        pathAliases,
+                        baseUrl,
+                        removeDtsVirtualPrefix(importer),
                   );
 
-                  // if the import is a dot, for example `import '.'`, etc, we need to resolve the index.d.ts file
-                  if (source === '.') {
-                        const indexPath = path.join(
-                              path.dirname(importerPath),
-                              'index.d.ts',
-                        );
-                        if (dtsMap.has(indexPath)) {
-                              return `${VIRTUAL_FILES_PREFIX}${indexPath}`;
-                        }
+                  if (!resolvedPath) return null;
 
-                        resolvedPath = path.dirname(importerPath);
-                  }
+                  const dtsPath = getDtsPath(resolvedPath);
 
-                  if (dtsMap.has(resolvedPath)) {
-                        return `${VIRTUAL_FILES_PREFIX}${resolvedPath}`;
-                  }
-
-                  const fullPath = `${resolvedPath}.d.ts`;
-                  if (dtsMap.has(fullPath)) {
-                        return `${VIRTUAL_FILES_PREFIX}${fullPath}`;
-                  }
-
-                  if (source.startsWith('.')) {
-                        const indexPath = path.join(resolvedPath, 'index.d.ts');
-                        if (dtsMap.has(indexPath)) {
-                              return `${VIRTUAL_FILES_PREFIX}${indexPath}`;
-                        }
+                  if (dtsMap.has(dtsPath)) {
+                        return addDtsVirtualPrefix(dtsPath);
                   }
 
                   return null;
             },
             load(id: string) {
-                  if (id.startsWith(VIRTUAL_FILES_PREFIX)) {
-                        const filePath = id.slice(VIRTUAL_FILES_PREFIX.length);
-                        const content = dtsMap.get(filePath);
+                  if (id.startsWith(DTS_VIRTUAL_FILE_PREFIX)) {
+                        const dtsPath = removeDtsVirtualPrefix(id);
+                        const content = dtsMap.get(dtsPath);
                         if (content) {
-                              allFilesUsedToBundleDts.add(filePath);
+                              allFilesUsedToBundleDts.add(dtsPath);
                               return content;
                         }
                   }

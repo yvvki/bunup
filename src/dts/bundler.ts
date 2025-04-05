@@ -6,23 +6,26 @@ import {getExternalPatterns, getNoExternalPatterns} from '../helpers/external';
 import {BunupOptions} from '../options';
 import {typesResolvePlugin} from '../plugins/types-resolve';
 import {DtsMap} from './generator';
-import {gerVirtualFilesPlugin, VIRTUAL_FILES_PREFIX} from './virtual-files';
+import {addDtsVirtualPrefix, getDtsPath} from './utils';
+import {gerVirtualFilesPlugin} from './virtual-files';
 
 export async function bundleDts(
       entryFile: string,
       dtsMap: DtsMap,
       options: BunupOptions,
       packageJson: Record<string, unknown> | null,
+      pathAliases: Map<string, string>,
+      baseUrl: string,
 ): Promise<string> {
-      const entryDtsPath = entryFile.replace(/\.tsx?$/, '.d.ts');
-      const virtualEntry = `${VIRTUAL_FILES_PREFIX}${entryDtsPath}`;
+      const entryDtsPath = getDtsPath(entryFile);
+      const initialDtsEntry = addDtsVirtualPrefix(entryDtsPath);
 
       const externalPatterns = getExternalPatterns(options, packageJson);
       const noExternalPatterns = getNoExternalPatterns(options);
 
       try {
             const {output} = await build({
-                  input: virtualEntry,
+                  input: initialDtsEntry,
                   onwarn(warning, handler) {
                         if (
                               [
@@ -35,7 +38,7 @@ export async function bundleDts(
                         handler(warning);
                   },
                   plugins: [
-                        gerVirtualFilesPlugin(dtsMap),
+                        gerVirtualFilesPlugin(dtsMap, pathAliases, baseUrl),
                         typeof options.dts === 'object' &&
                               'resolve' in options.dts &&
                               typesResolvePlugin(
