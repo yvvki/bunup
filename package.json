@@ -37,7 +37,7 @@
             "@types/bun": "^1.2.5",
             "@typescript-eslint/eslint-plugin": "^7.18.0",
             "bumpp": "^10.1.0",
-            "bunup": "^0.3.46",
+            "bunup": "^0.3.52",
             "create-bunup": "workspace:*",
             "eslint": "^8.57.1",
             "husky": "^9.1.7",

@@ -46,8 +46,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.3.46
-        version: 0.3.50(typescript@5.8.3)
+        specifier: ^0.3.52
+        version: 0.3.52(typescript@5.8.3)
       create-bunup:
         specifier: workspace:*
         version: link:create-bunup
@@ -1532,6 +1532,15 @@ packages:
 
   bunup@0.3.50:
     resolution: {integrity: sha512-W3oPptL3XjxfkFJ2uINe4hpUo4wSzVTCEWD4YgkmcNIZaqwdmY6+F3Di2Wg2d+IH4/UM5qos3b4EzIXmYV8+rQ==}
+    hasBin: true
+    peerDependencies:
+      typescript: '>=4.5.0'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  bunup@0.3.52:
+    resolution: {integrity: sha512-aTwH8doiUlxadt0NSLpcTRCRj6/RaxdFWcOIQXlXiUMi6udVQDCn1BhZMYuy1ykNvIlI1C7NCDuwVO6mH3NlMw==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -4529,6 +4538,19 @@ snapshots:
       load-tsconfig: 0.2.5
 
   bunup@0.3.50(typescript@5.8.3):
+    dependencies:
+      chokidar: 4.0.3
+      load-tsconfig: 0.2.5
+      oxc-resolver: 5.1.1
+      oxc-transform: 0.58.1
+      rolldown: 1.0.0-beta.7(typescript@5.8.3)
+      rolldown-plugin-types: 0.0.0
+    optionalDependencies:
+      typescript: 5.8.3
+    transitivePeerDependencies:
+      - '@oxc-project/runtime'
+
+  bunup@0.3.52(typescript@5.8.3):
     dependencies:
       chokidar: 4.0.3
       load-tsconfig: 0.2.5
