@@ -1,6 +1,6 @@
 import {logger} from '../logger';
-import {Entry} from '../options';
-import {generateRandomSuffix} from '../utils';
+import {Entry, Format} from '../options';
+import {generateRandomSuffix, getDefaultDtsExtention} from '../utils';
 
 export type ProcessableEntry = {
       name: string;
@@ -68,4 +68,13 @@ export function normalizeEntryToProcessableEntries(
 
 export function getEntryNamingFormat(name: string, extension: string) {
       return `[dir]/${name}${extension}`;
+}
+
+export function getDtsOutputFormat(
+      name: string,
+      format: Format,
+      packageType: string | undefined,
+) {
+      const extension = getDefaultDtsExtention(format, packageType);
+      return `${name}${extension}`;
 }

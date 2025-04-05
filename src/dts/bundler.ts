@@ -51,7 +51,10 @@ export async function bundleDts(
                         !noExternalPatterns.some(re => re.test(source)),
             });
 
-            const {output} = await bundle.generate({});
+            const {output} = await bundle.generate({
+                  format: 'esm',
+            });
+
             if (!output[0]?.code)
                   throw new BunupDTSBuildError('Generated bundle is empty');
             return output[0].code;
