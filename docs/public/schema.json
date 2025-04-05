@@ -106,9 +106,20 @@
                                           "properties": {
                                                 "entry": {
                                                       "$ref": "#/definitions/entry"
+                                                },
+                                                "resolve": {
+                                                      "oneOf": [
+                                                            {"type": "boolean"},
+                                                            {
+                                                                  "type": "array",
+                                                                  "items": {
+                                                                        "type": "string"
+                                                                  }
+                                                            }
+                                                      ],
+                                                      "description": "Resolve external types used in dts files from node_modules."
                                                 }
                                           },
-                                          "required": ["entry"],
                                           "additionalProperties": false
                                     }
                               ]
@@ -140,6 +151,33 @@
                               "type": "string",
                               "enum": ["none", "linked", "external", "inline"],
                               "description": "Type of sourcemap to generate."
+                        },
+                        "define": {
+                              "type": "object",
+                              "additionalProperties": {
+                                    "type": "string"
+                              },
+                              "description": "Define global constants for the build. These values will be replaced at build time."
+                        },
+                        "banner": {
+                              "type": "string",
+                              "description": "A banner to be added to the final bundle, such as a directive or license comment."
+                        },
+                        "footer": {
+                              "type": "string",
+                              "description": "A footer to be added to the final bundle, such as a license comment."
+                        },
+                        "drop": {
+                              "type": "array",
+                              "items": {"type": "string"},
+                              "description": "Remove function calls from a bundle. For example, `drop: ['console']` will remove all console.log calls."
+                        },
+                        "loader": {
+                              "type": "object",
+                              "additionalProperties": {
+                                    "type": "string"
+                              },
+                              "description": "A map of file extensions to built-in loader names. Used to customize how certain files are loaded."
                         }
                   },
                   "additionalProperties": false

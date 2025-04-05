@@ -41,19 +41,19 @@ Get started with Bunup in seconds - install, configure, and build your TypeScrip
 
 ::: code-group
 
-```bash [bun]
+```sh [bun]
 bun add --dev bunup
 ```
 
-```bash [pnpm]
+```sh [pnpm]
 pnpm add --save-dev bunup
 ```
 
-```bash [npm]
+```sh [npm]
 npm install --save-dev bunup
 ```
 
-```bash [yarn]
+```sh [yarn]
 yarn add --dev bunup
 ```
 
@@ -63,8 +63,7 @@ yarn add --dev bunup
 
 Create a simple TypeScript file:
 
-```typescript
-// src/index.ts
+```typescript [src/index.ts]
 export function greet(name: string): string {
       return `Hello, ${name}!`;
 }
@@ -72,7 +71,7 @@ export function greet(name: string): string {
 
 Bundle it with bunup:
 
-```bash
+```sh
 bunup src/index.ts
 ```
 
@@ -82,7 +81,7 @@ This will create a bundled output in the `dist` directory with CommonJS format (
 
 Add a build script to your `package.json`:
 
-```json
+```json [package.json]
 {
       "name": "my-package",
       "scripts": {
@@ -93,7 +92,7 @@ Add a build script to your `package.json`:
 
 Then run:
 
-```bash
+```sh
 npm run build
 ```
 
@@ -101,12 +100,11 @@ npm run build
 
 Create a `bunup.config.ts` file for more control:
 
-```typescript
+```typescript [bunup.config.ts]
 import {defineConfig} from 'bunup';
 
 export default defineConfig({
       entry: ['src/index.ts'],
-      outDir: 'dist',
       format: ['esm', 'cjs'],
       dts: true,
       minify: true,
@@ -128,44 +126,20 @@ Bunup supports configuration files in multiple formats:
 - `bunup.config.json`
 - `bunup.config.jsonc`
 
-Example configuration:
-
-```typescript
+```typescript [bunup.config.ts]
 import {defineConfig} from 'bunup';
 
 export default defineConfig({
-      // Name for this build configuration (used in logs)
-      name: 'my-library',
-
-      // Entry points (can be an array or object)
-      entry: ['src/index.ts', 'src/cli.ts'],
-
-      // Output directory
-      outDir: 'dist',
-
-      // Output formats
+      entry: ['src/index.ts'],
       format: ['esm', 'cjs'],
-
-      // TypeScript declaration generation
       dts: true,
-
-      // Target environment
-      target: 'node',
-
-      // Minification options
       minify: true,
-
-      // External dependencies
-      external: ['react', 'react-dom'],
-
-      // Clean output directory before build
-      clean: true,
 });
 ```
 
 You can also export an array of configurations:
 
-```typescript
+```typescript [bunup.config.ts]
 export default defineConfig([
       {
             name: 'node',
@@ -186,23 +160,19 @@ export default defineConfig([
 
 If you prefer using a JSON configuration file (`bunup.config.json` or `bunup.config.jsonc`), the structure is similar but with a few differences:
 
-```json
+```json [bunup.config.json]
 {
       "name": "my-library",
       "entry": ["src/index.ts", "src/cli.ts"],
-      "outDir": "dist",
       "format": ["esm", "cjs"],
       "dts": true,
-      "target": "node",
-      "minify": true,
-      "external": ["react", "react-dom"],
-      "clean": true
+      "minify": true
 }
 ```
 
 To define multiple configurations in JSON, use the `bunup` property with an array:
 
-```json
+```json [bunup.config.json]
 {
       "bunup": [
             {
@@ -223,7 +193,7 @@ To define multiple configurations in JSON, use the `bunup` property with an arra
 
 For autocomplete and validation in your JSON configuration files, you can reference the Bunup JSON schema:
 
-```json {2}
+```json [bunup.config.json] {2}
 {
       "$schema": "https://bunup.arshadyaseen.com/schema.json",
       "name": "my-library",
@@ -235,28 +205,31 @@ For autocomplete and validation in your JSON configuration files, you can refere
 
 Bunup supports various command-line options:
 
-| Option                  | Alias | Description                                        | Default          |
-| ----------------------- | ----- | -------------------------------------------------- | ---------------- |
-| `--entry <path>`        |       | Entry file path                                    | `[]`             |
-| `--entry.<name> <path>` |       | Named entry file path                              | -                |
-| `--out-dir <dir>`       | `-o`  | Output directory                                   | `dist`           |
-| `--format <formats>`    | `-f`  | Output formats (comma-separated: esm,cjs,iife)     | `cjs`            |
-| `--minify`              | `-m`  | Enable all minification options                    | `false`          |
-| `--minify-whitespace`   | `-mw` | Minify whitespace                                  | `false`          |
-| `--minify-identifiers`  | `-mi` | Minify identifiers                                 | `false`          |
-| `--minify-syntax`       | `-ms` | Minify syntax                                      | `false`          |
-| `--watch`               | `-w`  | Watch mode                                         | `false`          |
-| `--dts`                 | `-d`  | Generate TypeScript declarations                   | `false`          |
-| `--external <deps>`     | `-e`  | External dependencies (comma-separated)            | `[]`             |
-| `--no-external <deps>`  | `-ne` | Force include dependencies (comma-separated)       | -                |
-| `--target <target>`     | `-t`  | Target environment (node, browser, bun)            | `node`           |
-| `--clean`               | `-c`  | Clean output directory before build                | `true`           |
-| `--splitting`           | `-s`  | Enable code splitting                              | Format dependent |
-| `--sourcemap <type>`    | `-sm` | Sourcemap generation (none,linked,external,inline) | `none`           |
-| `--banner <text>`       | `-b`  | Text to add at the beginning of output files       | -                |
-| `--footer <text>`       | `-f`  | Text to add at the end of output files             | -                |
-| `--name <name>`         | `-n`  | Name for this build configuration                  | -                |
-| `--help`                | `-h`  | Display help information                           | -                |
+| Option                             | Alias        | Description                                                                                        | Default          |
+| ---------------------------------- | ------------ | -------------------------------------------------------------------------------------------------- | ---------------- |
+| `--entry <path>`                   |              | Entry file path                                                                                    | `[]`             |
+| `--entry.<name> <path>`            |              | Named entry file path                                                                              | -                |
+| `--out-dir <dir>`                  | `-o`         | Output directory                                                                                   | `dist`           |
+| `--format <formats>`               | `-f`         | Output formats (comma-separated: esm,cjs,iife)                                                     | `cjs`            |
+| `--minify`                         | `-m`         | Enable all minification options                                                                    | `false`          |
+| `--minify-whitespace`              | `-mw`        | Minify whitespace                                                                                  | `false`          |
+| `--minify-identifiers`             | `-mi`        | Minify identifiers                                                                                 | `false`          |
+| `--minify-syntax`                  | `-ms`        | Minify syntax                                                                                      | `false`          |
+| `--watch`                          | `-w`         | Watch mode                                                                                         | `false`          |
+| `--dts`                            | `-d`         | Generate TypeScript declarations                                                                   | `false`          |
+| `--external <deps>`                | `-e`         | External dependencies (comma-separated)                                                            | `[]`             |
+| `--no-external <deps>`             | `-ne`        | Force include dependencies (comma-separated)                                                       | -                |
+| `--target <target>`                | `-t`         | Target environment (node, browser, bun)                                                            | `node`           |
+| `--clean`                          | `-c`         | Clean output directory before build                                                                | `true`           |
+| `--splitting`                      | `-s`         | Enable code splitting                                                                              | Format dependent |
+| `--sourcemap <type>`               | `-sm`        | Sourcemap generation (none,linked,external,inline)                                                 | `none`           |
+| `--banner <text>`                  | `-b`         | Text to add at the beginning of output files                                                       | -                |
+| `--footer <text>`                  | `-f`         | Text to add at the end of output files                                                             | -                |
+| `--name <name>`                    | `-n`         | Name for this build configuration                                                                  | -                |
+| `--resolve-dts <value>`            | `-rd`        | Resolve external types for declaration files (can be boolean flag or comma-separated package list) | `false`          |
+| `--preferred-tsconfig-path <path>` | `--tsconfig` | Path to preferred tsconfig file used for typescript declaration files generation                   | -                |
+| `--version`                        | `-v`         | Display version information                                                                        | -                |
+| `--help`                           | `-h`         | Display help information                                                                           | -                |
 
 ## Entry Points
 
@@ -266,7 +239,7 @@ Bunup supports multiple ways to define entry points. Entry points are the source
 
 The simplest way to define an entry point is to provide a single file path:
 
-```bash
+```sh
 # In CLI
 bunup src/index.ts
 
@@ -282,7 +255,7 @@ This will generate an output file named after the input file (e.g., `dist/index.
 
 You can specify multiple entry points in several ways:
 
-```bash
+```sh
 # CLI (method 1)
 bunup src/index.ts src/cli.ts
 
@@ -301,7 +274,7 @@ This will generate output files named after each input file (e.g., `dist/index.j
 
 Named entries allow you to specify custom output filenames:
 
-```bash
+```sh
 # CLI
 bunup --entry.main src/index.ts --entry.cli src/cli.ts
 
@@ -339,7 +312,7 @@ You can specify one or more formats:
 
 ### In the CLI
 
-```bash
+```sh
 # Single format
 bunup src/index.ts --format esm
 
@@ -378,7 +351,7 @@ Bunup can generate TypeScript declaration files (`.d.ts`) for your code:
 
 To generate declarations for all entry points:
 
-```bash
+```sh
 # CLI
 bunup src/index.ts --dts
 
@@ -438,7 +411,14 @@ export default defineConfig({
 
 When generating declaration files, you might need to include type references from external dependencies. Bunup can automatically resolve these external types:
 
-```typescript
+```sh
+# CLI
+bunup src/index.ts --dts --resolve-dts
+
+# CLI (Or specify packages to resolve)
+bunup src/index.ts --dts --resolve-dts=react,lodash
+
+# Configuration file
 export default defineConfig({
       entry: ['src/index.ts'],
       dts: {
@@ -482,7 +462,7 @@ You can explicitly mark additional packages as external:
 
 #### In the CLI
 
-```bash
+```sh
 # Single external dependency
 bunup src/index.ts --external lodash
 
@@ -505,7 +485,7 @@ You can force include specific dependencies that would otherwise be external:
 
 #### In the CLI
 
-```bash
+```sh
 bunup src/index.ts --external lodash --no-external lodash/merge
 ```
 
@@ -536,7 +516,7 @@ You can explicitly enable or disable code splitting:
 
 #### In the CLI
 
-```bash
+```sh
 # Enable code splitting
 bunup src/index.ts --splitting
 
@@ -566,7 +546,7 @@ Bunup provides several minification options to reduce the size of your output fi
 
 To enable all minification options:
 
-```bash
+```sh
 # CLI
 bunup src/index.ts --minify
 
@@ -583,7 +563,7 @@ You can configure individual minification options:
 
 #### In the CLI
 
-```bash
+```sh
 # Minify whitespace only
 bunup src/index.ts --minify-whitespace
 
@@ -609,7 +589,7 @@ The `minify` option is a shorthand that enables all three specific options. If y
 
 Bunup can generate source maps for your bundled code:
 
-```bash
+```sh
 # CLI
 bunup src/index.ts --sourcemap linked
 
@@ -655,7 +635,7 @@ For more information on how define works, see the [Bun documentation on define](
 
 You can add custom text to the beginning and end of your bundle files:
 
-```bash
+```sh
 # CLI
 bunup src/index.ts --banner 'use client' --footer '// built with love in SF'
 
@@ -712,7 +692,7 @@ For more information, see the [Bun documentation on loaders](https://bun.sh/docs
 
 Bunup can watch your files for changes and rebuild automatically:
 
-```bash
+```sh
 bunup src/index.ts --watch
 ```
 
@@ -722,7 +702,7 @@ In watch mode, Bunup will monitor your source files and their dependencies, rebu
 
 Bunup allows you to specify the target environment for your bundle:
 
-```bash
+```sh
 # CLI
 bunup src/index.ts --target browser
 
@@ -743,7 +723,7 @@ Available targets:
 
 You can specify where Bunup should output the bundled files:
 
-```bash
+```sh
 # CLI
 bunup src/index.ts --out-dir build
 
@@ -760,7 +740,7 @@ The default output directory is `dist`.
 
 By default, Bunup cleans the output directory before each build. You can disable this behavior:
 
-```bash
+```sh
 # CLI
 bunup src/index.ts --clean=false
 
@@ -796,7 +776,7 @@ In watch mode, the `onBuildSuccess` callback is executed after each successful r
 
 You can give your build configurations names for better logging:
 
-```bash
+```sh
 # CLI
 bunup src/index.ts --name my-library
 
@@ -921,7 +901,7 @@ The entry point will be resolved as `packages/my-package/src/index.ts` and the o
 
 To build all workspaces, simply run the `bunup` command with no additional arguments:
 
-```bash
+```sh
 bunup
 ```
 
@@ -929,7 +909,7 @@ Bunup will automatically detect and build all workspaces defined in your configu
 
 To watch the packages in workspaces and automatically rebuild on file changes, run:
 
-```bash
+```sh
 bunup --watch
 ```
 

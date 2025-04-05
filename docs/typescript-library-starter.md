@@ -18,81 +18,43 @@ Quickly scaffold modern TypeScript library with zero configuration. Powered by [
 
 You can create a new project without installing the package by using:
 
-```bash
-# Using bun
+::: code-group
+
+```sh [bun]
 bunx create-bunup@latest
+```
 
-# Using npm
+```sh [npm]
 npx create-bunup@latest
+```
 
-# Using pnpm
+```sh [pnpm]
 pnpx create-bunup@latest
 ```
 
-### Creating a New Project
+:::
 
 Once you run the command, you'll be guided through an interactive process:
 
-1. **Project Location**: Enter the directory name for your new project (or use `.` for current directory)
-2. **Package Manager**: Choose between `bun` (faster) or `pnpm` (more widely used)
-3. **Project Type**: Select whether to create a standalone project or a monorepo
-4. **Package Names**: If creating a monorepo, enter the name for your first package
+```plaintext
+$ bunx create-bunup@latest
 
-That's it! The tool will:
+ℹ TypeScript Library Starter
 
-- Create the project directory structure
-- Generate all configuration files
-- Install dependencies
-- Initialize Git repository with hooks
-- Format the initial code
+? Where would you like to create your project? › my-ts-lib
 
-## Project Structure
+? Select a package manager:
+❯ bun - Fast all-in-one JavaScript runtime
+  pnpm - Fast, disk space efficient package manager
 
-### Standalone Project
+? Set up as a monorepo? › (y/N)
 
-```
-my-ts-lib/
-├── .github/               # GitHub workflows and templates
-├── .husky/                # Git hooks
-├── dist/                  # Build output (generated)
-├── src/                   # Source code
-│   └── index.ts           # Main entry point
-├── test/                  # Test files
-│   └── index.test.ts      # Tests for index.ts
-├── .gitignore             # Git ignore file
-├── README.md              # Project README
-├── CONTRIBUTING.md        # Contribution guidelines
-├── biome.json             # Biome configuration
-├── bunup.config.ts        # Bunup build configuration
-├── commitlint.config.js   # Commit message linting rules
-├── package.json           # Project dependencies and scripts
-├── tsconfig.json          # TypeScript configuration
-└── vitest.config.ts       # Vitest test configuration
+# If you chose "yes" to monorepo:
+
+? Name for first package: › my-package
 ```
 
-### Monorepo Structure
-
-```
-my-ts-lib/
-├── .github/               # GitHub workflows and templates
-├── .husky/                # Git hooks
-├── packages/              # Packages directory
-│   └── my-package/        # Package directory
-│       ├── src/           # Package source code
-│       ├── test/          # Package tests
-│       ├── package.json   # Package-specific configuration
-│       └── tsconfig.json  # Package-specific TypeScript config
-├── .gitignore             # Git ignore file
-├── README.md              # Project README
-├── CONTRIBUTING.md        # Contribution guidelines
-├── biome.json             # Biome configuration
-├── bunup.config.ts        # Bunup build configuration
-├── commitlint.config.js   # Commit message linting rules
-├── package.json           # Root package.json with workspaces
-├── pnpm-workspace.yaml    # PNPM workspace config (if using pnpm)
-├── tsconfig.json          # Base TypeScript configuration
-└── vitest.config.ts       # Vitest test configuration
-```
+That's it! 🔥
 
 ## Development Workflow
 
@@ -100,43 +62,51 @@ After creating your project, here's how to use it:
 
 ### Common Commands
 
-```bash
-# Start development with watch mode
+::: code-group
+
+```sh [Dev]
 bun run dev
 # or
 pnpm dev
+```
 
-# Run tests
+```sh [Test]
 bun run test
 # or
 pnpm test
+```
 
-# Lint code
+```sh [Lint]
 bun run lint
 # or
 pnpm lint
+```
 
-# Format code
+```sh [Format]
 bun run format:fix
 # or
 pnpm format:fix
+```
 
-# Type check
+```sh [Type Check]
 bun run tsc
 # or
 pnpm tsc
+```
 
-# Build for production
+```sh [Build]
 bun run build
 # or
 pnpm build
 ```
 
+:::
+
 ### Committing Code
 
 The project is set up with [Conventional Commits](https://www.conventionalcommits.org/) for standardized commit messages:
 
-```bash
+```sh
 # Example commit messages:
 git commit -m "feat: add user authentication"
 git commit -m "fix: resolve issue with data loading"
@@ -173,7 +143,7 @@ The project includes GitHub Actions workflows for continuous integration and rel
 
 After completing the release setup, simply run the release command. It handles everything automatically - from versioning to publishing - even elegantly managing all packages in a monorepo with a single command.
 
-```bash
+```sh
 bun run release
 # or
 pnpm release

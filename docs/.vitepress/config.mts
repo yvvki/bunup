@@ -1,4 +1,8 @@
 import {defineConfig} from 'vitepress';
+import {
+      groupIconMdPlugin,
+      groupIconVitePlugin,
+} from 'vitepress-plugin-group-icons';
 
 import {version} from '../../package.json';
 
@@ -89,4 +93,12 @@ export default defineConfig({
                   },
             ],
       ],
+      markdown: {
+            config(md) {
+                  md.use(groupIconMdPlugin);
+            },
+      },
+      vite: {
+            plugins: [groupIconVitePlugin()],
+      },
 });

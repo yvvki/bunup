@@ -107,6 +107,39 @@ const optionConfigs: Partial<
             flags: ['ne', 'no-external'],
             handler: makeArrayHandler('noExternal'),
       },
+      preferredTsconfigPath: {
+            flags: ['tsconfig', 'preferred-tsconfig-path'],
+            handler: makeStringHandler('preferredTsconfigPath'),
+      },
+};
+
+// Additional CLI options that don't directly map to BunupOptions
+const additionalOptions: Record<
+      string,
+      {flags: string[]; handler: CliOptionHandler}
+> = {
+      resolveDts: {
+            flags: ['rd', 'resolve-dts'],
+            handler: (value, args) => {
+                  if (!args.dts) {
+                        args.dts = {};
+                  }
+
+                  if (typeof args.dts === 'boolean') {
+                        args.dts = {};
+                  }
+
+                  if (typeof value === 'string') {
+                        if (value === 'true' || value === 'false') {
+                              (args.dts as any).resolve = value === 'true';
+                        } else {
+                              (args.dts as any).resolve = value.split(',');
+                        }
+                  } else {
+                        (args.dts as any).resolve = true;
+                  }
+            },
+      },
 };
 
 const specialOptions = {
@@ -126,6 +159,12 @@ for (const config of Object.values(optionConfigs)) {
             for (const flag of config.flags) {
                   flagToHandler[flag] = config.handler;
             }
+      }
+}
+
+for (const config of Object.values(additionalOptions)) {
+      for (const flag of config.flags) {
+            flagToHandler[flag] = config.handler;
       }
 }
 
