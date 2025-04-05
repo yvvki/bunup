@@ -48,6 +48,9 @@ export async function bundleDts(
                   external: source =>
                         externalPatterns.some(re => re.test(source)) &&
                         !noExternalPatterns.some(re => re.test(source)),
+                  output: {
+                        inlineDynamicImports: true,
+                  },
             });
 
             if (!output[0]?.code)

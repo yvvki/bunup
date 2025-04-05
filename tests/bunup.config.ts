@@ -13,6 +13,7 @@ export default defineConfig([
                   PACKAGE_NAME: '"bunup"',
                   PACKAGE_VERSION: '"1.0.0"',
             },
+            splitting: false,
       },
       {
             name: 'bunup-some',
@@ -26,5 +27,6 @@ export default defineConfig([
                   PACKAGE_NAME: '"bunup"',
                   PACKAGE_VERSION: '"1.0.0"',
             },
+            splitting: false,
       },
 ]);
