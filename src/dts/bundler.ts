@@ -26,6 +26,11 @@ export async function bundleDts(
       try {
             const {output} = await build({
                   input: initialDtsEntry,
+                  output: {
+                        dir: options.outDir,
+                        inlineDynamicImports: true,
+                  },
+                  write: false,
                   onwarn(warning, handler) {
                         if (
                               [
@@ -51,9 +56,6 @@ export async function bundleDts(
                   external: source =>
                         externalPatterns.some(re => re.test(source)) &&
                         !noExternalPatterns.some(re => re.test(source)),
-                  output: {
-                        inlineDynamicImports: true,
-                  },
             });
 
             if (!output[0]?.code)

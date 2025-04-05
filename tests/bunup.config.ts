@@ -4,6 +4,7 @@ export default defineConfig([
       {
             name: 'bunup',
             entry: ['src/index.ts'],
+            outDir: 'build',
             format: ['esm', 'cjs'],
             minify: true,
             dts: {
@@ -17,6 +18,7 @@ export default defineConfig([
       },
       {
             name: 'bunup-some',
+            outDir: 'build',
             entry: ['src/some.ts'],
             format: ['esm', 'cjs'],
             minify: true,
