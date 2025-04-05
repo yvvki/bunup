@@ -1,4 +1,4 @@
-import {rolldown, RolldownBuild} from 'rolldown';
+import {build} from 'rolldown';
 import {dts} from 'rolldown-plugin-types';
 
 import {BunupDTSBuildError, parseErrorMessage} from '../errors';
@@ -20,9 +20,8 @@ export async function bundleDts(
       const externalPatterns = getExternalPatterns(options, packageJson);
       const noExternalPatterns = getNoExternalPatterns(options);
 
-      let bundle: RolldownBuild | undefined;
       try {
-            bundle = await rolldown({
+            const {output} = await build({
                   input: virtualEntry,
                   onwarn(warning, handler) {
                         if (
@@ -51,10 +50,6 @@ export async function bundleDts(
                         !noExternalPatterns.some(re => re.test(source)),
             });
 
-            const {output} = await bundle.generate({
-                  format: 'esm',
-            });
-
             if (!output[0]?.code)
                   throw new BunupDTSBuildError('Generated bundle is empty');
             return output[0].code;
@@ -62,7 +57,5 @@ export async function bundleDts(
             throw new BunupDTSBuildError(
                   `DTS bundling failed: ${parseErrorMessage(error)}`,
             );
-      } finally {
-            if (bundle) await bundle.close();
       }
 }
