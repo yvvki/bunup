@@ -719,6 +719,8 @@ Available targets:
 - `browser`: Optimized for browsers
 - `bun`: Optimized for the Bun runtime
 
+If a file contains a Bun shebang (`#!/usr/bin/env bun`), the `bun` target will be used automatically for that file.
+
 ## Output Directory
 
 You can specify where Bunup should output the bundled files:
