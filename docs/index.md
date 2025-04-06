@@ -914,3 +914,46 @@ bunup --watch
 ```
 
 This single command enables continuous monitoring and rebuilding of all packages in your workspaces.
+
+## Troubleshooting
+
+This section covers common issues you might encounter when using Bunup and how to resolve them.
+
+### `Could not resolve: "bun" Error`
+
+**Issue**
+
+You may encounter the following error when using bunup:
+
+```
+BUILD ERROR Could not resolve: "bun". Maybe you need to "bun install"?
+```
+
+This occurs even if bun is already installed globally or locally in your project.
+
+**Cause**
+
+By default, bunup targets the node environment. To use features specific to the Bun runtime (like resolving bun), you must explicitly set the target to bun.
+
+**Solution**
+
+You can fix this by updating your bunup.config.ts (or JSON equivalent) to include:
+
+```typescript
+import {defineConfig} from 'bunup';
+
+export default defineConfig({
+      entry: ['src/index.ts'],
+      target: 'bun', // Key line to add
+});
+```
+
+Or if you're using the CLI directly, specify the --target flag:
+
+```bash
+bunup src/index.ts --target bun
+```
+
+### Other Issues
+
+If you're experiencing an issue not covered in this troubleshooting section, please consider [creating a new issue](https://github.com/xc2/bunup/issues/new) with details about your environment, steps to reproduce, and any error messages you encountered.

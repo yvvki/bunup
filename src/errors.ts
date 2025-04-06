@@ -61,6 +61,14 @@ export const handleError = (error: unknown, context?: string): void => {
             `\x1B[31m${errorType}\x1B[0m ${contextPrefix}${errorMessage}`,
       );
 
+      console.error(
+            `\x1B[33mThis error might be addressed in the troubleshooting section: \x1B[0m\x1B[36mhttps://bunup.arshadyaseen.com/#troubleshooting\x1B[0m`,
+      );
+
+      console.error(
+            `\x1B[33mIf not, please open an issue at: \x1B[0m\x1B[36mhttps://github.com/arshadyaseen/bunup/issues/new\x1B[0m`,
+      );
+
       if (error instanceof Error && error.stack) {
             console.error(
                   '\x1B[2m' +
