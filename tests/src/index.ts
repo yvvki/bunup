@@ -1,4 +1,7 @@
+import Bun from 'bun';
 import {one, two} from 'utils';
+
+console.log(Bun.version);
 
 declare const PACKAGE_NAME: string;
 declare const PACKAGE_VERSION: string;
