@@ -23,9 +23,9 @@ importers:
       rolldown:
         specifier: 1.0.0-beta.7
         version: 1.0.0-beta.7(typescript@5.8.3)
-      rolldown-plugin-types:
-        specifier: ^0.0.0
-        version: 0.0.0
+      rolldown-plugin-dts:
+        specifier: ^0.1.0
+        version: 0.1.0
     devDependencies:
       '@commitlint/cli':
         specifier: ^19.5.0
@@ -46,8 +46,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.3.52
-        version: 0.3.52(typescript@5.8.3)
+        specifier: ^0.3.58
+        version: 0.3.58(typescript@5.8.3)
       create-bunup:
         specifier: workspace:*
         version: link:create-bunup
@@ -1558,8 +1558,8 @@ packages:
       typescript:
         optional: true
 
-  bunup@0.3.52:
-    resolution: {integrity: sha512-aTwH8doiUlxadt0NSLpcTRCRj6/RaxdFWcOIQXlXiUMi6udVQDCn1BhZMYuy1ykNvIlI1C7NCDuwVO6mH3NlMw==}
+  bunup@0.3.58:
+    resolution: {integrity: sha512-WQPq1GVat1knmfxDzeqNY2UCMZNDNHsjxQCSSwQPzgEOREBe8QQAeD47HFkCg0XRqp04g0F2bU8MO6kv9dHqEQ==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -2797,6 +2797,10 @@ packages:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
+
+  rolldown-plugin-dts@0.1.0:
+    resolution: {integrity: sha512-kmXQzvRJVQ+bWtZXX345S4H6tNtrqIdBsZX7mmL+M4tLj2YsgCNXuS/XKAzUKD8BCqSwK/dEkzIxZ+BjiaHLeQ==}
+    engines: {node: '>=20.18.0'}
 
   rolldown-plugin-types@0.0.0:
     resolution: {integrity: sha512-Jk7TXLiTQiSktmOi2UNvU0IcPMwFYTSS7LiJBWcMQteD1cmxdKBJikL8p/zrqxuJ9tUKI5GX77i9V8Cpd9zDfg==}
@@ -4614,7 +4618,7 @@ snapshots:
     transitivePeerDependencies:
       - '@oxc-project/runtime'
 
-  bunup@0.3.52(typescript@5.8.3):
+  bunup@0.3.58(typescript@5.8.3):
     dependencies:
       chokidar: 4.0.3
       load-tsconfig: 0.2.5
@@ -5886,6 +5890,11 @@ snapshots:
   rimraf@3.0.2:
     dependencies:
       glob: 7.2.3
+
+  rolldown-plugin-dts@0.1.0:
+    dependencies:
+      magic-string-ast: 0.9.1
+      oxc-parser: 0.62.0
 
   rolldown-plugin-types@0.0.0:
     dependencies:

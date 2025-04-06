@@ -1,5 +1,5 @@
 import {build} from 'rolldown';
-import {dts} from 'rolldown-plugin-types';
+import {dts} from 'rolldown-plugin-dts';
 
 import {BunupDTSBuildError, parseErrorMessage} from '../errors';
 import {getExternalPatterns, getNoExternalPatterns} from '../helpers/external';
