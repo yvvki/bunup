@@ -422,7 +422,7 @@ bunup src/index.ts --dts --resolve-dts=react,lodash
 export default defineConfig({
       entry: ['src/index.ts'],
       dts: {
-            // Enable resolving all external types
+            # Enable resolving all external types
             resolve: true,
       },
 });
@@ -757,7 +757,7 @@ export default defineConfig({
 
 Bunup provides callback functions that allow you to execute custom logic during the build process.
 
-### onBuildSuccess
+### `onBuildSuccess`
 
 The `onBuildSuccess` callback runs after the build process successfully completes. This is useful for performing custom post-build operations:
 
