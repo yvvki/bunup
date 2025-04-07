@@ -602,6 +602,8 @@ export default defineConfig({
 });
 ```
 
+For more information, see the [Bun documentation on bytecode](https://bun.sh/docs/bundler#bytecode) and [Bun's blog post on bytecode compilation](https://bun.sh/blog/bun-v1.1.30#compile-to-bytecode-for-2x-faster-startup-time).
+
 ## Source Maps
 
 Bunup can generate source maps for your bundled code:

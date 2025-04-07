@@ -15,7 +15,6 @@ export default defineConfig([
                   PACKAGE_VERSION: '"1.0.0"',
             },
             splitting: false,
-            bytecode: true,
             target: 'bun',
       },
       {

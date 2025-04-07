@@ -1,9 +1,3 @@
-interface KnownErrorSolution {
-      pattern: RegExp;
-      errorType: string;
-      solution: string;
-}
-
 export class BunupError extends Error {
       constructor(message: string) {
             super(message);
@@ -46,23 +40,18 @@ export const parseErrorMessage = (error: unknown): string => {
       return String(error);
 };
 
-const knownErrorSolutions: KnownErrorSolution[] = [
+interface KnownErrorSolution {
+      pattern: RegExp;
+      errorType: string;
+      link?: string;
+}
+
+const KNOWN_ERRORS: KnownErrorSolution[] = [
       {
             pattern: /Could not resolve: "bun"/i,
             errorType: 'BUILD ERROR',
-            solution:
-                  'By default, bunup targets the node environment. To use Bun-specific features, set the target to bun:\n\n' +
-                  '1. In your config file:\n' +
-                  '   ```\n' +
-                  "   import {defineConfig} from 'bunup';\n\n" +
-                  '   export default defineConfig({\n' +
-                  "     entry: ['src/index.ts'],\n" +
-                  "     target: 'bun',  // Add this line\n" +
-                  '   });\n' +
-                  '   ```\n\n' +
-                  '2. Or via CLI: `bunup src/index.ts --target bun`',
+            link: 'https://bunup.arshadyaseen.com/#could-not-resolve-bun-error',
       },
-      // Add more known errors and solutions here as they are identified
 ];
 
 export const handleError = (error: unknown, context?: string): void => {
@@ -86,15 +75,15 @@ export const handleError = (error: unknown, context?: string): void => {
             `\x1B[31m${errorType}\x1B[0m ${contextPrefix}${errorMessage}`,
       );
 
-      const knownError = knownErrorSolutions.find(
-            solution =>
-                  solution.pattern.test(errorMessage) &&
-                  (solution.errorType === errorType || !solution.errorType),
+      const knownError = KNOWN_ERRORS.find(
+            error =>
+                  error.pattern.test(errorMessage) &&
+                  (error.errorType === errorType || !error.errorType),
       );
 
       if (knownError) {
             console.error(
-                  `\n\x1B[33mSolution:\x1B[0m\n\n\x1B[90m${knownError.solution}\x1B[0m\n`,
+                  `\n\x1B[33mA solution for this error is available at: \x1B[36m${knownError.link}\x1B[0m\n`,
             );
       } else {
             console.error(
