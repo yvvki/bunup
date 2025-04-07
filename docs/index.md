@@ -599,7 +599,6 @@ export default defineConfig({
     entry: ['src/index.ts'],
     bytecode: true,
     target: 'bun',  # Bytecode compilation requires "bun" target
-    format: ['cjs'], # Currently only supports "cjs" format
 });
 ```
 
