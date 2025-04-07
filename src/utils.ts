@@ -114,3 +114,10 @@ export function getResolvedOutDir(outDir: string | undefined): string {
 export function getResolvedClean(clean: boolean | undefined): boolean {
       return clean === undefined ? DEFAULT_OPTIONS.clean : clean;
 }
+
+export function getResolvedBytecode(
+      bytecode: boolean | undefined,
+      format: Format,
+): boolean | undefined {
+      return format === 'cjs' ? bytecode : undefined;
+}

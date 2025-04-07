@@ -5,7 +5,7 @@ export default defineConfig([
             name: 'bunup',
             entry: ['src/index.ts'],
             outDir: 'build',
-            format: ['esm', 'cjs'],
+            format: ['cjs', 'esm'],
             minify: true,
             dts: {
                   resolve: true,
@@ -15,6 +15,8 @@ export default defineConfig([
                   PACKAGE_VERSION: '"1.0.0"',
             },
             splitting: false,
+            bytecode: true,
+            target: 'bun',
       },
       {
             name: 'bunup-some',
@@ -30,5 +32,6 @@ export default defineConfig([
                   PACKAGE_VERSION: '"1.0.0"',
             },
             splitting: false,
+            target: 'bun',
       },
 ]);

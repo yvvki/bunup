@@ -111,6 +111,10 @@ const optionConfigs: Partial<
             flags: ['tsconfig', 'preferred-tsconfig-path'],
             handler: makeStringHandler('preferredTsconfigPath'),
       },
+      bytecode: {
+            flags: ['bc', 'bytecode'],
+            handler: makeBooleanHandler('bytecode'),
+      },
 };
 
 // Additional CLI options that don't directly map to BunupOptions

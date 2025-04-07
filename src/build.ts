@@ -16,6 +16,7 @@ import {
       formatFileSize,
       getDefaultDtsExtention,
       getDefaultOutputExtension,
+      getResolvedBytecode,
       getResolvedSplitting,
       getShortFilePath,
       isModulePackage,
@@ -158,6 +159,7 @@ async function buildEntry(
             format: fmt,
             naming: {entry: getEntryNamingFormat(entry.name, extension)},
             splitting: getResolvedSplitting(options.splitting, fmt),
+            bytecode: getResolvedBytecode(options.bytecode, fmt),
             plugins,
             throw: false,
       });

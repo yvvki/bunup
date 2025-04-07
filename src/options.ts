@@ -245,6 +245,18 @@ export interface BunupOptions {
        * }
        */
       loader?: Record<string, Loader>;
+      /**
+       * Generate bytecode for the output. This can dramatically improve cold start times, but will make the final output larger and slightly increase memory usage.
+       *
+       * Bytecode is currently only supported for CommonJS (format: "cjs").
+       *
+       * Must be target: "bun"
+       *
+       * @see https://bun.sh/docs/bundler#bytecode
+       *
+       * @default false
+       */
+      bytecode?: boolean;
 }
 
 export const DEFAULT_OPTIONS: WithRequired<BunupOptions, 'clean'> = {

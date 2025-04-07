@@ -228,6 +228,7 @@ Bunup supports various command-line options:
 | `--name <name>`                    | `-n`         | Name for this build configuration                                                                  | -                |
 | `--resolve-dts <value>`            | `-rd`        | Resolve external types for declaration files (can be boolean flag or comma-separated package list) | `false`          |
 | `--preferred-tsconfig-path <path>` | `--tsconfig` | Path to preferred tsconfig file used for typescript declaration files generation                   | -                |
+| `--bytecode`                       | `-bc`        | Generate bytecode for JavaScript/TypeScript entrypoints to improve startup times                   | `false`          |
 | `--version`                        | `-v`         | Display version information                                                                        | -                |
 | `--help`                           | `-h`         | Display help information                                                                           | -                |
 
@@ -584,6 +585,23 @@ export default defineConfig({
 ```
 
 The `minify` option is a shorthand that enables all three specific options. If you set individual options, they take precedence over the `minify` setting.
+
+## Bytecode
+
+Bunup can generate bytecode for your JavaScript/TypeScript entrypoints, which can significantly improve startup times for large applications.
+
+```sh
+# CLI
+bunup src/index.ts --bytecode --target bun
+
+# Configuration file
+export default defineConfig({
+    entry: ['src/index.ts'],
+    bytecode: true,
+    target: 'bun',  # Bytecode compilation requires "bun" target
+    format: ['cjs'], # Currently only supports "cjs" format
+});
+```
 
 ## Source Maps
 
