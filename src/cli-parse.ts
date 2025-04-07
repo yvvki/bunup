@@ -117,7 +117,6 @@ const optionConfigs: Partial<
       },
 };
 
-// Additional CLI options that don't directly map to BunupOptions
 const additionalOptions: Record<
       string,
       {flags: string[]; handler: CliOptionHandler}
