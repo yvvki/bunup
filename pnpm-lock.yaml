@@ -117,6 +117,12 @@ importers:
       bunup:
         specifier: workspace:*
         version: link:..
+      typescript:
+        specifier: ^5.3.3
+        version: 5.8.3
+      vitest:
+        specifier: ^2.1.9
+        version: 2.1.9(@types/node@20.17.30)
 
 packages:
 

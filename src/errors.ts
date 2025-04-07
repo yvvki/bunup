@@ -83,15 +83,11 @@ export const handleError = (error: unknown, context?: string): void => {
 
       if (knownError) {
             console.error(
-                  `\n\x1B[33mA solution for this error is available at: \x1B[36m${knownError.link}\x1B[0m\n`,
+                  `\n\x1B[90mA solution for this error is available at: \x1B[36m${knownError.link}\x1B[0m\n`,
             );
       } else {
             console.error(
-                  `\x1B[33mThis error might be addressed in the troubleshooting section: \x1B[0m\x1B[36mhttps://bunup.arshadyaseen.com/#troubleshooting\x1B[0m`,
-            );
-
-            console.error(
-                  `\x1B[33mIf not, please open an issue at: \x1B[0m\x1B[36mhttps://github.com/arshadyaseen/bunup/issues/new\x1B[0m`,
+                  `\x1B[90mIf you think this is a bug, please open an issue at: \x1B[36mhttps://github.com/arshadyaseen/bunup/issues/new\x1B[0m`,
             );
       }
 };
