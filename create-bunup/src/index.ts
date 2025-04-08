@@ -46,6 +46,7 @@ interface PackageJson {
     scripts: Record<string, string>;
     dependencies: Record<string, string>;
     devDependencies: Record<string, string>;
+    license: string;
 }
 
 async function main() {
@@ -633,6 +634,7 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
         },
         dependencies: {},
         devDependencies: starterRootDevDependencies as Record<string, string>,
+        license: "MIT",
     };
 }
 
@@ -686,6 +688,7 @@ function createPackageJson(
         },
         dependencies: {},
         devDependencies: {},
+        license: "MIT",
     };
 }
 
