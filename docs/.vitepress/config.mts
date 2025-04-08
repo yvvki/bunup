@@ -101,4 +101,7 @@ export default defineConfig({
       vite: {
             plugins: [groupIconVitePlugin()],
       },
+      sitemap: {
+            hostname: 'https://bunup.arshadyaseen.com',
+      },
 });

@@ -56,11 +56,67 @@ $ bunx create-bunup@latest
 ? Name for first package: › my-package
 ```
 
-That's it! 🔥
+### Step-by-Step Setup Guide
+
+1. **Change into the created project directory**:
+   ```sh
+   cd my-ts-lib
+   ```
+
+2. **Install dependencies**:
+   ```sh
+   bun install
+   # or
+   pnpm install
+   ```
+
+3. **Enable Git hooks**:
+   ```sh
+   bun run prepare
+   # or
+   pnpm prepare
+   ```
+
+4. **Initialize Git repository**:
+   ```sh
+   git init
+   git add .
+   git commit -m "chore: initial commit"
+   ```
+
+5. **Create a GitHub repository**:
+   - Go to [GitHub](https://github.com/new)
+   - Create a new repository with the same name as your project
+   - Don't initialize it with a README, .gitignore, or license
+
+6. **Link your local repository to GitHub**:
+   ```sh
+   git remote add origin https://github.com/YOUR-USERNAME/my-ts-lib.git
+   git push -u origin main
+   ```
+
+7. **Setup for Releases**:
+   - Generate an npm token:
+     1. Go to [npmjs.com](https://www.npmjs.com/) and sign in
+     2. Navigate to your profile → Access Tokens → Generate New Token (Classic)
+     3. Give it a descriptive name (e.g., "Bunup Publishing")
+     4. Select "Automation" as the token type
+     5. Click "Generate Token" and copy it immediately
+   
+   - Add npm token to GitHub repository:
+     1. Go to your GitHub repository
+     2. Navigate to Settings → Secrets and variables → Actions
+     3. Click "New repository secret"
+     4. Name: `NPM_TOKEN`
+     5. Value: Paste your npm token
+     6. Click "Add secret"
+
+8. **Update the GitHub username**:
+   - Replace 'YOUR-USERNAME' with your actual GitHub username in `CONTRIBUTING.md`
 
 ## Development Workflow
 
-After creating your project, here's how to use it:
+After completing the setup, here's how to use your project:
 
 ### Common Commands
 
@@ -106,7 +162,7 @@ pnpm build
 
 ### Committing Code
 
-The project is set up with [Conventional Commits](https://www.conventionalcommits.org/) for standardized commit messages:
+The project uses [Conventional Commits](https://www.conventionalcommits.org/) for standardized commit messages:
 
 ```sh
 # Example commit messages:
@@ -120,30 +176,7 @@ Pre-commit hooks will run automatically to check your code quality before each c
 
 ## 🚀 Releasing Your Package
 
-The project includes GitHub Actions workflows for continuous integration and releasing packages to npm.
-
-### Setup for Releases
-
-1. **Generate an npm token**:
-
-      - Go to [npmjs.com](https://www.npmjs.com/) and sign in to your account
-      - Navigate to your profile → Access Tokens → Generate New Token (Granular token)
-      - Give it a descriptive name (e.g., "Bunup Publishing")
-      - Choose "Read and write" permission for "all packages" to allow publishing
-      - Click "Generate Token"
-      - Copy the generated token immediately (you won't be able to see it again)
-
-2. **Add npm token to GitHub repository**:
-      - Go to your GitHub repository
-      - Navigate to Settings → Secrets and variables → Actions
-      - Click "New repository secret"
-      - Name: `NPM_TOKEN`
-      - Value: Paste your npm token
-      - Click "Add secret"
-
-### Creating a Release
-
-After completing the release setup, simply run the release command. It handles everything automatically - from versioning to publishing - even elegantly managing all packages in a monorepo with a single command.
+When you're ready to release your package, simply run:
 
 ```sh
 bun run release
@@ -152,16 +185,14 @@ pnpm release
 ```
 
 This will:
-
 1. Prompt you for a new version (patch, minor, or major)
 2. Update package.json version
 3. Create a Git tag
 4. Push changes and tag to GitHub
 
 The GitHub Actions workflow will automatically:
-
 1. Build the package
-2. Generate a GitHub release with beautiful, comprehensive release notes (changelog) based on your commit history
+2. Generate a GitHub release with changelog
 3. Publish to npm with provenance
 
 Happy coding!

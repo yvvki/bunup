@@ -182,6 +182,7 @@ async function createProjectFiles(options: ProjectOptions): Promise<void> {
                   rules: {
                         recommended: true,
                   },
+                  ignore: ['dist'],
             },
             formatter: {
                   enabled: true,
@@ -196,7 +197,7 @@ async function createProjectFiles(options: ProjectOptions): Promise<void> {
       );
 
       await writeFile(
-            join(projectDir, 'commitlint.config.js'),
+            join(projectDir, 'commitlint.config.mjs'),
             `export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
@@ -218,20 +219,14 @@ export default defineConfig({})
 
       await writeFile(
             join(projectDir, '.husky/commit-msg'),
-            `#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-npx --no -- commitlint --edit $1
-`,
+            `npx --no -- commitlint --edit $1`,
       );
 
       await writeFile(
             join(projectDir, '.husky/pre-commit'),
-            `#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-${packageManager === 'bun' ? 'bun run tsc && bun run lint && bun run format' : 'pnpm tsc && pnpm lint && pnpm format'}
-`,
+            packageManager === 'bun'
+                  ? 'bun run tsc && bun run lint && bun run format'
+                  : 'pnpm tsc && pnpm lint && pnpm format',
       );
 
       try {
@@ -413,7 +408,7 @@ ${
                           GITHUB_TOKEN: \${{secrets.GITHUB_TOKEN}}
                   - run: ${packageManager === 'pnpm' ? 'pnpm' : 'bun'} run publish:ci
                     env:
-                          NODE_AUTH_TOKEN: \${{ secrets.NPM_TOKEN }}
+                          ${packageManager === "bun" ? "NPM_CONFIG_TOKEN" : "NODE_AUTH_TOKEN"}: \${{ secrets.NPM_TOKEN }}
                           NPM_CONFIG_PROVENANCE: true
 `,
       );
@@ -608,7 +603,7 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
 
       return {
             name: isMonorepo ? `${projectName}-monorepo` : projectName,
-            version: '0.0.0',
+            version: '0.1.0',
             private: isMonorepo ? true : undefined,
             main: './dist/index.js',
             module: './dist/index.mjs',
@@ -619,7 +614,7 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
                   build: 'bunup',
                   dev: 'bunup --watch',
                   lint: 'biome check .',
-                  'lint:fix': 'biome check --apply .',
+                  'lint:fix': 'biome check --write .',
                   format: 'biome format .',
                   'format:fix': 'biome format --write .',
                   tsc: 'tsc --noEmit',
@@ -676,7 +671,7 @@ function createPackageJson(
 
       return {
             name: isMonorepo ? `@${projectName}/${packageName}` : packageName,
-            version: '0.0.0',
+            version: '0.1.0',
             main: './dist/index.js',
             module: './dist/index.mjs',
             types: './dist/index.d.ts',
