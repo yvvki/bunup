@@ -32,11 +32,14 @@ interface ProjectOptions {
     packageManager: PackageManager;
     isMonorepo: boolean;
     packages: string[];
+    githubRepo: string;
+    description: string;
 }
 
 interface PackageJson {
     name: string;
     version: string;
+    description?: string;
     private?: boolean;
     workspaces?: string[];
     main?: string;
@@ -47,6 +50,11 @@ interface PackageJson {
     dependencies: Record<string, string>;
     devDependencies: Record<string, string>;
     license: string;
+    repository?: {
+        type: string;
+        url: string;
+    };
+    homepage?: string;
 }
 
 async function main() {
@@ -65,6 +73,25 @@ async function main() {
     });
 
     if (typeof projectPath !== "string") process.exit(1);
+
+    const githubRepo = await text({
+        message: "GitHub username and repo name (username/repo):",
+        placeholder: "username/repo-name",
+        validate(value) {
+            if (!value.includes("/"))
+                return "Please use the format username/repo";
+            return;
+        },
+    });
+
+    if (typeof githubRepo !== "string") process.exit(1);
+
+    const description = await text({
+        message: "Package description (optional):",
+        placeholder: "A TypeScript library",
+    });
+
+    if (typeof description !== "string") process.exit(1);
 
     const packageManager = (await select({
         message: "Select a package manager:",
@@ -124,6 +151,8 @@ async function main() {
             packageManager,
             isMonorepo,
             packages,
+            githubRepo,
+            description,
         };
 
         const createSpinner = spinner();
@@ -147,8 +176,14 @@ ${colors.cyan(`${packageManager} run dev`)}`,
 }
 
 async function createProjectFiles(options: ProjectOptions): Promise<void> {
-    const { projectDir, projectName, packageManager, isMonorepo, packages } =
-        options;
+    const {
+        projectDir,
+        projectName,
+        packageManager,
+        isMonorepo,
+        packages,
+        githubRepo,
+    } = options;
 
     if (projectDir !== process.cwd() && !existsSync(projectDir)) {
         await mkdir(projectDir, { recursive: true });
@@ -172,6 +207,9 @@ async function createProjectFiles(options: ProjectOptions): Promise<void> {
 
     const contributing = generateContributing(options);
     await writeFile(join(projectDir, "CONTRIBUTING.md"), contributing);
+
+    const license = generateLicense(githubRepo.split("/")[0]);
+    await writeFile(join(projectDir, "LICENSE"), license);
 
     const biomeConfig = {
         $schema: "https://biomejs.dev/schemas/1.5.3/schema.json",
@@ -270,7 +308,7 @@ yarn-error.log*
         join(projectDir, "README.md"),
         `# ${projectName}
 
-A TypeScript library built with [bunup](https://bunup.arshadyaseen.com/).
+${options.description ? options.description : "A TypeScript library built with [bunup](https://bunup.arshadyaseen.com/)."}
 
 ## Installation
 
@@ -601,16 +639,34 @@ describe('greet', () => {
 `,
         );
     }
+
+    try {
+        await exec(`cd ${projectDir} && git init`);
+        await exec(
+            `cd ${projectDir} && git remote add origin https://github.com/${githubRepo}.git`,
+        );
+    } catch (error) {
+        console.error("Failed to initialize git repository:", error);
+    }
 }
 
 function createRootPackageJson(options: ProjectOptions): PackageJson {
-    const { projectName, packageManager, isMonorepo, packages } = options;
+    const {
+        projectName,
+        packageManager,
+        isMonorepo,
+        packages,
+        githubRepo,
+        description,
+    } = options;
 
     const workspaces = isMonorepo ? { workspaces: ["packages/*"] } : {};
+    const repoUrl = `https://github.com/${githubRepo}`;
 
     return {
         name: isMonorepo ? `${projectName}-monorepo` : projectName,
         version: "0.1.0",
+        description: !isMonorepo ? description : undefined,
         private: isMonorepo ? true : undefined,
         main: "./dist/index.js",
         module: "./dist/index.mjs",
@@ -635,6 +691,11 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
         dependencies: {},
         devDependencies: starterRootDevDependencies as Record<string, string>,
         license: "MIT",
+        repository: {
+            type: "git",
+            url: `git+${repoUrl}.git`,
+        },
+        homepage: `${repoUrl}#readme`,
     };
 }
 
@@ -672,11 +733,16 @@ function createPackageJson(
     packageName: string,
     options: ProjectOptions,
 ): PackageJson {
-    const { projectName, isMonorepo } = options;
+    const { projectName, isMonorepo, githubRepo, description } = options;
+    const repoUrl = `https://github.com/${githubRepo}`;
 
     return {
         name: isMonorepo ? `@${projectName}/${packageName}` : packageName,
         version: "0.1.0",
+        description:
+            isMonorepo && packageName === options.packages[0]
+                ? description
+                : undefined,
         main: "./dist/index.js",
         module: "./dist/index.mjs",
         types: "./dist/index.d.ts",
@@ -689,6 +755,11 @@ function createPackageJson(
         dependencies: {},
         devDependencies: {},
         license: "MIT",
+        repository: {
+            type: "git",
+            url: `git+${repoUrl}.git`,
+        },
+        homepage: `${repoUrl}#readme`,
     };
 }
 
@@ -735,8 +806,9 @@ export default defineConfig({
 }
 
 function generateContributing(options: ProjectOptions): string {
-    const { projectName, packageManager, isMonorepo } = options;
+    const { projectName, packageManager, isMonorepo, githubRepo } = options;
     const runCmd = packageManager === "bun" ? "bun run" : "pnpm";
+    const username = githubRepo.split("/")[0];
 
     return `# Contributing to ${projectName}
 
@@ -751,7 +823,7 @@ Thank you for your interest in contributing to our project! This guide will help
 ### Getting Started
 
 1. Fork the repository
-2. Clone your fork: \`git clone https://github.com/YOUR-USERNAME/${projectName}.git\`
+2. Clone your fork: \`git clone https://github.com/${username}/${projectName}.git\`
 3. Navigate to the project directory: \`cd ${projectName}\`
 4. Install dependencies: \`${packageManager} install\`
 5. Start development: \`${runCmd} dev\`
@@ -807,6 +879,32 @@ If you have any questions, please open an issue for discussion.
 
 Thank you for contributing to ${projectName}!
 `;
+}
+
+function generateLicense(username: string): string {
+    const year = new Date().getFullYear();
+
+    return `MIT License
+
+Copyright (c) ${year} ${username}
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.`;
 }
 
 main().catch(console.error);

@@ -2,8 +2,6 @@
 
 Quickly scaffold modern TypeScript library in 5 seconds. Powered by [Bunup](https://bunup.arshadyaseen.com/) - the fastest TypeScript bundler available ⚡️.
 
-<video src="/ts-lib-starter-demo.mov" alt="Bunup typescript library starter demo video" controls style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);"></video>
-
 ## Features
 
 - 🚀 **Zero Config**: Get started in seconds with sensible defaults
@@ -13,6 +11,7 @@ Quickly scaffold modern TypeScript library in 5 seconds. Powered by [Bunup](http
 - 🚦 **Git Hooks**: Enforced code quality with Husky pre-commit hooks
 - 📝 **Conventional Commits**: Standardized commit messages with commitlint
 - 🚢 **Release Automation**: GitHub Actions for testing and publishing
+- 🧹 **Modern Tooling**: Biome for linting and formatting
 
 ## Getting Started
 
@@ -44,6 +43,10 @@ $ bunx create-bunup@latest
 ℹ TypeScript Library Starter
 
 ? Where would you like to create your project? › my-ts-lib
+
+? GitHub username and repo name (username/repo): › username/my-ts-lib
+
+? Package description (optional): › A TypeScript library
 
 ? Select a package manager:
 ❯ bun - Fast all-in-one JavaScript runtime
@@ -77,25 +80,20 @@ $ bunx create-bunup@latest
    pnpm prepare
    ```
 
-4. **Initialize Git repository**:
+4. **Create a GitHub repository**:
+   - Go to [GitHub](https://github.com/new)
+   - Create a new repository with the same name as your project
+
+5. **Initialize Git repository**:
+   
+   The CLI automatically initializes a Git repository for you and adds the remote if you provided a GitHub repository. You only need to make your first commit:
+   
    ```sh
-   git init
    git add .
    git commit -m "chore: initial commit"
    ```
 
-5. **Create a GitHub repository**:
-   - Go to [GitHub](https://github.com/new)
-   - Create a new repository with the same name as your project
-   - Don't initialize it with a README, .gitignore, or license
-
-6. **Link your local repository to GitHub**:
-   ```sh
-   git remote add origin https://github.com/YOUR-USERNAME/my-ts-lib.git
-   git push -u origin main
-   ```
-
-7. **Setup for Releases**:
+6. **Setup for Releases**:
    - Generate an npm token:
      1. Go to [npmjs.com](https://www.npmjs.com/) and sign in
      2. Navigate to your profile → Access Tokens → Generate New Token (Classic)
@@ -110,9 +108,6 @@ $ bunx create-bunup@latest
      4. Name: `NPM_TOKEN`
      5. Value: Paste your npm token
      6. Click "Add secret"
-
-8. **Update the GitHub username**:
-   - Replace 'YOUR-USERNAME' with your actual GitHub username in `CONTRIBUTING.md`
 
 ## Development Workflow
 
@@ -172,7 +167,15 @@ git commit -m "docs: update API documentation"
 git commit -m "chore: update dependencies"
 ```
 
-Pre-commit hooks will run automatically to check your code quality before each commit.
+Pre-commit hooks will run automatically to check your code quality before each commit. The hooks run type checking, linting, and formatting validation.
+
+## CI/CD Workflows
+
+The project comes with three GitHub Actions workflows:
+
+1. **CI**: Runs on pull requests and pushes to main, validating types, linting, and tests
+2. **Release**: Triggered by tags, builds and publishes the package to npm with provenance
+3. **Issue Management**: Automatically marks issues as stale after 30 days of inactivity
 
 ## 🚀 Releasing Your Package
 

@@ -19,7 +19,7 @@ Before you begin, make sure you have:
 2. **Clone your fork**
 
       ```bash
-      git clone https://github.com/YOUR-USERNAME/bunup.git
+      git clone https://github.com/arshad-yaseen/bunup.git
       cd bunup
       ```
 
