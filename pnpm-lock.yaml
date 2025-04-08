@@ -43,8 +43,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.3.58
-        version: 0.3.66(typescript@5.8.3)
+        specifier: ^0.3.73
+        version: 0.3.73(typescript@5.8.3)
       create-bunup:
         specifier: workspace:*
         version: link:create-bunup
@@ -1452,8 +1452,8 @@ packages:
     peerDependencies:
       esbuild: '>=0.18'
 
-  bunup@0.3.66:
-    resolution: {integrity: sha512-5/x//WqgVqoheSo7i1KcIAUhNYr35VjcISr5iMuAxk/hoVlWttLdq5z+97yfE28TMI8dXGANoNmL86Fr2OmLQw==}
+  bunup@0.3.73:
+    resolution: {integrity: sha512-n1qz8yKBFR+xhNPskyG774eCuN2DHvEuoBU3quRtzf/TXuJq4q/FtZXr8etmj0gDcOQu+FyoZS+05V1/QPzYiA==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -4050,10 +4050,10 @@ snapshots:
       esbuild: 0.25.2
       load-tsconfig: 0.2.5
 
-  bunup@0.3.66(typescript@5.8.3):
+  bunup@0.3.73(typescript@5.8.3):
     dependencies:
       chokidar: 4.0.3
-      load-tsconfig: 0.2.5
+      coffi: 0.1.16
       oxc-resolver: 5.1.1
       oxc-transform: 0.58.1
       rolldown: 1.0.0-beta.7(typescript@5.8.3)
