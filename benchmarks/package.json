@@ -1,17 +1,17 @@
 {
-      "name": "benchmarks",
-      "private": true,
-      "version": "0.3.70",
-      "scripts": {
-            "benchmark": "bun run src/main.mjs && node src/tsup.mjs"
-      },
-      "devDependencies": {
-            "bunup": "workspace:*",
-            "tsdown": "^0.7.3",
-            "tsup": "^8.4.0",
-            "unbuild": "^3.5.0"
-      },
-      "dependencies": {
-            "@types/node": "^20.17.30"
-      }
+    "name": "benchmarks",
+    "private": true,
+    "version": "0.3.70",
+    "scripts": {
+        "benchmark": "bun run src/main.mjs && node src/tsup.mjs"
+    },
+    "devDependencies": {
+        "bunup": "workspace:*",
+        "tsdown": "^0.7.3",
+        "tsup": "^8.4.0",
+        "unbuild": "^3.5.0"
+    },
+    "dependencies": {
+        "@types/node": "^20.17.30"
+    }
 }

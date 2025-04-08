@@ -1,45 +1,36 @@
 {
-      "name": "create-bunup",
-      "version": "0.3.70",
-      "files": [
-            "build"
-      ],
-      "bin": {
-            "create-bunup": "build/index.mjs"
-      },
-      "scripts": {
-            "update-starter-root-dev-dependencies": "bun run update-starter-root-dev-dependencies.ts && prettier --write src/starter-root-dev-dependencies.json"
-      },
-      "description": "Quickly scaffold a new TypeScript package with Bunup.",
-      "keywords": [
-            "bunup",
-            "typescript",
-            "cli",
-            "bun",
-            "create",
-            "starter"
-      ],
-      "repository": {
-            "type": "git",
-            "url": "git+https://github.com/arshad-yaseen/bunup.git"
-      },
-      "homepage": "https://bunup.arshadyaseen.com/typescript-library-starter",
-      "maintainers": [
-            {
-                  "name": "Arshad Yaseen",
-                  "email": "m@arshadyaseen.com",
-                  "url": "https://arshadyaseen.com"
-            }
-      ],
-      "packageManager": "pnpm@9.15.9",
-      "license": "MIT",
-      "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
-      "dependencies": {
-            "@clack/prompts": "^0.7.0",
-            "picocolors": "^1.1.1"
-      },
-      "devDependencies": {
-            "@types/node": "^20.17.30",
-            "typescript": "^5.8.2"
-      }
+    "name": "create-bunup",
+    "version": "0.3.70",
+    "files": ["build"],
+    "bin": {
+        "create-bunup": "build/index.mjs"
+    },
+    "scripts": {
+        "update-starter-root-dev-dependencies": "bun run update-starter-root-dev-dependencies.ts && prettier --write src/starter-root-dev-dependencies.json"
+    },
+    "description": "Quickly scaffold a new TypeScript package with Bunup.",
+    "keywords": ["bunup", "typescript", "cli", "bun", "create", "starter"],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/arshad-yaseen/bunup.git"
+    },
+    "homepage": "https://bunup.arshadyaseen.com/typescript-library-starter",
+    "maintainers": [
+        {
+            "name": "Arshad Yaseen",
+            "email": "m@arshadyaseen.com",
+            "url": "https://arshadyaseen.com"
+        }
+    ],
+    "packageManager": "pnpm@9.15.9",
+    "license": "MIT",
+    "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
+    "dependencies": {
+        "@clack/prompts": "^0.7.0",
+        "picocolors": "^1.1.1"
+    },
+    "devDependencies": {
+        "@types/node": "^20.17.30",
+        "typescript": "^5.8.2"
+    }
 }

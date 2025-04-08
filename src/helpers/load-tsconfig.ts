@@ -1,28 +1,28 @@
 // @ts-expect-error - load-tsconfig is not typed
-import {loadTsConfig as _loadTsConfig} from 'load-tsconfig';
+import { loadTsConfig as _loadTsConfig } from "load-tsconfig";
 
-import {parseErrorMessage} from '../errors';
-import {logger} from '../logger';
+import { parseErrorMessage } from "../errors";
+import { logger } from "../logger";
 
 export type TsConfig = {
-      path?: string;
-      data?: {
-            compilerOptions?: Record<string, any>;
-            [key: string]: any;
-      };
-      files?: string[];
+    path?: string;
+    data?: {
+        compilerOptions?: Record<string, unknown>;
+        [key: string]: unknown;
+    };
+    files?: string[];
 };
 
 export function loadTsconfig(filePath: string | undefined): TsConfig {
-      try {
-            const tsconfig = _loadTsConfig('.', filePath);
-            return tsconfig;
-      } catch (error) {
-            logger.warn(`Failed to load tsconfig: ${parseErrorMessage(error)}`);
-            return {
-                  path: filePath,
-                  data: {},
-                  files: [],
-            };
-      }
+    try {
+        const tsconfig = _loadTsConfig(".", filePath);
+        return tsconfig;
+    } catch (error) {
+        logger.warn(`Failed to load tsconfig: ${parseErrorMessage(error)}`);
+        return {
+            path: filePath,
+            data: {},
+            files: [],
+        };
+    }
 }

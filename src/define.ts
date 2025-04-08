@@ -1,13 +1,13 @@
-import {DefineConfigEntry, DefineWorkspaceEntry} from './types';
+import type { DefineConfigEntry, DefineWorkspaceEntry } from "./types";
 
 export function defineConfig(
-      options: DefineConfigEntry | DefineConfigEntry[],
+    options: DefineConfigEntry | DefineConfigEntry[],
 ): DefineConfigEntry | DefineConfigEntry[] {
-      return options;
+    return options;
 }
 
 export function defineWorkspace(
-      options: DefineWorkspaceEntry[],
+    options: DefineWorkspaceEntry[],
 ): DefineWorkspaceEntry[] {
-      return options;
+    return options;
 }

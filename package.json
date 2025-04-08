@@ -1,84 +1,77 @@
 {
-      "name": "bunup",
-      "version": "0.3.70",
-      "description": "An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by Bun.",
-      "main": "./build/index.js",
-      "types": "./build/index.d.ts",
-      "module": "./build/index.mjs",
-      "files": [
-            "build"
-      ],
-      "bin": {
-            "bunup": "build/cli.mjs"
-      },
-      "scripts": {
-            "build": "bunup",
-            "dev": "bunup --watch",
-            "build:docs": "pnpm -C docs build",
-            "create-bunup": "create-bunup",
-            "dev:docs": "pnpm -C docs dev",
-            "test-build": "pnpm -C tests build",
-            "test": "vitest run",
-            "tsc": "tsc --noEmit",
-            "lint": "eslint src --fix",
-            "format": "prettier --write .",
-            "release": "bumpp -r --commit --push --tag",
-            "release:ci": "bumpp patch -r --commit --push --tag --yes",
-            "publish:ci": "pnpm --filter bunup --filter create-bunup publish --access public --no-git-checks",
-            "benchmark": "pnpm -C benchmarks benchmark",
-            "upgrade-deps": "pnpx taze -r -w && pnpm install && git add . && git commit -m 'chore: upgrade deps' && pnpm release:ci",
-            "prepare": "husky",
-            "update-create-bunup-starter-root-dev-dependencies": "pnpm -C create-bunup update-starter-root-dev-dependencies"
-      },
-      "devDependencies": {
-            "@commitlint/cli": "^19.5.0",
-            "@commitlint/config-conventional": "^19.5.0",
-            "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
-            "@types/bun": "^1.2.5",
-            "@typescript-eslint/eslint-plugin": "^7.18.0",
-            "bumpp": "^10.1.0",
-            "bunup": "^0.3.58",
-            "create-bunup": "workspace:*",
-            "eslint": "^8.57.1",
-            "husky": "^9.1.7",
-            "prettier": "^3.5.3",
-            "typescript": "^5.8.3",
-            "vitest": "^2.1.9"
-      },
-      "peerDependencies": {
-            "typescript": ">=4.5.0"
-      },
-      "peerDependenciesMeta": {
-            "typescript": {
-                  "optional": true
-            }
-      },
-      "keywords": [
-            "bun",
-            "bunup",
-            "bun-bundler"
-      ],
-      "repository": {
-            "type": "git",
-            "url": "git+https://github.com/arshad-yaseen/bunup.git"
-      },
-      "homepage": "https://bunup.arshadyaseen.com",
-      "maintainers": [
-            {
-                  "name": "Arshad Yaseen",
-                  "email": "m@arshadyaseen.com",
-                  "url": "https://arshadyaseen.com"
-            }
-      ],
-      "packageManager": "pnpm@9.15.9",
-      "license": "MIT",
-      "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
-      "dependencies": {
-            "chokidar": "^4.0.3",
-            "load-tsconfig": "^0.2.5",
-            "oxc-resolver": "^5.0.1",
-            "oxc-transform": "^0.58.1",
-            "rolldown": "1.0.0-beta.7",
-            "rolldown-plugin-dts": "^0.1.0"
-      }
+    "name": "bunup",
+    "version": "0.3.70",
+    "description": "An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by Bun.",
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
+    "module": "./build/index.mjs",
+    "files": ["build"],
+    "bin": {
+        "bunup": "build/cli.mjs"
+    },
+    "scripts": {
+        "build": "bunup",
+        "dev": "bunup --watch",
+        "build:docs": "pnpm -C docs build",
+        "create-bunup": "create-bunup",
+        "dev:docs": "pnpm -C docs dev",
+        "test-build": "pnpm -C tests build",
+        "test": "vitest run",
+        "lint": "biome check .",
+        "lint:fix": "biome check --write .",
+        "format": "biome format .",
+        "format:fix": "biome format --write .",
+        "tsc": "tsc --noEmit",
+        "release": "bumpp -r --commit --push --tag",
+        "release:ci": "bumpp patch -r --commit --push --tag --yes",
+        "publish:ci": "pnpm --filter bunup --filter create-bunup publish --access public --no-git-checks",
+        "benchmark": "pnpm -C benchmarks benchmark",
+        "upgrade-deps": "pnpx taze -r -w && pnpm install && git add . && git commit -m 'chore: upgrade deps' && pnpm release:ci",
+        "prepare": "husky",
+        "update-create-bunup-starter-root-dev-dependencies": "pnpm -C create-bunup update-starter-root-dev-dependencies"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
+        "@commitlint/cli": "^19.5.0",
+        "@commitlint/config-conventional": "^19.5.0",
+        "@types/bun": "^1.2.5",
+        "bumpp": "^10.1.0",
+        "bunup": "^0.3.58",
+        "create-bunup": "workspace:*",
+        "husky": "^9.1.7",
+        "typescript": "^5.8.3",
+        "vitest": "^2.1.9"
+    },
+    "peerDependencies": {
+        "typescript": ">=4.5.0"
+    },
+    "peerDependenciesMeta": {
+        "typescript": {
+            "optional": true
+        }
+    },
+    "keywords": ["bun", "bunup", "bun-bundler"],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/arshad-yaseen/bunup.git"
+    },
+    "homepage": "https://bunup.arshadyaseen.com",
+    "maintainers": [
+        {
+            "name": "Arshad Yaseen",
+            "email": "m@arshadyaseen.com",
+            "url": "https://arshadyaseen.com"
+        }
+    ],
+    "packageManager": "pnpm@9.15.9",
+    "license": "MIT",
+    "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
+    "dependencies": {
+        "chokidar": "^4.0.3",
+        "load-tsconfig": "^0.2.5",
+        "oxc-resolver": "^5.0.1",
+        "oxc-transform": "^0.58.1",
+        "rolldown": "1.0.0-beta.7",
+        "rolldown-plugin-dts": "^0.1.0"
+    }
 }

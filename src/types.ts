@@ -1,28 +1,28 @@
-import Bun from 'bun';
+import type _Bun from "bun";
 
-import {BunupOptions} from './options';
+import type { BunupOptions } from "./options";
 
 export type PromiseOr<T> = Promise<T> | T;
 
 export type WithOptional<T, K extends keyof T> = Omit<T, K> &
-      Partial<Pick<T, K>>;
+    Partial<Pick<T, K>>;
 
 export type WithRequired<T, K extends keyof T> = Omit<T, K> &
-      Required<Pick<T, K>>;
+    Required<Pick<T, K>>;
 
 export type Arrayable<T> = T | T[];
 
-export type Bun = typeof Bun;
-export type BunBuildOptions = Parameters<Bun['build']>[0];
-export type BunPlugin = Exclude<BunBuildOptions['plugins'], undefined>[number];
+export type Bun = typeof _Bun;
+export type BunBuildOptions = Parameters<Bun["build"]>[0];
+export type BunPlugin = Exclude<BunBuildOptions["plugins"], undefined>[number];
 
 export type DefineConfigEntry = Omit<
-      WithOptional<BunupOptions, 'outDir' | 'format'>,
-      'watch'
+    WithOptional<BunupOptions, "outDir" | "format">,
+    "watch"
 >;
 
 export type DefineWorkspaceEntry = {
-      name: string;
-      root: string;
-      config: DefineConfigEntry | DefineConfigEntry[];
+    name: string;
+    root: string;
+    config: DefineConfigEntry | DefineConfigEntry[];
 };

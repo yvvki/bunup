@@ -1,5 +1,5 @@
 export function cool(name: string): string {
-      return name;
+    return name;
 }
 
-export const kaka: string = cool('kaka');
+export const kaka: string = cool("kaka");

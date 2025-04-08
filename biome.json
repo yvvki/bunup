@@ -1,0 +1,40 @@
+{
+    "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
+    "organizeImports": {
+        "enabled": true
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "suspicious": {
+                "noExplicitAny": "off"
+            }
+        },
+        "ignore": [
+            "build",
+            "node_modules",
+            ".git",
+            ".vscode",
+            "cache",
+            "dist",
+            "**/*dist/**",
+            "benchmarks"
+        ]
+    },
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "ignore": [
+            "build",
+            "node_modules",
+            ".git",
+            ".vscode",
+            "cache",
+            "dist",
+            "**/*dist/**",
+            "benchmarks"
+        ]
+    }
+}

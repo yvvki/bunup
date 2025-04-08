@@ -1,98 +1,98 @@
 export class BunupError extends Error {
-      constructor(message: string) {
-            super(message);
-            this.name = 'BunupError';
-      }
+    constructor(message: string) {
+        super(message);
+        this.name = "BunupError";
+    }
 }
 
 export class BunupBuildError extends BunupError {
-      constructor(message: string) {
-            super(message);
-            this.name = 'BunupBuildError';
-      }
+    constructor(message: string) {
+        super(message);
+        this.name = "BunupBuildError";
+    }
 }
 
 export class BunupDTSBuildError extends BunupError {
-      constructor(message: string) {
-            super(message);
-            this.name = 'BunupDTSBuildError';
-      }
+    constructor(message: string) {
+        super(message);
+        this.name = "BunupDTSBuildError";
+    }
 }
 
 export class BunupCLIError extends BunupError {
-      constructor(message: string) {
-            super(message);
-            this.name = 'BunupCLIError';
-      }
+    constructor(message: string) {
+        super(message);
+        this.name = "BunupCLIError";
+    }
 }
 
 export class BunupWatchError extends BunupError {
-      constructor(message: string) {
-            super(message);
-            this.name = 'BunupWatchError';
-      }
+    constructor(message: string) {
+        super(message);
+        this.name = "BunupWatchError";
+    }
 }
 
 export const parseErrorMessage = (error: unknown): string => {
-      if (error instanceof Error) {
-            return error.message;
-      }
-      return String(error);
+    if (error instanceof Error) {
+        return error.message;
+    }
+    return String(error);
 };
 
 interface KnownErrorSolution {
-      pattern: RegExp;
-      errorType: string;
-      link?: string;
+    pattern: RegExp;
+    errorType: string;
+    link?: string;
 }
 
 const KNOWN_ERRORS: KnownErrorSolution[] = [
-      {
-            pattern: /Could not resolve: "bun"/i,
-            errorType: 'BUILD ERROR',
-            link: 'https://bunup.arshadyaseen.com/#could-not-resolve-bun-error',
-      },
+    {
+        pattern: /Could not resolve: "bun"/i,
+        errorType: "BUILD ERROR",
+        link: "https://bunup.arshadyaseen.com/#could-not-resolve-bun-error",
+    },
 ];
 
 export const handleError = (error: unknown, context?: string): void => {
-      const errorMessage = parseErrorMessage(error);
-      const contextPrefix = context ? `[${context}] ` : '';
+    const errorMessage = parseErrorMessage(error);
+    const contextPrefix = context ? `[${context}] ` : "";
 
-      let errorType = 'ERROR';
-      if (error instanceof BunupBuildError) {
-            errorType = 'BUILD ERROR';
-      } else if (error instanceof BunupDTSBuildError) {
-            errorType = 'DTS ERROR';
-      } else if (error instanceof BunupCLIError) {
-            errorType = 'CLI ERROR';
-      } else if (error instanceof BunupWatchError) {
-            errorType = 'WATCH ERROR';
-      } else if (error instanceof BunupError) {
-            errorType = 'BUNUP ERROR';
-      }
+    let errorType = "ERROR";
+    if (error instanceof BunupBuildError) {
+        errorType = "BUILD ERROR";
+    } else if (error instanceof BunupDTSBuildError) {
+        errorType = "DTS ERROR";
+    } else if (error instanceof BunupCLIError) {
+        errorType = "CLI ERROR";
+    } else if (error instanceof BunupWatchError) {
+        errorType = "WATCH ERROR";
+    } else if (error instanceof BunupError) {
+        errorType = "BUNUP ERROR";
+    }
 
-      console.error(
-            `\x1B[31m${errorType}\x1B[0m ${contextPrefix}${errorMessage}`,
-      );
+    console.error(
+        `\x1B[31m${errorType}\x1B[0m ${contextPrefix}${errorMessage}`,
+    );
 
-      const knownError = KNOWN_ERRORS.find(
-            error =>
-                  error.pattern.test(errorMessage) &&
-                  (error.errorType === errorType || !error.errorType),
-      );
+    const knownError = KNOWN_ERRORS.find(
+        (error) =>
+            error.pattern.test(errorMessage) &&
+            (error.errorType === errorType || !error.errorType),
+    );
 
-      if (knownError) {
-            console.error(
-                  `\n\x1B[90mA solution for this error is available at: \x1B[36m${knownError.link}\x1B[0m\n`,
-            );
-      } else {
-            console.error(
-                  `\x1B[90mIf you think this is a bug, please open an issue at: \x1B[36mhttps://github.com/arshadyaseen/bunup/issues/new\x1B[0m`,
-            );
-      }
+    if (knownError) {
+        console.error(
+            `\n\x1B[90mA solution for this error is available at: \x1B[36m${knownError.link}\x1B[0m\n`,
+        );
+    } else {
+        console.error(
+            "\x1B[90mIf you think this is a bug, please open an issue at: \x1B[36mhttps://github.com/arshadyaseen/bunup/issues/new\x1B[0m",
+        );
+    }
 };
 
 export const handleErrorAndExit = (error: unknown, context?: string): void => {
-      handleError(error, context);
-      process.exit(1);
+    handleError(error, context);
+    process.exit(1);
 };
