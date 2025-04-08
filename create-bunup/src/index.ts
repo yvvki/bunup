@@ -182,13 +182,18 @@ async function createProjectFiles(options: ProjectOptions): Promise<void> {
             rules: {
                 recommended: true,
             },
-            ignore: ["dist", "node_modules", "cache"],
+            ignore: ["dist", "node_modules"],
         },
         formatter: {
             enabled: true,
             indentStyle: "space",
             indentWidth: 4,
-            ignore: ["dist", "node_modules", "cache"],
+            ignore: ["dist", "node_modules"],
+        },
+        vcs: {
+            enabled: true,
+            useIgnoreFile: true,
+            clientKind: "git",
         },
     };
 
