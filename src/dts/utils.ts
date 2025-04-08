@@ -10,7 +10,10 @@ export function getDtsPath(tsFilePath: string): string {
 export function getBaseUrl(tsconfig: TsConfig): string {
     const tsconfigDir = path.dirname(tsconfig.path || "");
     return tsconfig.data?.compilerOptions?.baseUrl
-        ? path.resolve(tsconfigDir, (tsconfig.data.compilerOptions as {baseUrl: string}).baseUrl)
+        ? path.resolve(
+              tsconfigDir,
+              (tsconfig.data.compilerOptions as { baseUrl: string }).baseUrl,
+          )
         : tsconfigDir;
 }
 
