@@ -2,9 +2,40 @@ import {parseErrorMessage} from '../errors';
 import {logger} from '../logger';
 import {resolveImportedTsFilePath} from './utils';
 
-const IMPORT_REGEX =
-      /(?:import|export)(?:[\s\n]*(?:type[\s\n]+)?(?:\*|\{[^}]*\}|[\w$]+)[\s\n]+from[\s\n]*|[\s\n]+)(["'`])([^'"]+)\1/g;
-const DYNAMIC_IMPORT_REGEX = /import\s*\(\s*(["'`])([^'"]+)\1\s*\)/g;
+const importRegex = /^\s*import\s+(?:[^'"]*?\s+from\s+)?['"]([^'"]+)['"]/gm;
+const exportRegex = /^\s*export\s+.*from\s+['"]([^'"]+)['"]/gm;
+const dynamicImportRegex = /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+const requireRegex = /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+const importEqualsRegex =
+      /import\s+\w+\s*=\s*require\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+const referencePathRegex =
+      /\/\/\/\s*<reference\s+path\s*=\s*['"]([^'"]+)['"]\s*\/>/g;
+const referenceTypesRegex =
+      /\/\/\/\s*<reference\s+types\s*=\s*['"]([^'"]+)['"]\s*\/>/g;
+
+function extractImportsWithRegex(sourceText: string): Set<string> {
+      const imports = new Set<string>();
+      const regexes = [
+            importRegex,
+            exportRegex,
+            dynamicImportRegex,
+            requireRegex,
+            importEqualsRegex,
+            referencePathRegex,
+            referenceTypesRegex,
+      ];
+
+      for (const regex of regexes) {
+            const matches = sourceText.matchAll(regex);
+            for (const match of matches) {
+                  if (match[1]) {
+                        imports.add(match[1]);
+                  }
+            }
+      }
+
+      return imports;
+}
 
 export async function collectTsFiles(
       entry: string,
@@ -16,12 +47,11 @@ export async function collectTsFiles(
 
       while (toVisit.length) {
             const current = toVisit.pop();
-
             if (!current) continue;
 
             try {
                   const sourceText = await Bun.file(current).text();
-                  const imports = extractImports(sourceText);
+                  const imports = extractImportsWithRegex(sourceText);
 
                   for (const importPath of imports) {
                         const resolvedTsFilePath =
@@ -47,14 +77,4 @@ export async function collectTsFiles(
       }
 
       return visited;
-}
-
-export function extractImports(sourceText: string): string[] {
-      const imports = new Set<string>();
-      for (const regex of [IMPORT_REGEX, DYNAMIC_IMPORT_REGEX]) {
-            let match;
-            while ((match = regex.exec(sourceText)) !== null)
-                  imports.add(match[2]);
-      }
-      return Array.from(imports);
 }

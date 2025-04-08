@@ -21,3 +21,6 @@ const something = PACKAGE_NAME + ' ' + PACKAGE_VERSION;
 export const result: number = add(one, two);
 
 export const somethingElse: string = something;
+
+// import { something } from 'utils/kaka/something';
+// const x = require('./not-a-file');

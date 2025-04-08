@@ -74,8 +74,8 @@ importers:
         version: 20.17.30
     devDependencies:
       bunup:
-        specifier: ^0.3.46
-        version: 0.3.66(typescript@5.8.3)
+        specifier: workspace:*
+        version: link:..
       tsdown:
         specifier: ^0.7.3
         version: 0.7.5(typescript@5.8.3)

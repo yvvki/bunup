@@ -161,7 +161,7 @@ This will:
 The GitHub Actions workflow will automatically:
 
 1. Build the package
-2. Generate a GitHub release
+2. Generate a GitHub release with beautiful, comprehensive release notes (changelog) based on your commit history
 3. Publish to npm with provenance
 
 Happy coding!

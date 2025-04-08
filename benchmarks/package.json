@@ -6,7 +6,7 @@
             "benchmark": "bun run src/main.mjs && node src/tsup.mjs"
       },
       "devDependencies": {
-            "bunup": "^0.3.46",
+            "bunup": "workspace:*",
             "tsdown": "^0.7.3",
             "tsup": "^8.4.0",
             "unbuild": "^3.5.0"
