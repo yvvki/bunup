@@ -14,6 +14,20 @@ export function generateRandomSuffix(length = 8): string {
         .substring(2, 2 + length);
 }
 
+export function addField<T extends Record<string, unknown>>(
+    objectOrArray: T | T[],
+    field: keyof T,
+    value: T[keyof T],
+) {
+    return Array.isArray(objectOrArray)
+        ? objectOrArray.map((o) => ({ ...o, [field]: value }))
+        : { ...objectOrArray, [field]: value };
+}
+
+export function ensureArray<T>(value: T | T[]): T[] {
+    return Array.isArray(value) ? value : [value];
+}
+
 export function splitCommaSeparated(input: string | string[]): string[] {
     return Array.isArray(input) ? input : input.split(",");
 }

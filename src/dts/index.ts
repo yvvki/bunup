@@ -1,4 +1,4 @@
-import type { TsConfig } from "../helpers/load-tsconfig";
+import type { TsConfigData } from "../loaders";
 import type { BunupOptions } from "../options";
 import { bundleDts } from "./bundler";
 import { collectTsFiles } from "./collector";
@@ -10,7 +10,7 @@ export async function generateDts(
     rootDir: string,
     entry: string,
     options: BunupOptions,
-    tsconfig: TsConfig,
+    tsconfig: TsConfigData,
     packageJson: Record<string, unknown> | null,
 ): Promise<string> {
     const { absoluteEntry } = await validateInputs(rootDir, entry);

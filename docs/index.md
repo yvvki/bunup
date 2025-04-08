@@ -123,8 +123,6 @@ Bunup supports configuration files in multiple formats:
 - `bunup.config.js`
 - `bunup.config.mjs`
 - `bunup.config.cjs`
-- `bunup.config.json`
-- `bunup.config.jsonc`
 
 ```typescript [bunup.config.ts]
 import {defineConfig} from 'bunup';
@@ -154,51 +152,6 @@ export default defineConfig([
             target: 'browser',
       },
 ]);
-```
-
-#### JSON Configuration
-
-If you prefer using a JSON configuration file (`bunup.config.json` or `bunup.config.jsonc`), the structure is similar but with a few differences:
-
-```json [bunup.config.json]
-{
-      "name": "my-library",
-      "entry": ["src/index.ts", "src/cli.ts"],
-      "format": ["esm", "cjs"],
-      "dts": true,
-      "minify": true
-}
-```
-
-To define multiple configurations in JSON, use the `bunup` property with an array:
-
-```json [bunup.config.json]
-{
-      "bunup": [
-            {
-                  "name": "node",
-                  "entry": ["src/index.ts"],
-                  "format": ["cjs"],
-                  "target": "node"
-            },
-            {
-                  "name": "browser",
-                  "entry": ["src/index.ts"],
-                  "format": ["esm", "iife"],
-                  "target": "browser"
-            }
-      ]
-}
-```
-
-For autocomplete and validation in your JSON configuration files, you can reference the Bunup JSON schema:
-
-```json [bunup.config.json] {2}
-{
-      "$schema": "https://bunup.arshadyaseen.com/schema.json",
-      "name": "my-library",
-      "entry": ["src/index.ts"]
-}
 ```
 
 ## CLI Options

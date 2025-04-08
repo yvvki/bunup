@@ -2,16 +2,20 @@
 import { allFilesUsedToBundleDts, build } from "./build";
 import { parseCliOptions } from "./cli-parse";
 import { handleErrorAndExit } from "./errors";
-import { loadConfigs } from "./loaders";
 import { logger } from "./logger";
 import { type BunupOptions, DEFAULT_OPTIONS } from "./options";
 
 import "./runtime";
 
+import type { DefineConfigEntry, DefineWorkspaceEntry } from "bunup";
+import { loadConfig } from "coffi";
 import { version } from "../package.json";
 import { validateFilesUsedToBundleDts } from "./dts/validation";
+import { type ProcessableConfig, processLoadedConfigs } from "./loaders";
+import type { Arrayable } from "./types";
 import {
     cleanOutDir,
+    ensureArray,
     formatTime,
     getResolvedClean,
     getResolvedOutDir,
@@ -19,57 +23,61 @@ import {
 } from "./utils";
 import { watch } from "./watch";
 
+export type LoadedConfig = Arrayable<DefineConfigEntry | DefineWorkspaceEntry>;
+
 export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     const cliOptions = parseCliOptions(args);
-    const { configs, configFilePath } = await loadConfigs(process.cwd());
+
+    const cwd = process.cwd();
+
+    const { config, filepath } = await loadConfig<LoadedConfig>({
+        name: "bunup.config",
+        extensions: [".ts", ".js", ".mjs", ".cjs"],
+        maxDepth: 1,
+    });
+
+    const configsToProcess: ProcessableConfig[] = !config
+        ? [{ rootDir: cwd, options: cliOptions }]
+        : await processLoadedConfigs(config, cwd);
 
     logger.cli(`Using bunup v${version} and bun v${Bun.version}`, {
         muted: true,
     });
 
-    if (configFilePath) {
-        logger.cli(
-            `Using config file: ${getShortFilePath(configFilePath, 2)}`,
-            {
-                muted: true,
-            },
-        );
+    if (filepath) {
+        logger.cli(`Using config file: ${getShortFilePath(filepath, 2)}`, {
+            muted: true,
+        });
     }
 
     const startTime = performance.now();
 
     logger.cli("Build started");
 
-    if (configs.length === 0) {
-        const mergedOptions = {
-            ...DEFAULT_OPTIONS,
-            ...cliOptions,
-        } as BunupOptions;
-
-        const rootDir = process.cwd();
-
-        if (mergedOptions.clean)
-            cleanOutDir(rootDir, getResolvedOutDir(mergedOptions.outDir));
-
-        await handleBuild(mergedOptions, rootDir);
-    } else {
-        for (const { options, rootDir } of configs) {
-            if (getResolvedClean(options.clean))
-                cleanOutDir(rootDir, getResolvedOutDir(options.outDir));
-        }
-
+    for (const { options, rootDir } of configsToProcess) {
+        const optionsArray = ensureArray(options);
         await Promise.all(
-            configs.map(async ({ options, rootDir }) => {
-                const mergedOptions = {
-                    ...DEFAULT_OPTIONS,
-                    ...options,
-                    ...cliOptions,
-                };
-
-                await handleBuild(mergedOptions, rootDir);
+            optionsArray.map((o) => {
+                if (getResolvedClean(o.clean))
+                    cleanOutDir(rootDir, getResolvedOutDir(o.outDir));
             }),
         );
     }
+
+    await Promise.all(
+        configsToProcess.flatMap(({ options, rootDir }) => {
+            const optionsArray = ensureArray(options);
+            return optionsArray.map(async (o) => {
+                const mergedOptions = {
+                    ...DEFAULT_OPTIONS,
+                    ...o,
+                    ...cliOptions,
+                };
+
+                return handleBuild(mergedOptions, rootDir);
+            });
+        }),
+    );
 
     const buildTimeMs = performance.now() - startTime;
     const timeDisplay = formatTime(buildTimeMs);
@@ -84,9 +92,6 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     if (!cliOptions.watch) {
         process.exit(0);
     }
-
-    // cleanups
-    logger.dispose();
 }
 
 export async function validateDtsFiles() {

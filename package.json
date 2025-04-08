@@ -68,7 +68,7 @@
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
         "chokidar": "^4.0.3",
-        "load-tsconfig": "^0.2.5",
+        "coffi": "^0.1.16",
         "oxc-resolver": "^5.0.1",
         "oxc-transform": "^0.58.1",
         "rolldown": "1.0.0-beta.7",

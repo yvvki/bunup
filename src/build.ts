@@ -10,8 +10,7 @@ import {
     normalizeEntryToProcessableEntries,
 } from "./helpers/entry";
 import { getExternalPatterns, getNoExternalPatterns } from "./helpers/external";
-import { loadTsconfig } from "./helpers/load-tsconfig";
-import { loadPackageJson } from "./loaders";
+import { loadPackageJson, loadTsconfig } from "./loaders";
 import { logger } from "./logger";
 import {
     type BunupOptions,
@@ -44,10 +43,9 @@ export async function build(
 
     const { packageJson, path } = await loadPackageJson(rootDir);
 
-    if (packageJson) {
+    if (packageJson && path) {
         logger.cli(`Using package.json: ${getShortFilePath(path, 2)}`, {
             muted: true,
-            once: path,
             identifier: options.name,
         });
     }
@@ -81,14 +79,16 @@ export async function build(
     await Promise.all(buildPromises);
 
     if (options.dts) {
-        const tsconfig = loadTsconfig(options.preferredTsconfigPath);
+        const tsconfig = await loadTsconfig(
+            rootDir,
+            options.preferredTsconfigPath,
+        );
 
         if (tsconfig.path) {
             logger.cli(
                 `Using tsconfig: ${getShortFilePath(tsconfig.path, 2)}`,
                 {
                     muted: true,
-                    once: tsconfig.path,
                     identifier: options.name,
                 },
             );

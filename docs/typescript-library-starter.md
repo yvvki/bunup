@@ -56,7 +56,7 @@ $ bunx create-bunup@latest
 ? Name for first package: › my-package
 ```
 
-### Step-by-Step Setup Guide
+### Step-by-Step Setup
 
 1. **Change into the created project directory**:
    ```sh

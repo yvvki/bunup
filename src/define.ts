@@ -1,8 +1,12 @@
-import type { DefineConfigEntry, DefineWorkspaceEntry } from "./types";
+import type {
+    Arrayable,
+    DefineConfigEntry,
+    DefineWorkspaceEntry,
+} from "./types";
 
 export function defineConfig(
-    options: DefineConfigEntry | DefineConfigEntry[],
-): DefineConfigEntry | DefineConfigEntry[] {
+    options: Arrayable<DefineConfigEntry>,
+): Arrayable<DefineConfigEntry> {
     return options;
 }
 

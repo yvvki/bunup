@@ -1,25 +1,34 @@
 import path from "node:path";
 
-import type { TsConfig } from "../helpers/load-tsconfig";
+import type { TsConfigData } from "../loaders";
 import { DTS_VIRTUAL_FILE_PREFIX } from "./virtual-files";
+
+function getCompilerOptions(tsconfig: TsConfigData) {
+    return tsconfig.tsconfig?.compilerOptions as
+        | {
+              baseUrl: string;
+              paths: Record<string, string[]>;
+          }
+        | undefined;
+}
 
 export function getDtsPath(tsFilePath: string): string {
     return tsFilePath.replace(/\.tsx?$/, ".d.ts");
 }
 
-export function getBaseUrl(tsconfig: TsConfig): string {
+export function getBaseUrl(tsconfig: TsConfigData): string {
     const tsconfigDir = path.dirname(tsconfig.path || "");
-    return tsconfig.data?.compilerOptions?.baseUrl
-        ? path.resolve(
-              tsconfigDir,
-              (tsconfig.data.compilerOptions as { baseUrl: string }).baseUrl,
-          )
+    const compilerOptions = getCompilerOptions(tsconfig);
+    return compilerOptions?.baseUrl
+        ? path.resolve(tsconfigDir, compilerOptions.baseUrl)
         : tsconfigDir;
 }
 
-export function extractPathAliases(tsconfig: TsConfig): Map<string, string> {
+export function extractPathAliases(
+    tsconfig: TsConfigData,
+): Map<string, string> {
     const aliases = new Map<string, string>();
-    const paths = tsconfig.data?.compilerOptions?.paths;
+    const paths = getCompilerOptions(tsconfig)?.paths;
     if (!paths) return aliases;
 
     const baseUrl = getBaseUrl(tsconfig);
