@@ -16,10 +16,6 @@ _Lower build time is better. Benchmark run on the same code with identical outpu
 
 To run the benchmarks yourself, clone this repo and run `pnpm benchmark` and check `results.md` in the benchmarks folder.
 
-See how fast it is:
-
-https://github.com/user-attachments/assets/348287ea-78f3-4a91-a2a4-03956e17faee
-
 ## 🚀 Quick Start
 
 ### Installations
