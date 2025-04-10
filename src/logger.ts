@@ -5,6 +5,7 @@ interface LogOptions {
     muted?: boolean;
     verticalSpace?: boolean;
     identifier?: string;
+    once?: string;
 }
 
 interface ProgressOptions extends LogOptions {
@@ -23,6 +24,7 @@ interface LogColors {
 
 class Logger {
     private static instance: Logger;
+    private loggedOnceMessages = new Set<string>();
 
     public readonly MAX_LABEL_LENGTH = 3;
     public readonly MAX_MESSAGE_LENGTH = 25;
@@ -56,6 +58,21 @@ class Logger {
             Logger.instance = new Logger();
         }
         return Logger.instance;
+    }
+
+    public dispose(): void {
+        this.loggedOnceMessages.clear();
+    }
+
+    private shouldLog(options?: LogOptions): boolean {
+        if (!options?.once) return true;
+
+        if (this.loggedOnceMessages.has(options.once)) {
+            return false;
+        }
+
+        this.loggedOnceMessages.add(options.once);
+        return true;
     }
 
     public formatMessage({
@@ -104,6 +121,8 @@ class Logger {
         options: LogOptions = {},
         logFn = console.log,
     ): void {
+        if (!this.shouldLog(options)) return;
+
         if (options.verticalSpace) console.log("");
         logFn(message);
         if (options.verticalSpace) console.log("");

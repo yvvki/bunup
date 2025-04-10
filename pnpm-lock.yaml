@@ -11,9 +11,6 @@ importers:
       chokidar:
         specifier: ^4.0.3
         version: 4.0.3
-      coffi:
-        specifier: ^0.1.16
-        version: 0.1.16
       oxc-resolver:
         specifier: ^5.0.1
         version: 5.1.1
@@ -45,6 +42,9 @@ importers:
       bunup:
         specifier: ^0.3.73
         version: 0.3.73(typescript@5.8.3)
+      coffi:
+        specifier: ^0.1.20
+        version: 0.1.20
       create-bunup:
         specifier: workspace:*
         version: link:create-bunup
@@ -1515,8 +1515,8 @@ packages:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
 
-  coffi@0.1.16:
-    resolution: {integrity: sha512-9dWk6bSNEPEC7BrhzfSm7ueRdxNR26EVckoC32Rc3JtdoqFr27mRZJIKLWAjYjzyy6nm+OlzW1PeFGpiw3f8Bg==}
+  coffi@0.1.20:
+    resolution: {integrity: sha512-K1gRtYHPohWrQNfFqafWlFzJciFNfKnzJkdZbH30zmjnnDlG9q/d2i4cXeMD1jeXDu0ByD+A+V9CDedRAJSmsw==}
 
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -4053,7 +4053,7 @@ snapshots:
   bunup@0.3.73(typescript@5.8.3):
     dependencies:
       chokidar: 4.0.3
-      coffi: 0.1.16
+      coffi: 0.1.20
       oxc-resolver: 5.1.1
       oxc-transform: 0.58.1
       rolldown: 1.0.0-beta.7(typescript@5.8.3)
@@ -4123,7 +4123,7 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
-  coffi@0.1.16: {}
+  coffi@0.1.20: {}
 
   color-convert@2.0.1:
     dependencies:

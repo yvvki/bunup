@@ -1,6 +1,6 @@
 # Typescript Library Starter
 
-Quickly scaffold modern TypeScript library in 5 seconds. Powered by [Bunup](https://bunup.arshadyaseen.com/) - the fastest TypeScript bundler available ⚡️.
+Quickly scaffold modern TypeScript library in 10 seconds. Powered by [Bunup](https://bunup.arshadyaseen.com/) - the fastest TypeScript bundler available ⚡️.
 
 <video src="/typescript-lib-starter-demo.mov" alt="Bunup typescript library starter demo" controls style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);"></video>
 
