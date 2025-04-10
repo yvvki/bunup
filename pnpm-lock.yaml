@@ -11,6 +11,9 @@ importers:
       chokidar:
         specifier: ^4.0.3
         version: 4.0.3
+      coffi:
+        specifier: ^0.1.20
+        version: 0.1.20
       oxc-resolver:
         specifier: ^5.0.1
         version: 5.1.1
@@ -42,9 +45,6 @@ importers:
       bunup:
         specifier: ^0.3.73
         version: 0.3.73(typescript@5.8.3)
-      coffi:
-        specifier: ^0.1.20
-        version: 0.1.20
       create-bunup:
         specifier: workspace:*
         version: link:create-bunup
