@@ -7,7 +7,7 @@
     },
     "devDependencies": {
         "bunup": "workspace:*",
-        "tsdown": "^0.7.3",
+        "tsdown": "^0.6.10",
         "tsup": "^8.4.0",
         "unbuild": "^3.5.0"
     },

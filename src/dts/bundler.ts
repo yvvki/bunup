@@ -54,7 +54,9 @@ export async function bundleDts(
                             ? undefined
                             : options.dts.resolve,
                     ),
-                dts(),
+                dts({
+                    dtsInput: true,
+                }),
             ],
             external: (source) =>
                 externalPatterns.some((re) => re.test(source)) &&
