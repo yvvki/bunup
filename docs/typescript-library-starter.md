@@ -2,6 +2,8 @@
 
 Quickly scaffold modern TypeScript library in 5 seconds. Powered by [Bunup](https://bunup.arshadyaseen.com/) - the fastest TypeScript bundler available ⚡️.
 
+<video src="/typescript-lib-starter-demo.mov" alt="Bunup typescript library starter demo" controls style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);"></video>
+
 ## Features
 
 - 🚀 **Zero Config**: Get started in seconds with sensible defaults
@@ -46,7 +48,7 @@ $ bunx create-bunup@latest
 
 ? GitHub username and repo name (username/repo): › username/my-ts-lib
 
-? Package description (optional): › A TypeScript library
+? Package description: › A TypeScript library
 
 ? Select a package manager:
 ❯ bun - Fast all-in-one JavaScript runtime

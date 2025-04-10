@@ -87,7 +87,7 @@ async function main() {
     if (typeof githubRepo !== "string") process.exit(1);
 
     const description = await text({
-        message: "Package description (optional):",
+        message: "Package description:",
         placeholder: "A TypeScript library",
     });
 
