@@ -1,6 +1,6 @@
 {
     "name": "create-bunup",
-    "version": "0.3.83",
+    "version": "0.3.85",
     "files": ["build"],
     "bin": {
         "create-bunup": "build/index.mjs"
