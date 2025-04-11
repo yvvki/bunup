@@ -27,7 +27,7 @@ To run the benchmarks yourself, clone this repo and run `pnpm benchmark` and che
 
 - 🔥 **Bytecode Generation**: Faster startups by compiling to Bun bytecode—perfect for CLIs.
 
-- 📦 **Workspace Support**: Build multiple packages with `[defineWorkspace()](https://bunup.arshadyaseen.com/#workspaces)` in one config file and command.
+- 📦 **Workspace Support**: Build multiple packages with [defineWorkspace()](https://bunup.arshadyaseen.com/#workspaces) in one config file and command.
 
 - 🎯 **Bun Targeting**: Optimize for Bun runtime with `--target bun` for native features.
 
@@ -41,7 +41,7 @@ Bunup handles various file types:
 - Text files (`.txt`) - Contents read and inlined as strings
 - Assets (images, fonts, etc.) - Copied to output directory with content hashing
 
-You can customize how files are processed using the `[loader](https://bunup.arshadyaseen.com/#custom-loaders)` option in your configuration.
+You can customize how files are processed using the [loader](https://bunup.arshadyaseen.com/#custom-loaders) option in your configuration.
 
 ## Prerequisites
 
