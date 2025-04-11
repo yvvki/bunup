@@ -10,7 +10,6 @@
         "allowJs": true,
         "noEmit": true,
         "resolveJsonModule": true,
-        "types": ["vitest/globals"],
         "skipLibCheck": true
     },
     "include": ["src", "bunup.config.ts"],
