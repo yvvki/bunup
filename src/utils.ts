@@ -9,15 +9,17 @@ export function escapeRegExp(string: string): string {
 }
 
 export function generateRandomSuffix(length = 8): string {
-    return Math.random()
-        .toString(36)
-        .substring(2, 2 + length);
+    let result = "";
+    while (result.length < length) {
+        result += Math.random().toString(36).substring(2);
+    }
+    return result.substring(0, length);
 }
 
 export function addField<T extends Record<string, unknown>>(
     objectOrArray: T | T[],
-    field: keyof T,
-    value: T[keyof T],
+    field: string,
+    value: unknown,
 ) {
     return Array.isArray(objectOrArray)
         ? objectOrArray.map((o) => ({ ...o, [field]: value }))
@@ -26,10 +28,6 @@ export function addField<T extends Record<string, unknown>>(
 
 export function ensureArray<T>(value: T | T[]): T[] {
     return Array.isArray(value) ? value : [value];
-}
-
-export function splitCommaSeparated(input: string | string[]): string[] {
-    return Array.isArray(input) ? input : input.split(",");
 }
 
 export function getDefaultOutputExtension(
