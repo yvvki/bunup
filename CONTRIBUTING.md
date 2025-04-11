@@ -83,7 +83,7 @@ pnpm tsc
 
 ### Code Formatting and Linting
 
-Bunup uses ESLint and Prettier for code quality and formatting.
+Bunup uses Biome for code quality and formatting.
 
 To lint your code:
 
@@ -94,7 +94,7 @@ pnpm lint
 To format your code:
 
 ```bash
-pnpm format
+pnpm format:fix
 ```
 
 ## Pull Request Process
