@@ -24,7 +24,7 @@ To run the benchmarks yourself, clone this repo and run `pnpm benchmark` and che
 
 - 🔥 **Bytecode Generation**: Faster startups by compiling to Bun bytecode—perfect for CLIs.
 
-- 📦 **Workspace Support**: Build multiple packages with `defineWorkspace()` in one command.
+- 📦 **Workspace Support**: Build multiple packages with `defineWorkspace()` in one config file and command.
 
 - 🎯 **Bun Targeting**: Optimize for Bun runtime with `--target bun` for native features.
 
