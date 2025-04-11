@@ -6,7 +6,7 @@
         "create-bunup": "build/index.mjs"
     },
     "scripts": {
-        "update-starter-root-dev-dependencies": "bun run update-starter-root-dev-dependencies.ts && biome --write src/starter-root-dev-dependencies.json"
+        "update-starter-root-dev-dependencies": "bun run update-starter-root-dev-dependencies.ts && biome format --write src/starter-root-dev-dependencies.json"
     },
     "description": "Quickly scaffold a new TypeScript package with Bunup.",
     "keywords": ["bunup", "typescript", "cli", "bun", "create", "starter"],
