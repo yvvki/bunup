@@ -18,20 +18,11 @@ To run the benchmarks yourself, clone this repo and run `pnpm benchmark` and che
 
 ## Key Features
 
-- 🔄 **Tsup-Compatible CLI & Config**  
-  Bunup is a drop-in replacement for tsup—use familiar CLI flags and config structure with **blazing fast performance**.
-
-- ⚡ **Ultra-Fast Builds Powered by Bun & oxc**  
-  Thanks to Bun's runtime and oxc compiler, Bunup achieves **~50× faster builds** than tsup.
-
-- 🚀 **Bytecode Generation for Lightning-Fast Startups**  
-  Compile entrypoints into Bun bytecode to **dramatically reduce cold-start times**—ideal for CLI tools.
-
-- 📦 **Workspace/Monorepo Support Out of the Box**  
-  Use `defineWorkspace()` to build multiple packages in a single config file and in a single command/run, each with its own config. **No extra tools needed**.
-
-- 🎯 **Bun-Specific Targeting**  
-  Optimize your build specifically for the Bun runtime with `--target bun`, unlocking Bun-native features.
+- 🔄 **Tsup-Compatible CLI & Config**
+- ⚡ **Ultra-Fast Builds Powered by Bun & oxc**
+- 🚀 **Bytecode Generation for Lightning-Fast Startups**
+- 📦 **Workspace/Monorepo Support Out of the Box**
+- 🎯 **Bun-Specific Targeting**
 
 ## Quick Start
 
