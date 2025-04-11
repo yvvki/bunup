@@ -3,7 +3,7 @@ import { allFilesUsedToBundleDts, build } from "./build";
 import { parseCliOptions } from "./cli-parse";
 import { handleErrorAndExit } from "./errors";
 import { logger } from "./logger";
-import { type BunupOptions, DEFAULT_OPTIONS } from "./options";
+import { type BuildOptions, DEFAULT_OPTIONS } from "./options";
 
 import "./runtime";
 
@@ -101,7 +101,7 @@ export async function validateDtsFiles() {
     }
 }
 
-async function handleBuild(options: BunupOptions, rootDir: string) {
+async function handleBuild(options: BuildOptions, rootDir: string) {
     if (options.watch) {
         await watch(options, rootDir);
     } else {

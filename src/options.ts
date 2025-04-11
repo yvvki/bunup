@@ -53,7 +53,7 @@ export type DtsOptions = {
     resolve?: boolean | (string | RegExp)[];
 };
 
-export interface BunupOptions {
+export interface BuildOptions {
     /**
      * Name of the build configuration
      * Used for logging and identification purposes
@@ -264,7 +264,7 @@ export interface BunupOptions {
     bytecode?: boolean;
 }
 
-export const DEFAULT_OPTIONS: WithRequired<BunupOptions, "clean"> = {
+export const DEFAULT_OPTIONS: WithRequired<BuildOptions, "clean"> = {
     entry: [],
     format: ["cjs"],
     outDir: "dist",
@@ -273,7 +273,7 @@ export const DEFAULT_OPTIONS: WithRequired<BunupOptions, "clean"> = {
 };
 
 export function createDefaultBunBuildOptions(
-    options: BunupOptions,
+    options: BuildOptions,
     rootDir: string,
 ): Omit<BunBuildOptions, "entrypoints"> {
     return {
@@ -290,7 +290,7 @@ export function createDefaultBunBuildOptions(
     };
 }
 
-function createMinifyOptions(options: BunupOptions): {
+function createMinifyOptions(options: BuildOptions): {
     whitespace: boolean;
     identifiers: boolean;
     syntax: boolean;

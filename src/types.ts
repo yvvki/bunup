@@ -1,6 +1,6 @@
 import type _Bun from "bun";
 
-import type { BunupOptions } from "./options";
+import type { BuildOptions } from "./options";
 
 export type PromiseOr<T> = Promise<T> | T;
 
@@ -16,13 +16,13 @@ export type Bun = typeof _Bun;
 export type BunBuildOptions = Parameters<Bun["build"]>[0];
 export type BunPlugin = Exclude<BunBuildOptions["plugins"], undefined>[number];
 
-export type DefineConfigEntry = Omit<
-    WithOptional<BunupOptions, "outDir" | "format">,
+export type DefineConfigItem = Omit<
+    WithOptional<BuildOptions, "outDir" | "format">,
     "watch"
 >;
 
-export type DefineWorkspaceEntry = {
+export type DefineWorkspaceItem = {
     name: string;
     root: string;
-    config: DefineConfigEntry | DefineConfigEntry[];
+    config: DefineConfigItem | DefineConfigItem[];
 };

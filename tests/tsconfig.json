@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es2020",
+        "target": "es2021",
         "module": "esnext",
         "strict": true,
         "esModuleInterop": true,
@@ -12,11 +12,11 @@
         "resolveJsonModule": true,
         "types": ["vitest/globals"],
         "skipLibCheck": true,
-        "baseUrl": "src",
+        "baseUrl": "project",
         "paths": {
             "@/*": ["./*"]
         }
     },
-    "include": ["src", "bunup.config.ts", "utils"],
+    "include": ["project", "bunup.config.ts", "utils"],
     "exclude": ["node_modules", "build"]
 }

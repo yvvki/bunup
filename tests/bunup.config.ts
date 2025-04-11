@@ -3,7 +3,7 @@ import { defineConfig } from "bunup";
 export default defineConfig([
     {
         name: "bunup",
-        entry: ["src/index.ts"],
+        entry: ["project/index.ts"],
         outDir: "build",
         format: ["cjs", "esm"],
         minify: true,
@@ -20,7 +20,7 @@ export default defineConfig([
     {
         name: "bunup-some",
         outDir: "build",
-        entry: ["src/some.ts"],
+        entry: ["project/some.ts"],
         format: ["esm", "cjs"],
         minify: true,
         dts: {

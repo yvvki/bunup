@@ -6,7 +6,7 @@ import {
     getExternalPatterns,
     getNoExternalPatterns,
 } from "../helpers/external";
-import type { BunupOptions } from "../options";
+import type { BuildOptions } from "../options";
 import { typesResolvePlugin } from "../plugins/types-resolve";
 import type { DtsMap } from "./generator";
 import { addDtsVirtualPrefix, getDtsPath } from "./utils";
@@ -15,7 +15,7 @@ import { gerVirtualFilesPlugin } from "./virtual-files";
 export async function bundleDts(
     entryFile: string,
     dtsMap: DtsMap,
-    options: BunupOptions,
+    options: BuildOptions,
     packageJson: Record<string, unknown> | null,
     pathAliases: Map<string, string>,
     baseUrl: string,

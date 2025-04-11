@@ -1,4 +1,4 @@
-import type { BunupOptions } from "../options";
+import type { BuildOptions } from "../options";
 import { escapeRegExp, getPackageDeps } from "../utils";
 
 function processPatterns(patterns: (string | RegExp)[]): RegExp[] {
@@ -10,7 +10,7 @@ function processPatterns(patterns: (string | RegExp)[]): RegExp[] {
 }
 
 export function getExternalPatterns(
-    options: BunupOptions,
+    options: BuildOptions,
     packageJson: Record<string, unknown> | null,
 ): RegExp[] {
     return processPatterns(options.external || []).concat(
@@ -20,6 +20,6 @@ export function getExternalPatterns(
     );
 }
 
-export function getNoExternalPatterns(options: BunupOptions): RegExp[] {
+export function getNoExternalPatterns(options: BuildOptions): RegExp[] {
     return processPatterns(options.noExternal || []);
 }

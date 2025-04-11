@@ -3,20 +3,20 @@ import { BUNUP_CLI_OPTIONS_URL } from "./constants";
 import { BunupCLIError } from "./errors";
 import { getEntryNameOnly } from "./helpers/entry";
 import { logger } from "./logger";
-import type { BunupOptions, Format } from "./options";
+import type { BuildOptions, Format } from "./options";
 
 type CliOptionHandler = (
     value: string | boolean,
-    args: Partial<BunupOptions>,
+    args: Partial<BuildOptions>,
 ) => void;
 
-function makeBooleanHandler(optionName: keyof BunupOptions): CliOptionHandler {
+function makeBooleanHandler(optionName: keyof BuildOptions): CliOptionHandler {
     return (value, args) => {
         (args as any)[optionName] = value === true ? true : value === "true";
     };
 }
 
-function makeStringHandler(optionName: keyof BunupOptions): CliOptionHandler {
+function makeStringHandler(optionName: keyof BuildOptions): CliOptionHandler {
     return (value, args) => {
         if (typeof value === "string") {
             (args as any)[optionName] = value;
@@ -28,7 +28,7 @@ function makeStringHandler(optionName: keyof BunupOptions): CliOptionHandler {
     };
 }
 
-function makeArrayHandler(optionName: keyof BunupOptions): CliOptionHandler {
+function makeArrayHandler(optionName: keyof BuildOptions): CliOptionHandler {
     return (value, args) => {
         if (typeof value === "string") {
             (args as any)[optionName] = value.split(",");
@@ -55,7 +55,7 @@ function showVersion() {
 }
 
 const optionConfigs: Partial<
-    Record<keyof BunupOptions, { flags: string[]; handler: CliOptionHandler }>
+    Record<keyof BuildOptions, { flags: string[]; handler: CliOptionHandler }>
 > = {
     name: { flags: ["n", "name"], handler: makeStringHandler("name") },
     format: {
@@ -176,8 +176,8 @@ for (const config of Object.values(specialOptions)) {
     }
 }
 
-export function parseCliOptions(argv: string[]): Partial<BunupOptions> {
-    const cliOptions: Partial<BunupOptions> = {};
+export function parseCliOptions(argv: string[]): Partial<BuildOptions> {
+    const cliOptions: Partial<BuildOptions> = {};
     const entries: Record<string, string> = {};
 
     let i = 0;

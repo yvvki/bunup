@@ -1,5 +1,5 @@
 import type { TsConfigData } from "../loaders";
-import type { BunupOptions } from "../options";
+import type { BuildOptions } from "../options";
 import { bundleDts } from "./bundler";
 import { collectTsFiles } from "./collector";
 import { generateDtsContent } from "./generator";
@@ -9,7 +9,7 @@ import { validateInputs } from "./validation";
 export async function generateDts(
     rootDir: string,
     entry: string,
-    options: BunupOptions,
+    options: BuildOptions,
     tsconfig: TsConfigData,
     packageJson: Record<string, unknown> | null,
 ): Promise<string> {

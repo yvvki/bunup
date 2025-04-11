@@ -13,7 +13,7 @@ import { getExternalPatterns, getNoExternalPatterns } from "./helpers/external";
 import { loadPackageJson, loadTsconfig } from "./loaders";
 import { logger } from "./logger";
 import {
-    type BunupOptions,
+    type BuildOptions,
     type Format,
     createDefaultBunBuildOptions,
 } from "./options";
@@ -32,7 +32,7 @@ import {
 export const allFilesUsedToBundleDts: Set<string> = new Set<string>();
 
 export async function build(
-    options: BunupOptions,
+    options: BuildOptions,
     rootDir: string,
 ): Promise<void> {
     if (!options.entry || options.entry.length === 0 || !options.outDir) {
@@ -151,7 +151,7 @@ export async function build(
 }
 
 async function buildEntry(
-    options: BunupOptions,
+    options: BuildOptions,
     rootDir: string,
     entry: ProcessableEntry,
     fmt: Format,

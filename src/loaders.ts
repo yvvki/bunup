@@ -1,13 +1,13 @@
 import type { DefineWorkspaceEntry } from "bunup";
 import { loadConfig } from "coffi";
 import type { LoadedConfig } from "./cli";
-import type { BunupOptions } from "./options";
+import type { BuildOptions } from "./options";
 import type { Arrayable } from "./types";
 import { addField } from "./utils";
 
 export type ProcessableConfig = {
     rootDir: string;
-    options: Arrayable<BunupOptions> | Arrayable<Partial<BunupOptions>>;
+    options: Arrayable<BuildOptions> | Arrayable<Partial<BuildOptions>>;
 };
 
 export async function processLoadedConfigs(
@@ -21,12 +21,12 @@ export async function processLoadedConfigs(
                   c.config,
                   "name",
                   c.name,
-              ) as unknown as Arrayable<BunupOptions>,
+              ) as unknown as Arrayable<BuildOptions>,
           }))
         : [
               {
                   rootDir: cwd,
-                  options: config as Arrayable<BunupOptions>,
+                  options: config as Arrayable<BuildOptions>,
               },
           ];
 }
