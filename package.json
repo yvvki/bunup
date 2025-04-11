@@ -16,7 +16,7 @@
         "create-bunup": "create-bunup",
         "dev:docs": "pnpm -C docs dev",
         "test-build": "pnpm -C tests build",
-        "test": "bun test --preload ./tests/setup.ts",
+        "test": "bun test",
         "lint": "biome check .",
         "lint:fix": "biome check --write .",
         "format": "biome format .",

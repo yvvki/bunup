@@ -1,15 +1,8 @@
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { mkdirSync, rmSync } from "node:fs";
-import { basename, join, resolve } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { type BuildOptions, build } from "../build/index.mjs";
-
-const TEST_DIR = resolve(process.cwd(), "tests");
-const TEST_PROJECT_DIR = resolve(TEST_DIR, "fixtures");
-const OUTPUT_DIR = resolve(TEST_PROJECT_DIR, ".output");
-
-if (!existsSync(OUTPUT_DIR)) {
-    mkdirSync(OUTPUT_DIR, { recursive: true });
-}
+import { OUTPUT_DIR, PROJECT_DIR } from "./constants";
 
 export interface BuildResult {
     success: boolean;
@@ -33,13 +26,8 @@ function getFullExtension(fileName: string): string {
     return firstDotIndex === -1 ? "" : baseName.substring(firstDotIndex);
 }
 
-function generateRandomSuffix(): string {
-    return Math.random().toString(36).substring(2, 15);
-}
-
-export async function run(
+export async function runBuild(
     options: Omit<BuildOptions, "outDir">,
-    rootDir: string = TEST_PROJECT_DIR,
 ): Promise<BuildResult> {
     const result: BuildResult = {
         success: true,
@@ -48,30 +36,26 @@ export async function run(
         files: [],
     };
 
-    const uniqueOutDir = join(".output", `build-${generateRandomSuffix()}`);
-
     try {
         const startTime = performance.now();
 
         await build(
-            { ...options, outDir: uniqueOutDir, silent: true },
-            rootDir,
+            { ...options, outDir: ".output", silent: true },
+            PROJECT_DIR,
         );
 
         result.buildTime = performance.now() - startTime;
 
-        const outDirPath = join(rootDir, uniqueOutDir);
-
-        if (!existsSync(outDirPath)) {
+        if (!existsSync(OUTPUT_DIR)) {
             throw new Error(
-                `Output directory "${outDirPath}" does not exist after build`,
+                `Output directory "${OUTPUT_DIR}" does not exist after build`,
             );
         }
 
-        const outputFiles = readdirSync(outDirPath);
+        const outputFiles = readdirSync(OUTPUT_DIR);
 
         for (const fileName of outputFiles) {
-            const filePath = join(outDirPath, fileName);
+            const filePath = join(OUTPUT_DIR, fileName);
             const fileContent = readFileSync(filePath, "utf-8");
             const fileStats = Bun.file(filePath);
             const extension = getFullExtension(fileName);
@@ -92,13 +76,6 @@ export async function run(
     }
 
     return result;
-}
-
-export function cleanOutputDir(): void {
-    if (existsSync(OUTPUT_DIR)) {
-        rmSync(OUTPUT_DIR, { recursive: true, force: true });
-        mkdirSync(OUTPUT_DIR, { recursive: true });
-    }
 }
 
 export function findFile(
@@ -126,12 +103,35 @@ export function validateBuildFiles(
     });
 }
 
-export function mutateFile(path: string, mutator: (content: string) => string) {
-    const filePath = join(TEST_PROJECT_DIR, path);
-    const content = readFileSync(filePath, "utf-8");
-    const mutatedContent = mutator(content);
-    writeFileSync(filePath, mutatedContent);
-    return () => {
-        writeFileSync(filePath, content);
-    };
+interface ProjectTree {
+    [key: string]: string | ProjectTree;
+}
+
+export function cleanProjectDir(): void {
+    if (existsSync(PROJECT_DIR)) {
+        rmSync(PROJECT_DIR, { recursive: true, force: true });
+        mkdirSync(PROJECT_DIR, { recursive: true });
+    }
+}
+
+export function createProject(tree: ProjectTree): void {
+    if (!existsSync(PROJECT_DIR)) {
+        mkdirSync(PROJECT_DIR, { recursive: true });
+    }
+
+    function createFiles(basePath: string, structure: ProjectTree): void {
+        for (const [key, value] of Object.entries(structure)) {
+            const path = join(basePath, key);
+
+            if (typeof value === "string") {
+                mkdirSync(dirname(path), { recursive: true });
+                writeFileSync(path, value, "utf-8");
+            } else {
+                mkdirSync(path, { recursive: true });
+                createFiles(path, value);
+            }
+        }
+    }
+
+    createFiles(PROJECT_DIR, tree);
 }

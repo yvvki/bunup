@@ -1,10 +1,23 @@
-import { describe, expect, it } from "bun:test";
-import { INDEX_CONTENT } from "./constants";
-import { findFile, mutateFile, run, validateBuildFiles } from "./utils";
+import { beforeEach, describe, expect, it } from "vitest";
+import {
+    cleanProjectDir,
+    createProject,
+    findFile,
+    runBuild,
+    validateBuildFiles,
+} from "./utils";
 
 describe("bunup basic build", () => {
+    beforeEach(() => {
+        cleanProjectDir();
+    });
+
     it("should build with ESM format", async () => {
-        const result = await run({
+        createProject({
+            "index.ts": `export const result = "Hello, world!";`,
+        });
+
+        const result = await runBuild({
             entry: "index.ts",
             format: ["esm"],
         });
@@ -13,14 +26,14 @@ describe("bunup basic build", () => {
         expect(result.files.length).toBe(1);
 
         expect(validateBuildFiles(result, ["index.mjs"])).toBe(true);
-
-        const file = findFile(result, "index", ".mjs");
-        expect(file).toBeDefined();
-        expect(file?.content).toContain(INDEX_CONTENT);
     });
 
     it("should build with CJS format", async () => {
-        const result = await run({
+        createProject({
+            "index.ts": `export const result = "Hello, world!";`,
+        });
+
+        const result = await runBuild({
             entry: "index.ts",
             format: ["cjs"],
         });
@@ -29,14 +42,14 @@ describe("bunup basic build", () => {
         expect(result.files.length).toBe(1);
 
         expect(validateBuildFiles(result, ["index.js"])).toBe(true);
-
-        const file = findFile(result, "index", ".js");
-        expect(file).toBeDefined();
-        expect(file?.content).toContain(INDEX_CONTENT);
     });
 
     it("should build with default format", async () => {
-        const result = await run({
+        createProject({
+            "index.ts": `export const result = "Hello, world!";`,
+        });
+
+        const result = await runBuild({
             entry: "index.ts",
             format: ["iife"],
         });
@@ -45,14 +58,14 @@ describe("bunup basic build", () => {
         expect(result.files.length).toBe(1);
 
         expect(validateBuildFiles(result, ["index.global.js"])).toBe(true);
-
-        const file = findFile(result, "index", ".global.js");
-        expect(file).toBeDefined();
-        expect(file?.content).toContain(INDEX_CONTENT);
     });
 
     it("should build with multiple formats simultaneously", async () => {
-        const result = await run({
+        createProject({
+            "index.ts": `export const result = "Hello, world!";`,
+        });
+
+        const result = await runBuild({
             entry: "index.ts",
             format: ["esm", "cjs", "iife"],
         });
@@ -69,26 +82,26 @@ describe("bunup basic build", () => {
         ).toBe(true);
 
         const esmFile = findFile(result, "index", ".mjs");
-        expect(esmFile).toBeDefined();
-        expect(esmFile?.content).toContain(INDEX_CONTENT);
+        expect(esmFile?.content).toMatchSnapshot();
 
         const cjsFile = findFile(result, "index", ".js");
-        expect(cjsFile).toBeDefined();
-        expect(cjsFile?.content).toContain(INDEX_CONTENT);
+        expect(cjsFile?.content).toMatchSnapshot();
 
         const iifeFile = findFile(result, "index", ".global.js");
-        expect(iifeFile).toBeDefined();
-        expect(iifeFile?.content).toContain(INDEX_CONTENT);
+        expect(iifeFile?.content).toMatchSnapshot();
     });
 
     it("should output .cjs file when package.json type is module", async () => {
-        const restorePackageJson = mutateFile("package.json", (content) => {
-            const packageJson = JSON.parse(content);
-            packageJson.type = "module";
-            return JSON.stringify(packageJson, null, 2);
+        createProject({
+            "index.ts": `export const result = "Hello, world!";`,
+            "package.json": `{
+                "name": "test",
+                "version": "1.0.0",
+                "type": "module"
+            }`,
         });
 
-        const result = await run({
+        const result = await runBuild({
             entry: "index.ts",
             format: ["cjs"],
         });
@@ -97,11 +110,5 @@ describe("bunup basic build", () => {
         expect(result.files.length).toBe(1);
 
         expect(validateBuildFiles(result, ["index.cjs"])).toBe(true);
-
-        const file = findFile(result, "index", ".cjs");
-        expect(file).toBeDefined();
-        expect(file?.content).toContain(INDEX_CONTENT);
-
-        restorePackageJson();
     });
 });
