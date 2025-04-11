@@ -13,6 +13,11 @@ export function getEntryNameOnly(entry: string) {
 
 export function normalizeEntryToProcessableEntries(
     entry: Entry,
+    {
+        warnOnConflict = true,
+    }: {
+        warnOnConflict?: boolean;
+    } = {},
 ): ProcessableEntry[] {
     const result: ProcessableEntry[] = [];
     const usedNames = new Set<string>();
@@ -22,13 +27,15 @@ export function normalizeEntryToProcessableEntries(
         if (usedNames.has(name)) {
             const randomSuffix = generateRandomSuffix();
             const newName = `${name}_${randomSuffix}`;
-            logger.warn(
-                `Output name conflict: "${name}" is used by multiple files.\nBunup uses filenames without extensions as output names by default.\n\n${nameToPath[name]} -> ${name}.js\n${path} -> ${newName}.js (auto-renamed to avoid conflict)\n\nTo fix this, use named entries in your configuration:\n{\n  entry: {\n    custom_name: "${nameToPath[name]}",\n    another_name: "${path}"\n  }\n}\n\nSee: https://bunup.arshadyaseen.com/#named-entries`,
-                {
-                    muted: true,
-                    verticalSpace: true,
-                },
-            );
+            if (warnOnConflict) {
+                logger.warn(
+                    `Output name conflict: "${name}" is used by multiple files.\nBunup uses filenames without extensions as output names by default.\n\n${nameToPath[name]} -> ${name}.js\n${path} -> ${newName}.js (auto-renamed to avoid conflict)\n\nTo fix this, use named entries in your configuration:\n{\n  entry: {\n    custom_name: "${nameToPath[name]}",\n    another_name: "${path}"\n  }\n}\n\nSee: https://bunup.arshadyaseen.com/#named-entries`,
+                    {
+                        muted: true,
+                        verticalSpace: true,
+                    },
+                );
+            }
             result.push({ name: newName, path });
         } else {
             result.push({ name, path });

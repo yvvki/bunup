@@ -20,6 +20,7 @@ import {
 import { externalPlugin } from "./plugins/external";
 import type { BunBuildOptions, BunPlugin } from "./types";
 import {
+    cleanOutDir,
     formatFileSize,
     getDefaultDtsExtention,
     getDefaultOutputExtension,
@@ -39,6 +40,10 @@ export async function build(
         throw new BunupBuildError(
             "Nothing to build. Please make sure you have provided a proper bunup configuration or cli arguments.",
         );
+    }
+
+    if (options.clean) {
+        cleanOutDir(rootDir, options.outDir);
     }
 
     setSilent(options.silent);

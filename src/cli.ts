@@ -13,14 +13,7 @@ import { version } from "../package.json";
 import { validateFilesUsedToBundleDts } from "./dts/validation";
 import { type ProcessableConfig, processLoadedConfigs } from "./loaders";
 import type { Arrayable } from "./types";
-import {
-    cleanOutDir,
-    ensureArray,
-    formatTime,
-    getResolvedClean,
-    getResolvedOutDir,
-    getShortFilePath,
-} from "./utils";
+import { ensureArray, formatTime, getShortFilePath } from "./utils";
 import { watch } from "./watch";
 
 export type LoadedConfig = Arrayable<DefineConfigEntry | DefineWorkspaceEntry>;
@@ -55,16 +48,6 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     const startTime = performance.now();
 
     logger.cli("Build started");
-
-    for (const { options, rootDir } of configsToProcess) {
-        const optionsArray = ensureArray(options);
-        await Promise.all(
-            optionsArray.map((o) => {
-                if (getResolvedClean(o.clean))
-                    cleanOutDir(rootDir, getResolvedOutDir(o.outDir));
-            }),
-        );
-    }
 
     await Promise.all(
         configsToProcess.flatMap(({ options, rootDir }) => {

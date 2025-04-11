@@ -192,8 +192,8 @@ Bunup supports various command-line options:
 | `--clean`                          | `-c`         | Clean output directory before build                                                                | `true`           |
 | `--splitting`                      | `-s`         | Enable code splitting                                                                              | Format dependent |
 | `--sourcemap <type>`               | `-sm`        | Sourcemap generation (none,linked,external,inline)                                                 | `none`           |
-| `--banner <text>`                  | `-b`         | Text to add at the beginning of output files                                                       | -                |
-| `--footer <text>`                  | `-f`         | Text to add at the end of output files                                                             | -                |
+| `--banner <text>`                  | `-bn`         | Text to add at the beginning of output files                                                       | -                |
+| `--footer <text>`                  | `-ft`         | Text to add at the end of output files                                                             | -                |
 | `--name <name>`                    | `-n`         | Name for this build configuration                                                                  | -                |
 | `--resolve-dts <value>`            | `-rd`        | Resolve external types for declaration files (can be boolean flag or comma-separated package list) | `false`          |
 | `--preferred-tsconfig-path <path>` | `--tsconfig` | Path to preferred tsconfig file used for typescript declaration files generation                   | -                |

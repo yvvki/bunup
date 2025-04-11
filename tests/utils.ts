@@ -104,7 +104,7 @@ export function validateBuildFiles(
 }
 
 interface ProjectTree {
-    [key: string]: string | ProjectTree;
+    [key: string]: string;
 }
 
 export function cleanProjectDir(): void {
@@ -119,19 +119,9 @@ export function createProject(tree: ProjectTree): void {
         mkdirSync(PROJECT_DIR, { recursive: true });
     }
 
-    function createFiles(basePath: string, structure: ProjectTree): void {
-        for (const [key, value] of Object.entries(structure)) {
-            const path = join(basePath, key);
-
-            if (typeof value === "string") {
-                mkdirSync(dirname(path), { recursive: true });
-                writeFileSync(path, value, "utf-8");
-            } else {
-                mkdirSync(path, { recursive: true });
-                createFiles(path, value);
-            }
-        }
+    for (const [key, value] of Object.entries(tree)) {
+        const path = join(PROJECT_DIR, key);
+        mkdirSync(dirname(path), { recursive: true });
+        writeFileSync(path, value, "utf-8");
     }
-
-    createFiles(PROJECT_DIR, tree);
 }

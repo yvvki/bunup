@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import { BunupBuildError } from "./errors";
-import { DEFAULT_OPTIONS, type Format } from "./options";
+import type { Format } from "./options";
 
 export function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -117,14 +117,6 @@ export async function cleanOutDir(
         throw new BunupBuildError(`Failed to clean output directory: ${error}`);
     }
     await fs.mkdir(outDirPath, { recursive: true });
-}
-
-export function getResolvedOutDir(outDir: string | undefined): string {
-    return outDir || DEFAULT_OPTIONS.outDir;
-}
-
-export function getResolvedClean(clean: boolean | undefined): boolean {
-    return clean === undefined ? DEFAULT_OPTIONS.clean : clean;
 }
 
 export function getResolvedBytecode(

@@ -74,8 +74,8 @@ const optionConfigs: Partial<
     minify: { flags: ["m", "minify"], handler: makeBooleanHandler("minify") },
     watch: { flags: ["w", "watch"], handler: makeBooleanHandler("watch") },
     dts: { flags: ["d", "dts"], handler: makeBooleanHandler("dts") },
-    banner: { flags: ["b", "banner"], handler: makeStringHandler("banner") },
-    footer: { flags: ["f", "footer"], handler: makeStringHandler("footer") },
+    banner: { flags: ["bn", "banner"], handler: makeStringHandler("banner") },
+    footer: { flags: ["ft", "footer"], handler: makeStringHandler("footer") },
     external: {
         flags: ["e", "external"],
         handler: makeArrayHandler("external"),
