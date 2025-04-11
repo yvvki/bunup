@@ -262,6 +262,12 @@ export interface BuildOptions {
      * @default false
      */
     bytecode?: boolean;
+    /**
+     * Disable logging during the build process. When set to true, no logs will be printed to the console.
+     *
+     * @default false
+     */
+    silent?: boolean;
 }
 
 export const DEFAULT_OPTIONS: WithRequired<BuildOptions, "clean"> = {

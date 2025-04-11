@@ -22,6 +22,12 @@ interface LogColors {
     size: ColorCode;
 }
 
+let silent = false;
+
+export function setSilent(value: boolean | undefined) {
+    silent = value ?? false;
+}
+
 class Logger {
     private static instance: Logger;
     private loggedOnceMessages = new Set<string>();
@@ -121,6 +127,8 @@ class Logger {
         options: LogOptions = {},
         logFn = console.log,
     ): void {
+        if (silent) return;
+
         if (!this.shouldLog(options)) return;
 
         if (options.verticalSpace) console.log("");

@@ -2,7 +2,7 @@
 import { allFilesUsedToBundleDts, build } from "./build";
 import { parseCliOptions } from "./cli-parse";
 import { handleErrorAndExit } from "./errors";
-import { logger } from "./logger";
+import { logger, setSilent } from "./logger";
 import { type BuildOptions, DEFAULT_OPTIONS } from "./options";
 
 import "./runtime";
@@ -27,6 +27,8 @@ export type LoadedConfig = Arrayable<DefineConfigEntry | DefineWorkspaceEntry>;
 
 export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     const cliOptions = parseCliOptions(args);
+
+    setSilent(cliOptions.silent);
 
     const cwd = process.cwd();
 

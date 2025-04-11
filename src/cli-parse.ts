@@ -114,6 +114,10 @@ const optionConfigs: Partial<
         flags: ["bc", "bytecode"],
         handler: makeBooleanHandler("bytecode"),
     },
+    silent: {
+        flags: ["silent"],
+        handler: makeBooleanHandler("silent"),
+    },
 };
 
 const additionalOptions: Record<

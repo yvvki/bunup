@@ -12,11 +12,11 @@
         "resolveJsonModule": true,
         "types": ["vitest/globals"],
         "skipLibCheck": true,
-        "baseUrl": "project",
+        "baseUrl": "fixtures",
         "paths": {
             "@/*": ["./*"]
         }
     },
-    "include": ["project", "bunup.config.ts", "utils"],
+    "include": ["fixtures", "utils"],
     "exclude": ["node_modules", "build"]
 }

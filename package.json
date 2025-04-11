@@ -16,7 +16,7 @@
         "create-bunup": "create-bunup",
         "dev:docs": "pnpm -C docs dev",
         "test-build": "pnpm -C tests build",
-        "test": "bun test",
+        "test": "bun test --preload ./tests/setup.ts",
         "lint": "biome check .",
         "lint:fix": "biome check --write .",
         "format": "biome format .",
@@ -72,5 +72,6 @@
         "oxc-transform": "^0.58.1",
         "rolldown": "1.0.0-beta.7",
         "rolldown-plugin-dts": "^0.4.0"
-    }
+    },
+    "type": "module"
 }

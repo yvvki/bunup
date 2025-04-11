@@ -11,7 +11,7 @@ import {
 } from "./helpers/entry";
 import { getExternalPatterns, getNoExternalPatterns } from "./helpers/external";
 import { loadPackageJson, loadTsconfig } from "./loaders";
-import { logger } from "./logger";
+import { logger, setSilent } from "./logger";
 import {
     type BuildOptions,
     type Format,
@@ -40,6 +40,8 @@ export async function build(
             "Nothing to build. Please make sure you have provided a proper bunup configuration or cli arguments.",
         );
     }
+
+    setSilent(options.silent);
 
     const { packageJson, path } = await loadPackageJson(rootDir);
 

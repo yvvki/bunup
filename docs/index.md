@@ -198,6 +198,8 @@ Bunup supports various command-line options:
 | `--resolve-dts <value>`            | `-rd`        | Resolve external types for declaration files (can be boolean flag or comma-separated package list) | `false`          |
 | `--preferred-tsconfig-path <path>` | `--tsconfig` | Path to preferred tsconfig file used for typescript declaration files generation                   | -                |
 | `--bytecode`                       | `-bc`        | Generate bytecode for JavaScript/TypeScript entrypoints to improve startup times                   | `false`          |
+| `--silent`                         |              | Disable logging during the build process                                                           | `false`          |
+
 | `--version`                        | `-v`         | Display version information                                                                        | -                |
 | `--help`                           | `-h`         | Display help information                                                                           | -                |
 
