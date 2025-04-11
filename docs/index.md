@@ -21,11 +21,15 @@ To run the benchmarks yourself, clone this repo and run `pnpm benchmark` and che
 
 ## Key Features
 
-- 🔄 **Tsup-Compatible CLI & Config**
-- ⚡ **Ultra-Fast Builds Powered by Bun & oxc**
-- 🚀 **Bytecode Generation for Lightning-Fast Startups**
-- 📦 **Workspace/Monorepo Support Out of the Box**
-- 🎯 **Bun-Specific Targeting**
+- 🔄 **Tsup-Compatible CLI & Config**: Drop-in replacement for tsup with familiar CLI flags and config structure with **blazing fast performance**.
+
+- ⚡ **Ultra-Fast Builds Powered by Bun & oxc**: Achieves **~50× faster builds** than tsup thanks to Bun's runtime and oxc compiler.
+
+- 🚀 **Bytecode Generation for Lightning-Fast Startups**: Dramatically reduces cold-start times by compiling entrypoints into Bun bytecode—ideal for CLI tools.
+
+- 📦 **Workspace/Monorepo Support Out of the Box**: Build multiple packages with `defineWorkspace()` in a single config file and command. **No extra tools needed**.
+
+- 🎯 **Bun-Specific Targeting**: Optimize builds for Bun runtime with `--target bun`, unlocking Bun-native features.
 
 ## What Can It Bundle?
 
