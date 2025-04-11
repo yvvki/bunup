@@ -35,9 +35,13 @@ To run the benchmarks yourself, clone this repo and run `pnpm benchmark` and che
 
 Bunup handles various file types:
 
-- JavaScript/TypeScript (`.js`, `.jsx`, `.ts`, `.tsx`, `.mjs`, `.cjs`, `.mts`, `.cts`)
-- Data files (`.json`, `.toml`, `.txt`) - Parsed and inlined automatically
-- Assets (images, fonts, etc.) - Handled as external files
+- JavaScript/TypeScript (`.js`, `.jsx`, `.ts`, `.tsx`, `.mjs`, `.cjs`, `.mts`, `.cts`) - Transpiled with built-in transformations
+- JSON (`.json`) - Parsed and inlined as JavaScript objects
+- TOML (`.toml`) - Parsed and inlined as JavaScript objects
+- Text files (`.txt`) - Contents read and inlined as strings
+- Assets (images, fonts, etc.) - Copied to output directory with content hashing
+
+You can customize how files are processed using the `loader` option in your configuration.
 
 ## Prerequisites
 

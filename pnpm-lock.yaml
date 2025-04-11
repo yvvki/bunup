@@ -43,8 +43,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.3.73
-        version: 0.3.73(typescript@5.8.3)
+        specifier: ^0.3.88
+        version: 0.3.88(typescript@5.8.3)
       create-bunup:
         specifier: workspace:*
         version: link:create-bunup
@@ -1517,8 +1517,8 @@ packages:
     peerDependencies:
       esbuild: '>=0.18'
 
-  bunup@0.3.73:
-    resolution: {integrity: sha512-n1qz8yKBFR+xhNPskyG774eCuN2DHvEuoBU3quRtzf/TXuJq4q/FtZXr8etmj0gDcOQu+FyoZS+05V1/QPzYiA==}
+  bunup@0.3.88:
+    resolution: {integrity: sha512-I/NipgfErblrXvss/coO5BokqIRqLPlf2XAhQ2WahGtPVhqIRVStcfE7Eb3Y6hhC694GvL7QzcwrKNcBQ4NUAQ==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -2518,10 +2518,6 @@ packages:
 
   rfdc@1.4.1:
     resolution: {integrity: sha512-q1b3N5QkRUWUl7iyylaaj3kOpIT0N2i9MqIEQXP73GVsN9cw3fdx8X63cEmWhJGi2PPCF23Ijp7ktmd39rawIA==}
-
-  rolldown-plugin-dts@0.1.0:
-    resolution: {integrity: sha512-kmXQzvRJVQ+bWtZXX345S4H6tNtrqIdBsZX7mmL+M4tLj2YsgCNXuS/XKAzUKD8BCqSwK/dEkzIxZ+BjiaHLeQ==}
-    engines: {node: '>=20.18.0'}
 
   rolldown-plugin-dts@0.4.0:
     resolution: {integrity: sha512-+l8WEj5QY4Ds9FdRrY+bK0OGkqHclC4tFrevtLuiUidvYHvvpoTwb2oVXR7wEVqCg1vKkc0m7wr1D1hw+yPfUg==}
@@ -4165,14 +4161,14 @@ snapshots:
       esbuild: 0.25.2
       load-tsconfig: 0.2.5
 
-  bunup@0.3.73(typescript@5.8.3):
+  bunup@0.3.88(typescript@5.8.3):
     dependencies:
       chokidar: 4.0.3
       coffi: 0.1.20
-      oxc-resolver: 5.1.1
+      oxc-resolver: 5.2.0
       oxc-transform: 0.58.1
       rolldown: 1.0.0-beta.7(typescript@5.8.3)
-      rolldown-plugin-dts: 0.1.0
+      rolldown-plugin-dts: 0.4.0(rolldown@1.0.0-beta.7(typescript@5.8.3))
     optionalDependencies:
       typescript: 5.8.3
     transitivePeerDependencies:
@@ -5200,11 +5196,6 @@ snapshots:
       supports-preserve-symlinks-flag: 1.0.0
 
   rfdc@1.4.1: {}
-
-  rolldown-plugin-dts@0.1.0:
-    dependencies:
-      magic-string-ast: 0.9.1
-      oxc-parser: 0.62.0
 
   rolldown-plugin-dts@0.4.0(rolldown@1.0.0-beta.7(typescript@5.8.3)):
     dependencies:
