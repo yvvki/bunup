@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
     cleanProjectDir,
     createProject,
+    findFile,
     runBuild,
+    runDtsBuild,
     validateBuildFiles,
 } from "./utils";
 
