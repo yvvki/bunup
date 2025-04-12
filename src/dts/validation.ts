@@ -32,7 +32,7 @@ export async function validateInputs(
 
     if (!isTypeScriptFile(absoluteEntry)) {
         throw new BunupDTSBuildError(
-            `Entry file must be a TypeScript file (.ts): ${absoluteEntry}`,
+            `Entry file must be a TypeScript file: ${absoluteEntry}`,
         );
     }
 
