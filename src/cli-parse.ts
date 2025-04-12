@@ -113,6 +113,10 @@ const optionConfigs = {
     dtsOnly: { flags: ["do", "dts-only"], handler: booleanHandler("dtsOnly") },
     silent: { flags: ["silent"], handler: booleanHandler("silent") },
     config: { flags: ["config"], handler: stringHandler("config") },
+    publicPath: {
+        flags: ["pp", "public-path"],
+        handler: stringHandler("publicPath"),
+    },
     entry: {
         flags: ["entry"],
         handler: (

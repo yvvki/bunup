@@ -194,6 +194,7 @@ Bunup supports various command-line options:
 | `--sourcemap <type>`               | `-sm`        | Sourcemap generation (none,linked,external,inline)                                                 | `none`           |
 | `--banner <text>`                  | `-bn`        | Text to add at the beginning of output files                                                       | -                |
 | `--footer <text>`                  | `-ft`        | Text to add at the end of output files                                                             | -                |
+| `--public-path <url>`              | `-pp`        | Prefix to be appended to import paths in bundled code                                              | -                |
 | `--name <name>`                    | `-n`         | Name for this build configuration                                                                  | -                |
 | `--resolve-dts <value>`            | `-rd`        | Resolve external types for declaration files (can be boolean flag or comma-separated package list) | `false`          |
 | `--dts-only`                       | `-do`        | Generate only TypeScript declaration files without JavaScript output                             | `false`          |
@@ -701,6 +702,47 @@ export default defineConfig({
 The `loader` option takes a map of file extensions to built-in loader names, allowing you to customize how different file types are processed during bundling.
 
 For more information, see the [Bun documentation on loaders](https://bun.sh/docs/bundler#loader).
+
+## Public Path
+
+You can specify a prefix to be added to specific import paths in your bundled code:
+
+```sh
+# CLI
+bunup src/index.ts --public-path https://cdn.example.com/
+
+# Configuration file
+export default defineConfig({
+      entry: ['src/index.ts'],
+      publicPath: 'https://cdn.example.com/',
+});
+```
+
+The `publicPath` option only affects certain types of imports in the final bundle:
+- Asset imports (like images or SVG files)
+- External modules
+- Chunk files when code splitting is enabled
+
+By default, these imports are relative. Setting `publicPath` will prefix these specific file paths with the specified value, which is useful for serving assets from a CDN.
+
+For example:
+
+```js [Input]
+import logo from './logo.svg';
+console.log(logo);
+```
+
+```js [Output without publicPath]
+var logo = './logo-a7305bdef.svg';
+console.log(logo);
+```
+
+```js [Output with publicPath]
+var logo = 'https://cdn.example.com/logo-a7305bdef.svg';
+console.log(logo);
+```
+
+For more information, see the [Bun documentation on publicPath](https://bun.sh/docs/bundler#publicpath).
 
 ## Watch Mode
 

@@ -284,6 +284,17 @@ export interface BuildOptions {
      * @default false
      */
     silent?: boolean;
+    /**
+     * A prefix to be appended to any import paths in bundled code
+     *
+     * Used for assets, external modules, and chunk files when splitting is enabled
+     *
+     * @see https://bun.sh/docs/bundler#publicpath
+     *
+     * @example
+     * publicPath: 'https://cdn.example.com/'
+     */
+    publicPath?: string;
 }
 
 export type CliOptions = BuildOptions & { config: string };
@@ -311,6 +322,7 @@ export function createDefaultBunBuildOptions(
         drop: options.drop,
         banner: options.banner,
         footer: options.footer,
+        publicPath: options.publicPath,
     };
 }
 

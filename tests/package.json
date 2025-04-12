@@ -6,6 +6,6 @@
         "bunup": "workspace:*"
     },
     "scripts": {
-        "build": "bunup fixtures/src/index.mts --dts"
+        "build": "bunup fixtures/src/index.ts --dts --public-path https://cdn.example.com/"
     }
 }
