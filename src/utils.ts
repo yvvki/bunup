@@ -123,3 +123,7 @@ export function getResolvedBytecode(
 ): boolean | undefined {
     return format === "cjs" ? bytecode : undefined;
 }
+
+export function isTypeScriptFile(file: string): boolean {
+    return [".ts", ".mts", ".cts", ".tsx"].some((ext) => file.endsWith(ext));
+}

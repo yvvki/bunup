@@ -56,11 +56,27 @@ function resolveNonRelativeImport(
 }
 
 async function resolveTsFile(basePath: string): Promise<string | null> {
-    const extensions = ["", ".ts", ".tsx", "/index.ts", "/index.tsx"];
+    const extensions = [
+        "",
+        ".ts",
+        ".tsx",
+        ".cts",
+        ".mts",
+        "/index.ts",
+        "/index.tsx",
+        "/index.cts",
+        "/index.mts",
+    ];
     for (const ext of extensions) {
         const file = `${basePath}${ext}`;
         const exists = await Bun.file(file).exists();
-        if (exists && (file.endsWith(".ts") || file.endsWith(".tsx")))
+        if (
+            exists &&
+            (file.endsWith(".ts") ||
+                file.endsWith(".tsx") ||
+                file.endsWith(".cts") ||
+                file.endsWith(".mts"))
+        )
             return file;
     }
     return null;

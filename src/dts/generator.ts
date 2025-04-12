@@ -26,7 +26,6 @@ export async function generateDtsContent(
                     tsFile,
                     sourceText,
                 );
-
                 if (declaration) {
                     dtsMap.set(dtsPath, declaration);
                 }

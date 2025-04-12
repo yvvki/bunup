@@ -14,7 +14,14 @@ export function typesResolvePlugin(resolvers?: (string | RegExp)[]): Plugin {
             resolver ||= new ResolverFactory({
                 mainFields: ["types"],
                 conditionNames: ["types", "typings", "import", "require"],
-                extensions: [".d.ts", ".ts"],
+                extensions: [
+                    ".d.ts",
+                    ".ts",
+                    ".d.cts",
+                    ".d.mts",
+                    ".cts",
+                    ".mts",
+                ],
                 modules: ["node_modules", "node_modules/@types"],
             });
         },

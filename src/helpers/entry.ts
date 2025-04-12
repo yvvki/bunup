@@ -1,6 +1,6 @@
 import { logger } from "../logger";
 import type { Entry } from "../options";
-import { generateRandomSuffix } from "../utils";
+import { generateRandomSuffix, isTypeScriptFile } from "../utils";
 
 export type ProcessableEntry = {
     name: string;
@@ -59,6 +59,12 @@ export function normalizeEntryToProcessableEntries(
     }
 
     return result;
+}
+
+export function filterTypeScriptEntries(
+    entries: ProcessableEntry[],
+): ProcessableEntry[] {
+    return entries.filter((entry) => isTypeScriptFile(entry.path));
 }
 
 export function getEntryNamingFormat(name: string, extension: string) {

@@ -6,6 +6,7 @@ import {
     getExternalPatterns,
     getNoExternalPatterns,
 } from "../helpers/external";
+import { logger } from "../logger";
 import type { BuildOptions } from "../options";
 import { typesResolvePlugin } from "../plugins/types-resolve";
 import type { DtsMap } from "./generator";
@@ -63,12 +64,21 @@ export async function bundleDts(
                 !noExternalPatterns.some((re) => re.test(source)),
         });
 
-        if (!output[0]?.code)
-            throw new BunupDTSBuildError("Generated bundle is empty");
+        if (!output[0]?.code) {
+            logger.warn(
+                `Generated empty declaration file for entry "${entryFile}"`,
+                {
+                    muted: true,
+                },
+            );
+
+            return "";
+        }
+
         return output[0].code;
     } catch (error) {
         throw new BunupDTSBuildError(
-            `DTS bundling failed: ${parseErrorMessage(error)}`,
+            `DTS bundling failed for entry "${entryFile}": ${parseErrorMessage(error)}`,
         );
     }
 }

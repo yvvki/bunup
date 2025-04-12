@@ -5,7 +5,7 @@ import { isolatedDeclaration } from "oxc-transform";
 
 import { BunupDTSBuildError } from "../errors";
 import { logger } from "../logger";
-import { getShortFilePath } from "../utils";
+import { getShortFilePath, isTypeScriptFile } from "../utils";
 
 export async function validateInputs(
     rootDir: string,
@@ -30,7 +30,7 @@ export async function validateInputs(
         );
     }
 
-    if (!absoluteEntry.endsWith(".ts")) {
+    if (!isTypeScriptFile(absoluteEntry)) {
         throw new BunupDTSBuildError(
             `Entry file must be a TypeScript file (.ts): ${absoluteEntry}`,
         );

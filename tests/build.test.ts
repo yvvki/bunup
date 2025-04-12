@@ -243,4 +243,74 @@ describe("Build Process", () => {
             }),
         ).toBe(true);
     });
+
+    it("should handle all supported file extensions simultaneously with DTS generation", async () => {
+        createProject({
+            "package.json": JSON.stringify({
+                name: "test-package",
+                version: "1.0.0",
+                dependencies: {
+                    react: "^19.0.0",
+                },
+            }),
+            "src/js-file.js": "export const jsVar = 1;",
+            "src/jsx-file.jsx": "export const jsxVar = () => <div>JSX</div>;",
+            "src/ts-file.ts": "export const tsVar: number = 2;",
+            "src/tsx-file.tsx":
+                "export const tsxComponent = () => <div>TSX</div>;",
+            "src/mjs-file.mjs": "export const mjsVar = 3;",
+            "src/cjs-file.cjs": "exports.cjsVar = 4;",
+            "src/mts-file.mts": "export const mtsVar: number = 5;",
+            "src/cts-file.cts": "export const ctsVar: number = 6;",
+        });
+
+        const result = await runBuild({
+            entry: [
+                "src/js-file.js",
+                "src/jsx-file.jsx",
+                "src/ts-file.ts",
+                "src/tsx-file.tsx",
+                "src/mjs-file.mjs",
+                "src/cjs-file.cjs",
+                "src/mts-file.mts",
+                "src/cts-file.cts",
+            ],
+            format: ["esm", "cjs"],
+            dts: true,
+        });
+
+        expect(result.success).toBe(true);
+        expect(
+            validateBuildFiles(result, {
+                expectedFiles: [
+                    "js-file.mjs",
+                    "jsx-file.mjs",
+                    "ts-file.mjs",
+                    "tsx-file.mjs",
+                    "mjs-file.mjs",
+                    "cjs-file.mjs",
+                    "mts-file.mjs",
+                    "cts-file.mjs",
+
+                    "js-file.js",
+                    "jsx-file.js",
+                    "ts-file.js",
+                    "tsx-file.js",
+                    "mjs-file.js",
+                    "cjs-file.js",
+                    "mts-file.js",
+                    "cts-file.js",
+
+                    "ts-file.d.ts",
+                    "tsx-file.d.ts",
+                    "mts-file.d.ts",
+                    "cts-file.d.ts",
+                    "ts-file.d.mts",
+                    "tsx-file.d.mts",
+                    "mts-file.d.mts",
+                    "cts-file.d.mts",
+                ],
+            }),
+        ).toBe(true);
+    });
 });

@@ -6,6 +6,6 @@
         "bunup": "workspace:*"
     },
     "scripts": {
-        "build": "bunup fixtures/src/index.ts --dts --resolve-dts"
+        "build": "bunup fixtures/src/index.mts --dts"
     }
 }

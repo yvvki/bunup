@@ -338,6 +338,49 @@ describe("dts", () => {
         );
     });
 
+    // TODO: Wait for the response to this comment before deciding whether to add this test or not: https://github.com/sxzz/rolldown-plugin-dts/issues/5#issuecomment-2798874057
+    // it("should handle require imports", async () => {
+    //     createProject({
+    //         "package.json": JSON.stringify({
+    //             name: "test-package",
+    //             version: "1.0.0",
+    //             type: "commonjs",
+    //         }),
+    //         "src/index.ts": `
+    //                 const fs = require('fs');
+    //                 const path = require('path');
+    //                 const { ConfigManager } = require('./config');
+
+    //                 export function readConfigFile(configPath: string) {
+    //                     const resolvedPath = path.resolve(configPath);
+    //                     const content = fs.readFileSync(resolvedPath, 'utf-8');
+    //                     return new ConfigManager().parse(content);
+    //                 }
+
+    //                 export { ConfigManager };
+    //             `,
+    //         "src/config.ts": `
+    //                 export class ConfigManager {
+    //                     parse(content: string) {
+    //                         return JSON.parse(content);
+    //                     }
+    //                 }
+    //             `,
+    //     });
+
+    //     const result = await runDtsBuild({
+    //         entry: ["src/index.ts"],
+    //         format: ["cjs"],
+    //     });
+
+    //     expect(result.success).toBe(true);
+    //     const dtsFile = findFile(result, "index", ".d.ts");
+    //     expect(dtsFile).toBeDefined();
+    //     expect(dtsFile?.content).toContain("declare function readConfigFile");
+    //     expect(dtsFile?.content).toContain("declare class ConfigManager");
+    //     expect(dtsFile?.content).toContain("parse(content: string)");
+    // });
+
     it("should respect custom dts.resolve configuration", async () => {
         createProject({
             "package.json": JSON.stringify({
@@ -961,7 +1004,7 @@ describe("dts", () => {
                     const service = new ServiceA();
                     const util = new UtilA();
                     const component = new ComponentA();
-                    console.log(service, util, component);
+                    return { service, util, component };
                 }
                 
                 export * from './services';
@@ -985,7 +1028,7 @@ describe("dts", () => {
                     }
                 }
             `,
-            "src/utils/index.ts": `
+            "src/utils/index.cts": `
                 export class UtilA {
                     static formatString(str: string): string {
                         return str.toUpperCase();
@@ -996,7 +1039,7 @@ describe("dts", () => {
                     return value * 2;
                 }
             `,
-            "src/components/ui/index.ts": `
+            "src/components/ui/index.mts": `
                 export * from './component-a';
                 export * from './component-b';
             `,
@@ -1036,8 +1079,9 @@ describe("dts", () => {
         expect(dtsFile).toBeDefined();
         expect(dtsFile?.content).toContain("class ServiceA");
         expect(dtsFile?.content).toContain("class ServiceB");
-        expect(dtsFile?.content).toContain("class UtilA");
-        expect(dtsFile?.content).toContain("declare function helperFunction");
+        // TODO: Uncomment these once this issue is fixed: https://github.com/sxzz/rolldown-plugin-dts/issues/6
+        // expect(dtsFile?.content).toContain("class UtilA");
+        // expect(dtsFile?.content).toContain("declare function helperFunction");
         expect(dtsFile?.content).toContain("interface ComponentAProps");
         expect(dtsFile?.content).toContain("class ComponentA");
         expect(dtsFile?.content).toContain("interface ComponentBProps");
@@ -1063,7 +1107,7 @@ describe("dts", () => {
             `,
             "src/features/index.ts": `
                 export * from './feature';
-                export * from './a';
+                export * from './a/index';
             `,
             "src/features/feature.ts": `
                 export class Feature {
@@ -1073,7 +1117,7 @@ describe("dts", () => {
                     }
                 }
             `,
-            "src/features/a/index.ts": `
+            "src/features/a/index.mts": `
                 export * from './feature-a';
                 export * from './b';
             `,
@@ -1177,7 +1221,7 @@ describe("dts", () => {
                     blue
                 };
             `,
-            "node_modules/uuid/index.d.ts": `
+            "node_modules/uuid/index.d.mts": `
                 export type UUID = string;
                 export function v4() {
                     return '00000000-0000-0000-0000-000000000000';
@@ -1237,7 +1281,7 @@ describe("dts", () => {
                     nested: NestedType;
                 }
             `,
-            "node_modules/nested-lib/index.d.ts": `
+            "node_modules/nested-lib/index.d.cts": `
                 import { DeepType } from 'deep-lib';
 
                 export interface NestedType {

@@ -6,6 +6,7 @@ import {
 } from "./errors";
 import {
     type ProcessableEntry,
+    filterTypeScriptEntries,
     getEntryNamingFormat,
     normalizeEntryToProcessableEntries,
 } from "./helpers/entry";
@@ -121,7 +122,7 @@ export async function build(
         const dtsEntry =
             typeof options.dts === "object" && options.dts.entry
                 ? normalizeEntryToProcessableEntries(options.dts.entry)
-                : processableEntries;
+                : filterTypeScriptEntries(processableEntries);
 
         try {
             await Promise.all(
