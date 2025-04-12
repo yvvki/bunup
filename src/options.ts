@@ -285,11 +285,11 @@ export interface BuildOptions {
      */
     silent?: boolean;
     /**
-     * A prefix to be appended to any import paths in bundled code
+     * You can specify a prefix to be added to specific import paths in your bundled code
      *
      * Used for assets, external modules, and chunk files when splitting is enabled
      *
-     * @see https://bun.sh/docs/bundler#publicpath
+     * @see https://bunup.arshadyaseen.com/#public-path for more information
      *
      * @example
      * publicPath: 'https://cdn.example.com/'
