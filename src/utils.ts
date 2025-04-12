@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import { BunupBuildError } from "./errors";
-import type { Format } from "./options";
+import type { Format, Target } from "./options";
 
 export function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -58,6 +58,10 @@ export function getDefaultDtsExtention(
     }
 }
 
+export function isNodeCompatibleTarget(target: Target): boolean {
+    return target === "node" || target === "bun";
+}
+
 export function isModulePackage(packageType: string | undefined) {
     return packageType === "module";
 }
@@ -77,14 +81,6 @@ export function getPackageDeps(
             ...Object.keys(packageJson.peerDependencies || {}),
         ]),
     );
-}
-
-// If splitting is undefined, it will be true if the format is esm
-export function getResolvedSplitting(
-    splitting: boolean | undefined,
-    format: Format,
-): boolean {
-    return splitting === undefined ? format === "esm" : splitting;
 }
 
 export function formatFileSize(bytes: number): string {
@@ -115,13 +111,6 @@ export async function cleanOutDir(
         throw new BunupBuildError(`Failed to clean output directory: ${error}`);
     }
     await fs.mkdir(outDirPath, { recursive: true });
-}
-
-export function getResolvedBytecode(
-    bytecode: boolean | undefined,
-    format: Format,
-): boolean | undefined {
-    return format === "cjs" ? bytecode : undefined;
 }
 
 export function isTypeScriptFile(file: string): boolean {

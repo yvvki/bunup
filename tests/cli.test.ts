@@ -149,14 +149,20 @@ describe("Real-world CLI Usage", () => {
         expect(options.noExternal).toEqual(["lodash"]);
     });
 
-    it("bunup src/index.ts --sourcemap", () => {
+    it("bunup src/index.ts --sourcemap (flag only)", () => {
+        const options = parseCliOptions(["src/index.ts", "--sourcemap"]);
+        expect(options.entry).toEqual({ index: "src/index.ts" });
+        expect(options.sourcemap).toBe(true);
+    });
+
+    it("bunup src/index.ts --sourcemap linked", () => {
         const options = parseCliOptions([
             "src/index.ts",
             "--sourcemap",
-            "inline",
+            "linked",
         ]);
         expect(options.entry).toEqual({ index: "src/index.ts" });
-        expect(options.sourcemap).toBe("inline");
+        expect(options.sourcemap).toBe("linked");
     });
 
     it("bunup src/index.ts --target browser", () => {

@@ -19,6 +19,14 @@ export type External = (string | RegExp)[];
 
 export type Entry = Arrayable<string> | Record<string, string>;
 
+export type Shims =
+    | boolean
+    | {
+          dirname?: boolean;
+          filename?: boolean;
+          importMetaUrl?: boolean;
+      };
+
 export type DtsOptions = {
     /**
      * Entry point files for TypeScript declaration file generation
@@ -197,6 +205,7 @@ export interface BuildOptions {
     /**
      * Specifies the type of sourcemap to generate
      * Can be 'none', 'linked', 'external', or 'inline'
+     * Can also be a boolean - when true, it will use 'inline'
      *
      * @see https://bun.sh/docs/bundler#sourcemap
      *
@@ -204,6 +213,8 @@ export interface BuildOptions {
      *
      * @example
      * sourcemap: 'linked'
+     * // or
+     * sourcemap: true // equivalent to 'inline'
      */
     sourcemap?: Sourcemap;
     /**
@@ -295,6 +306,26 @@ export interface BuildOptions {
      * publicPath: 'https://cdn.example.com/'
      */
     publicPath?: string;
+
+    /**
+     * Inject Node.js compatibility shims for ESM/CJS interoperability
+     *
+     * When set to true, automatically injects all shims when needed
+     * When set to an object, only injects the specified shims
+     *
+     * Available shims:
+     * - dirname: Adds __dirname for ESM files when used
+     * - filename: Adds __filename for ESM files when used
+     * - importMetaUrl: Adds import.meta.url for CJS files when used
+     *
+     * @example
+     * // Enable all shims
+     * shims: true
+     *
+     * // Enable only specific shims
+     * shims: { dirname: true, importMetaUrl: true }
+     */
+    shims?: Shims;
 }
 
 export type CliOptions = BuildOptions & { config: string };
@@ -307,26 +338,7 @@ export const DEFAULT_OPTIONS: WithRequired<BuildOptions, "clean"> = {
     clean: true,
 };
 
-export function createDefaultBunBuildOptions(
-    options: BuildOptions,
-    rootDir: string,
-): Omit<BunBuildOptions, "entrypoints"> {
-    return {
-        outdir: `${rootDir}/${options.outDir}`,
-        minify: createMinifyOptions(options),
-        target: options.target,
-        splitting: options.splitting,
-        sourcemap: options.sourcemap,
-        define: options.define,
-        loader: options.loader,
-        drop: options.drop,
-        banner: options.banner,
-        footer: options.footer,
-        publicPath: options.publicPath,
-    };
-}
-
-function createMinifyOptions(options: BuildOptions): {
+export function getResolvedMinify(options: BuildOptions): {
     whitespace: boolean;
     identifiers: boolean;
     syntax: boolean;
@@ -340,4 +352,34 @@ function createMinifyOptions(options: BuildOptions): {
         identifiers: minifyIdentifiers ?? defaultValue,
         syntax: minifySyntax ?? defaultValue,
     };
+}
+
+export function getResolvedBytecode(
+    bytecode: boolean | undefined,
+    format: Format,
+): boolean | undefined {
+    return format === "cjs" ? bytecode : undefined;
+}
+
+export function getResolvedDefine(
+    define: Define | undefined,
+    shims: Shims | undefined,
+    format: Format,
+): Record<string, string> | undefined {
+    return {
+        ...define,
+        ...(format === "cjs" &&
+            (shims === true ||
+                (typeof shims === "object" && shims.importMetaUrl)) && {
+                "import.meta.url": "importMetaUrl",
+            }),
+    };
+}
+
+// If splitting is undefined, it will be true if the format is esm
+export function getResolvedSplitting(
+    splitting: boolean | undefined,
+    format: Format,
+): boolean {
+    return splitting === undefined ? format === "esm" : splitting;
 }

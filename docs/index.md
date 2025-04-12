@@ -201,6 +201,7 @@ Bunup supports various command-line options:
 | `--preferred-tsconfig-path <path>` | `-tsconfig`  | Path to preferred tsconfig file used for typescript declaration files generation                   | -                |
 | `--bytecode`                       | `-bc`        | Generate bytecode for JavaScript/TypeScript entrypoints to improve startup times                   | `false`          |
 | `--silent`                         |              | Disable logging during the build process                                                           | `false`          |
+| `--shims`                          |              | Inject Node.js compatibility shims for ESM/CJS interoperability                                    | `false`          |
 | `--config <path>`                  |              | Specify a custom path to the configuration file                                                    | -                |
 | `--version`                        | `-v`         | Display version information                                                                        | -                |
 | `--help`                           | `-h`         | Display help information                                                                           | -                |
@@ -607,11 +608,15 @@ Bunup can generate source maps for your bundled code:
 ```sh
 # CLI
 bunup src/index.ts --sourcemap linked
+# Or just use --sourcemap for inline source maps
+bunup src/index.ts --sourcemap
 
 # Configuration file
 export default defineConfig({
     entry: ['src/index.ts'],
     sourcemap: 'linked'
+    # Can also use boolean
+    # sourcemap: true // equivalent to 'inline'
 });
 ```
 
@@ -621,6 +626,7 @@ Available sourcemap values:
 - `linked`
 - `external`
 - `inline`
+- `true` (equivalent to 'inline')
 
 For detailed explanations of these values, see the [Bun documentation on source maps](https://bun.sh/docs/bundler#sourcemap).
 
@@ -743,6 +749,37 @@ console.log(logo);
 ```
 
 For more information, see the [Bun documentation on publicPath](https://bun.sh/docs/bundler#publicpath).
+
+## Node.js Compatibility Shims
+
+Bunup provides compatibility shims to help with ESM/CJS interoperability when targeting Node.js. These shims automatically add the necessary code to handle common Node.js globals across module formats.
+
+```sh
+# CLI
+bunup src/index.ts --shims
+
+# Configuration file
+export default defineConfig({
+      entry: ['src/index.ts'],
+      format: ['esm', 'cjs'],
+      # Enable all shims
+      shims: true,
+      
+      # Or configure specific shims
+      shims: {
+            dirname: true,     // Add __dirname for ESM files
+            filename: true,    // Add __filename for ESM files
+            importMetaUrl: true, // Add import.meta.url for CJS files
+      },
+});
+```
+
+These shims are only injected when needed, based on detecting the use of these globals in your code. For example, if your ESM code uses `__dirname`, Bunup will only inject the shim for that specific file.
+
+For example:
+
+- For cjs output, any `import.meta.url` references are transformed to `pathToFileURL(__filename).href`
+- For esm output, any `__dirname` references are transformed to `dirname(fileURLToPath(import.meta.url))`
 
 ## Watch Mode
 

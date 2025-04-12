@@ -1,7 +1,2 @@
-import { readFileSync } from "node:fs";
-
-export function loadConfig(path: string): {
-    publicPath: string;
-} {
-    return JSON.parse(readFileSync(path, "utf-8"));
-}
+console.log("url:", import.meta.url);
+export const url: string = import.meta.url;

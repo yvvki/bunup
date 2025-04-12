@@ -16,17 +16,19 @@ import { logger, setSilent } from "./logger";
 import {
     type BuildOptions,
     type Format,
-    createDefaultBunBuildOptions,
+    getResolvedBytecode,
+    getResolvedDefine,
+    getResolvedMinify,
+    getResolvedSplitting,
 } from "./options";
 import { externalPlugin } from "./plugins/external";
-import type { BunBuildOptions, BunPlugin } from "./types";
+import { injectShimsPlugin } from "./plugins/shims";
+import type { BunPlugin } from "./types";
 import {
     cleanOutDir,
     formatFileSize,
     getDefaultDtsExtention,
     getDefaultOutputExtension,
-    getResolvedBytecode,
-    getResolvedSplitting,
     getShortFilePath,
     isModulePackage,
 } from "./utils";
@@ -69,11 +71,6 @@ export async function build(
     if (!options.dtsOnly) {
         const plugins = [externalPlugin(externalPatterns, noExternalPatterns)];
 
-        const defaultBunBuildOptions = createDefaultBunBuildOptions(
-            options,
-            rootDir,
-        );
-
         const buildPromises = options.format.flatMap((fmt) =>
             processableEntries.map((entry) => {
                 return buildEntry(
@@ -83,7 +80,6 @@ export async function build(
                     fmt,
                     packageType,
                     plugins,
-                    defaultBunBuildOptions,
                 );
             }),
         );
@@ -169,18 +165,33 @@ async function buildEntry(
     fmt: Format,
     packageType: string | undefined,
     plugins: BunPlugin[],
-    defaultBuildOptions: Omit<BunBuildOptions, "entrypoints">,
 ): Promise<void> {
     const extension = getDefaultOutputExtension(fmt, packageType);
 
     const result = await Bun.build({
-        ...defaultBuildOptions,
         entrypoints: [`${rootDir}/${entry.path}`],
         format: fmt,
         naming: { entry: getEntryNamingFormat(entry.name, extension) },
         splitting: getResolvedSplitting(options.splitting, fmt),
         bytecode: getResolvedBytecode(options.bytecode, fmt),
-        plugins,
+        define: getResolvedDefine(options.define, options.shims, fmt),
+        minify: getResolvedMinify(options),
+        outdir: `${rootDir}/${options.outDir}`,
+        target: options.target,
+        sourcemap: options.sourcemap,
+        loader: options.loader,
+        drop: options.drop,
+        banner: options.banner,
+        footer: options.footer,
+        publicPath: options.publicPath,
+        plugins: [
+            ...plugins,
+            injectShimsPlugin({
+                format: fmt,
+                target: options.target,
+                shims: options.shims,
+            }),
+        ],
         throw: false,
     });
 

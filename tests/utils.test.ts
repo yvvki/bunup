@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+    getResolvedBytecode,
+    getResolvedDefine,
+    getResolvedMinify,
+    getResolvedSplitting,
+} from "../src/options";
+import {
     addField,
     ensureArray,
     escapeRegExp,
@@ -9,8 +15,6 @@ import {
     getDefaultDtsExtention,
     getDefaultOutputExtension,
     getPackageDeps,
-    getResolvedBytecode,
-    getResolvedSplitting,
     getShortFilePath,
     isModulePackage,
 } from "../src/utils";
@@ -172,6 +176,92 @@ describe("Utils", () => {
         });
         it("returns undefined for non-cjs formats", () => {
             expect(getResolvedBytecode(true, "esm")).toBeUndefined();
+        });
+    });
+
+    describe("getResolvedMinify", () => {
+        it("returns all true when minify is true", () => {
+            const result = getResolvedMinify({
+                minify: true,
+                entry: [],
+                outDir: "",
+                format: ["cjs"],
+            });
+            expect(result).toEqual({
+                whitespace: true,
+                identifiers: true,
+                syntax: true,
+            });
+        });
+
+        it("uses specific minify options when provided", () => {
+            const result = getResolvedMinify({
+                minify: true,
+                minifyWhitespace: false,
+                minifyIdentifiers: true,
+                minifySyntax: false,
+                entry: [],
+                outDir: "",
+                format: ["cjs"],
+            });
+            expect(result).toEqual({
+                whitespace: false,
+                identifiers: true,
+                syntax: false,
+            });
+        });
+
+        it("defaults to false when minify is undefined", () => {
+            const result = getResolvedMinify({
+                entry: [],
+                outDir: "",
+                format: ["cjs"],
+            });
+            expect(result).toEqual({
+                whitespace: false,
+                identifiers: false,
+                syntax: false,
+            });
+        });
+    });
+
+    describe("getResolvedDefine", () => {
+        it("returns custom define values", () => {
+            const define = { "process.env.NODE_ENV": '"production"' };
+            const result = getResolvedDefine(define, undefined, "esm");
+            expect(result).toEqual(define);
+        });
+
+        it("adds import.meta.url for cjs format with shims=true", () => {
+            const result = getResolvedDefine(undefined, true, "cjs");
+            expect(result).toEqual({
+                "import.meta.url": "importMetaUrl",
+            });
+        });
+
+        it("adds import.meta.url for cjs format with importMetaUrl shim", () => {
+            const result = getResolvedDefine(
+                undefined,
+                { importMetaUrl: true },
+                "cjs",
+            );
+            expect(result).toEqual({
+                "import.meta.url": "importMetaUrl",
+            });
+        });
+
+        it("does not add import.meta.url for esm format", () => {
+            const result = getResolvedDefine(undefined, true, "esm");
+            expect(result).toEqual({});
+        });
+
+        it("merges custom define with shims", () => {
+            const define = { VERSION: '"1.0.0"' };
+            const result = getResolvedDefine(define, true, "cjs");
+            expect(result).toEqual({
+                VERSION: '"1.0.0"',
+                "import.meta.url": "importMetaUrl",
+            });
         });
     });
 });

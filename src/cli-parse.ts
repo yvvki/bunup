@@ -3,7 +3,7 @@ import { BUNUP_CLI_OPTIONS_URL } from "./constants";
 import { BunupCLIError } from "./errors";
 import { getEntryNameOnly } from "./helpers/entry";
 import { logger } from "./logger";
-import type { CliOptions, Format } from "./options";
+import type { CliOptions } from "./options";
 
 type OptionHandler = (
     value: string | boolean,
@@ -41,6 +41,27 @@ function arrayHandler(optionName: keyof CliOptions): OptionHandler {
     };
 }
 
+function booleanOrStringHandler(optionName: keyof CliOptions): OptionHandler {
+    return (value, options) => {
+        if (typeof value === "boolean") {
+            options[optionName] = value as any;
+        } else if (typeof value === "string") {
+            if (
+                value.toLowerCase() === "true" ||
+                value.toLowerCase() === "false"
+            ) {
+                options[optionName] = (value.toLowerCase() === "true") as any;
+            } else {
+                options[optionName] = value as any;
+            }
+        } else {
+            throw new BunupCLIError(
+                `Option --${optionName} requires a boolean or string value`,
+            );
+        }
+    };
+}
+
 function showHelp(): void {
     console.log(
         "\nBunup - An extremely fast, zero-config bundler for JavaScript and TypeScript, powered by Bun.\n",
@@ -59,15 +80,7 @@ const optionConfigs = {
     name: { flags: ["n", "name"], handler: stringHandler("name") },
     format: {
         flags: ["f", "format"],
-        handler: (value: string | boolean, options: Partial<CliOptions>) => {
-            if (typeof value === "string") {
-                options.format = value.split(",") as Format[];
-            } else {
-                throw new BunupCLIError(
-                    "Option --format requires a string value",
-                );
-            }
-        },
+        handler: arrayHandler("format"),
     },
     outDir: { flags: ["o", "out-dir"], handler: stringHandler("outDir") },
     minify: { flags: ["m", "minify"], handler: booleanHandler("minify") },
@@ -78,7 +91,7 @@ const optionConfigs = {
     external: { flags: ["e", "external"], handler: arrayHandler("external") },
     sourcemap: {
         flags: ["sm", "sourcemap"],
-        handler: stringHandler("sourcemap"),
+        handler: booleanOrStringHandler("sourcemap"),
     },
     target: { flags: ["t", "target"], handler: stringHandler("target") },
     minifyWhitespace: {
@@ -117,6 +130,7 @@ const optionConfigs = {
         flags: ["pp", "public-path"],
         handler: stringHandler("publicPath"),
     },
+    shims: { flags: ["shims"], handler: booleanHandler("shims") },
     entry: {
         flags: ["entry"],
         handler: (
