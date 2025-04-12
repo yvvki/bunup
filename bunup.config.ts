@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { type DefineConfigItem, defineWorkspace } from "bunup";
 
 const COMMON_OPTIONS: Partial<DefineConfigItem> = {
