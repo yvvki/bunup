@@ -93,7 +93,7 @@ export async function validateFilesUsedToBundleDts(
     }
 }
 
-export function calculateDtsErrorLineAndColumn(
+function calculateDtsErrorLineAndColumn(
     sourceText: string,
     labelStart: number,
 ): string {
@@ -106,7 +106,7 @@ export function calculateDtsErrorLineAndColumn(
     return ` (${lineNumber}:${columnStart})`;
 }
 
-export function formatDtsErrorMessage(errorMessage: string): string {
+function formatDtsErrorMessage(errorMessage: string): string {
     return errorMessage
         .replace(" with --isolatedDeclarations", "")
         .replace(" with --isolatedDeclaration", "");

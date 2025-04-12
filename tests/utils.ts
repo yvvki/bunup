@@ -78,6 +78,12 @@ export async function runBuild(
     return result;
 }
 
+export async function runDtsBuild(
+    options: Omit<BuildOptions, "outDir">,
+): Promise<BuildResult> {
+    return runBuild({ ...options, dtsOnly: true });
+}
+
 export function findFile(
     result: BuildResult,
     name: string,
@@ -90,17 +96,39 @@ export function findFile(
 
 export function validateBuildFiles(
     result: BuildResult,
-    expectedFiles: string[],
+    {
+        expectedFiles,
+        notExpectedFiles,
+    }: {
+        expectedFiles: string[];
+        notExpectedFiles?: string[];
+    },
 ): boolean {
     if (!result.success) return false;
 
-    return expectedFiles.every((fileName) => {
-        const extension = getFullExtension(fileName);
-        const name = basename(fileName, extension);
-        return result.files.some((file) => {
-            return file.name === name && file.extension === extension;
-        });
+    const allExpectedFilesExist = expectedFiles.every((fileName) => {
+        const { name, extension } = parseFileName(fileName);
+        return result.files.some(
+            (file) => file.name === name && file.extension === extension,
+        );
     });
+
+    const noUnexpectedFilesExist = notExpectedFiles
+        ? notExpectedFiles.every((fileName) => {
+              const { name, extension } = parseFileName(fileName);
+              return !result.files.some(
+                  (file) => file.name === name && file.extension === extension,
+              );
+          })
+        : true;
+
+    return allExpectedFilesExist && noUnexpectedFilesExist;
+}
+
+function parseFileName(fileName: string): { name: string; extension: string } {
+    const extension = getFullExtension(fileName);
+    const name = basename(fileName, extension);
+    return { name, extension };
 }
 
 interface ProjectTree {

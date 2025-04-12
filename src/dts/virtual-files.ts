@@ -1,6 +1,6 @@
 import type { Plugin } from "rolldown";
 
-import { allFilesUsedToBundleDts } from "../build";
+import { filesUsedToBundleDts } from "../build";
 import type { DtsMap } from "./generator";
 import {
     addDtsVirtualPrefix,
@@ -45,7 +45,7 @@ export const gerVirtualFilesPlugin = (
                 const dtsPath = removeDtsVirtualPrefix(id);
                 const content = dtsMap.get(dtsPath);
                 if (content) {
-                    allFilesUsedToBundleDts.add(dtsPath);
+                    filesUsedToBundleDts.add(dtsPath);
                     return content;
                 }
             }

@@ -30,7 +30,7 @@ import {
     isModulePackage,
 } from "./utils";
 
-export const allFilesUsedToBundleDts: Set<string> = new Set<string>();
+export const filesUsedToBundleDts: Set<string> = new Set<string>();
 
 export async function build(
     options: BuildOptions,
@@ -58,35 +58,39 @@ export async function build(
         });
     }
 
-    const packageType = packageJson?.type as string | undefined;
-    const externalPatterns = getExternalPatterns(options, packageJson);
-    const noExternalPatterns = getNoExternalPatterns(options);
-    const plugins = [externalPlugin(externalPatterns, noExternalPatterns)];
     const processableEntries = normalizeEntryToProcessableEntries(
         options.entry,
     );
-    const defaultBunBuildOptions = createDefaultBunBuildOptions(
-        options,
-        rootDir,
-    );
+    const packageType = packageJson?.type as string | undefined;
+    const externalPatterns = getExternalPatterns(options, packageJson);
+    const noExternalPatterns = getNoExternalPatterns(options);
 
-    const buildPromises = options.format.flatMap((fmt) =>
-        processableEntries.map((entry) => {
-            return buildEntry(
-                options,
-                rootDir,
-                entry,
-                fmt,
-                packageType,
-                plugins,
-                defaultBunBuildOptions,
-            );
-        }),
-    );
+    if (!options.dtsOnly) {
+        const plugins = [externalPlugin(externalPatterns, noExternalPatterns)];
 
-    await Promise.all(buildPromises);
+        const defaultBunBuildOptions = createDefaultBunBuildOptions(
+            options,
+            rootDir,
+        );
 
-    if (options.dts) {
+        const buildPromises = options.format.flatMap((fmt) =>
+            processableEntries.map((entry) => {
+                return buildEntry(
+                    options,
+                    rootDir,
+                    entry,
+                    fmt,
+                    packageType,
+                    plugins,
+                    defaultBunBuildOptions,
+                );
+            }),
+        );
+
+        await Promise.all(buildPromises);
+    }
+
+    if (options.dts || options.dtsOnly) {
         const tsconfig = await loadTsconfig(
             rootDir,
             options.preferredTsconfigPath,

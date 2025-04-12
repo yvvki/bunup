@@ -41,7 +41,7 @@ export async function runBenchmarksForBundlers(bundlers) {
     return results;
 }
 
-export function formatBenchmarkResults(results) {
+function formatBenchmarkResults(results) {
     const bundlerGroups = {};
 
     for (const result of results) {

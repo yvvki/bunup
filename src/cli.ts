@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import { allFilesUsedToBundleDts, build } from "./build";
+import { build, filesUsedToBundleDts } from "./build";
 import { parseCliOptions } from "./cli-parse";
 import { handleErrorAndExit } from "./errors";
 import { logger, setSilent } from "./logger";
@@ -7,16 +7,15 @@ import { type BuildOptions, DEFAULT_OPTIONS } from "./options";
 
 import "./runtime";
 
-import type { DefineConfigEntry, DefineWorkspaceEntry } from "bunup";
 import { loadConfig } from "coffi";
 import { version } from "../package.json";
 import { validateFilesUsedToBundleDts } from "./dts/validation";
 import { type ProcessableConfig, processLoadedConfigs } from "./loaders";
-import type { Arrayable } from "./types";
+import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from "./types";
 import { ensureArray, formatTime, getShortFilePath } from "./utils";
 import { watch } from "./watch";
 
-export type LoadedConfig = Arrayable<DefineConfigEntry | DefineWorkspaceEntry>;
+export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>;
 
 export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     const cliOptions = parseCliOptions(args);
@@ -29,6 +28,7 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
         name: "bunup.config",
         extensions: [".ts", ".js", ".mjs", ".cjs"],
         maxDepth: 1,
+        preferredPath: cliOptions.config,
     });
 
     const configsToProcess: ProcessableConfig[] = !config
@@ -80,9 +80,9 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 }
 
 export async function validateDtsFiles() {
-    if (allFilesUsedToBundleDts.size > 0) {
-        await validateFilesUsedToBundleDts(allFilesUsedToBundleDts);
-        allFilesUsedToBundleDts.clear();
+    if (filesUsedToBundleDts.size > 0) {
+        await validateFilesUsedToBundleDts(filesUsedToBundleDts);
+        filesUsedToBundleDts.clear();
     }
 }
 

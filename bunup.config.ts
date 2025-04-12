@@ -1,6 +1,8 @@
-import { type DefineConfigEntry, defineWorkspace } from "bunup";
+// @ts-nocheck
 
-const COMMON_OPTIONS: Partial<DefineConfigEntry> = {
+import { type DefineConfigItem, defineWorkspace } from "bunup";
+
+const COMMON_OPTIONS: Partial<DefineConfigItem> = {
     outDir: "build",
     minify: true,
     splitting: false,

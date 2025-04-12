@@ -43,8 +43,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.3.88
-        version: 0.3.88(typescript@5.8.3)
+        specifier: ^0.3.89
+        version: 0.3.89(typescript@5.8.3)
       create-bunup:
         specifier: workspace:*
         version: link:create-bunup
@@ -99,6 +99,12 @@ importers:
       vitepress:
         specifier: ^1.6.3
         version: 1.6.3(@algolia/client-search@5.23.3)(@types/node@20.17.30)(postcss@8.5.3)(search-insights@2.17.3)(typescript@5.8.3)
+
+  tests:
+    dependencies:
+      bunup:
+        specifier: workspace:*
+        version: link:..
 
 packages:
 
@@ -1420,8 +1426,8 @@ packages:
     peerDependencies:
       esbuild: '>=0.18'
 
-  bunup@0.3.88:
-    resolution: {integrity: sha512-I/NipgfErblrXvss/coO5BokqIRqLPlf2XAhQ2WahGtPVhqIRVStcfE7Eb3Y6hhC694GvL7QzcwrKNcBQ4NUAQ==}
+  bunup@0.3.89:
+    resolution: {integrity: sha512-pcUJbtQyZdaIJOIWMCuBbC62nQPgFV1YhLIyorU45u03SIIsZeYayyV2xTNzmEjyMMcu88Vr2scowD6qS7SiKw==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.5.0'
@@ -3893,7 +3899,7 @@ snapshots:
       esbuild: 0.25.2
       load-tsconfig: 0.2.5
 
-  bunup@0.3.88(typescript@5.8.3):
+  bunup@0.3.89(typescript@5.8.3):
     dependencies:
       chokidar: 4.0.3
       coffi: 0.1.20

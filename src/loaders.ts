@@ -1,8 +1,7 @@
-import type { DefineWorkspaceEntry } from "bunup";
 import { loadConfig } from "coffi";
 import type { LoadedConfig } from "./cli";
 import type { BuildOptions } from "./options";
-import type { Arrayable } from "./types";
+import type { Arrayable, DefineWorkspaceItem } from "./types";
 import { addField } from "./utils";
 
 export type ProcessableConfig = {
@@ -15,7 +14,7 @@ export async function processLoadedConfigs(
     cwd: string,
 ): Promise<ProcessableConfig[]> {
     return Array.isArray(config) && "root" in config[0]
-        ? (config as DefineWorkspaceEntry[]).map((c) => ({
+        ? (config as DefineWorkspaceItem[]).map((c) => ({
               rootDir: c.root,
               options: addField(
                   c.config,

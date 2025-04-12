@@ -192,14 +192,15 @@ Bunup supports various command-line options:
 | `--clean`                          | `-c`         | Clean output directory before build                                                                | `true`           |
 | `--splitting`                      | `-s`         | Enable code splitting                                                                              | Format dependent |
 | `--sourcemap <type>`               | `-sm`        | Sourcemap generation (none,linked,external,inline)                                                 | `none`           |
-| `--banner <text>`                  | `-bn`         | Text to add at the beginning of output files                                                       | -                |
-| `--footer <text>`                  | `-ft`         | Text to add at the end of output files                                                             | -                |
+| `--banner <text>`                  | `-bn`        | Text to add at the beginning of output files                                                       | -                |
+| `--footer <text>`                  | `-ft`        | Text to add at the end of output files                                                             | -                |
 | `--name <name>`                    | `-n`         | Name for this build configuration                                                                  | -                |
 | `--resolve-dts <value>`            | `-rd`        | Resolve external types for declaration files (can be boolean flag or comma-separated package list) | `false`          |
-| `--preferred-tsconfig-path <path>` | `--tsconfig` | Path to preferred tsconfig file used for typescript declaration files generation                   | -                |
+| `--dts-only`                       | `-do`        | Generate only TypeScript declaration files without JavaScript output                             | `false`          |
+| `--preferred-tsconfig-path <path>` | `-tsconfig`  | Path to preferred tsconfig file used for typescript declaration files generation                   | -                |
 | `--bytecode`                       | `-bc`        | Generate bytecode for JavaScript/TypeScript entrypoints to improve startup times                   | `false`          |
 | `--silent`                         |              | Disable logging during the build process                                                           | `false`          |
-
+| `--config <path>`                  |              | Specify a custom path to the configuration file                                                    | -                |
 | `--version`                        | `-v`         | Display version information                                                                        | -                |
 | `--help`                           | `-h`         | Display help information                                                                           | -                |
 
@@ -413,6 +414,29 @@ export default defineConfig({
       },
 });
 ```
+
+### Declaration-Only Generation
+
+If you want to generate only TypeScript declaration files without any JavaScript output, you can use the `dtsOnly` option:
+
+```sh
+# CLI
+bunup src/index.ts --dts-only
+
+# Configuration file
+export default defineConfig({
+      entry: ['src/index.ts'],
+      dtsOnly: true,
+});
+```
+
+When `dtsOnly` is set to `true`, Bunup will:
+- Skip the JavaScript bundling process entirely
+- Only generate declaration files for the specified entry points
+- Implicitly enable the `dts` option (no need to specify both)
+- Ignore other bundling-related options
+
+This is useful when you want to use Bunup's fast declaration file generation but handle the JavaScript bundling separately or not at all.
 
 ### Declaration File Extensions
 

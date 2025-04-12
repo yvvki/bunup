@@ -3,23 +3,24 @@ import { BUNUP_CLI_OPTIONS_URL } from "./constants";
 import { BunupCLIError } from "./errors";
 import { getEntryNameOnly } from "./helpers/entry";
 import { logger } from "./logger";
-import type { BuildOptions, Format } from "./options";
+import type { CliOptions, Format } from "./options";
 
-type CliOptionHandler = (
+type OptionHandler = (
     value: string | boolean,
-    args: Partial<BuildOptions>,
+    options: Partial<CliOptions>,
+    subPath?: string,
 ) => void;
 
-function makeBooleanHandler(optionName: keyof BuildOptions): CliOptionHandler {
-    return (value, args) => {
-        (args as any)[optionName] = value === true ? true : value === "true";
+function booleanHandler(optionName: keyof CliOptions): OptionHandler {
+    return (value, options) => {
+        options[optionName] = (value === true || value === "true") as any;
     };
 }
 
-function makeStringHandler(optionName: keyof BuildOptions): CliOptionHandler {
-    return (value, args) => {
+function stringHandler(optionName: keyof CliOptions): OptionHandler {
+    return (value, options) => {
         if (typeof value === "string") {
-            (args as any)[optionName] = value;
+            options[optionName] = value as any;
         } else {
             throw new BunupCLIError(
                 `Option --${optionName} requires a string value`,
@@ -28,10 +29,10 @@ function makeStringHandler(optionName: keyof BuildOptions): CliOptionHandler {
     };
 }
 
-function makeArrayHandler(optionName: keyof BuildOptions): CliOptionHandler {
-    return (value, args) => {
+function arrayHandler(optionName: keyof CliOptions): OptionHandler {
+    return (value, options) => {
         if (typeof value === "string") {
-            (args as any)[optionName] = value.split(",");
+            options[optionName] = value.split(",") as any;
         } else {
             throw new BunupCLIError(
                 `Option --${optionName} requires a string value`,
@@ -40,7 +41,7 @@ function makeArrayHandler(optionName: keyof BuildOptions): CliOptionHandler {
     };
 }
 
-function showHelp() {
+function showHelp(): void {
     console.log(
         "\nBunup - An extremely fast, zero-config bundler for JavaScript and TypeScript, powered by Bun.\n",
     );
@@ -49,20 +50,18 @@ function showHelp() {
     process.exit(0);
 }
 
-function showVersion() {
+function showVersion(): void {
     console.log(version);
     process.exit(0);
 }
 
-const optionConfigs: Partial<
-    Record<keyof BuildOptions, { flags: string[]; handler: CliOptionHandler }>
-> = {
-    name: { flags: ["n", "name"], handler: makeStringHandler("name") },
+const optionConfigs = {
+    name: { flags: ["n", "name"], handler: stringHandler("name") },
     format: {
         flags: ["f", "format"],
-        handler: (value, args) => {
+        handler: (value: string | boolean, options: Partial<CliOptions>) => {
             if (typeof value === "string") {
-                args.format = value.split(",") as Format[];
+                options.format = value.split(",") as Format[];
             } else {
                 throw new BunupCLIError(
                     "Option --format requires a string value",
@@ -70,122 +69,118 @@ const optionConfigs: Partial<
             }
         },
     },
-    outDir: { flags: ["o", "out-dir"], handler: makeStringHandler("outDir") },
-    minify: { flags: ["m", "minify"], handler: makeBooleanHandler("minify") },
-    watch: { flags: ["w", "watch"], handler: makeBooleanHandler("watch") },
-    dts: { flags: ["d", "dts"], handler: makeBooleanHandler("dts") },
-    banner: { flags: ["bn", "banner"], handler: makeStringHandler("banner") },
-    footer: { flags: ["ft", "footer"], handler: makeStringHandler("footer") },
-    external: {
-        flags: ["e", "external"],
-        handler: makeArrayHandler("external"),
-    },
+    outDir: { flags: ["o", "out-dir"], handler: stringHandler("outDir") },
+    minify: { flags: ["m", "minify"], handler: booleanHandler("minify") },
+    watch: { flags: ["w", "watch"], handler: booleanHandler("watch") },
+    dts: { flags: ["d", "dts"], handler: booleanHandler("dts") },
+    banner: { flags: ["bn", "banner"], handler: stringHandler("banner") },
+    footer: { flags: ["ft", "footer"], handler: stringHandler("footer") },
+    external: { flags: ["e", "external"], handler: arrayHandler("external") },
     sourcemap: {
         flags: ["sm", "sourcemap"],
-        handler: makeStringHandler("sourcemap"),
+        handler: stringHandler("sourcemap"),
     },
-    target: { flags: ["t", "target"], handler: makeStringHandler("target") },
+    target: { flags: ["t", "target"], handler: stringHandler("target") },
     minifyWhitespace: {
         flags: ["mw", "minify-whitespace"],
-        handler: makeBooleanHandler("minifyWhitespace"),
+        handler: booleanHandler("minifyWhitespace"),
     },
     minifyIdentifiers: {
         flags: ["mi", "minify-identifiers"],
-        handler: makeBooleanHandler("minifyIdentifiers"),
+        handler: booleanHandler("minifyIdentifiers"),
     },
     minifySyntax: {
         flags: ["ms", "minify-syntax"],
-        handler: makeBooleanHandler("minifySyntax"),
+        handler: booleanHandler("minifySyntax"),
     },
-    clean: { flags: ["c", "clean"], handler: makeBooleanHandler("clean") },
+    clean: { flags: ["c", "clean"], handler: booleanHandler("clean") },
     splitting: {
         flags: ["s", "splitting"],
-        handler: makeBooleanHandler("splitting"),
+        handler: booleanHandler("splitting"),
     },
     noExternal: {
         flags: ["ne", "no-external"],
-        handler: makeArrayHandler("noExternal"),
+        handler: arrayHandler("noExternal"),
     },
     preferredTsconfigPath: {
         flags: ["tsconfig", "preferred-tsconfig-path"],
-        handler: makeStringHandler("preferredTsconfigPath"),
+        handler: stringHandler("preferredTsconfigPath"),
     },
     bytecode: {
         flags: ["bc", "bytecode"],
-        handler: makeBooleanHandler("bytecode"),
+        handler: booleanHandler("bytecode"),
     },
-    silent: {
-        flags: ["silent"],
-        handler: makeBooleanHandler("silent"),
-    },
-};
+    dtsOnly: { flags: ["do", "dts-only"], handler: booleanHandler("dtsOnly") },
+    silent: { flags: ["silent"], handler: booleanHandler("silent") },
+    config: { flags: ["config"], handler: stringHandler("config") },
+    entry: {
+        flags: ["entry"],
+        handler: (
+            value: string | boolean,
+            options: Partial<CliOptions>,
+            subPath?: string,
+        ) => {
+            if (typeof value !== "string") {
+                throw new BunupCLIError(
+                    `Entry${subPath ? ` --entry.${subPath}` : ""} requires a string value`,
+                );
+            }
 
-const additionalOptions: Record<
-    string,
-    { flags: string[]; handler: CliOptionHandler }
-> = {
+            const entries = options.entry || {};
+
+            if (subPath) {
+                if (entries[subPath as keyof typeof entries]) {
+                    logger.warn(
+                        `Duplicate entry name '${subPath}' provided via --entry.${subPath}. Overwriting previous entry.`,
+                    );
+                }
+                (entries as Record<string, string>)[subPath] = value;
+            } else {
+                const name = getEntryNameOnly(value);
+                if ((entries as Record<string, string>)[name]) {
+                    logger.warn(
+                        `Duplicate entry name '${name}' derived from '${value}'. Overwriting previous entry.`,
+                    );
+                }
+                (entries as Record<string, string>)[name] = value;
+            }
+
+            options.entry = entries;
+        },
+    },
     resolveDts: {
         flags: ["rd", "resolve-dts"],
-        handler: (value, args) => {
-            if (!args.dts) {
-                args.dts = {};
-            }
-
-            if (typeof args.dts === "boolean") {
-                args.dts = {};
-            }
+        handler: (value: string | boolean, options: Partial<CliOptions>) => {
+            if (!options.dts) options.dts = {};
+            if (typeof options.dts === "boolean") options.dts = {};
 
             if (typeof value === "string") {
                 if (value === "true" || value === "false") {
-                    (args.dts as any).resolve = value === "true";
+                    (options.dts as any).resolve = value === "true";
                 } else {
-                    (args.dts as any).resolve = value.split(",");
+                    (options.dts as any).resolve = value.split(",");
                 }
             } else {
-                (args.dts as any).resolve = true;
+                (options.dts as any).resolve = true;
             }
         },
     },
+    help: { flags: ["h", "help"], handler: () => showHelp() },
+    version: { flags: ["v", "version"], handler: () => showVersion() },
 };
 
-const specialOptions = {
-    help: {
-        flags: ["h", "help"],
-        handler: () => showHelp(),
-    },
-    version: {
-        flags: ["v", "version"],
-        handler: () => showVersion(),
-    },
-};
+const flagToHandler: Record<string, OptionHandler> = {};
 
-const flagToHandler: Record<string, CliOptionHandler> = {};
 for (const config of Object.values(optionConfigs)) {
-    if (config) {
-        for (const flag of config.flags) {
-            flagToHandler[flag] = config.handler;
-        }
-    }
-}
-
-for (const config of Object.values(additionalOptions)) {
     for (const flag of config.flags) {
         flagToHandler[flag] = config.handler;
     }
 }
 
-for (const config of Object.values(specialOptions)) {
-    for (const flag of config.flags) {
-        flagToHandler[flag] = config.handler;
-    }
-}
+export function parseCliOptions(argv: string[]): Partial<CliOptions> {
+    const options: Partial<CliOptions> = {};
 
-export function parseCliOptions(argv: string[]): Partial<BuildOptions> {
-    const cliOptions: Partial<BuildOptions> = {};
-    const entries: Record<string, string> = {};
-
-    let i = 0;
-    while (i < argv.length) {
+    for (let i = 0; i < argv.length; i++) {
         const arg = argv[i];
 
         if (arg.startsWith("--")) {
@@ -203,38 +198,19 @@ export function parseCliOptions(argv: string[]): Partial<BuildOptions> {
                 if (typeof value === "string") i++;
             }
 
-            if (key === "entry") {
-                if (typeof value === "string") {
-                    const name = getEntryNameOnly(value);
-                    if (entries[name]) {
-                        logger.warn(
-                            `Duplicate entry name '${name}' derived from '${value}'. Overwriting previous entry.`,
-                        );
-                    }
-                    entries[name] = value;
+            if (key.includes(".")) {
+                const [mainOption, subPath] = key.split(".", 2);
+                const handler = flagToHandler[mainOption];
+
+                if (handler) {
+                    handler(value, options, subPath);
                 } else {
-                    throw new BunupCLIError(
-                        "Option --entry requires a string value",
-                    );
-                }
-            } else if (key.startsWith("entry.")) {
-                const name = key.slice(6);
-                if (typeof value === "string") {
-                    if (entries[name]) {
-                        logger.warn(
-                            `Duplicate entry name '${name}' provided via --entry.${name}. Overwriting previous entry.`,
-                        );
-                    }
-                    entries[name] = value;
-                } else {
-                    throw new BunupCLIError(
-                        `Option --entry.${name} requires a string value`,
-                    );
+                    throw new BunupCLIError(`Unknown option: --${key}`);
                 }
             } else {
                 const handler = flagToHandler[key];
                 if (handler) {
-                    handler(value, cliOptions);
+                    handler(value, options);
                 } else {
                     throw new BunupCLIError(`Unknown option: --${key}`);
                 }
@@ -247,26 +223,14 @@ export function parseCliOptions(argv: string[]): Partial<BuildOptions> {
 
             const handler = flagToHandler[key];
             if (handler) {
-                handler(value, cliOptions);
+                handler(value, options);
             } else {
                 throw new BunupCLIError(`Unknown option: -${key}`);
             }
         } else {
-            const name = getEntryNameOnly(arg);
-            if (entries[name]) {
-                logger.warn(
-                    `Duplicate entry name '${name}' derived from positional argument '${arg}'. Overwriting previous entry.`,
-                );
-            }
-            entries[name] = arg;
+            optionConfigs.entry.handler(arg, options, undefined);
         }
-
-        i++;
     }
 
-    if (Object.keys(entries).length > 0) {
-        cliOptions.entry = entries;
-    }
-
-    return cliOptions;
+    return options;
 }

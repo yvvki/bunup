@@ -1,0 +1,11 @@
+{
+    "name": "bunup-tests",
+    "version": "0.3.88",
+    "private": true,
+    "dependencies": {
+        "bunup": "workspace:*"
+    },
+    "scripts": {
+        "build": "bunup fixtures/src/index.ts --dts --resolve-dts"
+    }
+}
