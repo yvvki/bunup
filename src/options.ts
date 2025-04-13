@@ -20,7 +20,13 @@ export type External = (string | RegExp)[];
 export type Entry = Arrayable<string> | Record<string, string>;
 
 export type ShimOptions = {
+    /**
+     * Adds __dirname and __filename shims for ESM files when used
+     */
     dirnameFilename?: boolean;
+    /**
+     * Adds import.meta.url shims for CJS files when used
+     */
     importMetaUrl?: boolean;
 };
 
@@ -313,8 +319,7 @@ export interface BuildOptions {
      * When set to an object, only injects the specified shims
      *
      * Available shims:
-     * - dirname: Adds __dirname for ESM files when used
-     * - filename: Adds __filename for ESM files when used
+     * - dirnameFilename: Adds __dirname and __filename for ESM files when used
      * - importMetaUrl: Adds import.meta.url for CJS files when used
      *
      * @example
@@ -322,7 +327,7 @@ export interface BuildOptions {
      * shims: true
      *
      * // Enable only specific shims
-     * shims: { dirname: true, importMetaUrl: true }
+     * shims: { dirnameFilename: true, importMetaUrl: true }
      */
     shims?: Shims;
 }

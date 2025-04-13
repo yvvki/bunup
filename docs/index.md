@@ -767,8 +767,7 @@ export default defineConfig({
       
       # Or configure specific shims
       shims: {
-            dirname: true,     // Add __dirname for ESM files
-            filename: true,    // Add __filename for ESM files
+            dirnameFilename: true,     // Add __dirname and __filename for ESM files
             importMetaUrl: true, // Add import.meta.url for CJS files
       },
 });
