@@ -53,7 +53,7 @@ Create a simple TypeScript file:
 ```typescript
 // src/index.ts
 export function greet(name: string): string {
-      return `Hello, ${name}!`;
+  return `Hello, ${name}!`;
 }
 ```
 
@@ -71,10 +71,10 @@ Add a build script to your `package.json`:
 
 ```json
 {
-      "name": "my-package",
-      "scripts": {
-            "build": "bunup src/index.ts --format esm,cjs --dts"
-      }
+  "name": "my-package",
+  "scripts": {
+    "build": "bunup src/index.ts --format esm,cjs --dts"
+  }
 }
 ```
 
@@ -89,14 +89,14 @@ npm run build
 Create a `bunup.config.ts` file for more control:
 
 ```typescript
-import {defineConfig} from 'bunup';
+import { defineConfig } from "bunup";
 
 export default defineConfig({
-      entry: ['src/index.ts'],
-      outDir: 'dist',
-      format: ['esm', 'cjs'],
-      dts: true,
-      minify: true,
+  entry: ["src/index.ts"],
+  outDir: "dist",
+  format: ["esm", "cjs"],
+  dts: true,
+  minify: true,
 });
 ```
 
