@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/bunup.svg?style=flat-square)](https://www.npmjs.com/package/bunup)
 [![npm downloads](https://img.shields.io/npm/dm/bunup.svg?style=flat-square)](https://www.npmjs.com/package/bunup)
 
-An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [Bun](https://bun.sh) and [Oxc](https://oxc.rs/).
+Bunup is the **high-performance build tool** for TypeScript and JavaScript libraries, with **first-class support** for libraries built with [Bun](https://bun.sh/). It delivers **lightning-fast builds** — up to **~50× faster than Tsup**.
 
 | Bundler | Format   | Build Time     | Build Time (with dts) |
 | ------- | -------- | -------------- | --------------------- |
@@ -12,19 +12,19 @@ An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [
 | unbuild | esm, cjs | 41.19ms        | 321.09ms              |
 | tsup    | esm, cjs | 62.59ms        | 937.64ms              |
 
-_Lower build time is better. Benchmark run on the same code with identical output formats._
+_Lower is better. Benchmarks run on identical code and output formats._
 
-To run the benchmarks yourself, clone this repo and run `pnpm benchmark` and check `results.md` in the benchmarks folder.
+Want proof? Clone the repo, run `pnpm benchmark`, and check `benchmarks/results.md` for yourself!
 
 ## Key Features
 
-- 🔄 **Tsup-Compatible**: Familiar tsup-like CLI and config.
-
-- ⚡ **Ultra-Fast Builds**: ~50× faster than tsup using Bun's bundler and oxc compiler.
+- ⚡️ **Ultra Fast Builds**: Lightning-fast performance powered by [Bun](https://bun.sh/)'s native bundler and [Oxc](https://oxc.rs).
 
 - 🔥 **Bytecode Generation**: Faster startups by compiling to Bun bytecode—perfect for CLIs.
 
 - 📦 **Workspace Support**: Build multiple packages with [defineWorkspace()](https://bunup.arshadyaseen.com/#workspaces) in one config file and command.
+
+- 🔄 **Tsup Familiarity**: Familiar tsup-like CLI and config.
 
 - 🎯 **Bun Targeting**: Optimize for Bun runtime with `--target bun` for native features.
 

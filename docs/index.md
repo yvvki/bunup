@@ -1,12 +1,10 @@
 # Bunup
 
-An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by [Bun](https://bun.sh) and [oxc](https://oxc.rs/).
+Bunup is the **high-performance build tool** for TypeScript and JavaScript libraries, with **first-class support** for libraries built with [Bun](https://bun.sh/). It delivers **lightning-fast builds** — up to **~50× faster than Tsup**.
 
 <video src="/demo.mov" alt="Bunup demo video showing the bundling process" controls style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);"></video>
 
 ## Benchmarks
-
-Bunup outperforms other popular bundlers by a significant margin:
 
 | Bundler | Format   | Build Time     | Build Time (with dts) |
 | ------- | -------- | -------------- | --------------------- |
@@ -15,19 +13,19 @@ Bunup outperforms other popular bundlers by a significant margin:
 | unbuild | esm, cjs | 41.19ms        | 321.09ms              |
 | tsup    | esm, cjs | 62.59ms        | 937.64ms              |
 
-_Lower build time is better. Benchmark run on the same code with identical output formats._
+_Lower is better. Benchmarks run on identical code and output formats._
 
-To run the benchmarks yourself, clone this repo and run `pnpm benchmark` and check `results.md` in the benchmarks folder.
+Want proof? Clone the [repo](https://github.com/arshad-yaseen/bunup), run `pnpm benchmark`, and check `benchmarks/results.md` for yourself!
 
 ## Key Features
 
-- 🔄 **Tsup-Compatible**: Familiar tsup-like CLI and config.
-
-- ⚡ **Ultra-Fast Builds**: ~50× faster than tsup using Bun's bundler and oxc compiler.
+- ⚡️ **Ultra Fast Builds**: Lightning-fast performance powered by [Bun](https://bun.sh/)'s native bundler and [Oxc](https://oxc.rs).
 
 - 🔥 **Bytecode Generation**: Faster startups by compiling to Bun bytecode—perfect for CLIs.
 
 - 📦 **Workspace Support**: Build multiple packages with [defineWorkspace()](https://bunup.arshadyaseen.com/#workspaces) in one config file and command.
+
+- 🔄 **Tsup Familiarity**: Familiar tsup-like CLI and config.
 
 - 🎯 **Bun Targeting**: Optimize for Bun runtime with `--target bun` for native features.
 
@@ -1078,46 +1076,3 @@ bunup --watch
 ```
 
 This single command enables continuous monitoring and rebuilding of all packages in your workspaces.
-
-## Troubleshooting
-
-This section covers common issues you might encounter when using Bunup and how to resolve them.
-
-### `Could not resolve: "bun" Error`
-
-**Issue**
-
-You may encounter the following error when using bunup:
-
-```
-BUILD ERROR Could not resolve: "bun". Maybe you need to "bun install"?
-```
-
-This occurs even if bun is already installed globally or locally in your project.
-
-**Cause**
-
-By default, bunup targets the node environment. To use features specific to the Bun runtime (like resolving bun), you must explicitly set the target to bun.
-
-**Solution**
-
-You can fix this by updating your bunup.config.ts (or JSON equivalent) to include:
-
-```typescript
-import { defineConfig } from "bunup";
-
-export default defineConfig({
-  entry: ["src/index.ts"],
-  target: "bun", // Key line to add
-});
-```
-
-Or if you're using the CLI directly, specify the --target flag:
-
-```bash
-bunup src/index.ts --target bun
-```
-
-### Other Issues
-
-If you're experiencing an issue not covered in this troubleshooting section, please consider [creating a new issue](https://github.com/xc2/bunup/issues/new) with details about your environment, steps to reproduce, and any error messages you encountered.
