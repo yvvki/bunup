@@ -87,7 +87,10 @@ export default defineConfig({
         ],
     ],
     markdown: {
-        theme: "one-dark-pro",
+        theme: {
+            light: "one-light",
+            dark: "one-dark-pro",
+        },
         config(md) {
             md.use(groupIconMdPlugin);
         },
