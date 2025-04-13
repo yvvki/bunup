@@ -201,6 +201,7 @@ async function buildEntry(
                 target: options.target,
                 shims: options.shims,
             }),
+            ...(options.bunBuildPlugins ?? []),
         ],
         throw: false,
     });

@@ -1,6 +1,7 @@
 import type {
     Arrayable,
     BunBuildOptions,
+    BunPlugin,
     PromiseOr,
     WithRequired,
 } from "./types";
@@ -363,6 +364,12 @@ export interface BuildOptions {
      * env: { API_URL: "https://api.example.com", DEBUG: "false" }
      */
     env?: Env;
+    /**
+     * Custom Bun.build plugins to be applied during the build process..
+     *
+     * @see https://bun.sh/docs/bundler/plugins for more information about Bun's plugin system
+     */
+    bunBuildPlugins?: BunPlugin[];
 }
 
 export type CliOptions = BuildOptions & { config: string };
