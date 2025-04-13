@@ -130,6 +130,7 @@ const optionConfigs = {
         flags: ["pp", "public-path"],
         handler: stringHandler("publicPath"),
     },
+    env: { flags: ["env"], handler: stringHandler("env") },
     shims: { flags: ["shims"], handler: booleanHandler("shims") },
     entry: {
         flags: ["entry"],

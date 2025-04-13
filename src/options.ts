@@ -17,6 +17,8 @@ export type Target = BunBuildOptions["target"];
 
 export type External = (string | RegExp)[];
 
+export type Env = BunBuildOptions["env"] | Record<string, string>;
+
 export type Entry = Arrayable<string> | Record<string, string>;
 
 export type ShimOptions = {
@@ -330,6 +332,39 @@ export interface BuildOptions {
      * shims: { dirnameFilename: true, importMetaUrl: true }
      */
     shims?: Shims;
+    /**
+     * Controls how environment variables are handled during bundling.
+     *
+     * Can be one of:
+     * - `"inline"`: Injects environment variables into the bundled output by converting `process.env.FOO`
+     *   references to string literals containing the actual environment variable values
+     * - `"disable"`: Disables environment variable injection entirely
+     * - A string ending in `*`: Inlines environment variables that match the given prefix.
+     *   For example, `"MY_PUBLIC_*"` will only include env vars starting with "MY_PUBLIC_"
+     * - An object of key-value pairs where the key is the env name and value is the value
+     *
+     * @see https://bun.sh/docs/bundler#env to learn more about inline, disable and prefix methods
+     *
+     * @example
+     * // Inline all environment variables
+     * env: "inline"
+     *
+     * // Disable environment variable injection
+     * env: "disable"
+     *
+     * // Only inline environment variables with a specific prefix
+     * env: "PUBLIC_*"
+     *
+     * // Provide specific environment variables
+     * env: { API_URL: "https://api.example.com", DEBUG: "false" }
+     *
+     * @example [CLI]
+     * To inline specific environment variables at build time:
+     * ```sh
+     * FOO=bar API_KEY=secret bunup src/index.ts --env inline
+     * ```
+     */
+    env?: Env;
 }
 
 export type CliOptions = BuildOptions & { config: string };
@@ -376,6 +411,7 @@ export function getResolvedBytecode(
 export function getResolvedDefine(
     define: Define | undefined,
     shims: Shims | undefined,
+    env: Env | undefined,
     format: Format,
 ): Record<string, string> | undefined {
     return {
@@ -385,6 +421,13 @@ export function getResolvedDefine(
                 (typeof shims === "object" && shims.importMetaUrl)) && {
                 "import.meta.url": "importMetaUrl",
             }),
+        ...(typeof env === "object" &&
+            Object.keys(env).reduce<Record<string, string>>((acc, key) => {
+                const value = JSON.stringify(env[key]);
+                acc[`process.env.${key}`] = value;
+                acc[`import.meta.env.${key}`] = value;
+                return acc;
+            }, {})),
     };
 }
 
@@ -394,4 +437,10 @@ export function getResolvedSplitting(
     format: Format,
 ): boolean {
     return splitting === undefined ? format === "esm" : splitting;
+}
+
+export function getResolvedEnv(
+    env: Env | undefined,
+): Exclude<Env, Record<string, string>> | undefined {
+    return typeof env === "string" ? env : undefined;
 }

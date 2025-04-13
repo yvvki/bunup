@@ -202,6 +202,7 @@ Bunup supports various command-line options:
 | `--bytecode`                       | `-bc`        | Generate bytecode for JavaScript/TypeScript entrypoints to improve startup times                   | `false`          |
 | `--silent`                         |              | Disable logging during the build process                                                           | `false`          |
 | `--shims`                          |              | Inject Node.js compatibility shims for ESM/CJS interoperability                                    | `false`          |
+| `--env <mode>`                     |              | Control environment variable handling (inline, disable or PREFIX_*)        | -                |
 | `--config <path>`                  |              | Specify a custom path to the configuration file                                                    | -                |
 | `--version`                        | `-v`         | Display version information                                                                        | -                |
 | `--help`                           | `-h`         | Display help information                                                                           | -                |
@@ -750,6 +751,61 @@ console.log(logo);
 
 For more information, see the [Bun documentation on publicPath](https://bun.sh/docs/bundler#publicpath).
 
+## Environment Variables
+
+Bunup provides flexible options for handling environment variables in your bundled code:
+
+```sh [CLI]
+# Inline all environment variables
+bunup src/index.ts --env inline
+
+# Disable environment variable inlining
+bunup src/index.ts --env disable
+
+# Only inline environment variables with a specific prefix
+bunup src/index.ts --env PUBLIC_*
+```
+
+```typescript
+export default defineConfig({
+      entry: ['src/index.ts'],
+      
+      // Inline all environment variables
+      env: "inline",
+      
+      // Or disable environment variable inlining
+      // env: "disable",
+      
+      // Or only inline variables with a specific prefix
+      // env: "PUBLIC_*",
+      
+      // Or provide specific environment variables
+      // env: { 
+      //     API_URL: "https://api.example.com", 
+      //     DEBUG: "false" 
+      // },
+});
+```
+
+The `env` option controls how environment variables are handled during bundling:
+
+- `"inline"`: Injects environment variables into the bundled output by converting `process.env.FOO` references to string literals containing the actual environment variable values
+- `"disable"`: Disables environment variable injection entirely
+- A string ending in `*` (e.g., `"PUBLIC_*"`): Only inlines environment variables that match the given prefix
+- An object of key-value pairs: Explicitly specifies environment variables and their values
+
+When environment variables are inlined, Bunup will convert references like `process.env.API_KEY` to the actual string value of that environment variable at build time.
+
+For example, to inline specific environment variables at build time:
+
+```sh [CLI]
+FOO=bar API_KEY=secret bunup src/index.ts --env inline
+```
+
+This will replace all occurrences of `process.env.FOO` with `"bar"` and `process.env.API_KEY` with `"secret"` in your bundled code.
+
+For more information, see the [Bun documentation on environment variables](https://bun.sh/docs/bundler#env).
+
 ## Node.js Compatibility Shims
 
 Bunup provides compatibility shims to help with ESM/CJS interoperability when targeting Node.js. These shims automatically add the necessary code to handle common Node.js globals across module formats.
@@ -767,8 +823,8 @@ export default defineConfig({
       
       # Or configure specific shims
       shims: {
-            dirnameFilename: true,     // Add __dirname and __filename for ESM files
-            importMetaUrl: true, // Add import.meta.url for CJS files
+            dirnameFilename: true, # Add __dirname and __filename for ESM files
+            importMetaUrl: true, # Add import.meta.url for CJS files
       },
 });
 ```

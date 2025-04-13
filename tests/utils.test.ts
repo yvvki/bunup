@@ -228,12 +228,12 @@ describe("Utils", () => {
     describe("getResolvedDefine", () => {
         it("returns custom define values", () => {
             const define = { "process.env.NODE_ENV": '"production"' };
-            const result = getResolvedDefine(define, undefined, "esm");
+            const result = getResolvedDefine(define, undefined, {}, "esm");
             expect(result).toEqual(define);
         });
 
         it("adds import.meta.url for cjs format with shims=true", () => {
-            const result = getResolvedDefine(undefined, true, "cjs");
+            const result = getResolvedDefine(undefined, true, {}, "cjs");
             expect(result).toEqual({
                 "import.meta.url": "importMetaUrl",
             });
@@ -243,6 +243,7 @@ describe("Utils", () => {
             const result = getResolvedDefine(
                 undefined,
                 { importMetaUrl: true },
+                {},
                 "cjs",
             );
             expect(result).toEqual({
@@ -251,13 +252,13 @@ describe("Utils", () => {
         });
 
         it("does not add import.meta.url for esm format", () => {
-            const result = getResolvedDefine(undefined, true, "esm");
+            const result = getResolvedDefine(undefined, true, {}, "esm");
             expect(result).toEqual({});
         });
 
         it("merges custom define with shims", () => {
             const define = { VERSION: '"1.0.0"' };
-            const result = getResolvedDefine(define, true, "cjs");
+            const result = getResolvedDefine(define, true, {}, "cjs");
             expect(result).toEqual({
                 VERSION: '"1.0.0"',
                 "import.meta.url": "importMetaUrl",

@@ -19,6 +19,7 @@ import {
     createBuildOptions,
     getResolvedBytecode,
     getResolvedDefine,
+    getResolvedEnv,
     getResolvedMinify,
     getResolvedSplitting,
 } from "./options";
@@ -177,7 +178,12 @@ async function buildEntry(
         naming: { entry: getEntryNamingFormat(entry.name, extension) },
         splitting: getResolvedSplitting(options.splitting, fmt),
         bytecode: getResolvedBytecode(options.bytecode, fmt),
-        define: getResolvedDefine(options.define, options.shims, fmt),
+        define: getResolvedDefine(
+            options.define,
+            options.shims,
+            options.env,
+            fmt,
+        ),
         minify: getResolvedMinify(options),
         outdir: `${rootDir}/${options.outDir}`,
         target: options.target,
@@ -187,6 +193,7 @@ async function buildEntry(
         banner: options.banner,
         footer: options.footer,
         publicPath: options.publicPath,
+        env: getResolvedEnv(options.env),
         plugins: [
             ...plugins,
             injectShimsPlugin({

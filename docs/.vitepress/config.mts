@@ -31,16 +31,6 @@ export default defineConfig({
                 ],
             },
         ],
-        // sidebar: [
-        //       {
-        //             text: 'Bunup',
-        //             link: '/',
-        //       },
-        //       {
-        //             text: 'Typescript Library Starter',
-        //             link: '/typescript-library-starter',
-        //       },
-        // ],
         editLink: {
             pattern:
                 "https://github.com/arshad-yaseen/bunup/edit/main/docs/:path",
@@ -97,6 +87,7 @@ export default defineConfig({
         ],
     ],
     markdown: {
+        theme: "one-dark-pro",
         config(md) {
             md.use(groupIconMdPlugin);
         },
