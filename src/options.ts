@@ -415,12 +415,6 @@ export function getResolvedDefine(
     format: Format,
 ): Record<string, string> | undefined {
     return {
-        ...define,
-        ...(format === "cjs" &&
-            (shims === true ||
-                (typeof shims === "object" && shims.importMetaUrl)) && {
-                "import.meta.url": "importMetaUrl",
-            }),
         ...(typeof env === "object" &&
             Object.keys(env).reduce<Record<string, string>>((acc, key) => {
                 const value = JSON.stringify(env[key]);
@@ -428,6 +422,12 @@ export function getResolvedDefine(
                 acc[`import.meta.env.${key}`] = value;
                 return acc;
             }, {})),
+        ...define,
+        ...(format === "cjs" &&
+            (shims === true ||
+                (typeof shims === "object" && shims.importMetaUrl)) && {
+                "import.meta.url": "importMetaUrl",
+            }),
     };
 }
 
