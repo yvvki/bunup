@@ -23,7 +23,7 @@ To run the benchmarks yourself, clone this repo and run `pnpm benchmark` and che
 
 - 🔄 **Tsup-Compatible**: Drop-in replacement for tsup with familiar CLI and config.
 
-- ⚡ **Ultra-Fast Builds**: ~50× faster than tsup using Bun's runtime and oxc compiler.
+- ⚡ **Ultra-Fast Builds**: ~50× faster than tsup using Bun's bundler and oxc compiler.
 
 - 🔥 **Bytecode Generation**: Faster startups by compiling to Bun bytecode—perfect for CLIs.
 

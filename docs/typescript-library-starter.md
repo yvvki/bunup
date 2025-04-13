@@ -64,11 +64,13 @@ $ bunx create-bunup@latest
 ### Step-by-Step Setup
 
 1. **Change into the created project directory**:
+
    ```sh
    cd my-ts-lib
    ```
 
 2. **Install dependencies**:
+
    ```sh
    bun install
    # or
@@ -76,6 +78,7 @@ $ bunx create-bunup@latest
    ```
 
 3. **Enable Git hooks**:
+
    ```sh
    bun run prepare
    # or
@@ -83,26 +86,29 @@ $ bunx create-bunup@latest
    ```
 
 4. **Create a GitHub repository**:
+
    - Go to [GitHub](https://github.com/new)
    - Create a new repository with the same name as your project
 
 5. **Initialize Git repository**:
-   
+
    The CLI automatically initializes a Git repository for you and adds the remote if you provided a GitHub repository. You only need to make your first commit:
-   
+
    ```sh
    git add .
    git commit -m "chore: initial commit"
    ```
 
 6. **Setup for Releases**:
+
    - Generate an npm token:
+
      1. Go to [npmjs.com](https://www.npmjs.com/) and sign in
      2. Navigate to your profile → Access Tokens → Generate New Token (Classic)
      3. Give it a descriptive name (e.g., "Bunup Publishing")
      4. Select "Automation" as the token type
      5. Click "Generate Token" and copy it immediately
-   
+
    - Add npm token to GitHub repository:
      1. Go to your GitHub repository
      2. Navigate to Settings → Secrets and variables → Actions
@@ -190,12 +196,14 @@ pnpm release
 ```
 
 This will:
+
 1. Prompt you for a new version (patch, minor, or major)
 2. Update package.json version
 3. Create a Git tag
 4. Push changes and tag to GitHub
 
 The GitHub Actions workflow will automatically:
+
 1. Build the package
 2. Generate a GitHub release with changelog
 3. Publish to npm with provenance
