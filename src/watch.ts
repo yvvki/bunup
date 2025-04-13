@@ -7,14 +7,16 @@ import { validateDtsFiles } from "./cli";
 import { BunupWatchError, handleError, parseErrorMessage } from "./errors";
 import { normalizeEntryToProcessableEntries } from "./helpers/entry";
 import { logger } from "./logger";
-import type { BuildOptions } from "./options";
+import { type BuildOptions, createBuildOptions } from "./options";
 import { formatTime } from "./utils";
 
 export async function watch(
-    options: BuildOptions,
+    partialOptions: Partial<BuildOptions>,
     rootDir: string,
 ): Promise<void> {
     const watchPaths = new Set<string>();
+
+    const options = createBuildOptions(partialOptions);
 
     const normalizedEntry = normalizeEntryToProcessableEntries(options.entry);
 

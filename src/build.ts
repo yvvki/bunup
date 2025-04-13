@@ -16,13 +16,14 @@ import { logger, setSilent } from "./logger";
 import {
     type BuildOptions,
     type Format,
+    createBuildOptions,
     getResolvedBytecode,
     getResolvedDefine,
     getResolvedMinify,
     getResolvedSplitting,
 } from "./options";
 import { externalPlugin } from "./plugins/external";
-import { injectShimsPlugin } from "./plugins/shims";
+import { injectShimsPlugin } from "./plugins/inject-shims";
 import type { BunPlugin } from "./types";
 import {
     cleanOutDir,
@@ -36,9 +37,11 @@ import {
 export const filesUsedToBundleDts: Set<string> = new Set<string>();
 
 export async function build(
-    options: BuildOptions,
+    partialOptions: Partial<BuildOptions>,
     rootDir: string,
 ): Promise<void> {
+    const options = createBuildOptions(partialOptions);
+
     if (!options.entry || options.entry.length === 0 || !options.outDir) {
         throw new BunupBuildError(
             "Nothing to build. Please make sure you have provided a proper bunup configuration or cli arguments.",

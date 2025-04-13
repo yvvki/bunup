@@ -19,13 +19,12 @@ export type External = (string | RegExp)[];
 
 export type Entry = Arrayable<string> | Record<string, string>;
 
-export type Shims =
-    | boolean
-    | {
-          dirname?: boolean;
-          filename?: boolean;
-          importMetaUrl?: boolean;
-      };
+export type ShimOptions = {
+    dirnameFilename?: boolean;
+    importMetaUrl?: boolean;
+};
+
+export type Shims = boolean | ShimOptions;
 
 export type DtsOptions = {
     /**
@@ -338,6 +337,14 @@ export const DEFAULT_OPTIONS: WithRequired<BuildOptions, "clean"> = {
     clean: true,
 };
 
+export function createBuildOptions(
+    partialOptions: Partial<BuildOptions>,
+): BuildOptions {
+    return {
+        ...DEFAULT_OPTIONS,
+        ...partialOptions,
+    };
+}
 export function getResolvedMinify(options: BuildOptions): {
     whitespace: boolean;
     identifiers: boolean;

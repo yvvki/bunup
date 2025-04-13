@@ -3,7 +3,7 @@ import { build, filesUsedToBundleDts } from "./build";
 import { parseCliOptions } from "./cli-parse";
 import { handleErrorAndExit } from "./errors";
 import { logger, setSilent } from "./logger";
-import { type BuildOptions, DEFAULT_OPTIONS } from "./options";
+import type { BuildOptions } from "./options";
 
 import "./runtime";
 
@@ -53,13 +53,12 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
         configsToProcess.flatMap(({ options, rootDir }) => {
             const optionsArray = ensureArray(options);
             return optionsArray.map(async (o) => {
-                const mergedOptions = {
-                    ...DEFAULT_OPTIONS,
+                const partialOptions: Partial<BuildOptions> = {
                     ...o,
                     ...cliOptions,
                 };
 
-                return handleBuild(mergedOptions, rootDir);
+                return handleBuild(partialOptions, rootDir);
             });
         }),
     );
@@ -86,7 +85,7 @@ export async function validateDtsFiles() {
     }
 }
 
-async function handleBuild(options: BuildOptions, rootDir: string) {
+async function handleBuild(options: Partial<BuildOptions>, rootDir: string) {
     if (options.watch) {
         await watch(options, rootDir);
     } else {
