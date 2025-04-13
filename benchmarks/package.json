@@ -1,7 +1,7 @@
 {
     "name": "benchmarks",
     "private": true,
-    "version": "0.4.10",
+    "version": "0.4.11",
     "scripts": {
         "benchmark": "bun run src/main.mjs && node src/tsup.mjs"
     },
