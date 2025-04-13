@@ -336,33 +336,31 @@ export interface BuildOptions {
      * Controls how environment variables are handled during bundling.
      *
      * Can be one of:
-     * - `"inline"`: Injects environment variables into the bundled output by converting `process.env.FOO`
-     *   references to string literals containing the actual environment variable values
-     * - `"disable"`: Disables environment variable injection entirely
-     * - A string ending in `*`: Inlines environment variables that match the given prefix.
-     *   For example, `"MY_PUBLIC_*"` will only include env vars starting with "MY_PUBLIC_"
-     * - An object of key-value pairs where the key is the env name and value is the value
+     * - `"inline"`: Replaces all `process.env.FOO` references in your code with the actual values
+     *   of those environment variables at the time the build runs.
+     * - `"disable"`: Disables environment variable injection entirely, leaving `process.env.*` as-is.
+     * - A string ending in `*`: Only inlines environment variables matching the given prefix.
+     *   For example, `"MY_PUBLIC_*"` will inline variables like `MY_PUBLIC_API_URL`.
+     * - An object of key-value pairs: Replaces both `process.env.KEY` and `import.meta.env.KEY`
+     *   with the provided values, regardless of the runtime environment.
      *
-     * @see https://bun.sh/docs/bundler#env to learn more about inline, disable and prefix methods
+     * Note: Values are injected at build time. Secrets or private keys should be excluded
+     * from inlining when targeting browser environments.
+     *
+     * @see https://bun.sh/docs/bundler#env to learn more about inline, disable, prefix, and object modes
      *
      * @example
-     * // Inline all environment variables
+     * // Inline all environment variables available at build time
      * env: "inline"
      *
-     * // Disable environment variable injection
+     * // Disable all environment variable injection
      * env: "disable"
      *
      * // Only inline environment variables with a specific prefix
      * env: "PUBLIC_*"
      *
-     * // Provide specific environment variables
+     * // Provide specific environment variables manually
      * env: { API_URL: "https://api.example.com", DEBUG: "false" }
-     *
-     * @example [CLI]
-     * To inline specific environment variables at build time:
-     * ```sh
-     * FOO=bar API_KEY=secret bunup src/index.ts --env inline
-     * ```
      */
     env?: Env;
 }

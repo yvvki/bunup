@@ -81,7 +81,7 @@ Create a simple TypeScript file:
 
 ```typescript [src/index.ts]
 export function greet(name: string): string {
-      return `Hello, ${name}!`;
+  return `Hello, ${name}!`;
 }
 ```
 
@@ -99,10 +99,10 @@ Add a build script to your `package.json`:
 
 ```json [package.json]
 {
-      "name": "my-package",
-      "scripts": {
-            "build": "bunup src/index.ts --format esm,cjs --dts"
-      }
+  "name": "my-package",
+  "scripts": {
+    "build": "bunup src/index.ts --format esm,cjs --dts"
+  }
 }
 ```
 
@@ -117,13 +117,13 @@ npm run build
 Create a `bunup.config.ts` file for more control:
 
 ```typescript [bunup.config.ts]
-import {defineConfig} from 'bunup';
+import { defineConfig } from "bunup";
 
 export default defineConfig({
-      entry: ['src/index.ts'],
-      format: ['esm', 'cjs'],
-      dts: true,
-      minify: true,
+  entry: ["src/index.ts"],
+  format: ["esm", "cjs"],
+  dts: true,
+  minify: true,
 });
 ```
 
@@ -141,13 +141,13 @@ Bunup supports configuration files in multiple formats:
 - `bunup.config.cjs`
 
 ```typescript [bunup.config.ts]
-import {defineConfig} from 'bunup';
+import { defineConfig } from "bunup";
 
 export default defineConfig({
-      entry: ['src/index.ts'],
-      format: ['esm', 'cjs'],
-      dts: true,
-      minify: true,
+  entry: ["src/index.ts"],
+  format: ["esm", "cjs"],
+  dts: true,
+  minify: true,
 });
 ```
 
@@ -155,18 +155,18 @@ You can also export an array of configurations:
 
 ```typescript [bunup.config.ts]
 export default defineConfig([
-      {
-            name: 'node',
-            entry: ['src/index.ts'],
-            format: ['cjs'],
-            target: 'node',
-      },
-      {
-            name: 'browser',
-            entry: ['src/index.ts'],
-            format: ['esm', 'iife'],
-            target: 'browser',
-      },
+  {
+    name: "node",
+    entry: ["src/index.ts"],
+    format: ["cjs"],
+    target: "node",
+  },
+  {
+    name: "browser",
+    entry: ["src/index.ts"],
+    format: ["esm", "iife"],
+    target: "browser",
+  },
 ]);
 ```
 
@@ -174,38 +174,38 @@ export default defineConfig([
 
 Bunup supports various command-line options:
 
-| Option                             | Alias        | Description                                                                                        | Default          |
-| ---------------------------------- | ------------ | -------------------------------------------------------------------------------------------------- | ---------------- |
-| `--entry <path>`                   |              | Entry file path                                                                                    | `[]`             |
-| `--entry.<name> <path>`            |              | Named entry file path                                                                              | -                |
-| `--out-dir <dir>`                  | `-o`         | Output directory                                                                                   | `dist`           |
-| `--format <formats>`               | `-f`         | Output formats (comma-separated: esm,cjs,iife)                                                     | `cjs`            |
-| `--minify`                         | `-m`         | Enable all minification options                                                                    | `false`          |
-| `--minify-whitespace`              | `-mw`        | Minify whitespace                                                                                  | `false`          |
-| `--minify-identifiers`             | `-mi`        | Minify identifiers                                                                                 | `false`          |
-| `--minify-syntax`                  | `-ms`        | Minify syntax                                                                                      | `false`          |
-| `--watch`                          | `-w`         | Watch mode                                                                                         | `false`          |
-| `--dts`                            | `-d`         | Generate TypeScript declarations                                                                   | `false`          |
-| `--external <deps>`                | `-e`         | External dependencies (comma-separated)                                                            | `[]`             |
-| `--no-external <deps>`             | `-ne`        | Force include dependencies (comma-separated)                                                       | -                |
-| `--target <target>`                | `-t`         | Target environment (node, browser, bun)                                                            | `node`           |
-| `--clean`                          | `-c`         | Clean output directory before build                                                                | `true`           |
-| `--splitting`                      | `-s`         | Enable code splitting                                                                              | Format dependent |
-| `--sourcemap <type>`               | `-sm`        | Sourcemap generation (none,linked,external,inline)                                                 | `none`           |
-| `--banner <text>`                  | `-bn`        | Text to add at the beginning of output files                                                       | -                |
-| `--footer <text>`                  | `-ft`        | Text to add at the end of output files                                                             | -                |
-| `--public-path <url>`              | `-pp`        | Prefix to be appended to import paths in bundled code                                              | -                |
-| `--name <name>`                    | `-n`         | Name for this build configuration                                                                  | -                |
-| `--resolve-dts <value>`            | `-rd`        | Resolve external types for declaration files (can be boolean flag or comma-separated package list) | `false`          |
-| `--dts-only`                       | `-do`        | Generate only TypeScript declaration files without JavaScript output                             | `false`          |
-| `--preferred-tsconfig-path <path>` | `-tsconfig`  | Path to preferred tsconfig file used for typescript declaration files generation                   | -                |
-| `--bytecode`                       | `-bc`        | Generate bytecode for JavaScript/TypeScript entrypoints to improve startup times                   | `false`          |
-| `--silent`                         |              | Disable logging during the build process                                                           | `false`          |
-| `--shims`                          |              | Inject Node.js compatibility shims for ESM/CJS interoperability                                    | `false`          |
-| `--env <mode>`                     |              | Control environment variable handling (inline, disable or PREFIX_*)        | -                |
-| `--config <path>`                  |              | Specify a custom path to the configuration file                                                    | -                |
-| `--version`                        | `-v`         | Display version information                                                                        | -                |
-| `--help`                           | `-h`         | Display help information                                                                           | -                |
+| Option                             | Alias       | Description                                                                                        | Default          |
+| ---------------------------------- | ----------- | -------------------------------------------------------------------------------------------------- | ---------------- |
+| `--entry <path>`                   |             | Entry file path                                                                                    | `[]`             |
+| `--entry.<name> <path>`            |             | Named entry file path                                                                              | -                |
+| `--out-dir <dir>`                  | `-o`        | Output directory                                                                                   | `dist`           |
+| `--format <formats>`               | `-f`        | Output formats (comma-separated: esm,cjs,iife)                                                     | `cjs`            |
+| `--minify`                         | `-m`        | Enable all minification options                                                                    | `false`          |
+| `--minify-whitespace`              | `-mw`       | Minify whitespace                                                                                  | `false`          |
+| `--minify-identifiers`             | `-mi`       | Minify identifiers                                                                                 | `false`          |
+| `--minify-syntax`                  | `-ms`       | Minify syntax                                                                                      | `false`          |
+| `--watch`                          | `-w`        | Watch mode                                                                                         | `false`          |
+| `--dts`                            | `-d`        | Generate TypeScript declarations                                                                   | `false`          |
+| `--external <deps>`                | `-e`        | External dependencies (comma-separated)                                                            | `[]`             |
+| `--no-external <deps>`             | `-ne`       | Force include dependencies (comma-separated)                                                       | -                |
+| `--target <target>`                | `-t`        | Target environment (node, browser, bun)                                                            | `node`           |
+| `--clean`                          | `-c`        | Clean output directory before build                                                                | `true`           |
+| `--splitting`                      | `-s`        | Enable code splitting                                                                              | Format dependent |
+| `--sourcemap <type>`               | `-sm`       | Sourcemap generation (none,linked,external,inline)                                                 | `none`           |
+| `--banner <text>`                  | `-bn`       | Text to add at the beginning of output files                                                       | -                |
+| `--footer <text>`                  | `-ft`       | Text to add at the end of output files                                                             | -                |
+| `--public-path <url>`              | `-pp`       | Prefix to be appended to import paths in bundled code                                              | -                |
+| `--name <name>`                    | `-n`        | Name for this build configuration                                                                  | -                |
+| `--resolve-dts <value>`            | `-rd`       | Resolve external types for declaration files (can be boolean flag or comma-separated package list) | `false`          |
+| `--dts-only`                       | `-do`       | Generate only TypeScript declaration files without JavaScript output                               | `false`          |
+| `--preferred-tsconfig-path <path>` | `-tsconfig` | Path to preferred tsconfig file used for typescript declaration files generation                   | -                |
+| `--bytecode`                       | `-bc`       | Generate bytecode for JavaScript/TypeScript entrypoints to improve startup times                   | `false`          |
+| `--silent`                         |             | Disable logging during the build process                                                           | `false`          |
+| `--shims`                          |             | Inject Node.js compatibility shims for ESM/CJS interoperability                                    | `false`          |
+| `--env <mode>`                     |             | Control environment variable handling (inline, disable or PREFIX\_\*)                              | -                |
+| `--config <path>`                  |             | Specify a custom path to the configuration file                                                    | -                |
+| `--version`                        | `-v`        | Display version information                                                                        | -                |
+| `--help`                           | `-h`        | Display help information                                                                           | -                |
 
 ## Entry Points
 
@@ -300,12 +300,12 @@ bunup src/index.ts --format esm,cjs,iife
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      // Single format
-      format: ['esm'],
+  entry: ["src/index.ts"],
+  // Single format
+  format: ["esm"],
 
-      // Or multiple formats
-      // format: ['esm', 'cjs', 'iife'],
+  // Or multiple formats
+  // format: ['esm', 'cjs', 'iife'],
 });
 ```
 
@@ -344,11 +344,11 @@ For more control, you can specify custom entry points for declarations:
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts', 'src/cli.ts'],
-      dts: {
-            // Only generate declarations for index.ts
-            entry: ['src/index.ts'],
-      },
+  entry: ["src/index.ts", "src/cli.ts"],
+  dts: {
+    // Only generate declarations for index.ts
+    entry: ["src/index.ts"],
+  },
 });
 ```
 
@@ -358,16 +358,16 @@ You can use named entries for declarations:
 
 ```typescript
 export default defineConfig({
-      entry: {
-            main: 'src/index.ts',
-            cli: 'src/cli.ts',
-      },
-      dts: {
-            entry: {
-                  // Generate types.d.ts from index.ts
-                  types: 'src/index.ts',
-            },
-      },
+  entry: {
+    main: "src/index.ts",
+    cli: "src/cli.ts",
+  },
+  dts: {
+    entry: {
+      // Generate types.d.ts from index.ts
+      types: "src/index.ts",
+    },
+  },
 });
 ```
 
@@ -377,9 +377,9 @@ You can specify a custom tsconfig file for declaration generation:
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      dts: true,
-      preferredTsconfigPath: './tsconfig.build.json',
+  entry: ["src/index.ts"],
+  dts: true,
+  preferredTsconfigPath: "./tsconfig.build.json",
 });
 ```
 
@@ -410,11 +410,11 @@ You can also specify which packages to resolve types for:
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      dts: {
-            // Only resolve types from these specific packages
-            resolve: ['react', 'lodash', /^@types\//],
-      },
+  entry: ["src/index.ts"],
+  dts: {
+    // Only resolve types from these specific packages
+    resolve: ["react", "lodash", /^@types\//],
+  },
 });
 ```
 
@@ -434,6 +434,7 @@ export default defineConfig({
 ```
 
 When `dtsOnly` is set to `true`, Bunup will:
+
 - Skip the JavaScript bundling process entirely
 - Only generate declaration files for the specified entry points
 - Implicitly enable the `dts` option (no need to specify both)
@@ -473,8 +474,8 @@ bunup src/index.ts --external lodash,react,react-dom
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      external: ['lodash', 'react', '@some/package'],
+  entry: ["src/index.ts"],
+  external: ["lodash", "react", "@some/package"],
 });
 ```
 
@@ -492,9 +493,9 @@ bunup src/index.ts --external lodash --no-external lodash/merge
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      external: ['lodash'],
-      noExternal: ['lodash/merge'], // Include lodash/merge even though lodash is external
+  entry: ["src/index.ts"],
+  external: ["lodash"],
+  noExternal: ["lodash/merge"], // Include lodash/merge even though lodash is external
 });
 ```
 
@@ -527,13 +528,13 @@ bunup src/index.ts --splitting=false
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      format: ['esm', 'cjs'],
-      // Enable for all formats
-      splitting: true,
+  entry: ["src/index.ts"],
+  format: ["esm", "cjs"],
+  // Enable for all formats
+  splitting: true,
 
-      // Or disable for all formats
-      // splitting: false,
+  // Or disable for all formats
+  // splitting: false,
 });
 ```
 
@@ -574,11 +575,11 @@ bunup src/index.ts --minify-whitespace --minify-syntax
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      // Configure individual options
-      minifyWhitespace: true,
-      minifyIdentifiers: false,
-      minifySyntax: true,
+  entry: ["src/index.ts"],
+  // Configure individual options
+  minifyWhitespace: true,
+  minifyIdentifiers: false,
+  minifySyntax: true,
 });
 ```
 
@@ -637,12 +638,12 @@ Bunup allows you to define global constants that will be replaced at build time.
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      define: {
-            'process.env.NODE_ENV': '"production"',
-            PACKAGE_VERSION: '"1.0.0"',
-            DEBUG: 'false',
-      },
+  entry: ["src/index.ts"],
+  define: {
+    "process.env.NODE_ENV": '"production"',
+    PACKAGE_VERSION: '"1.0.0"',
+    DEBUG: "false",
+  },
 });
 ```
 
@@ -683,8 +684,8 @@ You can remove specific function calls from your bundle:
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      drop: ['console', 'debugger', 'anyIdentifier.or.propertyAccess'],
+  entry: ["src/index.ts"],
+  drop: ["console", "debugger", "anyIdentifier.or.propertyAccess"],
 });
 ```
 
@@ -698,11 +699,11 @@ You can configure how different file types are loaded:
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      loader: {
-            '.png': 'dataurl',
-            '.txt': 'file',
-      },
+  entry: ["src/index.ts"],
+  loader: {
+    ".png": "dataurl",
+    ".txt": "file",
+  },
 });
 ```
 
@@ -726,6 +727,7 @@ export default defineConfig({
 ```
 
 The `publicPath` option only affects certain types of imports in the final bundle:
+
 - Asset imports (like images or SVG files)
 - External modules
 - Chunk files when code splitting is enabled
@@ -735,17 +737,17 @@ By default, these imports are relative. Setting `publicPath` will prefix these s
 For example:
 
 ```js [Input]
-import logo from './logo.svg';
+import logo from "./logo.svg";
 console.log(logo);
 ```
 
 ```js [Output without publicPath]
-var logo = './logo-a7305bdef.svg';
+var logo = "./logo-a7305bdef.svg";
 console.log(logo);
 ```
 
 ```js [Output with publicPath]
-var logo = 'https://cdn.example.com/logo-a7305bdef.svg';
+var logo = "https://cdn.example.com/logo-a7305bdef.svg";
 console.log(logo);
 ```
 
@@ -756,53 +758,48 @@ For more information, see the [Bun documentation on publicPath](https://bun.sh/d
 Bunup provides flexible options for handling environment variables in your bundled code:
 
 ```sh [CLI]
-# Inline all environment variables
-bunup src/index.ts --env inline
+# Inline all environment variables available at build time
+FOO=bar API_KEY=secret bunup src/index.ts --env inline
 
-# Disable environment variable inlining
+# Disable all environment variable inlining
 bunup src/index.ts --env disable
 
-# Only inline environment variables with a specific prefix
-bunup src/index.ts --env PUBLIC_*
+# Only inline environment variables with a specific prefix (e.g., PUBLIC_)
+PUBLIC_URL=https://example.com bunup src/index.ts --env PUBLIC_*
 ```
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      
-      // Inline all environment variables
-      env: "inline",
-      
-      // Or disable environment variable inlining
-      // env: "disable",
-      
-      // Or only inline variables with a specific prefix
-      // env: "PUBLIC_*",
-      
-      // Or provide specific environment variables
-      // env: { 
-      //     API_URL: "https://api.example.com", 
-      //     DEBUG: "false" 
-      // },
+  entry: ["src/index.ts"],
+
+  // Inline all available environment variables at build time
+  env: "inline",
+
+  // Or disable inlining entirely (keep process.env.FOO in the output)
+  // env: "disable",
+
+  // Or inline only variables that start with a specific prefix
+  // env: "PUBLIC_*",
+
+  // Or explicitly provide specific environment variables
+  // These will replace both process.env.FOO and import.meta.env.FOO
+  // env: {
+  //   API_URL: "https://api.example.com",
+  //   DEBUG: "false",
+  // },
 });
 ```
 
-The `env` option controls how environment variables are handled during bundling:
+### How it Works
 
-- `"inline"`: Injects environment variables into the bundled output by converting `process.env.FOO` references to string literals containing the actual environment variable values
-- `"disable"`: Disables environment variable injection entirely
-- A string ending in `*` (e.g., `"PUBLIC_*"`): Only inlines environment variables that match the given prefix
-- An object of key-value pairs: Explicitly specifies environment variables and their values
+The `env` option controls how `process.env.*` and `import.meta.env.*` expressions are replaced at build time:
 
-When environment variables are inlined, Bunup will convert references like `process.env.API_KEY` to the actual string value of that environment variable at build time.
-
-For example, to inline specific environment variables at build time:
-
-```sh [CLI]
-FOO=bar API_KEY=secret bunup src/index.ts --env inline
-```
-
-This will replace all occurrences of `process.env.FOO` with `"bar"` and `process.env.API_KEY` with `"secret"` in your bundled code.
+| Value            | Behavior                                                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `"inline"`       | Replaces all `process.env.VAR` references in your code with the actual values of those environment variables at the time of the build.                 |
+| `"disable"`      | Disables environment variable replacement. Keeps `process.env.VAR` as-is in output.                                      |
+| `"PREFIX_*"`     | Only inlines environment variables matching the given prefix (e.g. `PUBLIC_*`).                                          |
+| `{ key: value }` | Replaces both `process.env.KEY` and `import.meta.env.KEY` with the provided values, regardless of the environment. |
 
 For more information, see the [Bun documentation on environment variables](https://bun.sh/docs/bundler#env).
 
@@ -820,7 +817,7 @@ export default defineConfig({
       format: ['esm', 'cjs'],
       # Enable all shims
       shims: true,
-      
+
       # Or configure specific shims
       shims: {
             dirnameFilename: true, # Add __dirname and __filename for ESM files
@@ -911,12 +908,12 @@ The `onBuildSuccess` callback runs after the build process successfully complete
 
 ```typescript
 export default defineConfig({
-      entry: ['src/index.ts'],
-      onBuildSuccess: () => {
-            console.log('Build completed successfully!');
-            // Perform post-build operations here
-            // e.g., copying files, running additional tools, etc.
-      },
+  entry: ["src/index.ts"],
+  onBuildSuccess: () => {
+    console.log("Build completed successfully!");
+    // Perform post-build operations here
+    // e.g., copying files, running additional tools, etc.
+  },
 });
 ```
 
@@ -941,18 +938,18 @@ This is especially useful when you have multiple configurations:
 
 ```typescript
 export default defineConfig([
-      {
-            name: 'node-build',
-            entry: ['src/index.ts'],
-            format: ['cjs'],
-            target: 'node',
-      },
-      {
-            name: 'browser-build',
-            entry: ['src/index.ts'],
-            format: ['esm', 'iife'],
-            target: 'browser',
-      },
+  {
+    name: "node-build",
+    entry: ["src/index.ts"],
+    format: ["cjs"],
+    target: "node",
+  },
+  {
+    name: "browser-build",
+    entry: ["src/index.ts"],
+    format: ["esm", "iife"],
+    target: "browser",
+  },
 ]);
 ```
 
@@ -965,27 +962,27 @@ Bunup provides robust support for monorepo workspaces, allowing you to define bu
 To define a workspace configuration, use the `defineWorkspace` function:
 
 ```typescript
-import {defineWorkspace} from 'bunup';
+import { defineWorkspace } from "bunup";
 
 export default defineWorkspace([
-      {
-            name: 'core-package',
-            root: 'packages/core',
-            config: {
-                  entry: ['src/index.ts'],
-                  format: ['esm', 'cjs'],
-                  dts: true,
-            },
-      },
-      {
-            name: 'utils-package',
-            root: 'packages/utils',
-            config: {
-                  entry: ['src/index.ts'],
-                  format: ['esm'],
-                  dts: true,
-            },
-      },
+  {
+    name: "core-package",
+    root: "packages/core",
+    config: {
+      entry: ["src/index.ts"],
+      format: ["esm", "cjs"],
+      dts: true,
+    },
+  },
+  {
+    name: "utils-package",
+    root: "packages/utils",
+    config: {
+      entry: ["src/index.ts"],
+      format: ["esm"],
+      dts: true,
+    },
+  },
 ]);
 ```
 
@@ -1003,24 +1000,24 @@ You can define multiple build configurations for a single workspace by using an 
 
 ```typescript
 export default defineWorkspace([
+  {
+    name: "web-package",
+    root: "packages/web",
+    config: [
       {
-            name: 'web-package',
-            root: 'packages/web',
-            config: [
-                  {
-                        name: 'esm-build',
-                        entry: ['src/index.ts'],
-                        format: ['esm'],
-                        target: 'browser',
-                  },
-                  {
-                        name: 'cjs-build',
-                        entry: ['src/index.ts'],
-                        format: ['cjs'],
-                        target: 'node',
-                  },
-            ],
+        name: "esm-build",
+        entry: ["src/index.ts"],
+        format: ["esm"],
+        target: "browser",
       },
+      {
+        name: "cjs-build",
+        entry: ["src/index.ts"],
+        format: ["cjs"],
+        target: "node",
+      },
+    ],
+  },
 ]);
 ```
 
@@ -1090,11 +1087,11 @@ By default, bunup targets the node environment. To use features specific to the 
 You can fix this by updating your bunup.config.ts (or JSON equivalent) to include:
 
 ```typescript
-import {defineConfig} from 'bunup';
+import { defineConfig } from "bunup";
 
 export default defineConfig({
-      entry: ['src/index.ts'],
-      target: 'bun', // Key line to add
+  entry: ["src/index.ts"],
+  target: "bun", // Key line to add
 });
 ```
 
