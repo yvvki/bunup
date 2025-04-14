@@ -278,9 +278,9 @@ For example, if you have `src/utils/index.ts` and `src/components/index.ts`, usi
 
 Bunup supports three output formats:
 
-- **esm**: ECMAScript modules (`.mjs` extension)
-- **cjs**: CommonJS modules (`.js` or `.cjs` extension)
-- **iife**: Immediately Invoked Function Expression (`.global.js` extension)
+- **esm**: ECMAScript modules
+- **cjs**: CommonJS modules
+- **iife**: Immediately Invoked Function Expression
 
 You can specify one or more formats:
 
