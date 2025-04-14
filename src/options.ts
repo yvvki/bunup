@@ -1,3 +1,4 @@
+import type { ProcessableEntry } from "./helpers/entry";
 import type {
     Arrayable,
     BunBuildOptions,
@@ -370,6 +371,24 @@ export interface BuildOptions {
      * @see https://bun.sh/docs/bundler/plugins for more information about Bun's plugin system
      */
     bunBuildPlugins?: BunPlugin[];
+    /**
+     * Customize the output file extension for each format.
+     *
+     * @param options Contains format, packageType, options, and entry information
+     * @returns Object with js and dts extensions (including the leading dot)
+     *
+     * @example
+     * outputExtension: ({ format, entry }) => ({
+     *   js: entry.name === 'worker' ? '.worker.js' : `.${format}.js`,
+     *   dts: `.${format}.d.ts`
+     * })
+     */
+    outputExtension?: (options: {
+        format: Format;
+        packageType: string | undefined;
+        options: BuildOptions;
+        entry: ProcessableEntry;
+    }) => { js: string; dts: string };
 }
 
 export type CliOptions = BuildOptions & { config: string };

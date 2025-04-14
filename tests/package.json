@@ -6,6 +6,6 @@
         "bunup": "workspace:*"
     },
     "scripts": {
-        "build": "bunup fixtures/src/index.ts --dts --shims --format esm,cjs --clean"
+        "build": "bunup fixtures/src/index.ts"
     }
 }

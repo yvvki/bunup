@@ -7,7 +7,7 @@ export type ProcessableEntry = {
     path: string;
 };
 
-export function getEntryNameOnly(entry: string) {
+export function getEntryNameOnly(entry: string): string {
     return entry.split("/").pop()?.split(".").slice(0, -1).join(".") || "";
 }
 

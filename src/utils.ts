@@ -36,7 +36,7 @@ export function getDefaultOutputExtension(
 ): string {
     switch (format) {
         case "esm":
-            return ".mjs";
+            return isModulePackage(packageType) ? ".js" : ".mjs";
         case "cjs":
             return isModulePackage(packageType) ? ".cjs" : ".js";
         case "iife":
@@ -50,7 +50,7 @@ export function getDefaultDtsExtention(
 ): string {
     switch (format) {
         case "esm":
-            return ".d.mts";
+            return isModulePackage(packageType) ? ".d.ts" : ".d.mts";
         case "cjs":
             return isModulePackage(packageType) ? ".d.cts" : ".d.ts";
         case "iife":

@@ -311,11 +311,46 @@ export default defineConfig({
 
 The file extensions are determined automatically based on the format and your package.json `type` field:
 
-| Format | package.json type: "module" | package.json type: "commonjs" or unspecified |
-| ------ | --------------------------- | -------------------------------------------- |
-| esm    | `.mjs`                      | `.mjs`                                       |
-| cjs    | `.cjs`                      | `.js`                                        |
-| iife   | `.global.js`                | `.global.js`                                 |
+**When package.json has `"type": "module"`:**
+
+| Format | JavaScript Extension | TypeScript Declaration Extension |
+| ------ | -------------------- | -------------------------------- |
+| esm    | `.js`                | `.d.ts`                          |
+| cjs    | `.cjs`               | `.d.cts`                         |
+| iife   | `.global.js`         | `.d.ts`                          |
+
+**When package.json has `"type": "commonjs"` or is unspecified:**
+
+| Format | JavaScript Extension | TypeScript Declaration Extension |
+| ------ | -------------------- | -------------------------------- |
+| esm    | `.mjs`               | `.d.mts`                         |
+| cjs    | `.js`                | `.d.ts`                          |
+| iife   | `.global.js`         | `.d.ts`                          |
+
+### Customizing Output Extensions
+
+You can customize the output file extensions using the `outputExtension` option:
+
+```typescript
+export default defineConfig({
+  entry: ["src/index.ts"],
+  format: ["esm", "cjs"],
+  outputExtension: ({ format, entry }) => ({
+    js: entry.name === 'worker' ? '.worker.js' : `.${format}.js`,
+    dts: `.${format}.d.ts`
+  })
+});
+```
+
+The `outputExtension` function receives:
+- `format`: The output format
+- `packageType`: The package.json "type" field value (typically 'module' or 'commonjs')
+- `options`: The complete resolved build options object
+- `entry`: The entry object containing `name` and `path` properties
+
+It should return an object with:
+- `js`: The JavaScript file extension (including the leading dot)
+- `dts`: The TypeScript declaration file extension (including the leading dot)
 
 ## TypeScript Declarations
 
@@ -440,15 +475,39 @@ When `dtsOnly` is set to `true`, Bunup will:
 
 This is useful when you want to use Bunup's fast declaration file generation but handle the JavaScript bundling separately or not at all.
 
-### Declaration File Extensions
+## Named Configurations
 
-Declaration file extensions follow the same pattern as JavaScript files:
+You can give your build configurations names for better logging:
 
-| Format | package.json type: "module" | package.json type: "commonjs" or unspecified |
-| ------ | --------------------------- | -------------------------------------------- |
-| esm    | `.d.mts`                    | `.d.mts`                                     |
-| cjs    | `.d.cts`                    | `.d.ts`                                      |
-| iife   | `.d.ts`                     | `.d.ts`                                      |
+```sh
+# CLI
+bunup src/index.ts --name my-library
+
+# Configuration file
+export default defineConfig({
+    name: 'my-library',
+    entry: ['src/index.ts'],
+});
+```
+
+This is especially useful when you have multiple configurations:
+
+```typescript
+export default defineConfig([
+  {
+    name: "node-build",
+    entry: ["src/index.ts"],
+    format: ["cjs"],
+    target: "node",
+  },
+  {
+    name: "browser-build",
+    entry: ["src/index.ts"],
+    format: ["esm", "iife"],
+    target: "browser",
+  },
+]);
+```
 
 ## External Dependencies
 
@@ -632,13 +691,12 @@ For detailed explanations of these values, see the [Bun documentation on source 
 
 ## Define Global Constants
 
-Bunup allows you to define global constants that will be replaced at build time. This is useful for environment variables, version numbers, or any other build-time constants.
+Bunup allows you to define global constants that will be replaced at build time. This is useful for feature flags, version numbers, or any other build-time constants.
 
 ```typescript
 export default defineConfig({
   entry: ["src/index.ts"],
   define: {
-    "process.env.NODE_ENV": '"production"',
     PACKAGE_VERSION: '"1.0.0"',
     DEBUG: "false",
   },
@@ -933,40 +991,6 @@ export default defineConfig({
 ```
 
 In watch mode, the `onBuildSuccess` callback is executed after each successful rebuild.
-
-## Named Configurations
-
-You can give your build configurations names for better logging:
-
-```sh
-# CLI
-bunup src/index.ts --name my-library
-
-# Configuration file
-export default defineConfig({
-    name: 'my-library',
-    entry: ['src/index.ts'],
-});
-```
-
-This is especially useful when you have multiple configurations:
-
-```typescript
-export default defineConfig([
-  {
-    name: "node-build",
-    entry: ["src/index.ts"],
-    format: ["cjs"],
-    target: "node",
-  },
-  {
-    name: "browser-build",
-    entry: ["src/index.ts"],
-    format: ["esm", "iife"],
-    target: "browser",
-  },
-]);
-```
 
 ## Workspaces
 

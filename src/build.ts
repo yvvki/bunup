@@ -137,10 +137,15 @@ export async function build(
 
                     await Promise.all(
                         formatsToProcessDts.map(async (fmt) => {
-                            const extension = getDefaultDtsExtention(
-                                fmt,
-                                packageType,
-                            );
+                            const extension =
+                                options.outputExtension?.({
+                                    format: fmt,
+                                    packageType,
+                                    options,
+                                    entry,
+                                }).dts ??
+                                getDefaultDtsExtention(fmt, packageType);
+
                             const outputPath = `${rootDir}/${options.outDir}/${entry.name}${extension}`;
 
                             await Bun.write(outputPath, content);
@@ -170,7 +175,13 @@ async function buildEntry(
     packageType: string | undefined,
     plugins: BunPlugin[],
 ): Promise<void> {
-    const extension = getDefaultOutputExtension(fmt, packageType);
+    const extension =
+        options.outputExtension?.({
+            format: fmt,
+            packageType,
+            options,
+            entry,
+        }).js ?? getDefaultOutputExtension(fmt, packageType);
 
     const result = await Bun.build({
         entrypoints: [`${rootDir}/${entry.path}`],
