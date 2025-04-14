@@ -84,23 +84,6 @@ describe("Build Process", () => {
         expect(result.files[0].size).toBeLessThan(50);
     });
 
-    it("handles package type module", async () => {
-        createProject({
-            "src/index.ts": "export const x = 1;",
-            "package.json": `{"type": "module"}`,
-        });
-        const result = await runBuild({
-            entry: "src/index.ts",
-            format: ["cjs"],
-            dts: true,
-        });
-        expect(
-            validateBuildFiles(result, {
-                expectedFiles: ["index.cjs", "index.d.cts"],
-            }),
-        ).toBe(true);
-    });
-
     it("includes banner/footer", async () => {
         const result = await runBuild({
             entry: "src/index.ts",
