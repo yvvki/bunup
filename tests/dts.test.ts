@@ -1079,9 +1079,8 @@ describe("dts", () => {
         expect(dtsFile).toBeDefined();
         expect(dtsFile?.content).toContain("class ServiceA");
         expect(dtsFile?.content).toContain("class ServiceB");
-        // TODO: Uncomment these once this issue is fixed: https://github.com/sxzz/rolldown-plugin-dts/issues/6
-        // expect(dtsFile?.content).toContain("class UtilA");
-        // expect(dtsFile?.content).toContain("declare function helperFunction");
+        expect(dtsFile?.content).toContain("class UtilA");
+        expect(dtsFile?.content).toContain("declare function helperFunction");
         expect(dtsFile?.content).toContain("interface ComponentAProps");
         expect(dtsFile?.content).toContain("class ComponentA");
         expect(dtsFile?.content).toContain("interface ComponentBProps");

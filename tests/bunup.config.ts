@@ -1,7 +1,7 @@
 import { defineConfig } from "bunup";
 
 export default defineConfig({
-    entry: ["src/index.ts"],
+    entry: ["fixtures/src/index.mts"],
     format: ["esm", "cjs"],
-    dts: true,
+    dtsOnly: true,
 });

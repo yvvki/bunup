@@ -24,7 +24,7 @@ import {
     getResolvedSplitting,
 } from "./options";
 import { externalPlugin } from "./plugins/external";
-import { injectShimsPlugin } from "./plugins/inject-shims";
+import { injectShimsPlugin } from "./plugins/shims";
 import type { BunPlugin } from "./types";
 import {
     cleanOutDir,

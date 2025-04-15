@@ -75,6 +75,7 @@ export async function watch(
         const changedFile = path.relative(rootDir, filePath);
         logger.cli(`File changed: ${changedFile}`, {
             muted: true,
+            once: changedFile,
         });
         triggerRebuild();
     });

@@ -13,11 +13,12 @@ function getCompilerOptions(tsconfig: TsConfigData) {
 }
 
 export function getDtsPath(tsFilePath: string): string {
-    return tsFilePath.replace(/\.tsx?$/, ".d.ts");
+    return tsFilePath.replace(/\.(ts|tsx|mts|cts)$/, ".d.ts");
 }
 
 export function getBaseUrl(tsconfig: TsConfigData): string {
-    const tsconfigDir = path.dirname(tsconfig.path || "");
+    if (!tsconfig.path) return "";
+    const tsconfigDir = path.dirname(tsconfig.path);
     const compilerOptions = getCompilerOptions(tsconfig);
     return compilerOptions?.baseUrl
         ? path.resolve(tsconfigDir, compilerOptions.baseUrl)
@@ -35,13 +36,18 @@ export function extractPathAliases(
     for (const [alias, targets] of Object.entries(paths)) {
         if (Array.isArray(targets) && targets.length) {
             const pattern = alias.replace(/\*/g, "(.*)");
-            const target = targets[0].replace(/\*/g, "$1");
+
+            let wildcardCount = 0;
+            const target = targets[0].replace(
+                /\*/g,
+                () => `$${++wildcardCount}`,
+            );
+
             aliases.set(`^${pattern}$`, path.join(baseUrl, target));
         }
     }
     return aliases;
 }
-
 function resolveNonRelativeImport(
     importPath: string,
     pathAliases: Map<string, string>,
