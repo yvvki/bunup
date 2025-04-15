@@ -1,6 +1,7 @@
 import type { Plugin } from "rolldown";
 
 import { filesUsedToBundleDts } from "../build";
+import type { TsConfigData } from "../loaders";
 import type { DtsMap } from "./generator";
 import {
     addDtsVirtualPrefix,
@@ -14,8 +15,7 @@ export const DTS_VIRTUAL_FILE_PREFIX = "\0dts:";
 
 export const gerVirtualFilesPlugin = (
     dtsMap: DtsMap,
-    pathAliases: Map<string, string>,
-    baseUrl: string,
+    tsconfig: TsConfigData,
 ): Plugin => {
     return {
         name: "bunup:virtual-dts",
@@ -25,9 +25,8 @@ export const gerVirtualFilesPlugin = (
 
             const resolvedPath = await resolveImportedTsFilePath(
                 source,
-                pathAliases,
-                baseUrl,
                 removeDtsVirtualPrefix(importer),
+                tsconfig,
             );
 
             if (!resolvedPath) return null;

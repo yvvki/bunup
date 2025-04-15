@@ -1,4 +1,5 @@
 import { parseErrorMessage } from "../errors";
+import type { TsConfigData } from "../loaders";
 import { logger } from "../logger";
 import { resolveImportedTsFilePath } from "./utils";
 
@@ -39,8 +40,7 @@ function extractImportsWithRegex(sourceText: string): Set<string> {
 
 export async function collectTsFiles(
     entry: string,
-    pathAliases: Map<string, string>,
-    baseUrl: string,
+    tsconfig: TsConfigData,
 ): Promise<Set<string>> {
     const visited = new Set<string>([entry]);
     const toVisit = [entry];
@@ -56,9 +56,8 @@ export async function collectTsFiles(
             for (const importPath of imports) {
                 const resolvedTsFilePath = await resolveImportedTsFilePath(
                     importPath,
-                    pathAliases,
-                    baseUrl,
                     current,
+                    tsconfig,
                 );
 
                 if (!resolvedTsFilePath) continue;

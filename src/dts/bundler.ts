@@ -6,6 +6,7 @@ import {
     getExternalPatterns,
     getNoExternalPatterns,
 } from "../helpers/external";
+import type { TsConfigData } from "../loaders";
 import { logger } from "../logger";
 import type { BuildOptions } from "../options";
 import { typesResolvePlugin } from "../plugins/types-resolve";
@@ -18,8 +19,7 @@ export async function bundleDts(
     dtsMap: DtsMap,
     options: BuildOptions,
     packageJson: Record<string, unknown> | null,
-    pathAliases: Map<string, string>,
-    baseUrl: string,
+    tsconfig: TsConfigData,
 ): Promise<string> {
     const entryDtsPath = getDtsPath(entryFile);
     const initialDtsEntry = addDtsVirtualPrefix(entryDtsPath);
@@ -47,7 +47,7 @@ export async function bundleDts(
                 handler(warning);
             },
             plugins: [
-                gerVirtualFilesPlugin(dtsMap, pathAliases, baseUrl),
+                gerVirtualFilesPlugin(dtsMap, tsconfig),
                 typeof options.dts === "object" &&
                     "resolve" in options.dts &&
                     typesResolvePlugin(
@@ -57,6 +57,7 @@ export async function bundleDts(
                     ),
                 dts({
                     dtsInput: true,
+                    emitDtsOnly: true,
                 }),
             ],
             external: (source) =>

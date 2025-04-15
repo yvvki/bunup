@@ -48,6 +48,7 @@ export function extractPathAliases(
     }
     return aliases;
 }
+
 function resolveNonRelativeImport(
     importPath: string,
     pathAliases: Map<string, string>,
@@ -90,10 +91,13 @@ async function resolveTsFile(basePath: string): Promise<string | null> {
 
 export function resolveImportedTsFilePath(
     importPath: string,
-    pathAliases: Map<string, string>,
-    baseUrl: string,
-    importer?: string,
+    importer: string | undefined,
+    tsconfig: TsConfigData | undefined,
 ): Promise<string | null> {
+    if (!tsconfig) return Promise.resolve(null);
+
+    const pathAliases = extractPathAliases(tsconfig);
+    const baseUrl = getBaseUrl(tsconfig);
     const resolvedPath = importPath.startsWith(".")
         ? path.resolve(path.dirname(importer || ""), importPath)
         : resolveNonRelativeImport(importPath, pathAliases, baseUrl);
