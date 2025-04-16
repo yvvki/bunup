@@ -22,7 +22,7 @@ Want proof? Clone the repo, run `pnpm benchmark`, and check `benchmarks/results.
 
 - 🔥 **Bytecode Generation**: Faster startups by compiling to Bun bytecode—perfect for CLIs.
 
-- 📦 **Workspace Support**: Build multiple packages with [defineWorkspace()](https://bunup.arshadyaseen.com/#workspaces) in one config file and command.
+- 📦 **Workspace Support**: Build multiple packages with [defineWorkspace()](https://bunup.arshadyaseen.com/documentation/#workspaces) in one config file and command.
 
 - 🔄 **Tsup Familiarity**: Familiar tsup-like CLI and config.
 
