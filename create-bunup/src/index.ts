@@ -17,7 +17,7 @@ import {
 } from "@clack/prompts";
 import colors from "picocolors";
 
-import starterRootDevDependencies from "./latest-dep-versions.json" assert {
+import latestDepVersions from "./latest-dep-versions.json" assert {
     type: "json",
 };
 
@@ -690,7 +690,7 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
             prepare: "husky",
         },
         dependencies: {},
-        devDependencies: starterRootDevDependencies.starterRootDevDependencies,
+        devDependencies: latestDepVersions.starterRootDevDependencies,
         license: "MIT",
         repository: {
             type: "git",
@@ -699,7 +699,7 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
         homepage: `${repoUrl}#readme`,
         ...(packageManager === "pnpm"
             ? {
-                  packageManager: `pnpm@${starterRootDevDependencies.internal.pnpm}`,
+                  packageManager: `pnpm@${latestDepVersions.internal.pnpm}`,
               }
             : {}),
     };
