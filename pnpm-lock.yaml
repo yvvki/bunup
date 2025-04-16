@@ -26,6 +26,9 @@ importers:
       rolldown-plugin-dts:
         specifier: ^0.4.0
         version: 0.4.0(rolldown@1.0.0-beta.7(typescript@5.8.3))
+      ts-import-resolver:
+        specifier: ^0.1.5
+        version: 0.1.5(typescript@5.8.3)
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -2544,6 +2547,14 @@ packages:
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
+
+  ts-import-resolver@0.1.5:
+    resolution: {integrity: sha512-JD4TZ9u0S1H8Obwphy9pm10df8HdtCi0KpMqfvUYc/L76KGy7Mb+hGwugGK9R3P+R1ifG5dwqXRIM7HFVtUf3g==}
+    peerDependencies:
+      typescript: '>=4.5.0'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
@@ -5082,6 +5093,10 @@ snapshots:
   tree-kill@1.2.2: {}
 
   trim-lines@3.0.1: {}
+
+  ts-import-resolver@0.1.5(typescript@5.8.3):
+    optionalDependencies:
+      typescript: 5.8.3
 
   ts-interface-checker@0.1.13: {}
 

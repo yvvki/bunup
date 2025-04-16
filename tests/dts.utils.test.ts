@@ -1,14 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
     addDtsVirtualPrefix,
-    extractPathAliases,
-    getBaseUrl,
     getDtsPath,
     isDtsVirtualFile,
     removeDtsVirtualPrefix,
 } from "../src/dts/utils";
 import { DTS_VIRTUAL_FILE_PREFIX } from "../src/dts/virtual-files";
-import type { TsConfigData } from "../src/loaders";
 
 describe("DTS Utils", () => {
     describe("getDtsPath", () => {
@@ -51,200 +48,20 @@ describe("DTS Utils", () => {
         it("handles empty string", () => {
             expect(getDtsPath("")).toBe("");
         });
-    });
 
-    describe("getBaseUrl", () => {
-        it("returns baseUrl from tsconfig when specified", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {
-                    compilerOptions: {
-                        baseUrl: "./src",
-                        paths: {},
-                    },
-                },
-            };
-            expect(getBaseUrl(tsconfig)).toBe("/project/src");
+        it("does not convert .d.ts files", () => {
+            expect(getDtsPath("/path/to/file.d.ts")).toBe("/path/to/file.d.ts");
         });
 
-        it("returns directory of tsconfig when baseUrl not specified", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {
-                    compilerOptions: {
-                        paths: {},
-                    },
-                },
-            };
-            expect(getBaseUrl(tsconfig)).toBe("/project");
-        });
-
-        it("returns directory of tsconfig when compilerOptions not specified", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {},
-            };
-            expect(getBaseUrl(tsconfig)).toBe("/project");
-        });
-
-        it("returns empty string when tsconfig path not specified", () => {
-            const tsconfig: TsConfigData = {
-                tsconfig: {
-                    compilerOptions: {
-                        baseUrl: "./src",
-                    },
-                },
-                path: null,
-            };
-            expect(getBaseUrl(tsconfig)).toBe("");
-        });
-
-        it("handles tsconfig in nested directories", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/configs/tsconfig.json",
-                tsconfig: {
-                    compilerOptions: {
-                        baseUrl: "../src",
-                    },
-                },
-            };
-            expect(getBaseUrl(tsconfig)).toBe("/project/src");
-        });
-    });
-
-    describe("extractPathAliases", () => {
-        it("extracts path aliases with wildcards", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {
-                    compilerOptions: {
-                        baseUrl: "./",
-                        paths: {
-                            "@/*": ["src/*"],
-                            "components/*": ["src/components/*"],
-                        },
-                    },
-                },
-            };
-
-            const aliases = extractPathAliases(tsconfig);
-            expect(aliases.size).toBe(2);
-            expect(aliases.get("^@/(.*)$")).toBe("/project/src/$1");
-            expect(aliases.get("^components/(.*)$")).toBe(
-                "/project/src/components/$1",
+        it("does not convert .d.mts files", () => {
+            expect(getDtsPath("/path/to/file.d.mts")).toBe(
+                "/path/to/file.d.mts",
             );
         });
 
-        it("returns empty map when no paths in tsconfig", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {
-                    compilerOptions: {
-                        baseUrl: "./",
-                    },
-                },
-            };
-
-            const aliases = extractPathAliases(tsconfig);
-            expect(aliases.size).toBe(0);
-        });
-
-        it("returns empty map when no compilerOptions in tsconfig", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {},
-            };
-
-            const aliases = extractPathAliases(tsconfig);
-            expect(aliases.size).toBe(0);
-        });
-
-        it("returns empty map for empty tsconfig", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {},
-            };
-
-            const aliases = extractPathAliases(tsconfig);
-            expect(aliases.size).toBe(0);
-        });
-
-        it("handles path aliases without wildcards", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {
-                    compilerOptions: {
-                        baseUrl: "./",
-                        paths: {
-                            "@utils": ["src/utils/index.ts"],
-                            "@types": ["src/types.ts"],
-                        },
-                    },
-                },
-            };
-
-            const aliases = extractPathAliases(tsconfig);
-            expect(aliases.size).toBe(2);
-            expect(aliases.get("^@utils$")).toBe("/project/src/utils/index.ts");
-            expect(aliases.get("^@types$")).toBe("/project/src/types.ts");
-        });
-
-        it("handles path aliases with multiple targets (uses the first one)", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {
-                    compilerOptions: {
-                        baseUrl: "./",
-                        paths: {
-                            "@/*": ["src/*", "lib/*"],
-                            utils: ["src/utils/index.ts", "lib/utils/index.ts"],
-                        },
-                    },
-                },
-            };
-
-            const aliases = extractPathAliases(tsconfig);
-            expect(aliases.size).toBe(2);
-            expect(aliases.get("^@/(.*)$")).toBe("/project/src/$1");
-            expect(aliases.get("^utils$")).toBe("/project/src/utils/index.ts");
-        });
-
-        it("ignores empty array targets", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {
-                    compilerOptions: {
-                        baseUrl: "./",
-                        paths: {
-                            "@/*": ["src/*"],
-                            utils: [],
-                        },
-                    },
-                },
-            };
-
-            const aliases = extractPathAliases(tsconfig);
-            expect(aliases.size).toBe(1);
-            expect(aliases.get("^@/(.*)$")).toBe("/project/src/$1");
-        });
-
-        it("handles complex path mappings with multiple wildcards", () => {
-            const tsconfig: TsConfigData = {
-                path: "/project/tsconfig.json",
-                tsconfig: {
-                    compilerOptions: {
-                        baseUrl: "./",
-                        paths: {
-                            "@api/v*/*": ["src/api/v*/endpoints/*"],
-                        },
-                    },
-                },
-            };
-
-            const aliases = extractPathAliases(tsconfig);
-            expect(aliases.size).toBe(1);
-            expect(aliases.get("^@api/v(.*)/(.*)$")).toBe(
-                "/project/src/api/v$1/endpoints/$2",
+        it("does not convert .d.cts files", () => {
+            expect(getDtsPath("/path/to/file.d.cts")).toBe(
+                "/path/to/file.d.cts",
             );
         });
     });

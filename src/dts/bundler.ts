@@ -20,6 +20,7 @@ export async function bundleDts(
     options: BuildOptions,
     packageJson: Record<string, unknown> | null,
     tsconfig: TsConfigData,
+    rootDir: string,
 ): Promise<string> {
     const entryDtsPath = getDtsPath(entryFile);
     const initialDtsEntry = addDtsVirtualPrefix(entryDtsPath);
@@ -47,7 +48,7 @@ export async function bundleDts(
                 handler(warning);
             },
             plugins: [
-                gerVirtualFilesPlugin(dtsMap, tsconfig),
+                gerVirtualFilesPlugin(dtsMap, tsconfig, rootDir),
                 typeof options.dts === "object" &&
                     "resolve" in options.dts &&
                     typesResolvePlugin(

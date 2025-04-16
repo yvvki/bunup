@@ -28,7 +28,7 @@
         "benchmark": "pnpm -C benchmarks benchmark",
         "upgrade-deps": "pnpx taze -r -w && pnpm install && git add . && git commit -m 'chore: upgrade deps' && pnpm release:ci",
         "prepare": "husky",
-        "update-create-bunup-starter-root-dev-dependencies": "pnpm -C create-bunup update-starter-root-dev-dependencies"
+        "fetch-latest-dep-versions": "pnpm -C create-bunup fetch-latest-dep-versions"
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
@@ -62,7 +62,7 @@
             "url": "https://arshadyaseen.com"
         }
     ],
-    "packageManager": "pnpm@9.15.9",
+    "packageManager": "pnpm@10.8.1",
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
@@ -71,6 +71,7 @@
         "oxc-resolver": "^5.0.1",
         "oxc-transform": "^0.58.1",
         "rolldown": "1.0.0-beta.7",
-        "rolldown-plugin-dts": "^0.4.0"
+        "rolldown-plugin-dts": "^0.4.0",
+        "ts-import-resolver": "^0.1.5"
     }
 }

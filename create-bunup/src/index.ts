@@ -17,7 +17,7 @@ import {
 } from "@clack/prompts";
 import colors from "picocolors";
 
-import starterRootDevDependencies from "./starter-root-dev-dependencies.json" assert {
+import starterRootDevDependencies from "./latest-dep-versions.json" assert {
     type: "json",
 };
 
@@ -55,6 +55,7 @@ interface PackageJson {
         url: string;
     };
     homepage?: string;
+    packageManager?: string;
 }
 
 async function main() {
@@ -436,15 +437,15 @@ jobs:
                     with:
                           node-version: lts/*
                           registry-url: https://registry.npmjs.org/
+                  - uses: oven-sh/setup-bun@v1
+                    with:
+                          bun-version: latest
 ${
     packageManager === "pnpm"
         ? `                  - uses: pnpm/action-setup@v4
                   - run: pnpm install
                   - run: pnpm build`
-        : `                  - uses: oven-sh/setup-bun@v1
-                    with:
-                          bun-version: latest
-                  - run: bun install
+        : `                  - run: bun install
                   - run: bun run build`
 }
                   - run: npx changelogithub
@@ -689,13 +690,18 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
             prepare: "husky",
         },
         dependencies: {},
-        devDependencies: starterRootDevDependencies as Record<string, string>,
+        devDependencies: starterRootDevDependencies.starterRootDevDependencies,
         license: "MIT",
         repository: {
             type: "git",
             url: `git+${repoUrl}.git`,
         },
         homepage: `${repoUrl}#readme`,
+        ...(packageManager === "pnpm"
+            ? {
+                  packageManager: `pnpm@${starterRootDevDependencies.internal.pnpm}`,
+              }
+            : {}),
     };
 }
 

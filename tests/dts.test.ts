@@ -98,6 +98,7 @@ describe("dts", () => {
                     }
 
                     export type { Product } from '@models/product';
+                    export { formatPrice } from '@utils/formatter';
                 `,
             "src/models/product.ts": `
                     export interface Product {
@@ -124,7 +125,7 @@ describe("dts", () => {
         expect(dtsFile?.content).toContain("interface Product");
         expect(dtsFile?.content).toContain("declare function displayProduct");
         expect(dtsFile?.content).toContain(
-            "export { Product, displayProduct }",
+            "export { Product, displayProduct, formatPrice }",
         );
     });
 
@@ -1028,7 +1029,7 @@ describe("dts", () => {
                     }
                 }
             `,
-            "src/utils/index.cts": `
+            "src/utils/index.ts": `
                 export class UtilA {
                     static formatString(str: string): string {
                         return str.toUpperCase();
@@ -1039,7 +1040,7 @@ describe("dts", () => {
                     return value * 2;
                 }
             `,
-            "src/components/ui/index.mts": `
+            "src/components/ui/index.ts": `
                 export * from './component-a';
                 export * from './component-b';
             `,
@@ -1116,7 +1117,7 @@ describe("dts", () => {
                     }
                 }
             `,
-            "src/features/a/index.mts": `
+            "src/features/a/index.ts": `
                 export * from './feature-a';
                 export * from './b';
             `,
@@ -1176,6 +1177,15 @@ describe("dts", () => {
 
     it("should only resolve specified external packages in dts files", async () => {
         createProject({
+            "package.json": JSON.stringify({
+                name: "test",
+                version: "1.0.0",
+                devDependencies: {
+                    "date-fns": "^2.0.0",
+                    chalk: "^4.0.0",
+                    uuid: "^8.0.0",
+                },
+            }),
             "src/index.ts": `
                 import { format, type DateFormat } from 'date-fns';
                 import chalk, { type ChalkColor } from 'chalk';
@@ -1195,15 +1205,6 @@ describe("dts", () => {
                     return v4();
                 }
             `,
-            "package.json": JSON.stringify({
-                name: "test",
-                version: "1.0.0",
-                devDependencies: {
-                    "date-fns": "^2.0.0",
-                    chalk: "^4.0.0",
-                    uuid: "^8.0.0",
-                },
-            }),
             "node_modules/date-fns/index.d.ts": `
                 export type DateFormat = string;
                 export function format(date, formatStr) {

@@ -36,8 +36,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Update starter root dev dependencies
-        run: pnpm update-create-bunup-starter-root-dev-dependencies
+      - name: Fetch latest dependency versions
+        run: pnpm fetch-latest-dep-versions
 
       - name: Build packages
         run: pnpm build

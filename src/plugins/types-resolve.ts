@@ -66,6 +66,7 @@ export function typesResolvePlugin(resolvers?: (string | RegExp)[]): Plugin {
                 : process.cwd();
 
             const { path: resolved } = await resolver.async(directory, id);
+
             if (!resolved) return;
 
             if (/[cm]?jsx?$/.test(resolved)) {

@@ -1,7 +1,7 @@
+import { resolveTypeScriptImportPath } from "ts-import-resolver";
 import { parseErrorMessage } from "../errors";
 import type { TsConfigData } from "../loaders";
 import { logger } from "../logger";
-import { resolveImportedTsFilePath } from "./utils";
 
 const importRegex = /^\s*import\s+(?:[^'"]*?\s+from\s+)?['"]([^'"]+)['"]/gm;
 const exportRegex = /^\s*export\s+.*from\s+['"]([^'"]+)['"]/gm;
@@ -14,7 +14,7 @@ const referencePathRegex =
 const referenceTypesRegex =
     /\/\/\/\s*<reference\s+types\s*=\s*['"]([^'"]+)['"]\s*\/>/g;
 
-function extractImportsWithRegex(sourceText: string): Set<string> {
+function extractImports(sourceText: string): Set<string> {
     const imports = new Set<string>();
     const regexes = [
         importRegex,
@@ -41,6 +41,7 @@ function extractImportsWithRegex(sourceText: string): Set<string> {
 export async function collectTsFiles(
     entry: string,
     tsconfig: TsConfigData,
+    rootDir: string,
 ): Promise<Set<string>> {
     const visited = new Set<string>([entry]);
     const toVisit = [entry];
@@ -51,20 +52,21 @@ export async function collectTsFiles(
 
         try {
             const sourceText = await Bun.file(current).text();
-            const imports = extractImportsWithRegex(sourceText);
+            const imports = extractImports(sourceText);
 
             for (const importPath of imports) {
-                const resolvedTsFilePath = await resolveImportedTsFilePath(
-                    importPath,
-                    current,
-                    tsconfig,
-                );
+                const resolvedImport = resolveTypeScriptImportPath({
+                    path: importPath,
+                    importer: current,
+                    tsconfig: tsconfig.tsconfig,
+                    rootDir,
+                });
 
-                if (!resolvedTsFilePath) continue;
+                if (!resolvedImport) continue;
 
-                if (!visited.has(resolvedTsFilePath)) {
-                    visited.add(resolvedTsFilePath);
-                    toVisit.push(resolvedTsFilePath);
+                if (!visited.has(resolvedImport)) {
+                    visited.add(resolvedImport);
+                    toVisit.push(resolvedImport);
                 }
             }
         } catch (error) {

@@ -13,7 +13,14 @@ export async function generateDts(
     packageJson: Record<string, unknown> | null,
 ): Promise<string> {
     const { absoluteEntry } = await validateInputs(rootDir, entry);
-    const tsFiles = await collectTsFiles(absoluteEntry, tsconfig);
+    const tsFiles = await collectTsFiles(absoluteEntry, tsconfig, rootDir);
     const dtsMap = await generateDtsContent(tsFiles);
-    return bundleDts(absoluteEntry, dtsMap, options, packageJson, tsconfig);
+    return bundleDts(
+        absoluteEntry,
+        dtsMap,
+        options,
+        packageJson,
+        tsconfig,
+        rootDir,
+    );
 }

@@ -13,6 +13,6 @@
         "resolveJsonModule": true,
         "skipLibCheck": true
     },
-    "include": ["src/**/*", "update-starter-root-dev-dependencies.ts"],
+    "include": ["src/**/*", "fetch-latest-dep-versions.ts"],
     "exclude": ["node_modules", "dist"]
 }
