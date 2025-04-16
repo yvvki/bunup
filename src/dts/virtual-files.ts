@@ -1,7 +1,7 @@
 import type { Plugin } from "rolldown";
 
+import { resolveTsImportPath } from "ts-import-resolver";
 import { filesUsedToBundleDts } from "../build";
-import { resolveTypeScriptImportPath } from "../lib/resolve-ts-import";
 import type { TsConfigData } from "../loaders";
 import type { DtsMap } from "./generator";
 import {
@@ -25,7 +25,7 @@ export const gerVirtualFilesPlugin = (
             if (!importer || !isDtsVirtualFile(importer)) return null;
 
             const resolvedPath = tsconfig.tsconfig
-                ? resolveTypeScriptImportPath({
+                ? resolveTsImportPath({
                       path: source,
                       importer: removeDtsVirtualPrefix(importer),
                       tsconfig: tsconfig.tsconfig,

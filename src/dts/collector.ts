@@ -1,5 +1,5 @@
+import { resolveTsImportPath } from "ts-import-resolver";
 import { parseErrorMessage } from "../errors";
-import { resolveTypeScriptImportPath } from "../lib/resolve-ts-import";
 import type { TsConfigData } from "../loaders";
 import { logger } from "../logger";
 
@@ -56,7 +56,7 @@ export async function collectTsFiles(
 
             for (const importPath of imports) {
                 const resolvedImport = tsconfig.tsconfig
-                    ? resolveTypeScriptImportPath({
+                    ? resolveTsImportPath({
                           path: importPath,
                           importer: current,
                           tsconfig: tsconfig.tsconfig,

@@ -27,8 +27,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0(rolldown@1.0.0-beta.7(typescript@5.8.3))
       ts-import-resolver:
-        specifier: ^0.1.7
-        version: 0.1.7(typescript@5.8.3)
+        specifier: ^0.1.9
+        version: 0.1.9(typescript@5.8.3)
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -2548,8 +2548,8 @@ packages:
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
 
-  ts-import-resolver@0.1.7:
-    resolution: {integrity: sha512-AJ6DTvN7Q36JFpoQ2JqpW80jGBoR+3C7oXxen+d9byt1SFvcUxqzx/Vgi/1QEkgIO0VfHD65feIi1/j2vHqBrg==}
+  ts-import-resolver@0.1.9:
+    resolution: {integrity: sha512-OxDmWOjWav8+Z+fKLPsuGC2hhBKIcYTZLGUXlueBhfr7/opfTySjuq+01tyPvZvpYQL5oBTa37UfSFdZuch6lA==}
     peerDependencies:
       typescript: '>=4.5.0'
     peerDependenciesMeta:
@@ -3918,7 +3918,7 @@ snapshots:
       oxc-transform: 0.58.1
       rolldown: 1.0.0-beta.7(typescript@5.8.3)
       rolldown-plugin-dts: 0.4.0(rolldown@1.0.0-beta.7(typescript@5.8.3))
-      ts-import-resolver: 0.1.7(typescript@5.8.3)
+      ts-import-resolver: 0.1.9(typescript@5.8.3)
     optionalDependencies:
       typescript: 5.8.3
     transitivePeerDependencies:
@@ -5095,7 +5095,7 @@ snapshots:
 
   trim-lines@3.0.1: {}
 
-  ts-import-resolver@0.1.7(typescript@5.8.3):
+  ts-import-resolver@0.1.9(typescript@5.8.3):
     optionalDependencies:
       typescript: 5.8.3
 
