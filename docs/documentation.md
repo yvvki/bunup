@@ -2,19 +2,9 @@
 
 Bunup is the **high-performance build tool** for TypeScript and JavaScript libraries, with **first-class support** for libraries built with [Bun](https://bun.sh/). It delivers **lightning-fast builds** — up to **~50× faster than Tsup**.
 
-<video src="/demo.mov" alt="Bunup demo video showing the bundling process" controls style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);"></video>
-
 ## What Can It Bundle?
 
-Bunup handles various file types:
-
-- JavaScript/TypeScript (`.js`, `.jsx`, `.ts`, `.tsx`, `.mjs`, `.cjs`, `.mts`, `.cts`) - Transpiled with built-in transformations
-- JSON (`.json`) - Parsed and inlined as JavaScript objects
-- TOML (`.toml`) - Parsed and inlined as JavaScript objects
-- Text files (`.txt`) - Contents read and inlined as strings
-- Assets (images, fonts, etc.) - Copied to output directory with content hashing
-
-You can customize how files are processed using the [loader](https://bunup.arshadyaseen.com/documentation/#custom-loaders) option in your configuration.
+Bunup handles JavaScript/TypeScript files, JSON, TOML, text files, and various assets. File processing can be customized with the [loader](https://bunup.arshadyaseen.com/documentation/#custom-loaders) option.
 
 ## Quick Start
 
