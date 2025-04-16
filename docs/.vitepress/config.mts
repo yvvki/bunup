@@ -3,6 +3,7 @@ import {
     groupIconMdPlugin,
     groupIconVitePlugin,
 } from "vitepress-plugin-group-icons";
+import llmstxt from 'vitepress-plugin-llms'
 
 import { version } from "../../package.json";
 
@@ -96,7 +97,7 @@ export default defineConfig({
         },
     },
     vite: {
-        plugins: [groupIconVitePlugin()],
+        plugins: [groupIconVitePlugin(), llmstxt()],
     },
     sitemap: {
         hostname: "https://bunup.arshadyaseen.com",
