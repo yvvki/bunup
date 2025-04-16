@@ -97,7 +97,7 @@ export const handleError = (error: unknown, context?: string): void => {
         console.log("\n");
     } else {
         console.error(
-            "\x1B[90mIf you think this is a bug, please open an issue at: \x1B[36mhttps://github.com/arshadyaseen/bunup/issues/new\x1B[0m",
+            "\x1B[90mIf you think this is a bug, please open an issue at: \x1B[36mhttps://github.com/arshad-yaseen/bunup/issues/new\x1B[0m",
         );
     }
 };

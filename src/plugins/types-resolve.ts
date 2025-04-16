@@ -12,20 +12,23 @@ export function typesResolvePlugin(resolvers?: (string | RegExp)[]): Plugin {
         name: "bunup:types-resolve",
         buildStart() {
             resolver ||= new ResolverFactory({
-                mainFields: ["types"],
+                mainFields: ["types", "typings", "module", "main"],
                 conditionNames: ["types", "typings", "import", "require"],
                 extensions: [
                     ".d.ts",
-                    ".ts",
-                    ".d.cts",
                     ".d.mts",
-                    ".cts",
+                    ".d.cts",
+                    ".ts",
                     ".mts",
+                    ".cts",
                 ],
                 modules: ["node_modules", "node_modules/@types"],
             });
         },
         async resolveId(id, importer) {
+            // skip bun types
+            if (id === "bun") return;
+
             const cleanedImporter = importer
                 ? removeDtsVirtualPrefix(importer)
                 : undefined;
@@ -34,28 +37,11 @@ export function typesResolvePlugin(resolvers?: (string | RegExp)[]): Plugin {
             if (/\0/.test(id)) return;
 
             if (resolvers) {
-                const shouldResolve = resolvers.some((resolver) => {
-                    let rs = false;
-                    if (typeof resolver === "string") {
-                        rs =
-                            resolver === id ||
-                            // #1 also resolve modules that are imported by the explicitly specified resolvers
-                            // for example, if the user specifies chokidar to be resolved, and chokidar imports readdirp, we should also resolve readdirp even if it's not in the list of explicitly specified resolvers
-                            !!cleanedImporter?.includes(resolver);
-                    } else {
-                        rs =
-                            resolver.test(id) ||
-                            !!(
-                                // #1
-                                (
-                                    cleanedImporter &&
-                                    resolver.test(cleanedImporter)
-                                )
-                            );
-                    }
-
-                    return rs;
-                });
+                const shouldResolve = resolvers.some((resolver) =>
+                    typeof resolver === "string"
+                        ? resolver === id
+                        : resolver.test(id),
+                );
                 if (!shouldResolve) {
                     return;
                 }
@@ -66,13 +52,6 @@ export function typesResolvePlugin(resolvers?: (string | RegExp)[]): Plugin {
                 : process.cwd();
 
             const { path: resolved } = await resolver.async(directory, id);
-
-            if (!resolved) return;
-
-            if (/[cm]?jsx?$/.test(resolved)) {
-                const dts = resolved.replace(/\.([cm]?)jsx?$/, ".d.$1ts");
-                return (await Bun.file(dts).exists()) ? dts : undefined;
-            }
 
             return resolved;
         },
