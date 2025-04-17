@@ -33,7 +33,6 @@ export async function bundleDts(
             input: initialDtsEntry,
             output: {
                 dir: options.outDir,
-                inlineDynamicImports: true,
             },
             write: false,
             onwarn(warning, handler) {
