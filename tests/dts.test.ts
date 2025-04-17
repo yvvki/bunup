@@ -334,9 +334,7 @@ describe("dts", () => {
         const dtsFile = findFile(result, "index", ".d.ts");
         expect(dtsFile).toBeDefined();
         expect(dtsFile?.content).toContain("declare function createLogger");
-        expect(dtsFile?.content).toContain(
-            "export { logger_d_default as Logger, createLogger };",
-        );
+        expect(dtsFile?.content).toContain("export { Logger, createLogger };");
     });
 
     // TODO: Wait for the response to this comment before deciding whether to add this test or not: https://github.com/sxzz/rolldown-plugin-dts/issues/5#issuecomment-2798874057
