@@ -297,6 +297,136 @@ describe("Build Process", () => {
         ).toBe(true);
     });
 
+    it("should treat dependencies as external by default", async () => {
+        createProject({
+            "src/index.ts": `
+                import chalk from 'chalk';
+
+                console.log(chalk.red('Hello, world!'));
+            `,
+        });
+
+        const result = await runBuild({
+            entry: "src/index.ts",
+            format: ["esm"],
+        });
+
+        expect(result.success).toBe(true);
+
+        expect(result.files[0].content).toContain("chalk");
+        expect(result.files[0].content).toMatch(
+            /import\s+.*\s+from\s+["']chalk["']/,
+        );
+    });
+
+    it("should treat peerDependencies as external by default", async () => {
+        createProject({
+            "src/index.tsx": `
+                import ora from 'ora';
+
+                const spinner = ora('Loading...').start();
+
+                setTimeout(() => {
+                  spinner.succeed('Done!');
+                }, 1000);
+            `,
+        });
+
+        const result = await runBuild({
+            entry: "src/index.tsx",
+            format: ["esm"],
+        });
+
+        expect(result.success).toBe(true);
+
+        expect(result.files[0].content).toContain("ora");
+        expect(result.files[0].content).toMatch(
+            /import\s+.*\s+from\s+["']ora["']/,
+        );
+    });
+
+    it("should not treat devDependencies as external by default", async () => {
+        createProject({
+            "src/index.ts": `
+                import picocolors from 'picocolors';
+
+                console.log(picocolors.red('Hello, world!'));
+            `,
+        });
+
+        const result = await runBuild({
+            entry: "src/index.ts",
+            format: ["esm"],
+        });
+
+        expect(result.success).toBe(true);
+
+        expect(result.files[0].content).not.toMatch(
+            /import\s+.*\s+from\s+["']picocolors["']/,
+        );
+    });
+
+    it("should bundle dependencies specified in noExternal option", async () => {
+        createProject({
+            "src/index.ts": `
+                import ora from 'ora';
+                import chalk from 'chalk';
+
+                console.log(chalk.red('Hello, world!'));
+                ora('Loading...').start();
+            `,
+        });
+
+        const result = await runBuild({
+            entry: "src/index.ts",
+            format: ["esm"],
+            noExternal: ["ora"],
+        });
+
+        expect(result.success).toBe(true);
+
+        expect(result.files[0].content).not.toMatch(
+            /import\s+.*\s+from\s+["']ora["']/,
+        );
+
+        expect(result.files[0].content).toMatch(
+            /import\s+.*\s+from\s+["']chalk["']/,
+        );
+    });
+
+    it("should support regex patterns in external option", async () => {
+        createProject({
+            "src/index.ts": `
+                import lodashArray from 'lodash/array';
+                import lodashObject from 'lodash/object';
+                import chalk from 'chalk';
+
+                console.log(chalk.red('Hello, world!'));
+                ora('Loading...').start();
+                lodashArray.join(['Hello', 'World'], ' ');
+                lodashObject.join(['Hello', 'World'], ' ');
+            `,
+        });
+
+        const result = await runBuild({
+            entry: "src/index.ts",
+            format: ["esm"],
+            external: [/^lodash\//],
+        });
+
+        expect(result.success).toBe(true);
+
+        expect(result.files[0].content).toMatch(
+            /import\s+.*\s+from\s+["']lodash\/array["']/,
+        );
+        expect(result.files[0].content).toMatch(
+            /import\s+.*\s+from\s+["']lodash\/object["']/,
+        );
+        expect(result.files[0].content).toMatch(
+            /import\s+.*\s+from\s+["']chalk["']/,
+        );
+    });
+
     it("should apply custom Bun.build plugins when bunBuildPlugins option is provided", async () => {
         createProject({ "src/index.ts": "export const x = 1;" });
 

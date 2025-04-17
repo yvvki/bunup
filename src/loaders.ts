@@ -38,7 +38,7 @@ export async function loadPackageJson(cwd: string): Promise<{
         name: "package",
         cwd,
         extensions: [".json"],
-        maxDepth: 1,
+        maxDepth: 3,
     });
 
     return {

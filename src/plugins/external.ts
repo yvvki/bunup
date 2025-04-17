@@ -7,7 +7,7 @@ export function externalPlugin(
     return {
         name: "bunup:external-plugin",
         setup(build) {
-            build.onResolve({ filter: /.*/ }, (args: { path: string }) => {
+            build.onResolve({ filter: /.*/ }, (args) => {
                 const importPath = args.path;
                 const isExternal =
                     externalPatterns.some((re) => re.test(importPath)) &&

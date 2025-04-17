@@ -3,9 +3,18 @@
     "version": "0.4.28",
     "private": true,
     "dependencies": {
-        "bunup": "workspace:*"
+        "bunup": "workspace:*",
+        "chalk": "^5.4.1",
+        "lodash": "^4.17.21"
     },
     "scripts": {
         "build": "bunup"
+    },
+    "devDependencies": {
+        "ora": "^8.2.0",
+        "picocolors": "^1.1.1"
+    },
+    "peerDependencies": {
+        "ora": "^8.2.0"
     }
 }
