@@ -931,11 +931,7 @@ export default defineConfig({
 });
 ```
 
-## Build Callbacks
-
-Bunup provides callback functions that allow you to execute custom logic during the build process.
-
-### `onBuildSuccess`
+## Post-build Operations
 
 The `onBuildSuccess` callback runs after the build process successfully completes. This is useful for performing custom post-build operations:
 
@@ -945,22 +941,14 @@ export default defineConfig({
   onBuildSuccess: (options) => {
     console.log("Build completed successfully!");
     // Perform post-build operations here
-    // e.g., copying files, running additional tools, etc.
     // The options parameter contains the build options that were used
   },
 });
 ```
 
-In watch mode, the `onBuildSuccess` callback is executed after each successful rebuild.
+### Using CLI
 
-### CLI vs Config File Callbacks
-
-Bunup offers two ways to run commands after a successful build:
-
-1. **`onBuildSuccess`**: A callback function in your configuration file that receives the build options as a parameter.
-2. **`--onSuccess`**: A CLI option that takes a shell command to execute after the build completes.
-
-Example of using the CLI option:
+The `onSuccess` CLI option allows you to specify a shell command that will be executed after a successful build:
 
 ```sh
 bunup src/index.ts --onSuccess "echo 'Build done!' && node scripts/post-build.js"
