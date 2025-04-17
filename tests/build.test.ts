@@ -461,6 +461,63 @@ describe("Build Process", () => {
         expect(result.files[0].content).toContain(testMarker);
     });
 
+    it("should handle regex external patterns, only matching hyphenated packages", async () => {
+        createProject({
+            "src/index.ts": `
+                import { exec } from 'uvu';
+                import * as uvuExpect from 'uvu-expect';
+                
+                export const test = exec;
+                export const expect = uvuExpect;
+            `,
+        });
+
+        const result = await runBuild({
+            entry: "src/index.ts",
+            format: ["esm"],
+            external: [/uvu-/],
+        });
+
+        expect(result.success).toBe(true);
+
+        expect(result.files[0].content).toMatch(
+            /import\s+.*\s+from\s+["']uvu-expect["']/,
+        );
+
+        expect(result.files[0].content).not.toMatch(
+            /import\s+.*\s+from\s+["']uvu["']/,
+        );
+    });
+
+    it("should handle regex noExternal patterns, only matching hyphenated packages", async () => {
+        createProject({
+            "src/index.ts": `
+                import { $ } from 'zx';
+                import { fs } from 'zx-extra';
+
+                export const exec = $;
+                export const fileSystem = fs;
+            `,
+        });
+
+        const result = await runBuild({
+            entry: "src/index.ts",
+            format: ["esm"],
+            external: ["zx", "zx-extra"],
+            noExternal: [/zx-/],
+        });
+
+        expect(result.success).toBe(true);
+
+        expect(result.files[0].content).toMatch(
+            /import\s+.*\s+from\s+["']zx["']/,
+        );
+
+        expect(result.files[0].content).not.toMatch(
+            /import\s+.*\s+from\s+["']zx-extra["']/,
+        );
+    });
+
     it("should use preferred tsconfig when provided", async () => {
         createProject({
             "tsconfig.json": JSON.stringify({
