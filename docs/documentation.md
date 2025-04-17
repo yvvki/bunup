@@ -296,19 +296,21 @@ export default defineConfig({
   entry: ["src/index.ts"],
   format: ["esm", "cjs"],
   outputExtension: ({ format, entry }) => ({
-    js: entry.name === 'worker' ? '.worker.js' : `.${format}.js`,
-    dts: `.${format}.d.ts`
-  })
+    js: entry.name === "worker" ? ".worker.js" : `.${format}.js`,
+    dts: `.${format}.d.ts`,
+  }),
 });
 ```
 
 The `outputExtension` function receives:
+
 - `format`: The output format
 - `packageType`: The package.json "type" field value (typically 'module' or 'commonjs')
 - `options`: The complete resolved build options object
 - `entry`: The entry object containing `name` and `path` properties
 
 It should return an object with:
+
 - `js`: The JavaScript file extension (including the leading dot)
 - `dts`: The TypeScript declaration file extension (including the leading dot)
 
@@ -734,9 +736,7 @@ You can add your own Bun bundler plugins that will be used during the build proc
 ```typescript
 export default defineConfig({
   entry: ["src/index.ts"],
-  bunBuildPlugins: [
-    customTransformPlugin(),
-  ],
+  bunBuildPlugins: [customTransformPlugin()],
 });
 ```
 
@@ -827,12 +827,12 @@ export default defineConfig({
 
 The `env` option controls how `process.env.*` and `import.meta.env.*` expressions are replaced at build time:
 
-| Value            | Behavior                                                                                                                 |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `"inline"`       | Replaces all `process.env.VAR` references in your code with the actual values of those environment variables at the time of the build.                 |
-| `"disable"`      | Disables environment variable replacement. Keeps `process.env.VAR` as-is in output.                                      |
-| `"PREFIX_*"`     | Only inlines environment variables matching the given prefix (e.g. `PUBLIC_*`).                                          |
-| `{ key: value }` | Replaces both `process.env.KEY` and `import.meta.env.KEY` with the provided values, regardless of the environment. |
+| Value            | Behavior                                                                                                                               |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `"inline"`       | Replaces all `process.env.VAR` references in your code with the actual values of those environment variables at the time of the build. |
+| `"disable"`      | Disables environment variable replacement. Keeps `process.env.VAR` as-is in output.                                                    |
+| `"PREFIX_*"`     | Only inlines environment variables matching the given prefix (e.g. `PUBLIC_*`).                                                        |
+| `{ key: value }` | Replaces both `process.env.KEY` and `import.meta.env.KEY` with the provided values, regardless of the environment.                     |
 
 For more information, see the [Bun documentation on environment variables](https://bun.sh/docs/bundler#env).
 
@@ -942,6 +942,20 @@ export default defineConfig({
     console.log("Build completed successfully!");
     // Perform post-build operations here
     // The options parameter contains the build options that were used
+  },
+});
+```
+
+If you enable watch mode, the `onBuildSuccess` callback will execute after each successful rebuild. If you want to perform post-build operations only when not in watch mode, you can check the `watch` property in the options:
+
+```typescript
+export default defineConfig({
+  entry: ["src/index.ts"],
+  onBuildSuccess: (options) => {
+    if (options.watch) return;
+    
+    console.log("Build completed! Only running in non-watch mode");
+    // Perform operations that should only happen in regular builds
   },
 });
 ```
