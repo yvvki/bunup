@@ -161,6 +161,7 @@ Bunup supports various command-line options:
 | `--shims`                          |             | Inject Node.js compatibility shims for ESM/CJS interoperability                                    | `false`          |
 | `--env <mode>`                     |             | Control environment variable handling (inline, disable or PREFIX\_\*)                              | -                |
 | `--config <path>`                  |             | Specify a custom path to the configuration file                                                    | -                |
+| `--onSuccess <command>`            |             | Command to execute after a successful build                                                        | -                |
 | `--version`                        | `-v`        | Display version information                                                                        | -                |
 | `--help`                           | `-h`        | Display help information                                                                           | -                |
 
@@ -941,15 +942,29 @@ The `onBuildSuccess` callback runs after the build process successfully complete
 ```typescript
 export default defineConfig({
   entry: ["src/index.ts"],
-  onBuildSuccess: () => {
+  onBuildSuccess: (options) => {
     console.log("Build completed successfully!");
     // Perform post-build operations here
     // e.g., copying files, running additional tools, etc.
+    // The options parameter contains the build options that were used
   },
 });
 ```
 
 In watch mode, the `onBuildSuccess` callback is executed after each successful rebuild.
+
+### CLI vs Config File Callbacks
+
+Bunup offers two ways to run commands after a successful build:
+
+1. **`onBuildSuccess`**: A callback function in your configuration file that receives the build options as a parameter.
+2. **`--onSuccess`**: A CLI option that takes a shell command to execute after the build completes.
+
+Example of using the CLI option:
+
+```sh
+bunup src/index.ts --onSuccess "echo 'Build done!' && node scripts/post-build.js"
+```
 
 ## Workspaces
 

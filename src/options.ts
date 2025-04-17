@@ -3,7 +3,7 @@ import type {
     Arrayable,
     BunBuildOptions,
     BunPlugin,
-    PromiseOr,
+    MaybePromise,
     WithRequired,
 } from "./types";
 
@@ -245,8 +245,10 @@ export interface BuildOptions {
      * running additional tools, or logging build information
      *
      * If watch mode is enabled, this callback runs after each rebuild
+     *
+     * @param options The build options that were used
      */
-    onBuildSuccess?: () => PromiseOr<void>;
+    onBuildSuccess?: (options: Partial<BuildOptions>) => MaybePromise<void>;
     /**
      * A banner to be added to the final bundle, this can be a directive like "use client" for react or a comment block such as a license for the code.
      *
@@ -391,7 +393,23 @@ export interface BuildOptions {
     }) => { js: string; dts: string };
 }
 
-export type CliOptions = BuildOptions & { config: string };
+export type CliOptions = BuildOptions & {
+    /**
+     * Path to a specific configuration file to use instead of the default bunup.config.ts.
+     *
+     * @example
+     * bunup src/index.ts --config=./bunup.config.ts
+     */
+    config: string;
+    /**
+     * Command to execute after a successful build.
+     * This command will be run when the build process completes without errors.
+     *
+     * @example
+     * bunup src/index.ts --onSuccess="echo 'Build successful'"
+     */
+    onSuccess?: string;
+};
 
 export const DEFAULT_OPTIONS: WithRequired<BuildOptions, "clean"> = {
     entry: [],

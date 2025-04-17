@@ -165,6 +165,10 @@ export async function build(
             throw new BunupDTSBuildError(parseErrorMessage(error));
         }
     }
+
+    if (options.onBuildSuccess) {
+        await options.onBuildSuccess(options);
+    }
 }
 
 async function buildEntry(

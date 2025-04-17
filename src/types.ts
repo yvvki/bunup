@@ -2,7 +2,7 @@ import type _Bun from "bun";
 
 import type { BuildOptions } from "./options";
 
-export type PromiseOr<T> = Promise<T> | T;
+export type MaybePromise<T> = Promise<T> | T;
 
 export type WithOptional<T, K extends keyof T> = Omit<T, K> &
     Partial<Pick<T, K>>;

@@ -39,10 +39,13 @@ export async function runBuild(
     try {
         const startTime = performance.now();
 
-        await build(
-            { ...options, outDir: ".output", silent: true },
-            PROJECT_DIR,
-        );
+        const buildOptions = {
+            ...options,
+            outDir: ".output",
+            silent: true,
+        };
+
+        await build(buildOptions, PROJECT_DIR);
 
         result.buildTime = performance.now() - startTime;
 

@@ -57,7 +57,6 @@ export async function watch(
                 },
                 rootDir,
             );
-            options.onBuildSuccess?.();
             if (!initial) {
                 logger.cli(
                     `📦 Rebuild finished in ${formatTime(performance.now() - start)}`,

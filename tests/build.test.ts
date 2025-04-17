@@ -461,6 +461,69 @@ describe("Build Process", () => {
         expect(result.files[0].content).toContain(testMarker);
     });
 
+    it("should call onBuildSuccess callback after successful build", async () => {
+        createProject({ "src/index.ts": "export const x = 1;" });
+
+        let callbackCalled = false;
+        let callbackOptions: any = null;
+
+        const result = await runBuild({
+            entry: "src/index.ts",
+            format: ["esm"],
+            onBuildSuccess: (options) => {
+                callbackCalled = true;
+                callbackOptions = options;
+            },
+        });
+
+        expect(result.success).toBe(true);
+        expect(callbackCalled).toBe(true);
+        expect(callbackOptions).not.toBeNull();
+        expect(callbackOptions.entry).toBe("src/index.ts");
+        expect(callbackOptions.format).toContain("esm");
+    });
+
+    it("should pass correct build options to onBuildSuccess callback", async () => {
+        createProject({ "src/index.ts": "export const x = 1;" });
+
+        let passedOptions: any = null;
+
+        const result = await runBuild({
+            entry: "src/index.ts",
+            format: ["esm", "cjs"],
+            minify: true,
+            dts: true,
+            onBuildSuccess: (options) => {
+                passedOptions = options;
+            },
+        });
+
+        expect(result.success).toBe(true);
+        expect(passedOptions).not.toBeNull();
+        expect(passedOptions.entry).toBe("src/index.ts");
+        expect(passedOptions.format).toEqual(["esm", "cjs"]);
+        expect(passedOptions.minify).toBe(true);
+        expect(passedOptions.dts).toBe(true);
+    });
+
+    it("should support async onBuildSuccess callback", async () => {
+        createProject({ "src/index.ts": "export const x = 1;" });
+
+        let asyncOperationCompleted = false;
+
+        const result = await runBuild({
+            entry: "src/index.ts",
+            format: ["esm"],
+            onBuildSuccess: async () => {
+                await new Promise((resolve) => setTimeout(resolve, 1));
+                asyncOperationCompleted = true;
+            },
+        });
+
+        expect(result.success).toBe(true);
+        expect(asyncOperationCompleted).toBe(true);
+    });
+
     it("should handle regex external patterns, only matching hyphenated packages", async () => {
         createProject({
             "src/index.ts": `

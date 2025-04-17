@@ -1,11 +1,10 @@
 #!/usr/bin/env bun
+import { exec } from "tinyexec";
 import { build, filesUsedToBundleDts } from "./build";
 import { parseCliOptions } from "./cli-parse";
 import { handleErrorAndExit } from "./errors";
 import { logger, setSilent } from "./logger";
-import type { BuildOptions } from "./options";
-
-import "./runtime";
+import type { BuildOptions, CliOptions } from "./options";
 
 import { loadConfig } from "coffi";
 import { version } from "../package.json";
@@ -55,7 +54,7 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
             return optionsArray.map(async (o) => {
                 const partialOptions: Partial<BuildOptions> = {
                     ...o,
-                    ...cliOptions,
+                    ...removeCliOnlyOptions(cliOptions),
                 };
 
                 return handleBuild(partialOptions, rootDir);
@@ -73,9 +72,27 @@ export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
         logger.cli("👀 Watching for file changes");
     }
 
+    if (cliOptions.onSuccess) {
+        logger.cli(`Running command: ${cliOptions.onSuccess}`, {
+            muted: true,
+        });
+
+        exec(cliOptions.onSuccess, [], {
+            nodeOptions: { shell: true, stdio: "inherit" },
+        });
+    }
+
     if (!cliOptions.watch) {
         process.exit(0);
     }
+}
+
+function removeCliOnlyOptions(options: Partial<CliOptions>) {
+    return {
+        ...options,
+        onSuccess: undefined,
+        config: undefined,
+    };
 }
 
 export async function validateDtsFiles() {
@@ -90,7 +107,6 @@ async function handleBuild(options: Partial<BuildOptions>, rootDir: string) {
         await watch(options, rootDir);
     } else {
         await build(options, rootDir);
-        options.onBuildSuccess?.();
     }
 }
 

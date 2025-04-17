@@ -132,6 +132,10 @@ const optionConfigs = {
     },
     env: { flags: ["env"], handler: stringHandler("env") },
     shims: { flags: ["shims"], handler: booleanHandler("shims") },
+    onSuccess: {
+        flags: ["onSuccess"],
+        handler: stringHandler("onSuccess"),
+    },
     entry: {
         flags: ["entry"],
         handler: (
