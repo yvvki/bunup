@@ -394,7 +394,7 @@ describe("Build Process", () => {
         );
     });
 
-    it("should support regex patterns in external option", async () => {
+    it("should consider sub-modules as external when parent module is in external option", async () => {
         createProject({
             "src/index.ts": `
                 import lodashArray from 'lodash/array';
@@ -411,7 +411,7 @@ describe("Build Process", () => {
         const result = await runBuild({
             entry: "src/index.ts",
             format: ["esm"],
-            external: [/^lodash\//],
+            external: ["lodash"],
         });
 
         expect(result.success).toBe(true);
