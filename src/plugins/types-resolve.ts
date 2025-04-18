@@ -9,12 +9,13 @@ import {
     removeDtsVirtualPrefix,
 } from "../dts/utils";
 import type { TsConfigData } from "../loaders";
+import type { DtsResolve } from "../options";
 
 let resolver: ResolverFactory;
 
 export function typesResolvePlugin(
     tsconfig: TsConfigData,
-    resolvers?: (string | RegExp)[],
+    dtsResolve: DtsResolve,
 ): Plugin {
     return {
         name: "bunup:types-resolve",
@@ -39,6 +40,8 @@ export function typesResolvePlugin(
             });
         },
         async resolveId(id, importer) {
+            if (dtsResolve === false) return;
+
             // skip bun types for now
             if (id === "bun") return;
 
@@ -49,8 +52,8 @@ export function typesResolvePlugin(
             // skip rollup virtual modules
             if (/\0/.test(id)) return;
 
-            if (resolvers) {
-                const shouldResolve = resolvers.some((resolver) =>
+            if (Array.isArray(dtsResolve)) {
+                const shouldResolve = dtsResolve.some((resolver) =>
                     typeof resolver === "string"
                         ? resolver === id
                         : resolver.test(id),

@@ -1,5 +1,11 @@
 export type { FSWatcher } from "chokidar";
 
+export type { ChalkInstance } from "chalk";
+
+export type { Test } from "uvu";
+
+export type { DefineConfigItem } from "bunup";
+
 console.log("url:", import.meta.url);
 export const url: string = import.meta.url;
 

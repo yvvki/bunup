@@ -11,7 +11,12 @@ import { logger } from "../logger";
 import type { BuildOptions } from "../options";
 import { typesResolvePlugin } from "../plugins/types-resolve";
 import type { DtsMap } from "./generator";
-import { addDtsVirtualPrefix, getCompilerOptions, getDtsPath } from "./utils";
+import {
+    addDtsVirtualPrefix,
+    dtsShouldTreatAsExternal,
+    getCompilerOptions,
+    getDtsPath,
+} from "./utils";
 import { gerVirtualFilesPlugin } from "./virtual-files";
 
 export async function bundleDts(
@@ -27,6 +32,11 @@ export async function bundleDts(
 
     const externalPatterns = getExternalPatterns(options, packageJson);
     const noExternalPatterns = getNoExternalPatterns(options);
+
+    const dtsResolve =
+        typeof options.dts === "object" && "resolve" in options.dts
+            ? options.dts.resolve
+            : undefined;
 
     try {
         const { output } = await build({
@@ -48,14 +58,7 @@ export async function bundleDts(
             },
             plugins: [
                 gerVirtualFilesPlugin(dtsMap, tsconfig, rootDir),
-                typeof options.dts === "object" &&
-                    "resolve" in options.dts &&
-                    typesResolvePlugin(
-                        tsconfig,
-                        typeof options.dts.resolve === "boolean"
-                            ? undefined
-                            : options.dts.resolve,
-                    ),
+                dtsResolve && typesResolvePlugin(tsconfig, dtsResolve),
                 dts({
                     dtsInput: true,
                     emitDtsOnly: true,
@@ -74,8 +77,12 @@ export async function bundleDts(
                 }),
             ],
             external: (source) =>
-                externalPatterns.some((re) => re.test(source)) &&
-                !noExternalPatterns.some((re) => re.test(source)),
+                dtsShouldTreatAsExternal(
+                    source,
+                    externalPatterns,
+                    noExternalPatterns,
+                    dtsResolve,
+                ),
         });
 
         if (!output[0]?.code) {

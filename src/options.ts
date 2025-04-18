@@ -36,6 +36,8 @@ export type ShimOptions = {
 
 export type Shims = boolean | ShimOptions;
 
+export type DtsResolve = boolean | (string | RegExp)[];
+
 export type DtsOptions = {
     /**
      * Entry point files for TypeScript declaration file generation
@@ -67,7 +69,7 @@ export type DtsOptions = {
     /**
      * Resolve external types used in dts files from node_modules
      */
-    resolve?: boolean | (string | RegExp)[];
+    resolve?: DtsResolve;
 };
 
 export interface BuildOptions {
