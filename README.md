@@ -7,10 +7,10 @@ Bunup is the **high-performance build tool** for TypeScript and JavaScript libra
 
 | Bundler | Format   | Build Time     | Build Time (with dts) |
 | ------- | -------- | -------------- | --------------------- |
-| bunup   | esm, cjs | **3.14ms ⚡️** | **19.86ms ⚡️**       |
-| tsdown  | esm, cjs | 5.60ms         | 56.87ms               |
-| unbuild | esm, cjs | 41.19ms        | 321.09ms              |
-| tsup    | esm, cjs | 62.59ms        | 937.64ms              |
+| bunup   | esm, cjs | **3.52ms ⚡️** | **20.84ms ⚡️**       |
+| tsdown  | esm, cjs | 5.65ms         | 434.67ms              |
+| unbuild | esm, cjs | 43.13ms        | 275.80ms              |
+| tsup    | esm, cjs | 63.39ms        | 904.67ms              |
 
 _Lower is better. Benchmarks run on identical code and output formats._
 
