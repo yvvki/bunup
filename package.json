@@ -5,7 +5,7 @@
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "module": "./build/index.mjs",
-    "files": ["build"],
+    "files": ["build", "bin"],
     "bin": {
         "bunup": "./bin/bunup.js"
     },
