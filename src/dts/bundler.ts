@@ -11,7 +11,7 @@ import { logger } from "../logger";
 import type { BuildOptions } from "../options";
 import { typesResolvePlugin } from "../plugins/types-resolve";
 import type { DtsMap } from "./generator";
-import { addDtsVirtualPrefix, getDtsPath } from "./utils";
+import { addDtsVirtualPrefix, getCompilerOptions, getDtsPath } from "./utils";
 import { gerVirtualFilesPlugin } from "./virtual-files";
 
 export async function bundleDts(
@@ -51,6 +51,7 @@ export async function bundleDts(
                 typeof options.dts === "object" &&
                     "resolve" in options.dts &&
                     typesResolvePlugin(
+                        tsconfig,
                         typeof options.dts.resolve === "boolean"
                             ? undefined
                             : options.dts.resolve,
@@ -58,6 +59,18 @@ export async function bundleDts(
                 dts({
                     dtsInput: true,
                     emitDtsOnly: true,
+                    compilerOptions: {
+                        ...getCompilerOptions(tsconfig),
+                        declaration: true,
+                        noEmit: false,
+                        emitDeclarationOnly: true,
+                        noEmitOnError: true,
+                        checkJs: false,
+                        declarationMap: false,
+                        skipLibCheck: true,
+                        preserveSymlinks: false,
+                        target: 99 as any, // ESNext
+                    },
                 }),
             ],
             external: (source) =>

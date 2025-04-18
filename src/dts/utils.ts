@@ -1,13 +1,34 @@
+import type { TsConfigData } from "../loaders";
 import { DTS_VIRTUAL_FILE_PREFIX } from "./virtual-files";
 
-export function getDtsPath(tsFilePath: string): string {
-    if (
-        tsFilePath.endsWith(".d.ts") ||
-        tsFilePath.endsWith(".d.mts") ||
-        tsFilePath.endsWith(".d.cts")
-    )
-        return tsFilePath;
-    return tsFilePath.replace(/\.(ts|tsx|mts|cts)$/, ".d.ts");
+export function getCompilerOptions(tsconfig: TsConfigData) {
+    return (
+        (
+            tsconfig.tsconfig as {
+                compilerOptions: Record<string, unknown> | undefined;
+            }
+        ).compilerOptions ?? {}
+    );
+}
+
+export function isDtsFile(filePath: string): boolean {
+    return (
+        filePath.endsWith(".d.ts") ||
+        filePath.endsWith(".d.mts") ||
+        filePath.endsWith(".d.cts")
+    );
+}
+
+export function isSourceCodeFile(filePath: string): boolean {
+    return (
+        /\.(js|mjs|cjs|ts|mts|cts|tsx|jsx)$/.test(filePath) &&
+        !isDtsFile(filePath)
+    );
+}
+
+export function getDtsPath(filePath: string): string {
+    if (isDtsFile(filePath)) return filePath;
+    return filePath.replace(/\.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$/, ".d.ts");
 }
 
 export function isDtsVirtualFile(filePath: string): boolean {

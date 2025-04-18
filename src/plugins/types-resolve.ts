@@ -3,11 +3,19 @@ import path from "node:path";
 import { ResolverFactory } from "oxc-resolver";
 import type { Plugin } from "rolldown";
 
-import { removeDtsVirtualPrefix } from "../dts/utils";
+import {
+    getDtsPath,
+    isSourceCodeFile,
+    removeDtsVirtualPrefix,
+} from "../dts/utils";
+import type { TsConfigData } from "../loaders";
 
 let resolver: ResolverFactory;
 
-export function typesResolvePlugin(resolvers?: (string | RegExp)[]): Plugin {
+export function typesResolvePlugin(
+    tsconfig: TsConfigData,
+    resolvers?: (string | RegExp)[],
+): Plugin {
     return {
         name: "bunup:types-resolve",
         buildStart() {
@@ -22,11 +30,16 @@ export function typesResolvePlugin(resolvers?: (string | RegExp)[]): Plugin {
                     ".mts",
                     ".cts",
                 ],
+                ...(tsconfig.path && {
+                    tsconfig: {
+                        configFile: tsconfig.path,
+                    },
+                }),
                 modules: ["node_modules", "node_modules/@types"],
             });
         },
         async resolveId(id, importer) {
-            // skip bun types
+            // skip bun types for now
             if (id === "bun") return;
 
             const cleanedImporter = importer
@@ -52,6 +65,25 @@ export function typesResolvePlugin(resolvers?: (string | RegExp)[]): Plugin {
                 : process.cwd();
 
             const { path: resolved } = await resolver.async(directory, id);
+
+            if (!resolved) return;
+
+            // if resolved file is a js/ts file, try to resolve the corresponding d.ts file
+            if (isSourceCodeFile(resolved)) {
+                const dtsPath = getDtsPath(resolved);
+
+                try {
+                    const { path: dtsResolved } = await resolver.async(
+                        path.dirname(resolved),
+                        dtsPath,
+                    );
+                    if (dtsResolved) {
+                        return dtsResolved;
+                    }
+                } catch (error) {}
+
+                return;
+            }
 
             return resolved;
         },

@@ -24,8 +24,8 @@ importers:
         specifier: 1.0.0-beta.7
         version: 1.0.0-beta.7(typescript@5.8.3)
       rolldown-plugin-dts:
-        specifier: ^0.6.0
-        version: 0.6.0(rolldown@1.0.0-beta.7(typescript@5.8.3))(typescript@5.8.3)
+        specifier: ^0.7.0
+        version: 0.7.0(rolldown@1.0.0-beta.7(typescript@5.8.3))(typescript@5.8.3)
       tinyexec:
         specifier: ^1.0.1
         version: 1.0.1
@@ -2948,8 +2948,8 @@ packages:
     peerDependencies:
       rolldown: ^1.0.0-beta.7
 
-  rolldown-plugin-dts@0.6.0:
-    resolution: {integrity: sha512-c9DsZicZ3tdFHJl3gJUrNF9BZT2CtSuVMhYkPIhvBfaYDTZQdBd8KLvD9jU5WWzsrL3cfy0BgqQ0QwE8uojOCw==}
+  rolldown-plugin-dts@0.7.0:
+    resolution: {integrity: sha512-zWpFiyWmrfJ6gEoiPTV5QYCEaJZARROCWb9T3HSUoMbQblwNekE39iZITDoMr8GxzX/9l+5hxSa7oVM19WslTQ==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       rolldown: ^1.0.0-beta.7
@@ -6213,7 +6213,7 @@ snapshots:
       oxc-transform: 0.62.0
       rolldown: 1.0.0-beta.7(typescript@5.8.3)
 
-  rolldown-plugin-dts@0.6.0(rolldown@1.0.0-beta.7(typescript@5.8.3))(typescript@5.8.3):
+  rolldown-plugin-dts@0.7.0(rolldown@1.0.0-beta.7(typescript@5.8.3))(typescript@5.8.3):
     dependencies:
       debug: 4.4.0
       dts-resolver: 0.1.0
