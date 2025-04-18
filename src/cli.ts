@@ -16,7 +16,7 @@ import { watch } from "./watch";
 
 export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>;
 
-export async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
+async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     const cliOptions = parseCliOptions(args);
 
     setSilent(cliOptions.silent);

@@ -7,7 +7,7 @@
     "module": "./build/index.mjs",
     "files": ["build"],
     "bin": {
-        "bunup": "build/cli.mjs"
+        "bunup": "./bin/bunup.js"
     },
     "scripts": {
         "build": "bunup",
