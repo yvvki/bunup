@@ -7,9 +7,9 @@ import {
     getDtsPath,
     isSourceCodeFile,
     removeDtsVirtualPrefix,
-} from "../dts/utils";
-import type { TsConfigData } from "../loaders";
-import type { DtsResolve } from "../options";
+} from "../../dts/utils";
+import type { TsConfigData } from "../../loaders";
+import type { DtsResolve } from "../../options";
 
 let resolver: ResolverFactory;
 

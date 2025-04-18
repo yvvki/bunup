@@ -23,8 +23,9 @@ import {
     getResolvedMinify,
     getResolvedSplitting,
 } from "./options";
-import { externalPlugin } from "./plugins/external";
-import { injectShimsPlugin } from "./plugins/shims";
+import { externalPlugin } from "./plugins/internal/external";
+import { injectShimsPlugin } from "./plugins/internal/shims";
+import { filterBunPlugins } from "./plugins/utils";
 import type { BunPlugin } from "./types";
 import {
     cleanOutDir,
@@ -73,7 +74,10 @@ export async function build(
     const noExternalPatterns = getNoExternalPatterns(options);
 
     if (!options.dtsOnly) {
-        const plugins = [externalPlugin(externalPatterns, noExternalPatterns)];
+        const plugins = [
+            externalPlugin(externalPatterns, noExternalPatterns),
+            ...filterBunPlugins(options.plugins ?? []),
+        ];
 
         const buildPromises = options.format.flatMap((fmt) =>
             processableEntries.map((entry) => {
@@ -216,7 +220,6 @@ async function buildEntry(
                 target: options.target,
                 shims: options.shims,
             }),
-            ...(options.bunBuildPlugins ?? []),
         ],
         throw: false,
     });

@@ -1,8 +1,8 @@
 import type { ProcessableEntry } from "./helpers/entry";
+import type { Plugin } from "./plugins/types";
 import type {
     Arrayable,
     BunBuildOptions,
-    BunPlugin,
     MaybePromise,
     WithRequired,
 } from "./types";
@@ -370,11 +370,32 @@ export interface BuildOptions {
      */
     env?: Env;
     /**
-     * Custom Bun.build plugins to be applied during the build process..
+     * Plugins to extend the build process functionality
      *
-     * @see https://bun.sh/docs/bundler/plugins for more information about Bun's plugin system
+     * The Plugin type uses a discriminated union pattern with the 'type' field
+     * to support different plugin systems. Currently, only "bun" plugins are supported,
+     * but in the future, this will be extended to include "bunup" plugins as well.
+     *
+     * Each plugin type has its own specific plugin implementation:
+     * - "bun": Uses Bun's native plugin system (BunPlugin)
+     * - "bunup": Will use bunup's own plugin system (coming in future versions)
+     *
+     * This architecture allows for extensibility as more plugin systems are added.
+     *
+     * @example
+     * plugins: [
+     *   {
+     *     type: "bun",
+     *     plugin: myBunPlugin()
+     *   },
+     *   // In the future:
+     *   // {
+     *   //   type: "bunup",
+     *   //   plugin: myBunupPlugin()
+     *   // }
+     * ]
      */
-    bunBuildPlugins?: BunPlugin[];
+    plugins?: Plugin[];
     /**
      * Customize the output file extension for each format.
      *

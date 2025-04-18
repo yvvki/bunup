@@ -1,4 +1,4 @@
-import type { BunPlugin } from "../types";
+import type { BunPlugin } from "../../types";
 
 export function externalPlugin(
     externalPatterns: RegExp[],

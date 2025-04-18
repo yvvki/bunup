@@ -9,7 +9,7 @@ import {
 import type { TsConfigData } from "../loaders";
 import { logger } from "../logger";
 import type { BuildOptions } from "../options";
-import { typesResolvePlugin } from "../plugins/types-resolve";
+import { typesResolvePlugin } from "../plugins/internal/types-resolve";
 import type { DtsMap } from "./generator";
 import {
     addDtsVirtualPrefix,

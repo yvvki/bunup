@@ -729,21 +729,6 @@ The `loader` option takes a map of file extensions to built-in loader names, all
 
 For more information, see the [Bun documentation on loaders](https://bun.sh/docs/bundler#loader).
 
-## Custom Bun Build Plugins
-
-You can add your own Bun bundler plugins that will be used during the build process:
-
-```typescript
-export default defineConfig({
-  entry: ["src/index.ts"],
-  bunBuildPlugins: [customTransformPlugin()],
-});
-```
-
-The `bunBuildPlugins` option accepts an array of Bun plugins that will be applied during the build process. Plugins can transform code, handle different file types, and more.
-
-For more information, see the [Bun documentation on plugins](https://bun.sh/docs/bundler/plugins).
-
 ## Public Path
 
 You can specify a prefix to be added to specific import paths in your bundled code:

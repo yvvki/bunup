@@ -32,6 +32,21 @@ export default defineConfig({
                 ],
             },
         ],
+        sidebar: [
+            {
+                text: 'Guide',
+                items: [
+                    { text: 'Documentation', link: '/documentation' }
+                ]
+            },
+            {
+                text: 'Plugins',
+                items: [
+                    { text: 'Introduction', link: '/plugins' },
+                    { text: 'Built-in Plugins', link: '/plugins/built-in' }
+                ]
+            }
+        ],
         editLink: {
             pattern:
                 "https://github.com/arshad-yaseen/bunup/edit/main/docs/:path",

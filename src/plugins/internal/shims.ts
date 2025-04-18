@@ -1,6 +1,6 @@
-import type { Format, ShimOptions, Shims, Target } from "../options";
-import type { BunPlugin } from "../types";
-import { isNodeCompatibleTarget } from "../utils";
+import type { Format, ShimOptions, Shims, Target } from "../../options";
+import type { BunPlugin } from "../../types";
+import { isNodeCompatibleTarget } from "../../utils";
 
 interface InjectShimsPluginOptions {
     format: Format;
