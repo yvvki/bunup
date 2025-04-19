@@ -4,4 +4,8 @@ Bunup comes with a set of built-in plugins that provide additional functionality
 
 ::: info
 This section will be updated as built-in plugins are added to Bunup.
-::: 
+:::
+
+::: tip
+If you have suggestions or ideas for plugins, please open a new issue on our [GitHub repository](https://github.com/arshad-yaseen/bunup/issues/new).
+:::

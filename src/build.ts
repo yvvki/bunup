@@ -40,7 +40,7 @@ export const filesUsedToBundleDts: Set<string> = new Set<string>();
 
 export async function build(
     partialOptions: Partial<BuildOptions>,
-    rootDir: string,
+    rootDir: string = process.cwd(),
 ): Promise<void> {
     const options = createBuildOptions(partialOptions);
 

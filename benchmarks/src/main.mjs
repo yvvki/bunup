@@ -10,7 +10,7 @@ import { runBenchmarksForBundlers, saveBenchmarkResults } from "./utils.mjs";
 const bundlers = [
     {
         name: "bunup",
-        buildFn: (options) => bunupBuild(options, process.cwd()),
+        buildFn: (options) => bunupBuild(options),
         options: (dts) => ({
             entry: [ENTRY_POINT],
             outDir: "bunup-dist",
@@ -28,7 +28,11 @@ const bundlers = [
             entry: [ENTRY_POINT],
             outDir: "tsdown-dist",
             format: ["esm", "cjs"],
-            dts,
+            ...(dts && {
+                dts: {
+                    isolatedDeclaration: true,
+                },
+            }),
             treeshake: true,
             clean: true,
         }),
