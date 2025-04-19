@@ -6,6 +6,7 @@ import { isolatedDeclaration } from "oxc-transform";
 import { BunupDTSBuildError } from "../errors";
 import { logger } from "../logger";
 import { getShortFilePath, isTypeScriptFile } from "../utils";
+import { getSourceCodePathFromDtsPath } from "./utils";
 
 export async function validateInputs(
     rootDir: string,
@@ -53,7 +54,7 @@ export async function validateFilesUsedToBundleDts(
     await Promise.all(
         [...filesUsedToBundleDts].map(async (file) => {
             try {
-                const tsFile = file.replace(/\.d\.ts$/, ".ts");
+                const tsFile = getSourceCodePathFromDtsPath(file);
                 const sourceText = await Bun.file(tsFile).text();
                 const { errors } = isolatedDeclaration(tsFile, sourceText);
 
@@ -83,12 +84,15 @@ export async function validateFilesUsedToBundleDts(
 
     if (hasErrors) {
         logger.info(
-            "\nYou may have noticed some TypeScript warnings above related to missing type annotations. " +
+            "You may have noticed some TypeScript warnings above related to missing type annotations. " +
                 'This is because Bunup uses TypeScript\'s "isolatedDeclarations" approach for generating declaration files. ' +
                 "This modern approach requires explicit type annotations on exports for better, more accurate type declarations. " +
-                "Other bundlers might not show these warnings because they use different, potentially less precise methods. " +
                 "Adding the suggested type annotations will not only silence these warnings but also improve the quality " +
-                "of your published type definitions, making your library more reliable for consumers.\n",
+                "of your published type definitions, making your library more reliable for consumers.",
+            {
+                muted: true,
+                verticalSpace: true,
+            },
         );
     }
 }

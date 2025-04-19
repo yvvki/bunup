@@ -2,7 +2,7 @@ import { isolatedDeclaration } from "oxc-transform";
 
 import { parseErrorMessage } from "../errors";
 import { logger } from "../logger";
-import { getDtsPath } from "./utils";
+import { getDtsPathFromSourceCodePath } from "./utils";
 
 /**
  * A map of the generated dts files.
@@ -18,7 +18,7 @@ export async function generateDtsContent(
     await Promise.all(
         [...tsFiles].map(async (tsFile) => {
             try {
-                const dtsPath = getDtsPath(tsFile);
+                const dtsPath = getDtsPathFromSourceCodePath(tsFile);
                 const exists = await Bun.file(tsFile).exists();
                 if (!exists) return;
                 const sourceText = await Bun.file(tsFile).text();

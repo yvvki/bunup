@@ -6,7 +6,7 @@ import type { TsConfigData } from "../loaders";
 import type { DtsMap } from "./generator";
 import {
     addDtsVirtualPrefix,
-    getDtsPath,
+    getDtsPathFromSourceCodePath,
     isDtsVirtualFile,
     removeDtsVirtualPrefix,
 } from "./utils";
@@ -35,7 +35,7 @@ export const gerVirtualFilesPlugin = (
 
             if (!resolvedPath) return null;
 
-            const dtsPath = getDtsPath(resolvedPath);
+            const dtsPath = getDtsPathFromSourceCodePath(resolvedPath);
 
             if (dtsMap.has(dtsPath)) {
                 return addDtsVirtualPrefix(dtsPath);

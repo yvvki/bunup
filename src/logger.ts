@@ -14,6 +14,7 @@ interface ProgressOptions extends LogOptions {
 
 interface LogColors {
     cli: ColorCode;
+    muted: ColorCode;
     info: ColorCode;
     warn: ColorCode;
     error: ColorCode;
@@ -37,7 +38,8 @@ class Logger {
 
     public colors: LogColors = {
         cli: "147",
-        info: "245",
+        muted: "245",
+        info: "117",
         warn: "179",
         error: "174",
         progress: {
@@ -101,7 +103,7 @@ class Logger {
         );
 
         const formattedMessage = muted
-            ? `\x1b[38;5;${this.colors.info}m${message}\x1b[0m`
+            ? `\x1b[38;5;${this.colors.muted}m${message}\x1b[0m`
             : message;
 
         if (size) {

@@ -1,16 +1,7 @@
-import type { TsConfigData } from "../loaders";
 import type { DtsResolve } from "../options";
 import { DTS_VIRTUAL_FILE_PREFIX } from "./virtual-files";
 
-export function getCompilerOptions(tsconfig: TsConfigData) {
-    return (
-        (
-            tsconfig.tsconfig as {
-                compilerOptions: Record<string, unknown> | undefined;
-            }
-        ).compilerOptions ?? {}
-    );
-}
+const JSTS_REGEX = /\.(js|mjs|cjs|ts|mts|cts|tsx|jsx)$/;
 
 export function isDtsFile(filePath: string): boolean {
     return (
@@ -21,15 +12,30 @@ export function isDtsFile(filePath: string): boolean {
 }
 
 export function isSourceCodeFile(filePath: string): boolean {
-    return (
-        /\.(js|mjs|cjs|ts|mts|cts|tsx|jsx)$/.test(filePath) &&
-        !isDtsFile(filePath)
-    );
+    return JSTS_REGEX.test(filePath) && !isDtsFile(filePath);
 }
 
-export function getDtsPath(filePath: string): string {
+export function getDtsPathFromSourceCodePath(filePath: string): string {
     if (isDtsFile(filePath)) return filePath;
-    return filePath.replace(/\.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$/, ".d.ts");
+
+    if (filePath.endsWith(".mts")) return `${filePath.slice(0, -4)}.d.mts`;
+    if (filePath.endsWith(".cts")) return `${filePath.slice(0, -4)}.d.cts`;
+
+    if (JSTS_REGEX.test(filePath)) {
+        return filePath.replace(JSTS_REGEX, ".d.ts");
+    }
+
+    return `${filePath}.d.ts`;
+}
+
+export function getSourceCodePathFromDtsPath(filePath: string): string {
+    if (isSourceCodeFile(filePath)) return filePath;
+
+    if (filePath.endsWith(".d.mts")) return `${filePath.slice(0, -6)}.mts`;
+    if (filePath.endsWith(".d.cts")) return `${filePath.slice(0, -6)}.cts`;
+    if (filePath.endsWith(".d.ts")) return `${filePath.slice(0, -5)}.ts`;
+
+    return filePath;
 }
 
 export function isDtsVirtualFile(filePath: string): boolean {

@@ -14,8 +14,7 @@ import type { DtsMap } from "./generator";
 import {
     addDtsVirtualPrefix,
     dtsShouldTreatAsExternal,
-    getCompilerOptions,
-    getDtsPath,
+    getDtsPathFromSourceCodePath,
 } from "./utils";
 import { gerVirtualFilesPlugin } from "./virtual-files";
 
@@ -27,7 +26,7 @@ export async function bundleDts(
     tsconfig: TsConfigData,
     rootDir: string,
 ): Promise<string> {
-    const entryDtsPath = getDtsPath(entryFile);
+    const entryDtsPath = getDtsPathFromSourceCodePath(entryFile);
     const initialDtsEntry = addDtsVirtualPrefix(entryDtsPath);
 
     const externalPatterns = getExternalPatterns(options, packageJson);
@@ -45,6 +44,11 @@ export async function bundleDts(
                 dir: options.outDir,
             },
             write: false,
+            ...(tsconfig.path && {
+                resolve: {
+                    tsconfigFilename: tsconfig.path,
+                },
+            }),
             onwarn(warning, handler) {
                 if (
                     [
@@ -62,18 +66,6 @@ export async function bundleDts(
                 dts({
                     dtsInput: true,
                     emitDtsOnly: true,
-                    compilerOptions: {
-                        ...getCompilerOptions(tsconfig),
-                        declaration: true,
-                        noEmit: false,
-                        emitDeclarationOnly: true,
-                        noEmitOnError: true,
-                        checkJs: false,
-                        declarationMap: false,
-                        skipLibCheck: true,
-                        preserveSymlinks: false,
-                        target: 99 as any, // ESNext
-                    },
                 }),
             ],
             external: (source) =>

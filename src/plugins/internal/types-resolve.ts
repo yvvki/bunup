@@ -4,7 +4,7 @@ import { ResolverFactory } from "oxc-resolver";
 import type { Plugin } from "rolldown";
 
 import {
-    getDtsPath,
+    getDtsPathFromSourceCodePath,
     isSourceCodeFile,
     removeDtsVirtualPrefix,
 } from "../../dts/utils";
@@ -73,7 +73,7 @@ export function typesResolvePlugin(
 
             // if resolved file is a js/ts file, try to resolve the corresponding d.ts file
             if (isSourceCodeFile(resolved)) {
-                const dtsPath = getDtsPath(resolved);
+                const dtsPath = getDtsPathFromSourceCodePath(resolved);
 
                 try {
                     const { path: dtsResolved } = await resolver.async(
