@@ -30,7 +30,7 @@ yarn dlx create-bunup@latest
 
 :::
 
-After answering 5 quick questions, you'll get a complete TypeScript package with automatic releases, linting, formatting, version bumping, GitHub workflows, and all essential things. This starter provides everything you need to focus purely on coding.
+After answering 5 quick questions, you'll get a complete TypeScript package with automatic releases, linting, formatting, version bumping, GitHub workflows, and all essential things with Bunup integrated for super fast bundling. This starter provides everything you need to focus solely on coding.
 
 To learn more, see the [TypeScript Library Starter](/typescript-library-starter) full guide.
 

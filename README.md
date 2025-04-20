@@ -28,7 +28,7 @@ _Lower is better. Benchmarks run on identical code and output formats._
 
 ## 📚 Documentation
 
-For complete documentation, visit [bunup.arshadyaseen.com](https://bunup.arshadyaseen.com/).
+To get started, visit the [documentation](https://bunup.arshadyaseen.com/documentation).
 
 ## ❤️ Contributing
 
