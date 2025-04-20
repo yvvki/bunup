@@ -38,7 +38,7 @@ Get started with Bunup in seconds - install, configure, and build your TypeScrip
 
 ### Basic Usage
 
-Create a simple TypeScript file:
+Create a TypeScript file:
 
 ```typescript [src/index.ts]
 export function greet(name: string): string {
@@ -197,10 +197,11 @@ bunup src/index.ts --watch
 
 Or in package.json:
 
-```json [package.json]
+```json [package.json] 5
 {
   "name": "my-package",
   "scripts": {
+    "build": "bunup src/index.ts",
     "dev": "bunup src/index.ts --watch"
   }
 }
