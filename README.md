@@ -28,81 +28,9 @@ Want proof? Clone the repo, run `pnpm benchmark`, and check `benchmarks/results.
 
 - 🎯 **Bun Targeting**: Optimize for Bun runtime with `--target bun` for native features.
 
-## 🚀 Quick Start
-
-### Installations
-
-```bash
-# Using Bun
-bun add bunup -d
-
-# Using pnpm
-pnpm add bunup -D
-
-# Using npm
-npm i bunup -D
-
-# Using Yarn
-yarn add bunup --dev
-```
-
-### Basic Usage
-
-Create a simple TypeScript file:
-
-```typescript
-// src/index.ts
-export function greet(name: string): string {
-  return `Hello, ${name}!`;
-}
-```
-
-Bundle it with bunup:
-
-```bash
-bunup src/index.ts
-```
-
-This will create a bundled output in the `dist` directory.
-
-### Using with package.json
-
-Add a build script to your `package.json`:
-
-```json
-{
-  "name": "my-package",
-  "scripts": {
-    "build": "bunup src/index.ts --format esm,cjs --dts"
-  }
-}
-```
-
-Then run:
-
-```bash
-npm run build
-```
-
-### ⚙️ Configuration File
-
-Create a `bunup.config.ts` file for more control:
-
-```typescript
-import { defineConfig } from "bunup";
-
-export default defineConfig({
-  entry: ["src/index.ts"],
-  outDir: "dist",
-  format: ["esm", "cjs"],
-  dts: true,
-  minify: true,
-});
-```
-
 ## 📚 Documentation
 
-For complete documentation, visit [the full documentation](https://bunup.arshadyaseen.com/).
+For complete documentation, visit [bunup.arshadyaseen.com](https://bunup.arshadyaseen.com/).
 
 ## ⚡️ Create TypeScript Libraries Faster
 
