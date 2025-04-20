@@ -76,7 +76,7 @@ export default defineConfig({
             "meta",
             {
                 property: "og:image",
-                content: "https://bunup.arshadyaseen.com/og.png",
+                content: "https://bunup.dev/og.png",
             },
         ],
         [
@@ -92,7 +92,7 @@ export default defineConfig({
             "meta",
             {
                 name: "twitter:image",
-                content: "https://bunup.arshadyaseen.com/og.png",
+                content: "https://bunup.dev/og.png",
             },
         ],
         [
@@ -117,6 +117,6 @@ export default defineConfig({
         plugins: [groupIconVitePlugin(), llmstxt()],
     },
     sitemap: {
-        hostname: "https://bunup.arshadyaseen.com",
+        hostname: "https://bunup.dev",
     },
 });

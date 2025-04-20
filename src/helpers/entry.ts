@@ -29,7 +29,7 @@ export function normalizeEntryToProcessableEntries(
             const newName = `${name}_${randomSuffix}`;
             if (warnOnConflict) {
                 logger.warn(
-                    `Output name conflict: "${name}" is used by multiple files.\nBunup uses filenames without extensions as output names by default.\n\n${nameToPath[name]} -> ${name}.js\n${path} -> ${newName}.js (auto-renamed to avoid conflict)\n\nTo fix this, use named entries in your configuration:\n{\n  entry: {\n    custom_name: "${nameToPath[name]}",\n    another_name: "${path}"\n  }\n}\n\nSee: https://bunup.arshadyaseen.com/documentation/#named-entries`,
+                    `Output name conflict: "${name}" is used by multiple files.\nBunup uses filenames without extensions as output names by default.\n\n${nameToPath[name]} -> ${name}.js\n${path} -> ${newName}.js (auto-renamed to avoid conflict)\n\nTo fix this, use named entries in your configuration:\n{\n  entry: {\n    custom_name: "${nameToPath[name]}",\n    another_name: "${path}"\n  }\n}\n\nSee: https://bunup.dev/documentation/#named-entries`,
                     {
                         muted: true,
                         verticalSpace: true,

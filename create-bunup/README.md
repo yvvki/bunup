@@ -1,6 +1,6 @@
 ## 🔥 Create TypeScript Libraries Faster
 
-Quickly scaffold modern TypeScript library in 10 seconds. Powered by [Bunup](https://bunup.arshadyaseen.com/) - the fastest TypeScript bundler available ⚡️.
+Quickly scaffold modern TypeScript library in 10 seconds. Powered by [Bunup](https://bunup.dev/) - the fastest TypeScript bundler available ⚡️.
 
 ```bash
 # Using bun
@@ -13,4 +13,4 @@ npx create-bunup@latest
 pnpx create-bunup@latest
 ```
 
-Check out our [TypeScript Library Starter documentation](https://bunup.arshadyaseen.com/typescript-library-starter.html) for more details.
+Check out our [TypeScript Library Starter documentation](https://bunup.dev/typescript-library-starter.html) for more details.

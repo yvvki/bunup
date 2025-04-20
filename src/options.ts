@@ -313,7 +313,7 @@ export interface BuildOptions {
      *
      * Used for assets, external modules, and chunk files when splitting is enabled
      *
-     * @see https://bunup.arshadyaseen.com/documentation/#public-path for more information
+     * @see https://bunup.dev/documentation/#public-path for more information
      *
      * @example
      * publicPath: 'https://cdn.example.com/'

@@ -309,7 +309,7 @@ yarn-error.log*
         join(projectDir, "README.md"),
         `# ${projectName}
 
-${options.description ? options.description : "A TypeScript library built with [bunup](https://bunup.arshadyaseen.com/)."}
+${options.description ? options.description : "A TypeScript library built with [bunup](https://bunup.dev/)."}
 
 ## Installation
 

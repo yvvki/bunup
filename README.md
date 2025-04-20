@@ -20,7 +20,7 @@ _Lower is better. Benchmarks run on identical code and output formats._
 
 - 🔥 **Bytecode Generation**: Faster startups by compiling to Bun bytecode—perfect for CLIs.
 
-- 📦 **Workspace Support**: Build multiple packages with [defineWorkspace()](https://bunup.arshadyaseen.com/documentation/#workspaces) in one config file and command.
+- 📦 **Workspace Support**: Build multiple packages with [defineWorkspace()](https://bunup.dev/documentation/#workspaces) in one config file and command.
 
 - 🔄 **Tsup Familiarity**: Familiar tsup-like CLI and config.
 
@@ -28,7 +28,7 @@ _Lower is better. Benchmarks run on identical code and output formats._
 
 ## 📚 Documentation
 
-To get started, visit the [documentation](https://bunup.arshadyaseen.com/documentation).
+To get started, visit the [documentation](https://bunup.dev/documentation).
 
 ## ❤️ Contributing
 
