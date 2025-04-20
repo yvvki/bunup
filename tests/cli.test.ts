@@ -73,4 +73,43 @@ describe("CLI Only Options", () => {
         expect(result.stdout).not.toContain("echo 'should-not-appear'");
         expect(result.stdout).not.toContain("should-not-appear");
     });
+
+    it("should log type annotation warnings when generating declaration files", async () => {
+        createProject({
+            "src/index.ts": `
+                export * from './utils/helpers';
+            `,
+            "src/utils/helpers.ts": `
+                export * from '../services/api';
+                
+                export const formatData = (data: any): { formatted: any } => {
+                    return { formatted: data };
+                };
+            `,
+            "src/services/api.ts": `
+                // Function without explicit return type
+                export function missingReturnType() {
+                    return { name: "test", status: "active" };
+                }
+                
+                export function fetchData(url: string) {
+                    return Promise.resolve({ data: "test data" });
+                }
+            `,
+        });
+
+        const result = await runCli("src/index.ts --dts");
+
+        expect(result.success).toBe(true);
+        expect(result.stderr).toContain(
+            "src/services/api.ts (7:33): TS9007: Function must have an explicit return type annotation.",
+        );
+        expect(result.stdout).toContain(
+            "You may have noticed some TypeScript warnings above",
+        );
+        expect(result.stdout).toContain("isolatedDeclarations");
+
+        const dtsFile = findFile(result, "index", ".d.ts");
+        expect(dtsFile).toBeTruthy();
+    });
 });
