@@ -1,6 +1,6 @@
 {
     "name": "bunup",
-    "version": "0.4.47",
+    "version": "0.4.48",
     "description": "A blazing-fast build tool for your libraries built with Bun.",
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
