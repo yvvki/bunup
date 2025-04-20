@@ -14,8 +14,6 @@ Bunup is the **high-performance build tool** for TypeScript and JavaScript libra
 
 _Lower is better. Benchmarks run on identical code and output formats._
 
-Want proof? Clone the repo, run `pnpm benchmark`, and check `benchmarks/results.md` for yourself!
-
 ## Key Features
 
 - ⚡️ **Ultra Fast Builds**: Lightning-fast performance powered by [Bun](https://bun.sh/)'s native bundler and [Oxc](https://oxc.rs).
@@ -31,23 +29,6 @@ Want proof? Clone the repo, run `pnpm benchmark`, and check `benchmarks/results.
 ## 📚 Documentation
 
 For complete documentation, visit [bunup.arshadyaseen.com](https://bunup.arshadyaseen.com/).
-
-## ⚡️ Create TypeScript Libraries Faster
-
-Quickly scaffold modern TypeScript library in 10 seconds. Powered by bunup.
-
-```bash
-# Using bun
-bunx create-bunup@latest
-
-# Using npm
-npx create-bunup@latest
-
-# Using pnpm
-pnpx create-bunup@latest
-```
-
-Check out our [TypeScript Library Starter documentation](https://bunup.arshadyaseen.com/typescript-library-starter.html) for more details.
 
 ## ❤️ Contributing
 
