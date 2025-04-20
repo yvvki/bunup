@@ -6,11 +6,46 @@ Bunup is the **high-performance build tool** for TypeScript and JavaScript libra
 
 Bunup handles JavaScript/TypeScript files, JSON, TOML, text files, and various assets. File processing can be customized with the [loader](https://bunup.arshadyaseen.com/documentation/#custom-loaders) option.
 
-## Quick Start
+## Your First Bundle
 
 Get started with Bunup in seconds - install, configure, and build your TypeScript/JavaScript projects with minimal setup.
 
-### Installation
+### Basic Usage
+
+Create a simple TypeScript file:
+
+```typescript [src/index.ts]
+export function greet(name: string): string {
+  return `Hello, ${name}!`;
+}
+```
+
+Bundle it with bunup:
+
+::: code-group
+
+```sh [bun]
+bunx bunup src/index.ts
+```
+
+```sh [pnpm]
+pnpx bunup src/index.ts
+```
+
+```sh [npm]
+npx bunup src/index.ts
+```
+
+```sh [yarn]
+yarn dlx bunup src/index.ts
+```
+:::
+
+This will create a bundled output in the `dist` directory with CommonJS format (the default).
+
+### Using with package.json
+
+First, install bunup as a dev dependency:
 
 ::: code-group
 
@@ -32,26 +67,6 @@ yarn add --dev bunup
 
 :::
 
-### Basic Usage
-
-Create a simple TypeScript file:
-
-```typescript [src/index.ts]
-export function greet(name: string): string {
-  return `Hello, ${name}!`;
-}
-```
-
-Bundle it with bunup:
-
-```sh
-bunup src/index.ts
-```
-
-This will create a bundled output in the `dist` directory with CommonJS format (the default).
-
-### Using with package.json
-
 Add a build script to your `package.json`:
 
 ```json [package.json]
@@ -65,9 +80,24 @@ Add a build script to your `package.json`:
 
 Then run:
 
-```sh
+::: code-group
+
+```sh [bun]
+bun run build
+```
+
+```sh [pnpm]
+npm build
+```
+
+```sh [npm]
 npm run build
 ```
+
+```sh [yarn]
+yarn build
+```
+:::
 
 ### Configuration File
 
