@@ -27,10 +27,11 @@ features:
     icon: 📦
     details: |
       Build multiple packages in one config file and with a single command.
-  - title: Bun Targeting
-    icon: 🎯
+  - title: Bun Native
+    icon:
+      src: /bun.svg
     details: |
-      Optimize for Bun runtime to leverage native features and performance.
+      First-class bundling support for libraries built with Bun, optimized for the Bun runtime.
 ---
 
 <script setup>
