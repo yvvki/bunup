@@ -1,15 +1,26 @@
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import {
+    existsSync,
+    readFileSync,
+    readdirSync,
+    statSync,
+    writeFileSync,
+} from "node:fs";
 import { mkdirSync, rmSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
-import { type BuildOptions, build } from "../build/index.mjs";
+import { exec } from "tinyexec";
+import { build } from "../src/build";
+import type { BuildOptions } from "../src/options";
 import { OUTPUT_DIR, PROJECT_DIR } from "./constants";
 
 export interface BuildResult {
     success: boolean;
-    buildTime: number;
-    options: Omit<BuildOptions, "outDir">;
     files: FileResult[];
     error?: Error;
+}
+
+export interface RunCliResult extends BuildResult {
+    stdout: string;
+    stderr: string;
 }
 
 export interface FileResult {
@@ -31,14 +42,10 @@ export async function runBuild(
 ): Promise<BuildResult> {
     const result: BuildResult = {
         success: true,
-        buildTime: 0,
-        options,
         files: [],
     };
 
     try {
-        const startTime = performance.now();
-
         const buildOptions = {
             ...options,
             outDir: ".output",
@@ -46,8 +53,6 @@ export async function runBuild(
         };
 
         await build(buildOptions, PROJECT_DIR);
-
-        result.buildTime = performance.now() - startTime;
 
         if (!existsSync(OUTPUT_DIR)) {
             throw new Error(
@@ -88,7 +93,7 @@ export async function runDtsBuild(
 }
 
 export function findFile(
-    result: BuildResult,
+    result: BuildResult | RunCliResult,
     name: string,
     extension: string,
 ): FileResult | undefined {
@@ -155,4 +160,67 @@ export function createProject(tree: ProjectTree): void {
         mkdirSync(dirname(path), { recursive: true });
         writeFileSync(path, value, "utf-8");
     }
+}
+
+export async function runCli(options: string): Promise<RunCliResult> {
+    const result: RunCliResult = {
+        success: true,
+        files: [],
+        stdout: "",
+        stderr: "",
+    };
+
+    try {
+        const command = `bun run ${join(
+            PROJECT_DIR,
+            "../../src/cli.ts",
+        )} ${options} --out-dir .output`;
+
+        const execResult = await exec(command, [], {
+            nodeOptions: {
+                cwd: PROJECT_DIR,
+                shell: true,
+            },
+        });
+
+        result.stdout = execResult.stdout;
+        result.stderr = execResult.stderr;
+
+        if (execResult.exitCode !== 0) {
+            result.success = false;
+            result.error = new Error(
+                `CLI command failed with exit code ${execResult.exitCode}: ${execResult.stderr}`,
+            );
+            return result;
+        }
+
+        if (!existsSync(OUTPUT_DIR)) {
+            throw new Error(
+                `Output directory "${OUTPUT_DIR}" does not exist after build`,
+            );
+        }
+
+        const outputFiles = readdirSync(OUTPUT_DIR);
+        for (const fileName of outputFiles) {
+            const filePath = join(OUTPUT_DIR, fileName);
+            const fileContent = readFileSync(filePath, "utf-8");
+            const stats = statSync(filePath);
+            const extension = getFullExtension(fileName);
+            const name = basename(fileName, extension);
+
+            result.files.push({
+                path: filePath,
+                name,
+                extension,
+                size: stats.size,
+                content: fileContent,
+            });
+        }
+    } catch (error) {
+        result.success = false;
+        result.error =
+            error instanceof Error ? error : new Error(String(error));
+    }
+
+    return result;
 }

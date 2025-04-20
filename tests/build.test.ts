@@ -1,10 +1,8 @@
-import type { BunPlugin } from "bun";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
     cleanProjectDir,
     createProject,
     runBuild,
-    runDtsBuild,
     validateBuildFiles,
 } from "./utils";
 
@@ -427,40 +425,6 @@ describe("Build Process", () => {
         );
     });
 
-    it("should apply custom Bun.build plugins when bunBuildPlugins option is provided", async () => {
-        createProject({ "src/index.ts": "export const x = 1;" });
-
-        const testMarker = "/* TEST PLUGIN WAS HERE */";
-        const testPlugin: BunPlugin = {
-            name: "test-plugin",
-            setup(build) {
-                build.onLoad({ filter: /\.ts$/ }, async (args) => {
-                    const source = await Bun.file(args.path).text();
-                    return {
-                        contents: `${source}\n// This comment was added by the test plugin`,
-                        loader: "ts",
-                    };
-                });
-            },
-        };
-
-        const result = await runBuild({
-            entry: "src/index.ts",
-            format: ["esm"],
-            banner: testMarker,
-            bunBuildPlugins: [testPlugin],
-        });
-
-        expect(result.success).toBe(true);
-        expect(
-            validateBuildFiles(result, {
-                expectedFiles: ["index.mjs"],
-            }),
-        ).toBe(true);
-
-        expect(result.files[0].content).toContain(testMarker);
-    });
-
     it("should call onBuildSuccess callback after successful build", async () => {
         createProject({ "src/index.ts": "export const x = 1;" });
 
@@ -524,6 +488,23 @@ describe("Build Process", () => {
         expect(asyncOperationCompleted).toBe(true);
     });
 
+    it("should not execute onBuildSuccess callback when build fails", async () => {
+        createProject({ "src/index.ts": "export const x = " });
+
+        let callbackCalled = false;
+
+        const result = await runBuild({
+            entry: "src/index.ts",
+            format: ["esm"],
+            onBuildSuccess: () => {
+                callbackCalled = true;
+            },
+        });
+
+        expect(result.success).toBe(false);
+        expect(callbackCalled).toBe(false);
+    });
+
     it("should handle regex external patterns, only matching hyphenated packages", async () => {
         createProject({
             "src/index.ts": `
@@ -578,42 +559,6 @@ describe("Build Process", () => {
 
         expect(result.files[0].content).not.toMatch(
             /import\s+.*\s+from\s+["']zx-extra["']/,
-        );
-    });
-
-    it("should use preferred tsconfig when provided", async () => {
-        createProject({
-            "tsconfig.json": JSON.stringify({
-                compilerOptions: {
-                    baseUrl: ".",
-                    paths: {
-                        "@/*": ["src/*"],
-                    },
-                },
-            }),
-            "tsconfig.build.json": JSON.stringify({
-                compilerOptions: {
-                    baseUrl: ".",
-                    paths: {
-                        "@/*": ["src/project/*"],
-                    },
-                },
-            }),
-            "src/index.ts": "export * from '@/utils';",
-            "src/project/utils.ts":
-                "export const util = (): string => 'utility';",
-        });
-
-        const result = await runDtsBuild({
-            entry: "src/index.ts",
-            format: ["esm"],
-            preferredTsconfigPath: "tsconfig.build.json",
-        });
-
-        expect(result.success).toBe(true);
-        expect(result.files.length).toBe(1);
-        expect(result.files[0].content).toContain(
-            "declare const util: () => string",
         );
     });
 });

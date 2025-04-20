@@ -4,7 +4,35 @@ Bunup is the **high-performance build tool** for TypeScript and JavaScript libra
 
 ## What Can It Bundle?
 
-Bunup handles JavaScript/TypeScript files, JSON, TOML, text files, and various assets. File processing can be customized with the [loader](https://bunup.arshadyaseen.com/documentation/#custom-loaders) option.
+Bunup handles JavaScript/TypeScript files, JSON, TOML, text files, and various assets. File processing can be customized with the [loader](#custom-loaders) option.
+
+## Starter Template
+
+To start a TypeScript project faster, in just 10 seconds, run:
+
+::: code-group
+
+```sh [bun]
+bunx create-bunup@latest
+```
+
+```sh [pnpm]
+pnpx create-bunup@latest
+```
+
+```sh [npm]
+npx create-bunup@latest
+```
+
+```sh [yarn]
+yarn dlx create-bunup@latest
+```
+
+:::
+
+After answering 5 quick questions, you'll get a complete TypeScript package with automatic releases, linting, formatting, version bumping, GitHub workflows, and all essential things. This starter provides everything you need to focus purely on coding.
+
+To learn more, see the [TypeScript Library Starter](/typescript-library-starter) full guide.
 
 ## Your First Bundle
 
@@ -99,33 +127,9 @@ yarn build
 ```
 :::
 
-### Configuration File
-
-Create a `bunup.config.ts` file for more control:
-
-```typescript [bunup.config.ts]
-import { defineConfig } from "bunup";
-
-export default defineConfig({
-  entry: ["src/index.ts"],
-  format: ["esm", "cjs"],
-  dts: true,
-  minify: true,
-});
-```
-
 ## Configuration
 
-Bunup offers flexible configuration options to customize your build process. You can configure Bunup through a configuration file or command-line arguments.
-
-### Configuration File
-
-Bunup supports configuration files in multiple formats:
-
-- `bunup.config.ts`
-- `bunup.config.js`
-- `bunup.config.mjs`
-- `bunup.config.cjs`
+Create a `bunup.config.ts` file for more control:
 
 ```typescript [bunup.config.ts]
 import { defineConfig } from "bunup";
@@ -156,6 +160,34 @@ export default defineConfig([
   },
 ]);
 ```
+
+### Package.json Configuration
+
+You can also include your bunup configuration directly in your `package.json` file using the `bunup` property:
+
+```json [package.json]
+{
+  "name": "my-package",
+  "version": "1.0.0",
+  "bunup": {
+    "entry": ["src/index.ts"],
+    "format": ["esm", "cjs"],
+    "dts": true
+  }
+}
+```
+
+This approach can be useful when you prefer keeping all project configuration in a single file.
+
+### Custom Configuration Path
+
+If you need to use a configuration file with a non-standard name or location, you can specify its path using the `--config` CLI option:
+
+```sh
+bunup --config ./configs/custom.bunup.config.ts
+```
+
+This is particularly useful for projects with multiple build configurations or for separating build configs for different environments.
 
 ## CLI Options
 

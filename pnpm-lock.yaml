@@ -12,8 +12,8 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
       coffi:
-        specifier: ^0.1.21
-        version: 0.1.21
+        specifier: ^0.1.23
+        version: 0.1.23
       oxc-resolver:
         specifier: ^5.0.1
         version: 5.2.0
@@ -1748,8 +1748,8 @@ packages:
   clone-response@1.0.3:
     resolution: {integrity: sha512-ROoL94jJH2dUVML2Y/5PEDNaSHgeOdSDicUyS7izcF63G6sTc/FTjLub4b8Il9S8S0beOfYt0TaA5qvFK+w0wA==}
 
-  coffi@0.1.21:
-    resolution: {integrity: sha512-EnFIXI7GvVUoewtqoHnpiK+0JLECOW6ZuNyNvmh334jUHw4tmwuJJQcUhjmheegVesP8/8AkZQS+QbdOIyrUPA==}
+  coffi@0.1.23:
+    resolution: {integrity: sha512-DrlNbdTmY0I0BKxZu+wV/vfnR5CJTcIH/Ch6mcNiS48mCFxEf6WL5jcb2bK4RoMhVsnRoikS9pCwoQJQRrknSA==}
 
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -4858,7 +4858,7 @@ snapshots:
   bunup@0.4.35(typescript@5.8.3):
     dependencies:
       chokidar: 4.0.3
-      coffi: 0.1.21
+      coffi: 0.1.23
       oxc-resolver: 5.2.0
       oxc-transform: 0.58.1
       rolldown: 1.0.0-beta.7(typescript@5.8.3)
@@ -4949,7 +4949,7 @@ snapshots:
     dependencies:
       mimic-response: 1.0.1
 
-  coffi@0.1.21: {}
+  coffi@0.1.23: {}
 
   color-convert@2.0.1:
     dependencies:

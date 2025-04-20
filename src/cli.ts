@@ -28,6 +28,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
         extensions: [".ts", ".js", ".mjs", ".cjs"],
         maxDepth: 1,
         preferredPath: cliOptions.config,
+        packageJsonProperty: "bunup",
     });
 
     const configsToProcess: ProcessableConfig[] = !config

@@ -5,9 +5,9 @@
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "module": "./build/index.mjs",
-    "files": ["build", "bin"],
+    "files": ["build"],
     "bin": {
-        "bunup": "./bin/bunup.js"
+        "bunup": "./build/cli.mjs"
     },
     "scripts": {
         "build": "bunup",
@@ -67,7 +67,7 @@
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
         "chokidar": "^4.0.3",
-        "coffi": "^0.1.21",
+        "coffi": "^0.1.23",
         "oxc-resolver": "^5.0.1",
         "oxc-transform": "^0.58.1",
         "rolldown": "1.0.0-beta.7",
