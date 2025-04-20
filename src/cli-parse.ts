@@ -64,7 +64,7 @@ function booleanOrStringHandler(optionName: keyof CliOptions): OptionHandler {
 
 function showHelp(): void {
     console.log(
-        "\nBunup - An extremely fast, zero-config bundler for JavaScript and TypeScript, powered by Bun.\n",
+        "\nBunup - A blazing-fast build tool for your libraries built with Bun.\n",
     );
     console.log("For more information on available options, visit:");
     console.log(`\x1b[36m\x1b[4m${BUNUP_CLI_OPTIONS_URL}\x1b[0m\n`);
