@@ -6,35 +6,7 @@ Bunup is the **high-performance build tool** for TypeScript and JavaScript libra
 
 Bunup handles JavaScript/TypeScript files, JSON, TOML, text files, and various assets. File processing can be customized with the [loader](#custom-loaders) option.
 
-## Starter Template
-
-To start a TypeScript project faster, in just 10 seconds, run:
-
-::: code-group
-
-```sh [bun]
-bunx create-bunup@latest
-```
-
-```sh [pnpm]
-pnpx create-bunup@latest
-```
-
-```sh [npm]
-npx create-bunup@latest
-```
-
-```sh [yarn]
-yarn dlx create-bunup@latest
-```
-
-:::
-
-After answering 5 quick questions, you'll get a complete TypeScript package with automatic releases, linting, formatting, version bumping, GitHub workflows, and all essential things with Bunup integrated for super fast bundling. This starter provides everything you need to focus solely on coding.
-
-To learn more, see the [TypeScript Library Starter](/typescript-library-starter) full guide.
-
-## Your First Bundle
+## Get Started
 
 Get started with Bunup in seconds - install, configure, and build your TypeScript/JavaScript projects with minimal setup.
 
