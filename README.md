@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/bunup.svg?style=flat-square)](https://www.npmjs.com/package/bunup)
 [![npm downloads](https://img.shields.io/npm/dm/bunup.svg?style=flat-square)](https://www.npmjs.com/package/bunup)
 
-Bunup is the **high-performance build tool** for TypeScript and JavaScript libraries, with **first-class support** for libraries built with [Bun](https://bun.sh/). It delivers **lightning-fast builds** — up to **~50× faster than Tsup**.
+Bunup is the **high-performance build tool** for TypeScript and JavaScript libraries, designed for beautiful developer experience and speed. It provides **first-class support** for libraries built with [Bun](https://bun.sh/) and delivers **lightning-fast builds** — up to **~50× faster than Tsup**.
 
 | Bundler | Format   | Build Time     | Build Time (with dts) |
 | ------- | -------- | -------------- | --------------------- |

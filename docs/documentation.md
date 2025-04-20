@@ -1,6 +1,6 @@
 # Introduction
 
-Bunup is the **high-performance build tool** for TypeScript and JavaScript libraries, with **first-class support** for libraries built with [Bun](https://bun.sh/). It delivers **lightning-fast builds** — up to **~50x faster than Tsup**.
+Bunup is the **high-performance build tool** for TypeScript and JavaScript libraries, designed for beautiful developer experience and speed. It provides **first-class support** for libraries built with [Bun](https://bun.sh/) and delivers **lightning-fast builds** — up to **~50× faster than Tsup**.
 
 ## What Can It Bundle?
 
@@ -113,7 +113,7 @@ bun run build
 ```
 
 ```sh [pnpm]
-npm build
+pnpm build
 ```
 
 ```sh [npm]
@@ -186,6 +186,47 @@ bunup --config ./configs/custom.bunup.config.ts
 ```
 
 This is particularly useful for projects with multiple build configurations or for separating build configs for different environments.
+
+## Watch Mode
+
+Bunup can watch your files for changes and rebuild automatically:
+
+```sh
+bunup src/index.ts --watch
+```
+
+Or in package.json:
+
+```json [package.json]
+{
+  "name": "my-package",
+  "scripts": {
+    "dev": "bunup src/index.ts --watch"
+  }
+}
+```
+
+Then run:
+
+::: code-group
+
+```sh [bun]
+bun run dev
+```
+
+```sh [pnpm]
+pnpm dev
+```
+
+```sh [npm]
+npm run dev
+```
+
+```sh [yarn]
+yarn dev
+```
+:::
+
 
 ## Entry Points
 
@@ -872,16 +913,6 @@ For example:
 
 - For cjs output, any `import.meta.url` references are transformed to `pathToFileURL(__filename).href`
 - For esm output, any `__dirname` references are transformed to `dirname(fileURLToPath(import.meta.url))`
-
-## Watch Mode
-
-Bunup can watch your files for changes and rebuild automatically:
-
-```sh
-bunup src/index.ts --watch
-```
-
-In watch mode, Bunup will monitor your source files and their dependencies, rebuilding only what's necessary when files change.
 
 ## Target Environments
 
