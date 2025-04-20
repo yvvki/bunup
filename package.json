@@ -1,6 +1,6 @@
 {
     "name": "bunup",
-    "version": "0.4.43",
+    "version": "0.4.44",
     "description": "An extremely fast, zero-config bundler for TypeScript & JavaScript, powered by Bun.",
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
