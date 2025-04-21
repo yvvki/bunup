@@ -2,14 +2,6 @@
 
 Thank you for your interest in contributing to Bunup! This document provides guidelines and instructions to help you contribute effectively.
 
-## Prerequisites
-
-Before you begin, make sure you have:
-
-- [Bun](https://bun.sh/docs/installation) installed (required to run Bunup)
-- [pnpm](https://pnpm.io/installation) installed (Bunup uses pnpm as its package manager)
-- Node.js (LTS version recommended)
-
 ## Getting Started
 
 1. **Fork the repository**
@@ -26,7 +18,7 @@ Before you begin, make sure you have:
 3. **Install dependencies**
 
       ```bash
-      pnpm install
+      bun install
       ```
 
 4. **Set up the development environment**
@@ -40,7 +32,7 @@ Before you begin, make sure you have:
 To start the development server with watch mode:
 
 ```bash
-pnpm dev
+bun run dev
 ```
 
 ### Building the Project
@@ -48,7 +40,7 @@ pnpm dev
 To build the project:
 
 ```bash
-pnpm build
+bun run build
 ```
 
 ### Testing
@@ -56,7 +48,7 @@ pnpm build
 Run tests to ensure your changes don't break existing functionality:
 
 ```bash
-pnpm test
+bun run test
 ```
 
 To test your changes with a real build:
@@ -64,13 +56,13 @@ To test your changes with a real build:
 1. First, build bunup with your changes:
 
       ```bash
-      pnpm build
+      bun run build
       ```
 
 2. Then run the test build to verify your changes work correctly:
 
       ```bash
-      pnpm test-build
+      bun run test-build
       ```
 
       This command builds the test project located in the `tests` directory using your local version of bunup, allowing you to verify that your changes work correctly in a real-world scenario.
@@ -78,7 +70,7 @@ To test your changes with a real build:
 To validate TypeScript types:
 
 ```bash
-pnpm tsc
+bun run tsc
 ```
 
 ### Code Formatting and Linting
@@ -88,13 +80,13 @@ Bunup uses Biome for code quality and formatting.
 To lint your code:
 
 ```bash
-pnpm lint
+bun run lint
 ```
 
 To format your code:
 
 ```bash
-pnpm format:fix
+bun run format:fix
 ```
 
 ## Pull Request Process
@@ -159,13 +151,13 @@ If you're adding new features or making significant changes, please update the d
 To run the documentation site locally:
 
 ```bash
-pnpm dev:docs
+bun run dev:docs
 ```
 
 To build the documentation:
 
 ```bash
-pnpm build:docs
+bun run build:docs
 ```
 
 ## Performance Considerations

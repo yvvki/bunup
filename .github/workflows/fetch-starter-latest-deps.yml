@@ -1,4 +1,4 @@
-name: ⏫ Update Starter Root Dev Dependencies
+name: ⏫ Fetch Starter Latest Dependencies
 
 on:
   schedule:
@@ -18,29 +18,19 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Fetch latest dependency versions
-        run: pnpm fetch-latest-dep-versions
+        run: bun run fetch-latest-dep-versions
 
       - name: Build packages
-        run: pnpm build
+        run: bun run build
 
       - name: Check for changes
         id: check_changes
@@ -65,6 +55,6 @@ jobs:
 
       - name: Release
         if: steps.check_changes.outputs.changes == 'true'
-        run: pnpm release:ci
+        run: bun run release:ci
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}

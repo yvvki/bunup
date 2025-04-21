@@ -1374,7 +1374,7 @@
 
     "trough": ["trough@2.2.0", "", {}, "sha512-tmMpK00BjZiUyVyvrBK7knerNgmgvcV/KLVyuma/SC+TQN167GrMRciANTz09+k3zW8L8t60jWO1GpfkZdjTaw=="],
 
-    "ts-import-resolver": ["ts-import-resolver@0.1.10", "", { "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-9KtXsrk1SxRbwjUcz+ijkTY58cTOVY1xF60eNKHolRFA+D+UFtgrdrVYSzPzmZY/4VLIIZR/cvj3pcVwAirUDg=="],
+    "ts-import-resolver": ["ts-import-resolver@0.1.11", "", { "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-9p/dEbrDs/6WcbKblamdENhlaSksF+NEpmwmmszpsM6PbVLtctJDOcXa3a+M/yMvYGleEsTsJrlDR4KXutPwag=="],
 
     "ts-interface-checker": ["ts-interface-checker@0.1.13", "", {}, "sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA=="],
 

@@ -305,6 +305,25 @@ yarn-error.log*
 `,
     );
 
+    await writeFile(join(projectDir, ".gitattributes"), "* text=auto eol=lf");
+
+    await writeFile(
+        join(projectDir, ".editorconfig"),
+        `root = true
+
+[*]
+indent_style = tab
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+quote_type = single
+
+[*.yml]
+indent_style = space
+indent_size = 2`,
+    );
+
     await writeFile(
         join(projectDir, "README.md"),
         `# ${projectName}
@@ -368,7 +387,7 @@ jobs:
       ci:
             strategy:
                   matrix:
-                        os: [ubuntu-latest, macos-latest]
+                        os: [ubuntu-latest, macos-latest, windows-latest]
                         node-version: [20.x]
             runs-on: \${{ matrix.os }}
             steps:
