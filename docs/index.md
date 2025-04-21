@@ -27,11 +27,11 @@ features:
     icon: 📦
     details: |
       Build multiple packages in one config file and with a single command.
-  - title: Bun Native
+  - title: Bun Support
     icon:
       src: /bun.svg
     details: |
-      First-class bundling support for libraries built with Bun, optimized for the Bun runtime.
+      First-class bundling support for libraries built with Bun.
 ---
 
 <script setup>
