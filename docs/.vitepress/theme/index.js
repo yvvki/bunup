@@ -13,19 +13,20 @@ export default {
             const route = useRoute();
 
             function showCodeWithLabel(labelText) {
-                document
-                    .querySelectorAll(`.vp-code-group .tabs label`)
-                    .forEach((label) => {
-                        if (label.innerText === labelText) {
-                            const input = document.getElementById(
-                                label.getAttribute("for"),
-                            );
+                const labels = document.querySelectorAll(
+                    ".vp-code-group .tabs label",
+                );
+                for (const label of labels) {
+                    if (label.innerText === labelText) {
+                        const input = document.getElementById(
+                            label.getAttribute("for"),
+                        );
 
-                            if (!input.checked) {
-                                label.click();
-                            }
+                        if (!input.checked) {
+                            label.click();
                         }
-                    });
+                    }
+                }
             }
 
             let preventScroll = false;
@@ -35,7 +36,7 @@ export default {
                     ".vp-code-group .tabs label",
                 );
 
-                labels.forEach((label) => {
+                for (const label of labels) {
                     label.addEventListener("click", ($event) => {
                         const labelFor = label.getAttribute("for");
                         const initialRect = label.getBoundingClientRect();
@@ -63,7 +64,7 @@ export default {
                             scrollToY(initialScrollY + yDiff);
                         });
                     });
-                });
+                }
             }
 
             function scrollToY(y) {
