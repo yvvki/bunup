@@ -2,12 +2,12 @@
     "name": "bunup",
     "version": "0.4.52",
     "description": "A blazing-fast build tool for your libraries built with Bun.",
-    "main": "./build/index.js",
-    "types": "./build/index.d.ts",
-    "module": "./build/index.mjs",
-    "files": ["build"],
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "module": "./dist/index.mjs",
+    "files": ["dist"],
     "bin": {
-        "bunup": "./build/cli.mjs"
+        "bunup": "./dist/cli.mjs"
     },
     "scripts": {
         "build": "bunup",
