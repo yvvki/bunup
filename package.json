@@ -39,6 +39,7 @@
         "format:fix": "biome format --write .",
         "tsc": "tsc --noEmit",
         "release": "bumpp -r --commit --push --tag",
+        "publish": "bun publish",
         "release:ci": "bumpp patch -r --commit --push --tag --yes",
         "publish:ci": "bun run --cwd bunup --cwd create-bunup publish --access public --no-git-checks",
         "benchmark": "bun run --cwd benchmarks benchmark",

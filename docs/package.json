@@ -4,7 +4,8 @@
     "scripts": {
         "dev": "vitepress dev",
         "build": "vitepress build",
-        "preview": "vitepress preview"
+        "preview": "vitepress preview",
+        "publish": "bun publish"
     },
     "devDependencies": {
         "vitepress": "^1.6.3",
