@@ -41,7 +41,7 @@
         "release": "bumpp",
         "publish": "bun publish",
         "release:ci": "bumpp patch --yes",
-        "publish:ci": "bun run --cwd bunup --cwd create-bunup publish --access public --no-git-checks",
+        "publish:ci": "bun run --cwd bunup publish --access public --no-git-checks && bun run --cwd create-bunup publish --access public --no-git-checks",
         "benchmark": "bun run --cwd benchmarks benchmark",
         "upgrade-deps": "bunx taze -r -w && bun install && git add . && git commit -m 'chore: upgrade deps' && bun run release:ci",
         "prepare": "husky",
