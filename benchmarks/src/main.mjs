@@ -1,8 +1,8 @@
 import path from "node:path";
 
-import { build as bunupBuild } from "../../dist/index.mjs";
 import { build as tsdownBuild } from "tsdown";
 import { build as unbuildBuild } from "unbuild";
+import { build as bunupBuild } from "../../dist/index.mjs";
 
 import { ENTRY_POINT, RESULTS_FILE } from "./constants.mjs";
 import { runBenchmarksForBundlers, saveBenchmarkResults } from "./utils.mjs";
