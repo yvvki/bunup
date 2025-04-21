@@ -1,7 +1,7 @@
-import { defineConfig } from "bunup";
+import { defineConfig } from "../dist/index.mjs";
 
 export default defineConfig({
-    entry: ["fixtures/src/index.mts"],
+    entry: ["fixtures/index.ts"],
     format: ["esm", "cjs"],
     target: "bun",
     dts: true,

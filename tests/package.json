@@ -1,16 +1,15 @@
 {
-    "name": "bunup-tests",
+    "name": "tests",
     "version": "0.4.52",
     "private": true,
     "dependencies": {
-        "bunup": "workspace:*",
         "chalk": "^5.4.1",
         "lodash": "^4.17.21",
         "zx": "^8.5.3",
         "zx-extra": "^4.0.5"
     },
     "scripts": {
-        "build": "bunup"
+        "build": "bun run ../dist/cli.mjs"
     },
     "devDependencies": {
         "ora": "^8.2.0",

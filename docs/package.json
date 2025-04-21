@@ -1,5 +1,5 @@
 {
-    "name": "bunup-docs",
+    "name": "docs",
     "private": true,
     "scripts": {
         "dev": "vitepress dev",

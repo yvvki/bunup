@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { build as bunupBuild } from "bunup";
+import { build as bunupBuild } from "../../dist/index.mjs";
 import { build as tsdownBuild } from "tsdown";
 import { build as unbuildBuild } from "unbuild";
 
