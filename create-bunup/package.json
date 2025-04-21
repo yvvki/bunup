@@ -24,7 +24,7 @@
     },
     "scripts": {
         "fetch-latest-dep-versions": "bun run fetch-latest-dep-versions.ts && biome format --write src/latest-dep-versions.json",
-        "publish": "bun publish --access public --no-git-checks"
+        "npm-publish": "bun publish --access public --no-git-checks"
     },
     "dependencies": {
         "@clack/prompts": "^0.7.0",
