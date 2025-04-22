@@ -27,7 +27,7 @@ features:
     icon: 📦
     details: |
       Build multiple packages in one config file and with a single command.
-  - title: Bun Support
+  - title: Bun Native
     icon:
       src: /bun.svg
     details: |

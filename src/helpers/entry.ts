@@ -1,11 +1,9 @@
-import { basename, extname } from "node:path";
-import { logger } from "../logger";
+import { basename, dirname, extname } from "node:path";
 import type { Entry } from "../options";
-import { generateRandomSuffix, isTypeScriptFile } from "../utils";
-
+import { isTypeScriptFile } from "../utils";
 export type ProcessableEntry = {
+    fullEntryPath: string;
     name: string;
-    path: string;
 };
 
 export function getEntryNameOnly(entry: string): string {
@@ -14,51 +12,87 @@ export function getEntryNameOnly(entry: string): string {
     return extension ? filename.slice(0, -extension.length) : filename;
 }
 
+/**
+ * Normalizes different entry formats into a consistent array of ProcessableEntry objects.
+ *
+ * Examples:
+ * - String: "src/index.ts" → [{ fullEntryPath: "src/index.ts", name: "index" }]
+ * - Array: ["src/index.ts", "src/utils.ts"] → [{ fullEntryPath: "src/index.ts", name: "index" }, ...]
+ * - Object: { main: "src/index.ts" } → [{ fullEntryPath: "src/index.ts", name: "main" }]
+ *
+ * Handles name conflicts by using folder structure to create unique output paths.
+ */
 export function normalizeEntryToProcessableEntries(
     entry: Entry,
-    {
-        warnOnConflict = true,
-    }: {
-        warnOnConflict?: boolean;
-    } = {},
 ): ProcessableEntry[] {
-    const result: ProcessableEntry[] = [];
-    const usedNames = new Set<string>();
-    const nameToPath: Record<string, string> = {};
-
-    function addEntry(name: string, path: string) {
-        if (usedNames.has(name)) {
-            const randomSuffix = generateRandomSuffix();
-            const newName = `${name}_${randomSuffix}`;
-            if (warnOnConflict) {
-                logger.warn(
-                    `Output name conflict: "${name}" is used by multiple files.\nBunup uses filenames without extensions as output names by default.\n\n${nameToPath[name]} -> ${name}.js\n${path} -> ${newName}.js (auto-renamed to avoid conflict)\n\nTo fix this, use named entries in your configuration:\n{\n  entry: {\n    custom_name: "${nameToPath[name]}",\n    another_name: "${path}"\n  }\n}\n\nSee: https://bunup.dev/documentation/#named-entries`,
-                    {
-                        muted: true,
-                        verticalSpace: true,
-                    },
-                );
-            }
-            result.push({ name: newName, path });
-        } else {
-            result.push({ name, path });
-            usedNames.add(name);
-            nameToPath[name] = path;
-        }
+    if (typeof entry === "string") {
+        return [
+            {
+                fullEntryPath: entry,
+                name: getEntryNameOnly(entry),
+            },
+        ];
     }
 
-    if (Array.isArray(entry)) {
-        for (const item of entry) {
-            const name = getEntryNameOnly(item);
-            addEntry(name, item);
+    if (typeof entry === "object" && !Array.isArray(entry)) {
+        return Object.entries(entry).map(([name, path]) => ({
+            fullEntryPath: path as string,
+            name: name,
+        }));
+    }
+
+    const result: ProcessableEntry[] = [];
+    const usedOutputPaths = new Set<string>();
+
+    for (const path of entry) {
+        const baseName = getEntryNameOnly(path);
+
+        if (!usedOutputPaths.has(baseName)) {
+            result.push({ fullEntryPath: path, name: baseName });
+            usedOutputPaths.add(baseName);
+            continue;
         }
-    } else if (typeof entry === "object") {
-        for (const [name, path] of Object.entries(entry)) {
-            addEntry(name, path as string);
+
+        const dir = dirname(path);
+        const segments = dir.split("/").filter((s) => s !== "." && s !== "");
+
+        if (segments.length === 0) {
+            let counter = 1;
+            let newName: string;
+            do {
+                newName = `${baseName}_${counter++}`;
+            } while (usedOutputPaths.has(newName));
+
+            result.push({ fullEntryPath: path, name: newName });
+            usedOutputPaths.add(newName);
+            continue;
         }
-    } else {
-        const name = getEntryNameOnly(entry);
-        addEntry(name, entry);
+
+        let found = false;
+        for (let i = 1; i <= segments.length && !found; i++) {
+            const relevantSegments = segments.slice(-i);
+            const newName = `${relevantSegments.join("/")}/${baseName}`;
+
+            if (!usedOutputPaths.has(newName)) {
+                result.push({
+                    fullEntryPath: path,
+                    name: newName,
+                });
+                usedOutputPaths.add(newName);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            let counter = 1;
+            let newName: string;
+            do {
+                newName = `${segments.join("/")}/${baseName}_${counter++}`;
+            } while (usedOutputPaths.has(newName));
+
+            result.push({ fullEntryPath: path, name: newName });
+            usedOutputPaths.add(newName);
+        }
     }
 
     return result;
@@ -67,7 +101,7 @@ export function normalizeEntryToProcessableEntries(
 export function filterTypeScriptEntries(
     entries: ProcessableEntry[],
 ): ProcessableEntry[] {
-    return entries.filter((entry) => isTypeScriptFile(entry.path));
+    return entries.filter((entry) => isTypeScriptFile(entry.fullEntryPath));
 }
 
 export function getEntryNamingFormat(name: string, extension: string) {

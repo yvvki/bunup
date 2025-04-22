@@ -133,7 +133,7 @@ export async function build(
                 dtsEntry.map(async (entry) => {
                     const content = await generateDts(
                         rootDir,
-                        entry.path,
+                        entry.fullEntryPath,
                         options,
                         tsconfig,
                         packageJson,
@@ -157,7 +157,7 @@ export async function build(
 
                             logger.progress(
                                 "DTS",
-                                getShortFilePath(outputPath),
+                                `${entry.name}${extension}`,
                                 formatFileSize(fileSize),
                                 options.name,
                             );
@@ -192,9 +192,11 @@ async function buildEntry(
         }).js ?? getDefaultOutputExtension(fmt, packageType);
 
     const result = await Bun.build({
-        entrypoints: [`${rootDir}/${entry.path}`],
+        entrypoints: [`${rootDir}/${entry.fullEntryPath}`],
         format: fmt,
-        naming: { entry: getEntryNamingFormat(entry.name, extension) },
+        naming: {
+            entry: getEntryNamingFormat(entry.name, extension),
+        },
         splitting: getResolvedSplitting(options.splitting, fmt),
         bytecode: getResolvedBytecode(options.bytecode, fmt),
         define: getResolvedDefine(
@@ -237,7 +239,7 @@ async function buildEntry(
 
     logger.progress(
         fmt.toUpperCase(),
-        getShortFilePath(outputPath),
+        `${entry.name}${extension}`,
         formatFileSize(fileSize),
         options.name,
     );

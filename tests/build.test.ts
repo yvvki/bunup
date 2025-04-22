@@ -561,4 +561,120 @@ describe("Build Process", () => {
             /import\s+.*\s+from\s+["']zx-extra["']/,
         );
     });
+
+    it("should handle naming conflicts in normal builds", async () => {
+        createProject({
+            "src/index.ts": "export const x = 1;",
+            "lib/index.ts": "export const y = 2;",
+            "test/index.ts": "export const z = 3;",
+        });
+
+        const result = await runBuild({
+            entry: ["src/index.ts", "lib/index.ts", "test/index.ts"],
+            format: ["esm"],
+        });
+
+        expect(result.success).toBe(true);
+        expect(
+            validateBuildFiles(result, {
+                expectedFiles: ["index.mjs", "lib/index.mjs", "test/index.mjs"],
+            }),
+        ).toBe(true);
+    });
+
+    it("should handle naming conflicts in DTS generation", async () => {
+        createProject({
+            "src/types.ts": "export type A = string;",
+            "lib/types.ts": "export type B = number;",
+            "utils/types.ts": "export type C = boolean;",
+        });
+
+        const result = await runBuild({
+            entry: ["src/types.ts", "lib/types.ts", "utils/types.ts"],
+            format: ["esm"],
+            dts: true,
+        });
+
+        expect(result.success).toBe(true);
+        expect(
+            validateBuildFiles(result, {
+                expectedFiles: [
+                    "types.mjs",
+                    "lib/types.mjs",
+                    "utils/types.mjs",
+                    "types.d.mts",
+                    "lib/types.d.mts",
+                    "utils/types.d.mts",
+                ],
+            }),
+        ).toBe(true);
+    });
+
+    it("should maintain directory structure when resolving naming conflicts", async () => {
+        createProject({
+            "src/components/button.ts": "export const Button = () => 'button';",
+            "src/elements/button.ts":
+                "export const Button = () => 'element-button';",
+            "lib/ui/button.ts": "export const Button = () => 'ui-button';",
+        });
+
+        const result = await runBuild({
+            entry: [
+                "src/components/button.ts",
+                "src/elements/button.ts",
+                "lib/ui/button.ts",
+            ],
+            format: ["esm"],
+            dts: true,
+        });
+
+        expect(result.success).toBe(true);
+        expect(
+            validateBuildFiles(result, {
+                expectedFiles: [
+                    "components/button.mjs",
+                    "elements/button.mjs",
+                    "ui/button.mjs",
+                    "components/button.d.mts",
+                    "elements/button.d.mts",
+                    "ui/button.d.mts",
+                ],
+            }),
+        ).toBe(true);
+    });
+
+    it("should handle deeper nesting in conflict resolution", async () => {
+        createProject({
+            "src/ui/components/header/index.ts":
+                "export const Header = () => 'header';",
+            "src/layouts/header/index.ts":
+                "export const Header = () => 'layout-header';",
+            "src/ui/header/index.ts":
+                "export const Header = () => 'ui-header';",
+        });
+
+        const result = await runBuild({
+            entry: [
+                "src/ui/components/header/index.ts",
+                "src/layouts/header/index.ts",
+                "src/ui/header/index.ts",
+            ],
+            format: ["esm"],
+            dts: true,
+        });
+
+        expect(result.success).toBe(true);
+        expect(
+            validateBuildFiles(result, {
+                expectedFiles: [
+                    "ui/components/header/index.mjs",
+                    "layouts/header/index.mjs",
+                    "ui/header/index.mjs",
+                    "ui/components/header/index.d.mts",
+                    "layouts/header/index.d.mts",
+                    "ui/header/index.d.mts",
+                ],
+            }),
+        ).toBe(true);
+    });
 });

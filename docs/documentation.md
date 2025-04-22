@@ -287,16 +287,20 @@ export default defineConfig({
 
 This will generate output files with the specified names (e.g., `dist/main.js` and `dist/cli.js`).
 
-#### Why Use Named Entries?
+#### Organizing Output with Subdirectories
 
-Named entries are useful when:
+You can include slashes in named entry keys to organize output files into subdirectories:
 
-1. You want to customize the output filenames
-2. Your input filenames don't match your desired output names
-3. You have multiple files with the same basename in different directories
-4. You want to create a specific public API structure
+```typescript
+export default defineConfig({
+      entry: {
+            "client/index": "src/client/index.ts",
+            "server/index": "src/server/index.ts",
+      },
+});
+```
 
-For example, if you have `src/utils/index.ts` and `src/components/index.ts`, using named entries prevents naming conflicts in the output.
+This will generate output files in the specified subdirectories (e.g., `dist/client/index.js` and `dist/server/index.js`). This approach is particularly useful when bundling code for different environments or platforms.
 
 ## Output Formats
 

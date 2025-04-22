@@ -11,7 +11,6 @@ import {
     escapeRegExp,
     formatFileSize,
     formatTime,
-    generateRandomSuffix,
     getDefaultDtsExtention,
     getDefaultOutputExtension,
     getPackageDeps,
@@ -31,18 +30,6 @@ describe("Utils", () => {
         });
         it("escapes empty string", () => {
             expect(escapeRegExp("")).toBe("");
-        });
-    });
-
-    describe("generateRandomSuffix", () => {
-        it("generates a random suffix of default length", () => {
-            const suffix = generateRandomSuffix();
-            expect(suffix).toHaveLength(8);
-            expect(typeof suffix).toBe("string");
-        });
-        it("generates a random suffix of specified length", () => {
-            const suffix = generateRandomSuffix(12);
-            expect(suffix).toHaveLength(12);
         });
     });
 

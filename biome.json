@@ -14,13 +14,13 @@
                 "noUselessElse": "off"
             }
         },
-        "ignore": ["**/*dist/**", "benchmarks"]
+        "ignore": ["**/*dist/**", "benchmarks", "tests/.project/**"]
     },
     "formatter": {
         "enabled": true,
         "indentStyle": "space",
         "indentWidth": 4,
-        "ignore": ["**/*dist/**", "benchmarks"]
+        "ignore": ["**/*dist/**", "benchmarks", "tests/.project/**"]
     },
     "vcs": {
         "enabled": true,

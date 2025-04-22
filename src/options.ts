@@ -64,6 +64,9 @@ export type DtsOptions = {
      *
      * // Using named outputs as an object
      * entry: { myModule: 'src/index.ts', utils: 'src/utility-functions.ts' } // Generates myModule.d.ts and utils.d.ts
+     *
+     * // Organizing output with subdirectories
+     * entry: { "client/index": "src/client/index.ts", "server/index": "src/server/index.ts" } // Generates client/index.d.ts and server/index.d.ts
      */
     entry?: Entry;
     /**
