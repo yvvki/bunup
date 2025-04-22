@@ -8,7 +8,6 @@ import {
 import {
     addField,
     ensureArray,
-    escapeRegExp,
     formatFileSize,
     formatTime,
     getDefaultDtsExtention,
@@ -19,20 +18,6 @@ import {
 } from "../src/utils";
 
 describe("Utils", () => {
-    describe("escapeRegExp", () => {
-        it("escapes special regex characters", () => {
-            expect(escapeRegExp(".*+?^${}()|[]\\")).toBe(
-                "\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\",
-            );
-        });
-        it("escapes simple string", () => {
-            expect(escapeRegExp("hello")).toBe("hello");
-        });
-        it("escapes empty string", () => {
-            expect(escapeRegExp("")).toBe("");
-        });
-    });
-
     describe("addField", () => {
         it("adds field to a single object", () => {
             const obj = { a: 1 };

@@ -1,8 +1,4 @@
 import { BunupDTSBuildError, parseErrorMessage } from "../errors";
-import {
-    getExternalPatterns,
-    getNoExternalPatterns,
-} from "../helpers/external";
 import type { TsConfigData } from "../loaders";
 import { logger } from "../logger";
 import type { BuildOptions } from "../options";
@@ -30,9 +26,6 @@ export async function bundleDts(
     const dts = (await rolldownPluginDts).dts;
     const entryDtsPath = getDtsPathFromSourceCodePath(entryFile);
     const initialDtsEntry = addDtsVirtualPrefix(entryDtsPath);
-
-    const externalPatterns = getExternalPatterns(options, packageJson);
-    const noExternalPatterns = getNoExternalPatterns(options);
 
     const dtsResolve =
         typeof options.dts === "object" && "resolve" in options.dts
@@ -73,8 +66,8 @@ export async function bundleDts(
             external: (source) =>
                 dtsShouldTreatAsExternal(
                     source,
-                    externalPatterns,
-                    noExternalPatterns,
+                    options,
+                    packageJson,
                     dtsResolve,
                 ),
         });

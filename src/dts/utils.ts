@@ -1,4 +1,5 @@
-import type { DtsResolve } from "../options";
+import { isExternal } from "../helpers/external";
+import type { BuildOptions, DtsResolve } from "../options";
 import { DTS_VIRTUAL_FILE_PREFIX } from "./virtual-files";
 
 const JSTS_REGEX = /\.(js|mjs|cjs|ts|mts|cts|tsx|jsx)$/;
@@ -52,8 +53,8 @@ export function addDtsVirtualPrefix(filePath: string): string {
 
 export function dtsShouldTreatAsExternal(
     source: string,
-    externalPatterns: RegExp[],
-    noExternalPatterns: RegExp[],
+    options: BuildOptions,
+    packageJson: Record<string, unknown> | null,
     dtsResolve: DtsResolve | undefined,
 ) {
     // When dtsResolve is true, don't treat any source as external because we need to treat all external types
@@ -73,8 +74,5 @@ export function dtsShouldTreatAsExternal(
         }
     }
 
-    return (
-        externalPatterns.some((re) => re.test(source)) &&
-        !noExternalPatterns.some((re) => re.test(source))
-    );
+    return isExternal(source, options, packageJson);
 }

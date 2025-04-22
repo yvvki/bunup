@@ -1,25 +1,32 @@
 import type { BuildOptions } from "../options";
-import { escapeRegExp, getPackageDeps } from "../utils";
+import { getPackageDeps } from "../utils";
 
-function processPatterns(patterns: (string | RegExp)[]): RegExp[] {
-    return patterns.map((pattern) =>
-        typeof pattern === "string"
-            ? new RegExp(`^${escapeRegExp(pattern)}($|\\/|\\\\)`)
-            : pattern,
-    );
-}
-
-export function getExternalPatterns(
-    options: BuildOptions,
+function getPackageDepsPatterns(
     packageJson: Record<string, unknown> | null,
 ): RegExp[] {
-    return processPatterns(options.external || []).concat(
-        getPackageDeps(packageJson).map(
-            (dep) => new RegExp(`^${escapeRegExp(dep)}($|\\/|\\\\)`),
-        ),
+    return getPackageDeps(packageJson).map(
+        (dep) => new RegExp(`^${dep}($|\\/|\\\\)`),
     );
 }
 
-export function getNoExternalPatterns(options: BuildOptions): RegExp[] {
-    return processPatterns(options.noExternal || []);
+function matchesPattern(path: string, pattern: string | RegExp): boolean {
+    return typeof pattern === "string" ? pattern === path : pattern.test(path);
+}
+
+export function isExternal(
+    path: string,
+    options: BuildOptions,
+    packageJson: Record<string, unknown> | null,
+) {
+    const packageDepsPatterns = getPackageDepsPatterns(packageJson);
+
+    const matchesExternalPattern =
+        packageDepsPatterns.some((pattern) => pattern.test(path)) ||
+        options.external?.some((pattern) => matchesPattern(path, pattern));
+
+    const isExcludedFromExternal = options.noExternal?.some((pattern) =>
+        matchesPattern(path, pattern),
+    );
+
+    return matchesExternalPattern && !isExcludedFromExternal;
 }

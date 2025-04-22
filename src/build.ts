@@ -10,7 +10,6 @@ import {
     getEntryNamingFormat,
     normalizeEntryToProcessableEntries,
 } from "./helpers/entry";
-import { getExternalPatterns, getNoExternalPatterns } from "./helpers/external";
 import { loadPackageJson, loadTsconfig } from "./loaders";
 import { logger, setSilent } from "./logger";
 import {
@@ -69,13 +68,12 @@ export async function build(
     const processableEntries = normalizeEntryToProcessableEntries(
         options.entry,
     );
+
     const packageType = packageJson?.type as string | undefined;
-    const externalPatterns = getExternalPatterns(options, packageJson);
-    const noExternalPatterns = getNoExternalPatterns(options);
 
     if (!options.dtsOnly) {
         const plugins = [
-            externalPlugin(externalPatterns, noExternalPatterns),
+            externalPlugin(options, packageJson),
             ...filterBunPlugins(options.plugins ?? []),
         ];
 
@@ -150,14 +148,15 @@ export async function build(
                                 }).dts ??
                                 getDefaultDtsExtention(fmt, packageType);
 
-                            const outputPath = `${rootDir}/${options.outDir}/${entry.name}${extension}`;
+                            const relativePath = `${options.outDir}/${entry.name}${extension}`;
+                            const outputPath = `${rootDir}/${relativePath}`;
 
                             await Bun.write(outputPath, content);
                             const fileSize = Bun.file(outputPath).size || 0;
 
                             logger.progress(
                                 "DTS",
-                                `${entry.name}${extension}`,
+                                relativePath,
                                 formatFileSize(fileSize),
                                 options.name,
                             );
@@ -234,12 +233,13 @@ async function buildEntry(
         }
     }
 
-    const outputPath = `${rootDir}/${options.outDir}/${entry.name}${extension}`;
+    const relativePath = `${options.outDir}/${entry.name}${extension}`;
+    const outputPath = `${rootDir}/${relativePath}`;
     const fileSize = Bun.file(outputPath).size || 0;
 
     logger.progress(
         fmt.toUpperCase(),
-        `${entry.name}${extension}`,
+        relativePath,
         formatFileSize(fileSize),
         options.name,
     );

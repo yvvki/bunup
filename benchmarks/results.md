@@ -1,4 +1,4 @@
-bunup: 3.87ms - bunup (+dts): 21.34ms
-tsdown: 5.99ms - tsdown (+dts): 35.85ms
-unbuild: 43.65ms - unbuild (+dts): 312.37ms
-tsup: 61.62ms - tsup (+dts): 885.28ms
+bunup: 3.95ms - bunup (+dts): 21.89ms
+tsdown: 6.00ms - tsdown (+dts): 35.83ms
+unbuild: 43.34ms - unbuild (+dts): 307.31ms
+tsup: 62.00ms - tsup (+dts): 892.51ms

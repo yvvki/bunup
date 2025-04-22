@@ -4,10 +4,6 @@ import path from "node:path";
 import { BunupBuildError } from "./errors";
 import type { Format, Target } from "./options";
 
-export function escapeRegExp(string: string): string {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
 export function addField<T extends Record<string, unknown>>(
     objectOrArray: T | T[],
     field: string,
