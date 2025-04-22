@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/bunup.svg?style=flat-square)](https://www.npmjs.com/package/bunup)
 [![npm downloads](https://img.shields.io/npm/dm/bunup.svg?style=flat-square)](https://www.npmjs.com/package/bunup)
 
-Bunup is the **high-performance build tool** for TypeScript and JavaScript libraries, designed for beautiful developer experience and speed. It provides **first-class support** for libraries built with [Bun](https://bun.sh/) and delivers **lightning-fast builds** — up to **~50× faster than Tsup**.
+Bunup is the **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for beautiful developer experience and speed, **powered by Bun's native bundler** — up to **~50× faster than Tsup**.
 
 | Bundler | Format   | Build Time     | Build Time (with dts) |
 | ------- | -------- | -------------- | --------------------- |
@@ -12,19 +12,12 @@ Bunup is the **high-performance build tool** for TypeScript and JavaScript libra
 | unbuild | esm, cjs | 42.47ms        | 314.54ms              |
 | tsup    | esm, cjs | 63.59ms        | 943.61ms              |
 
-_Lower is better. Benchmarks run on identical code and output formats._
-
 ## Key Features
 
-- ⚡️ **Ultra Fast Builds**: Lightning-fast performance powered by [Bun](https://bun.sh/)'s native bundler and [Oxc](https://oxc.rs).
-
 - 🔥 **Bytecode Generation**: Faster startups by compiling to Bun bytecode—perfect for CLIs.
-
 - 📦 **Workspace Support**: Build multiple packages with [defineWorkspace()](https://bunup.dev/documentation/#workspaces) in one config file and command.
-
 - 🔄 **Tsup Familiarity**: Familiar tsup-like CLI and config.
-
-- 🎯 **Bun Targeting**: Optimize for Bun runtime with `--target bun` for native features.
+- 🎯 **Bun Target**: First-class bundling support for libraries built with Bun.
 
 ## 📚 Documentation
 
