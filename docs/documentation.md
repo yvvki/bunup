@@ -1,10 +1,16 @@
 # Introduction
 
-Bunup is the **high-performance build tool** for TypeScript and JavaScript libraries, designed for beautiful developer experience and speed. It provides **first-class support** for libraries built with [Bun](https://bun.sh/) and delivers **lightning-fast builds** — up to **~50× faster than Tsup**.
+Bunup is the ⚡️ **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for beautiful developer experience and speed, **powered by Bun's native bundler** — up to **~50× faster than Tsup**.
+
+::: tip 💖
+**Building with Bun? You need Bunup. Designed for the Bun ecosystem with the speed of Bun.**
+:::
 
 ## What Can It Bundle?
 
-Bunup handles JavaScript/TypeScript files, JSON, TOML, text files, and various assets. File processing can be customized with the [loader](#custom-loaders) option.
+Bunup supports bundling for multiple environments — including **Node.js**, **browsers**, and a special **Bun** target. The **bun** target is specifically optimized for libraries intended to run on Bun.
+
+It can bundle JavaScript/TypeScript files, JSON, TOML, text files, and a variety of other assets. You can also customize how different file types are processed using the [loader](#custom-loaders) option.
 
 ## Starter Template
 
