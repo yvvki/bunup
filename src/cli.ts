@@ -78,7 +78,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
             muted: true,
         });
 
-        exec(cliOptions.onSuccess, [], {
+        await exec(cliOptions.onSuccess, [], {
             nodeOptions: { shell: true, stdio: "inherit" },
         });
     }
