@@ -1,5 +1,5 @@
 <div align="center">
-  ![](https://bunup.dev/logo.svg)
+  ![Hero Logo](https://bunup.dev/logo.svg)
 
   ![Bunup](assets/bunup-title.svg)
 
