@@ -1,7 +1,7 @@
 import pc from "picocolors";
 import { logger } from "./logger";
 
-export class BunupError extends Error {
+class BunupError extends Error {
     constructor(message: string) {
         super(message);
         this.name = "BunupError";
