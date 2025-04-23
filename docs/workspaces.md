@@ -121,7 +121,7 @@ For example, with this configuration:
 
 To build all packages in your workspace:
 
-```bash
+```sh
 bunup
 ```
 
@@ -129,7 +129,7 @@ bunup
 
 To automatically rebuild packages when files change:
 
-```bash
+```sh
 bunup --watch
 ```
 
@@ -139,6 +139,8 @@ This single command watches and rebuilds all packages in your workspace.
 
 To build only specific packages, use the `--filter` option with the package names (the `name` property defined in your workspace configuration):
 
-```bash
+```sh
 bunup --filter core,utils
+# or watch specific packages
+bunup --filter core,utils --watch
 ```
