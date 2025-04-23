@@ -318,7 +318,7 @@ Bunup supports three output formats:
 
 You can specify one or more formats:
 
-### In the CLI
+### Using the CLI
 
 ```sh
 # Single format
@@ -328,7 +328,7 @@ bunup src/index.ts --format esm
 bunup src/index.ts --format esm,cjs,iife
 ```
 
-### In a Configuration File
+### Using a Configuration File
 
 ```typescript
 export default defineConfig({
@@ -545,25 +545,33 @@ export default defineConfig([
 ]);
 ```
 
-## External Dependencies
+## Customizing Dependency Bundling
 
-By default, Bunup treats all dependencies from your `package.json` (`dependencies` and `peerDependencies`) as external. This means they won't be included in your bundle.
+By default, Bunup treats all packages listed in your `package.json` under `dependencies` and `peerDependencies` as **external**. This means:
 
-### Specifying External Dependencies
+- `dependencies` will be installed automatically when your package is installed.
 
-You can explicitly mark additional packages as external:
+- `peerDependencies` are expected to be installed by the end user.
 
-#### In the CLI
+These external packages are **not included** in your final bundle.
+
+However, any modules listed in `devDependencies` or others **will be bundled**.
+
+### External Dependencies
+
+You can explicitly mark any package as external, even if it's not listed in `dependencies` or `peerDependencies`.
+
+#### Using the CLI
 
 ```sh
-# Single external dependency
+# Mark a single package as external
 bunup src/index.ts --external lodash
 
-# Multiple external dependencies (comma-separated, no spaces)
+# Mark multiple packages (comma-separated, no spaces)
 bunup src/index.ts --external lodash,react,react-dom
 ```
 
-#### In a Configuration File
+#### Using a Configuration File
 
 ```typescript
 export default defineConfig({
@@ -572,27 +580,30 @@ export default defineConfig({
 });
 ```
 
-### Including Specific External Dependencies
+### Forcing External Packages to Be Bundled
 
-You can force include specific dependencies that would otherwise be external:
+Sometimes, you may want to include specific modules in your bundle, even if they’re marked as external (e.g., part of `dependencies` or `peerDependencies`).
 
-#### In the CLI
+#### Using the CLI
 
 ```sh
+# Mark lodash as external, but include lodash/merge in the bundle
 bunup src/index.ts --external lodash --no-external lodash/merge
 ```
 
-#### In a Configuration File
+#### Using a Configuration File
 
 ```typescript
 export default defineConfig({
   entry: ["src/index.ts"],
   external: ["lodash"],
-  noExternal: ["lodash/merge"], // Include lodash/merge even though lodash is external
+  noExternal: ["lodash/merge"], // This will be bundled
 });
 ```
 
-Both `external` and `noExternal` support string patterns and regular expressions.
+::: info
+Both `external` and `noExternal` support exact strings and regular expressions.
+:::
 
 ## Code Splitting
 
@@ -607,7 +618,7 @@ Code splitting allows Bunup to split your code into multiple chunks for better p
 
 You can explicitly enable or disable code splitting:
 
-#### In the CLI
+#### Using the CLI
 
 ```sh
 # Enable code splitting
@@ -617,7 +628,7 @@ bunup src/index.ts --splitting
 bunup src/index.ts --splitting=false
 ```
 
-#### In a Configuration File
+#### Using a Configuration File
 
 ```typescript
 export default defineConfig({
@@ -654,7 +665,7 @@ export default defineConfig({
 
 You can configure individual minification options:
 
-#### In the CLI
+#### Using the CLI
 
 ```sh
 # Minify whitespace only
@@ -664,7 +675,7 @@ bunup src/index.ts --minify-whitespace
 bunup src/index.ts --minify-whitespace --minify-syntax
 ```
 
-#### In a Configuration File
+#### Using a Configuration File
 
 ```typescript
 export default defineConfig({
