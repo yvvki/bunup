@@ -321,7 +321,7 @@ function reportUnusedExports(
 
     for (const { filePath, name, position } of unusedExports) {
         const relativePath = path.relative(process.cwd(), filePath);
-        const message = `   ${pc.gray(`${relativePath} (${position.line}:${position.column}):`)} ${pc.blue(name)}`;
+        const message = `   ${pc.dim(`${relativePath} (${position.line}:${position.column}):`)} ${pc.blue(name)}`;
 
         if (level === "warn") {
             console.warn(message);
