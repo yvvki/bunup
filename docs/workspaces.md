@@ -1,17 +1,41 @@
-# Workspaces
+# Bunup Workspaces
 
-Bunup provides robust support for monorepo workspaces, allowing you to define build configurations for multiple packages in a single configuration file.
+Effortlessly manage multiple packages in monorepos with Bunup's workspace support. Define and build multiple packages with a single configuration file and command.
 
-## Basic Workspace Configuration
+## Configuration Structure
 
-To define a workspace configuration, use the `defineWorkspace` function:
+### Creating a Workspace Configuration
+
+Use the `defineWorkspace` function to define your monorepo structure:
+
+```typescript [bunup.config.ts]
+import { defineWorkspace } from "bunup";
+
+export default defineWorkspace([
+  // Package configurations go here
+]);
+```
+
+### Package Configuration
+
+Each package in your workspace requires:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `name` | `string` | Unique identifier for the package |
+| `root` | `string` | Relative path to the package directory |
+| `config` | `BunupConfig \| BunupConfig[]` | Build configuration(s) for this package |
+
+## Basic Usage
+
+Here's a simple workspace with two packages:
 
 ```typescript [bunup.config.ts]
 import { defineWorkspace } from "bunup";
 
 export default defineWorkspace([
   {
-    name: "core-package",
+    name: "core",
     root: "packages/core",
     config: {
       entry: ["src/index.ts"],
@@ -20,7 +44,7 @@ export default defineWorkspace([
     },
   },
   {
-    name: "utils-package",
+    name: "utils",
     root: "packages/utils",
     config: {
       entry: ["src/index.ts"],
@@ -31,32 +55,26 @@ export default defineWorkspace([
 ]);
 ```
 
-## Workspace Structure
+## Multiple Build Configurations
 
-Each workspace entry requires three properties:
-
-- **name**: A unique identifier for the workspace (used in logs)
-- **root**: The relative path to the workspace root directory
-- **config**: The build configuration for the workspace (same options as `defineConfig`)
-
-## Multiple Configurations per Workspace
-
-You can define multiple build configurations for a single workspace by using an array for the `config` property:
+You can define multiple build configurations for a single package by using an array:
 
 ```typescript [bunup.config.ts]
+import { defineWorkspace } from "bunup";
+
 export default defineWorkspace([
   {
     name: "web-package",
     root: "packages/web",
     config: [
       {
-        name: "esm-build",
+        name: "browser-esm",
         entry: ["src/index.ts"],
         format: ["esm"],
         target: "browser",
       },
       {
-        name: "cjs-build",
+        name: "node-cjs",
         entry: ["src/index.ts"],
         format: ["cjs"],
         target: "node",
@@ -66,43 +84,61 @@ export default defineWorkspace([
 ]);
 ```
 
-## Working with Workspace Paths
+::: tip
+Use the `name` property within each config to easily identify different builds in logs.
+:::
 
-All paths in workspace configurations are resolved relative to each workspace's root directory. This means:
+## Path Resolution
 
-- Entry points are resolved from the workspace root
-- Output is generated relative to the workspace root
-- TypeScript configurations are loaded from the workspace root
+All paths in workspace configurations are resolved relative to each **package's root directory**:
 
-For example, with the following configuration:
+```
+myproject/
+├── packages/
+│   ├── core/        <- package root
+│   │   ├── src/     <- entry points relative to this package
+│   │   └── dist/    <- output goes here
+│   └── utils/       <- another package root
+├── bunup.config.ts
+└── package.json
+```
+
+For example, with this configuration:
 
 ```typescript
 {
-      name: 'my-package',
-      root: 'packages/my-package',
-      config: {
-            entry: ['src/index.ts'],
-            outDir: 'dist',
-      },
+  name: 'core',
+  root: 'packages/core',
+  config: {
+    entry: ['src/index.ts'],  // resolves to packages/core/src/index.ts
+    outDir: 'dist',           // outputs to packages/core/dist/
+  },
 }
 ```
 
-The entry point will be resolved as `packages/my-package/src/index.ts` and the output will be written to `packages/my-package/dist/`.
 
-## Running Workspace Builds
+## Build Packages
 
-To build all workspaces, simply run the `bunup` command with no additional arguments:
+To build all packages in your workspace:
 
-```sh
+```bash
 bunup
 ```
 
-Bunup will automatically detect and build all workspaces defined in your configuration file.
+### Watch Mode
 
-To watch the packages in workspaces and automatically rebuild on file changes, run:
+To automatically rebuild packages when files change:
 
-```sh
+```bash
 bunup --watch
 ```
 
-This single command enables continuous monitoring and rebuilding of all packages in your workspaces. 
+This single command watches and rebuilds all packages in your workspace.
+
+### Building Specific Packages
+
+To build only specific packages, use the `--filter` option with the package names (the `name` property defined in your workspace configuration):
+
+```bash
+bunup --filter core,utils
+```

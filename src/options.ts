@@ -435,6 +435,14 @@ export type CliOptions = BuildOptions & {
      * bunup src/index.ts --onSuccess="echo 'Build successful'"
      */
     onSuccess?: string;
+    /**
+     * Filter specific packages to build in a workspace configuration.
+     * This option is only relevant when using workspace configurations.
+     *
+     * @example
+     * bunup --filter core,utils
+     */
+    filter?: string[];
 };
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, "clean"> = {

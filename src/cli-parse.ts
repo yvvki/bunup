@@ -137,6 +137,7 @@ const optionConfigs = {
         flags: ["onSuccess"],
         handler: stringHandler("onSuccess"),
     },
+    filter: { flags: ["filter"], handler: arrayHandler("filter") },
     entry: {
         flags: ["entry"],
         handler: (

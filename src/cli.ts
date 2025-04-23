@@ -33,7 +33,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
     const configsToProcess: ProcessableConfig[] = !config
         ? [{ rootDir: cwd, options: cliOptions }]
-        : await processLoadedConfigs(config, cwd);
+        : await processLoadedConfigs(config, cwd, cliOptions.filter);
 
     logger.cli(`Using bunup v${version} and bun v${Bun.version}`, {
         muted: true,

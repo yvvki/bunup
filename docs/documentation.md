@@ -244,7 +244,7 @@ Bunup supports multiple ways to define entry points. Entry points are the source
 The simplest way to define an entry point is to provide a single file path:
 
 ```sh
-# In CLI
+# CLI
 bunup src/index.ts
 
 # Configuration file
@@ -444,7 +444,11 @@ export default defineConfig({
 
 You can specify a custom tsconfig file for declaration generation:
 
-```typescript
+```sh
+# CLI
+bunup src/index.ts --dts --preferred-tsconfig-path ./tsconfig.build.json
+
+# Configuration file
 export default defineConfig({
   entry: ["src/index.ts"],
   dts: true,

@@ -1,3 +1,4 @@
+import path from "node:path";
 import { loadConfig } from "coffi";
 import type { LoadedConfig } from "./cli";
 import type { BuildOptions } from "./options";
@@ -12,16 +13,19 @@ export type ProcessableConfig = {
 export async function processLoadedConfigs(
     config: LoadedConfig,
     cwd: string,
+    filter?: string[],
 ): Promise<ProcessableConfig[]> {
     return Array.isArray(config) && "root" in config[0]
-        ? (config as DefineWorkspaceItem[]).map((c) => ({
-              rootDir: c.root,
-              options: addField(
-                  c.config,
-                  "name",
-                  c.name,
-              ) as unknown as Arrayable<BuildOptions>,
-          }))
+        ? (config as DefineWorkspaceItem[])
+              .filter((c) => (filter ? filter.includes(c.name) : true))
+              .map((c) => ({
+                  rootDir: path.resolve(cwd, c.root),
+                  options: addField(
+                      c.config,
+                      "name",
+                      c.name,
+                  ) as unknown as Arrayable<BuildOptions>,
+              }))
         : [
               {
                   rootDir: cwd,
@@ -38,7 +42,6 @@ export async function loadPackageJson(cwd: string): Promise<{
         name: "package",
         cwd,
         extensions: [".json"],
-        maxDepth: 3,
     });
 
     return {
@@ -61,7 +64,6 @@ export async function loadTsconfig(
         cwd: rootDir,
         extensions: [".json"],
         preferredPath: preferredTsconfigPath,
-        maxDepth: 3,
     });
 
     return {
