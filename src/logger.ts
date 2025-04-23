@@ -103,13 +103,13 @@ class Logger {
                 Math.max(0, this.MAX_MESSAGE_LENGTH - path.length),
             );
             const identifierPart = identifier
-                ? ` ${bgColor(pc.black(` "${identifier}" `))}`
+                ? ` ${bgColor(pc.black(` ${identifier} `))}`
                 : "";
             return `${fgColor(label)} ${padding}${path}${messagePadding} ${this.sizeColor(size)} ${rest.join(" ")}${identifierPart}`;
         }
 
         const identifierPart = identifier
-            ? `   ${bgColor(pc.black(` "${identifier}" `))}`
+            ? `   ${bgColor(pc.black(` ${identifier} `))}`
             : "";
         return `${fgColor(label)} ${padding}${formattedMessage}${identifierPart}`;
     }
