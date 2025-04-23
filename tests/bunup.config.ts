@@ -9,7 +9,6 @@ export default defineConfig({
         lintUnusedExports({
             include: "fixtures/**/*.ts",
             exclude: "node_modules/**",
-            level: "error",
         }),
     ],
 });
