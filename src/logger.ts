@@ -15,7 +15,7 @@ interface ProgressOptions extends LogOptions {
 
 let silent = false;
 
-export function setSilent(value: boolean | undefined) {
+export function setSilent(value: boolean | undefined): void {
     silent = value ?? false;
 }
 
@@ -117,12 +117,12 @@ class Logger {
     public output(
         message: string,
         options: LogOptions = {},
-        logFn = console.log,
+        logFn: (...args: any[]) => void = console.log,
     ): void {
         if (silent || !this.shouldLog(options)) return;
-        if (options.verticalSpace) console.log("");
+        if (options.verticalSpace) logFn("");
         logFn(message);
-        if (options.verticalSpace) console.log("");
+        if (options.verticalSpace) logFn("");
     }
 
     public cli(message: string, options: LogOptions = {}): void {
@@ -223,4 +223,4 @@ class Logger {
     }
 }
 
-export const logger = Logger.getInstance();
+export const logger: Logger = Logger.getInstance();

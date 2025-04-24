@@ -69,7 +69,7 @@ export function dtsShouldTreatAsExternal(
     options: BuildOptions,
     packageJson: Record<string, unknown> | null,
     dtsResolve: DtsResolve | undefined,
-) {
+): boolean | undefined {
     // When dtsResolve is true, don't treat any source as external because we need to treat all external types
     if (typeof dtsResolve === "boolean" && dtsResolve) {
         return false;

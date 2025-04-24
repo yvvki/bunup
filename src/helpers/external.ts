@@ -17,7 +17,7 @@ export function isExternal(
     path: string,
     options: BuildOptions,
     packageJson: Record<string, unknown> | null,
-) {
+): boolean | undefined {
     const packageDepsPatterns = getPackageDepsPatterns(packageJson);
 
     const matchesExternalPattern =
