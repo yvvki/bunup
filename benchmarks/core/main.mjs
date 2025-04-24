@@ -1,8 +1,8 @@
 import path from "node:path";
 
+import { bundle as buncheeBuild } from "bunchee";
 import { build as tsdownBuild } from "tsdown";
 import { build as unbuildBuild } from "unbuild";
-import { bundle as buncheeBuild } from "bunchee";
 import { build as bunupBuild } from "../../dist/index.mjs";
 
 import { ENTRY_POINT, RESULTS_FILE } from "./constants.mjs";
