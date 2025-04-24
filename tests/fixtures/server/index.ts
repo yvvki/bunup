@@ -1,1 +1,5 @@
-export const server = "server";
+function server() {
+    return "server";
+}
+
+export const s = server();

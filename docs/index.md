@@ -52,22 +52,22 @@ import WithinHero from "/components/WithinHero.vue";
     </thead>
     <tbody>
       <tr>
-        <td>bunup</td>
-        <td>esm, cjs</td>
-        <td>3.52ms ⚡️</td>
-        <td>20.84ms ⚡️</td>
+        <td><strong>bunup</strong></td>
+        <td><strong>esm, cjs</strong></td>
+        <td><strong>3.42ms ⚡️</strong></td>
+        <td><strong>21.28ms ⚡️</strong></td>
       </tr>
       <tr>
         <td>tsdown</td>
         <td>esm, cjs</td>
-        <td>5.81ms</td>
-        <td>35.84ms</td>
+        <td>8.37ms</td>
+        <td>41.48ms</td>
       </tr>
       <tr>
         <td>unbuild</td>
         <td>esm, cjs</td>
-        <td>42.47ms</td>
-        <td>314.54ms</td>
+        <td>43.22ms</td>
+        <td>326.65ms</td>
       </tr>
       <tr>
         <td>tsup</td>

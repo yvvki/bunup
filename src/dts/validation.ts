@@ -115,3 +115,12 @@ function formatDtsErrorMessage(errorMessage: string): string {
         .replace(" with --isolatedDeclarations", "")
         .replace(" with --isolatedDeclaration", "");
 }
+
+export async function validateDtsFilesWithCleanup(
+    filesUsedToBundleDts: Set<string>,
+) {
+    if (filesUsedToBundleDts.size > 0) {
+        await validateFilesUsedToBundleDts(filesUsedToBundleDts);
+        filesUsedToBundleDts.clear();
+    }
+}

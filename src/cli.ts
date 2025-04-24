@@ -1,6 +1,5 @@
 #!/usr/bin/env bun
 import { exec } from "tinyexec";
-import { build, filesUsedToBundleDts } from "./build";
 import { parseCliOptions } from "./cli-parse";
 import { handleErrorAndExit } from "./errors";
 import { logger, setSilent } from "./logger";
@@ -8,7 +7,6 @@ import type { BuildOptions, CliOptions } from "./options";
 
 import { loadConfig } from "coffi";
 import { version } from "../package.json";
-import { validateFilesUsedToBundleDts } from "./dts/validation";
 import { type ProcessableConfig, processLoadedConfigs } from "./loaders";
 import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from "./types";
 import { ensureArray, formatTime, getShortFilePath } from "./utils";
@@ -49,6 +47,9 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
     logger.cli("Build started");
 
+    const { build, filesUsedToBundleDts } = await import("./build");
+    const { validateDtsFilesWithCleanup } = await import("./dts/validation");
+
     await Promise.all(
         configsToProcess.flatMap(({ options, rootDir }) => {
             const optionsArray = ensureArray(options);
@@ -58,7 +59,16 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
                     ...removeCliOnlyOptions(cliOptions),
                 };
 
-                return handleBuild(partialOptions, rootDir);
+                if (partialOptions.watch) {
+                    await watch(
+                        partialOptions,
+                        rootDir,
+                        validateDtsFilesWithCleanup,
+                        filesUsedToBundleDts,
+                    );
+                } else {
+                    await build(partialOptions, rootDir);
+                }
             });
         }),
     );
@@ -68,7 +78,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
     logger.cli(`⚡️ Build completed in ${timeDisplay}`);
 
-    await validateDtsFiles();
+    await validateDtsFilesWithCleanup(filesUsedToBundleDts);
 
     if (cliOptions.watch) {
         logger.cli("👀 Watching for file changes");
@@ -95,21 +105,6 @@ function removeCliOnlyOptions(options: Partial<CliOptions>) {
         onSuccess: undefined,
         config: undefined,
     };
-}
-
-export async function validateDtsFiles() {
-    if (filesUsedToBundleDts.size > 0) {
-        await validateFilesUsedToBundleDts(filesUsedToBundleDts);
-        filesUsedToBundleDts.clear();
-    }
-}
-
-async function handleBuild(options: Partial<BuildOptions>, rootDir: string) {
-    if (options.watch) {
-        await watch(options, rootDir);
-    } else {
-        await build(options, rootDir);
-    }
 }
 
 main().catch((error) => handleErrorAndExit(error));

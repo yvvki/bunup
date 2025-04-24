@@ -1,9 +1,6 @@
 import path from "node:path";
 
-import chokidar from "chokidar";
-
 import { build } from "./build";
-import { validateDtsFiles } from "./cli";
 import { BunupWatchError, handleError, parseErrorMessage } from "./errors";
 import { normalizeEntryToProcessableEntries } from "./helpers/entry";
 import { logger } from "./logger";
@@ -13,6 +10,8 @@ import { formatTime } from "./utils";
 export async function watch(
     partialOptions: Partial<BuildOptions>,
     rootDir: string,
+    validateDtsFilesWithCleanup: (files: Set<string>) => Promise<void>,
+    filesUsedToBundleDts: Set<string>,
 ): Promise<void> {
     const watchPaths = new Set<string>();
 
@@ -25,6 +24,8 @@ export async function watch(
         const parentDir = path.dirname(entryPath);
         watchPaths.add(parentDir);
     }
+
+    const chokidar = await import("chokidar");
 
     const watcher = chokidar.watch(Array.from(watchPaths), {
         persistent: true,
@@ -62,7 +63,7 @@ export async function watch(
                     `📦 Rebuild finished in ${formatTime(performance.now() - start)}`,
                 );
             }
-            await validateDtsFiles();
+            await validateDtsFilesWithCleanup(filesUsedToBundleDts);
         } catch (error) {
             handleError(error);
         } finally {
