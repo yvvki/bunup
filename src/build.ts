@@ -2,6 +2,7 @@ import { generateDts } from "./dts";
 import {
     BunupBuildError,
     BunupDTSBuildError,
+    isIsolatedDeclError,
     parseErrorMessage,
 } from "./errors";
 import {
@@ -165,6 +166,9 @@ export async function build(
                 }),
             );
         } catch (error) {
+            if (isIsolatedDeclError(error)) {
+                throw error;
+            }
             throw new BunupDTSBuildError(parseErrorMessage(error));
         }
     }

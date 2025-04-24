@@ -2,6 +2,7 @@ import path from "node:path";
 
 import { build as tsdownBuild } from "tsdown";
 import { build as unbuildBuild } from "unbuild";
+import { bundle as buncheeBuild } from "bunchee";
 import { build as bunupBuild } from "../../dist/index.mjs";
 
 import { ENTRY_POINT, RESULTS_FILE } from "./constants.mjs";
@@ -46,6 +47,15 @@ const bundlers = [
             format: ["esm", "cjs"],
             declaration: dts,
             clean: true,
+        }),
+    },
+    {
+        name: "bunchee",
+        buildFn: (options) => buncheeBuild("", options),
+        options: (dts) => ({
+            format: ["esm", "cjs"],
+            clean: true,
+            dts,
         }),
     },
 ];

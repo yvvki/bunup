@@ -1,8 +1,8 @@
 import { isolatedDeclaration } from "oxc-transform";
 import pc from "picocolors";
-import { parseErrorMessage } from "../errors";
+import { BunupIsolatedDeclError, parseErrorMessage } from "../errors";
 import { logger } from "../logger";
-import { getShortFilePath, isTestEnv } from "../utils";
+import { getShortFilePath } from "../utils";
 import {
     calculateDtsErrorLineAndColumn,
     getDtsPathFromSourceCodePath,
@@ -62,17 +62,10 @@ export async function generateDtsContent(
     );
 
     if (hasErrors && !isWatching) {
-        logger.info(
-            `TypeScript is just asking for explicit type annotations on your exports. This helps ensure better, more reliable type declarations for your library. Bunup uses TypeScript's ${pc.blue("isolatedDeclarations")} feature to generate these declarations, which requires each export from your library to be fully typed. You can learn more here: ${pc.blue("https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations")}`,
-            {
-                muted: true,
-                verticalSpace: true,
-            },
+        console.log("\n");
+        throw new BunupIsolatedDeclError(
+            `TypeScript is asking for explicit type annotations on your exports. This helps ensure better, more reliable type declarations for your library. Bunup uses TypeScript's ${pc.blue("isolatedDeclarations")} feature to generate these declarations, which requires each export from your library to be fully typed. You can learn more here: ${pc.blue("https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations")}`,
         );
-
-        if (!isTestEnv()) {
-            process.exit(1);
-        }
     }
 
     return dtsMap;

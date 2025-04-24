@@ -1,8 +1,16 @@
 {
 	"name": "benchmarks",
 	"private": true,
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./bunchee-dist/index.d.ts",
+			"import": "./bunchee-dist/index.js",
+			"require": "./bunchee-dist/index.cjs"
+		}
+	},
 	"scripts": {
-		"benchmark": "bun run src/main.mjs && node src/tsup.mjs"
+		"benchmark": "bun run core/main.mjs && node core/tsup.mjs"
 	},
 	"devDependencies": {
 		"tsdown": "^0.9.6",
@@ -10,6 +18,7 @@
 		"unbuild": "^3.5.0"
 	},
 	"dependencies": {
-		"@types/node": "^20.17.30"
+		"@types/node": "^20.17.30",
+		"bunchee": "^6.5.1"
 	}
 }

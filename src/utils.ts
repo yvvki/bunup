@@ -4,10 +4,6 @@ import path from "node:path";
 import { BunupBuildError } from "./errors";
 import type { Format, Target } from "./options";
 
-export function isTestEnv(): boolean {
-    return process.env.NODE_ENV === "test";
-}
-
 export function addField<T extends Record<string, unknown>, F extends string>(
     objectOrArray: T | T[],
     field: F,

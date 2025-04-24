@@ -19,6 +19,7 @@ Bunup is the **blazing-fast build tool** for TypeScript and JavaScript libraries
 | **bunup** | **esm, cjs** | **3.42ms ⚡️** | **21.28ms ⚡️**       |
 | tsdown    | esm, cjs     | 8.37ms         | 41.48ms               |
 | unbuild   | esm, cjs     | 43.22ms        | 326.65ms              |
+| bunchee   | esm, cjs     | 74.98ms        | 324.38ms              |
 | tsup      | esm, cjs     | 63.59ms        | 943.61ms              |
 
 </div>

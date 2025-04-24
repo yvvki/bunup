@@ -70,6 +70,12 @@ import WithinHero from "/components/WithinHero.vue";
         <td>326.65ms</td>
       </tr>
       <tr>
+        <td>bunchee</td>
+        <td>esm, cjs</td>
+        <td>74.98ms</td>
+        <td>324.38ms</td>
+      </tr>
+      <tr>
         <td>tsup</td>
         <td>esm, cjs</td>
         <td>63.59ms</td>
