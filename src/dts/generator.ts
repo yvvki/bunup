@@ -2,7 +2,7 @@ import { isolatedDeclaration } from "oxc-transform";
 import pc from "picocolors";
 import { parseErrorMessage } from "../errors";
 import { logger } from "../logger";
-import { getShortFilePath } from "../utils";
+import { getShortFilePath, isTestEnv } from "../utils";
 import {
     calculateDtsErrorLineAndColumn,
     getDtsPathFromSourceCodePath,
@@ -70,7 +70,9 @@ export async function generateDtsContent(
             },
         );
 
-        process.exit(1);
+        if (!isTestEnv()) {
+            process.exit(1);
+        }
     }
 
     return dtsMap;

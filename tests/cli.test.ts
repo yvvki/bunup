@@ -105,7 +105,7 @@ describe("CLI Only Options", () => {
             " Function must have an explicit return type annotation.",
         );
         expect(result.stdout).toContain(
-            "You may have noticed some TypeScript warnings above",
+            "TypeScript is just asking for explicit type annotations on your exports",
         );
         expect(result.stdout).toContain("isolatedDeclarations");
 
