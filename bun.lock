@@ -43,7 +43,7 @@
     },
     "create-bunup": {
       "name": "create-bunup",
-      "version": "0.4.70",
+      "version": "0.4.71",
       "bin": {
         "create-bunup": "dist/index.mjs",
       },
@@ -551,7 +551,7 @@
 
     "bundle-require": ["bundle-require@5.1.0", "", { "dependencies": { "load-tsconfig": "^0.2.3" }, "peerDependencies": { "esbuild": ">=0.18" } }, "sha512-3WrrOuZiyaaZPWiEt4G3+IffISVC9HYlWueJEBWED4ZH4aIAC2PnkdnuRrR94M+w6yGWn4AglWtJtBI8YqvgoA=="],
 
-    "bunup": ["bunup@0.4.69", "", { "dependencies": { "chokidar": "^4.0.3", "coffi": "^0.1.23", "oxc-resolver": "^5.0.1", "oxc-transform": "^0.58.1", "rolldown": "1.0.0-beta.7", "rolldown-plugin-dts": "^0.7.0", "tinyexec": "^1.0.1", "ts-import-resolver": "^0.1.10" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"], "bin": { "bunup": "dist/cli.mjs" } }, "sha512-HDBLUXcBKAAVkv9AH4FE0cmJkLsPWKICZkHANa7/+19T/Hstfg/1jTP7XdqhKiwpnFPf4gUR3OuZgHrjOYL/DQ=="],
+    "bunup": ["bunup@0.4.71", "", { "dependencies": { "chokidar": "^4.0.3", "coffi": "^0.1.23", "oxc-resolver": "^5.0.1", "oxc-transform": "^0.58.1", "rolldown": "1.0.0-beta.7", "rolldown-plugin-dts": "^0.7.0", "tinyexec": "^1.0.1", "ts-import-resolver": "^0.1.10" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"], "bin": { "bunup": "dist/cli.mjs" } }, "sha512-8UOo9m1ERPqzWrzS8HaCPSU2RjKzPqrlzB0HY0MAQkqsABYo1UeHjo2gsawrwP5s0CirkFD5DkSZmdm356nLvw=="],
 
     "byte-size": ["byte-size@9.0.1", "", { "peerDependencies": { "@75lb/nature": "latest" }, "optionalPeers": ["@75lb/nature"] }, "sha512-YLe9x3rabBrcI0cueCdLS2l5ONUKywcRpTs02B8KP9/Cimhj7o3ZccGrPnRvcbyHMbb7W79/3MUJl7iGgTXKEw=="],
 
@@ -679,7 +679,7 @@
 
     "eastasianwidth": ["eastasianwidth@0.2.0", "", {}, "sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA=="],
 
-    "electron-to-chromium": ["electron-to-chromium@1.5.140", "", {}, "sha512-o82Rj+ONp4Ip7Cl1r7lrqx/pXhbp/lh9DpKcMNscFJdh8ebyRofnc7Sh01B4jx403RI0oqTBvlZ7OBIZLMr2+Q=="],
+    "electron-to-chromium": ["electron-to-chromium@1.5.141", "", {}, "sha512-qS+qH9oqVYc1ooubTiB9l904WVyM6qNYxtOEEGReoZXw3xlqeYdFr5GclNzbkAufWgwWLEPoDi3d9MoRwwIjGw=="],
 
     "emoji-regex": ["emoji-regex@10.4.0", "", {}, "sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw=="],
 
@@ -1449,7 +1449,7 @@
 
     "tsdown/rolldown": ["rolldown@1.0.0-beta.8-commit.2686eb1", "", { "dependencies": { "@oxc-project/types": "0.66.0", "@valibot/to-json-schema": "1.0.0", "ansis": "^3.17.0", "valibot": "1.0.0" }, "optionalDependencies": { "@rolldown/binding-darwin-arm64": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-darwin-x64": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-freebsd-x64": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-linux-arm-gnueabihf": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-linux-arm64-gnu": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-linux-arm64-musl": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-linux-x64-gnu": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-linux-x64-musl": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-wasm32-wasi": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-win32-arm64-msvc": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-win32-ia32-msvc": "1.0.0-beta.8-commit.2686eb1", "@rolldown/binding-win32-x64-msvc": "1.0.0-beta.8-commit.2686eb1" }, "peerDependencies": { "@oxc-project/runtime": "0.66.0" }, "optionalPeers": ["@oxc-project/runtime"], "bin": { "rolldown": "bin/cli.mjs" } }, "sha512-NIo+n0m7ZVC6VXQ4l2zNYJOQ84lEthihbByZBBHzmyyhH/605jL43n2qFTPNy6W3stDnTCyp8/YYDlw39+fXlA=="],
 
-    "tsdown/rolldown-plugin-dts": ["rolldown-plugin-dts@0.8.4", "", { "dependencies": { "debug": "^4.4.0", "dts-resolver": "^1.0.1", "get-tsconfig": "^4.10.0", "magic-string-ast": "^0.9.1", "oxc-parser": "^0.66.0", "oxc-transform": "^0.66.0" }, "peerDependencies": { "rolldown": "^1.0.0-beta.7", "typescript": "^5.0.0" }, "optionalPeers": ["typescript"] }, "sha512-Vzil0frrK7jZrzuaAkjJfoGLRBRr3oW+1voIb2rDz+eF/7mprgrM8NfGl2SelwadVZni23Mpj1EjRNfncsEe9A=="],
+    "tsdown/rolldown-plugin-dts": ["rolldown-plugin-dts@0.8.5", "", { "dependencies": { "debug": "^4.4.0", "dts-resolver": "^1.0.1", "get-tsconfig": "^4.10.0", "magic-string-ast": "^0.9.1", "oxc-parser": "^0.66.0", "oxc-transform": "^0.66.0" }, "peerDependencies": { "rolldown": "^1.0.0-beta.7", "typescript": "^5.0.0" }, "optionalPeers": ["typescript"] }, "sha512-iiLaGvRyNoiY+Htjou0fvZPwTkGO1Tmj95KQGLWXPEDLXx+iFaxaezPloFYc+10opZ7OkTQkbqqCVO8spJXbIg=="],
 
     "tsup/tinyexec": ["tinyexec@0.3.2", "", {}, "sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA=="],
 
