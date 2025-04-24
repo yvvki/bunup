@@ -1,7 +1,7 @@
 {
     "name": "bunup",
     "description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
-    "version": "0.4.70",
+    "version": "0.4.71",
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "maintainers": [
