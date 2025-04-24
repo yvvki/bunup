@@ -1,1 +1,5 @@
-export const index = "index";
+function index() {
+    return "index";
+}
+
+export const i = index();

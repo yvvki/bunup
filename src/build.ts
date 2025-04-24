@@ -35,8 +35,6 @@ import {
     isModulePackage,
 } from "./utils";
 
-export const filesUsedToBundleDts: Set<string> = new Set<string>();
-
 export async function build(
     partialOptions: Partial<BuildOptions>,
     rootDir: string = process.cwd(),

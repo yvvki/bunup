@@ -10,8 +10,6 @@ import { formatTime } from "./utils";
 export async function watch(
     partialOptions: Partial<BuildOptions>,
     rootDir: string,
-    validateDtsFilesWithCleanup: (files: Set<string>) => Promise<void>,
-    filesUsedToBundleDts: Set<string>,
 ): Promise<void> {
     const watchPaths = new Set<string>();
 
@@ -63,7 +61,6 @@ export async function watch(
                     `📦 Rebuild finished in ${formatTime(performance.now() - start)}`,
                 );
             }
-            await validateDtsFilesWithCleanup(filesUsedToBundleDts);
         } catch (error) {
             handleError(error);
         } finally {

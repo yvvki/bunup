@@ -1,7 +1,6 @@
 import type { Plugin } from "rolldown";
 
 import { resolveTsImportPath } from "ts-import-resolver";
-import { filesUsedToBundleDts } from "../build";
 import type { TsConfigData } from "../loaders";
 import type { DtsMap } from "./generator";
 import {
@@ -48,7 +47,6 @@ export const gerVirtualFilesPlugin = (
                 const dtsPath = removeDtsVirtualPrefix(id);
                 const content = dtsMap.get(dtsPath);
                 if (content) {
-                    filesUsedToBundleDts.add(dtsPath);
                     return content;
                 }
             }

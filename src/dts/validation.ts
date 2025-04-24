@@ -1,12 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { isolatedDeclaration } from "oxc-transform";
-
 import { BunupDTSBuildError } from "../errors";
-import { logger } from "../logger";
-import { getShortFilePath, isTypeScriptFile } from "../utils";
-import { getSourceCodePathFromDtsPath } from "./utils";
+import { isTypeScriptFile } from "../utils";
 
 export async function validateInputs(
     rootDir: string,
@@ -44,83 +40,4 @@ export async function validateInputs(
     }
 
     return { absoluteRootDir, absoluteEntry };
-}
-
-export async function validateFilesUsedToBundleDts(
-    filesUsedToBundleDts: Set<string>,
-): Promise<void> {
-    let hasErrors = false;
-
-    await Promise.all(
-        [...filesUsedToBundleDts].map(async (file) => {
-            try {
-                const tsFile = getSourceCodePathFromDtsPath(file);
-                const sourceText = await Bun.file(tsFile).text();
-                const { errors } = isolatedDeclaration(tsFile, sourceText);
-
-                for (const error of errors) {
-                    if (!hasErrors) {
-                        console.log("\n");
-                    }
-                    const label = error.labels[0];
-                    const position = label
-                        ? calculateDtsErrorLineAndColumn(
-                              sourceText,
-                              label.start,
-                          )
-                        : "";
-
-                    const shortPath = getShortFilePath(tsFile);
-                    const errorMessage = `${shortPath}${position}: ${formatDtsErrorMessage(error.message)}`;
-
-                    logger.warn(errorMessage);
-                    hasErrors = true;
-                }
-            } catch {
-                // ignore errors
-            }
-        }),
-    );
-
-    if (hasErrors) {
-        logger.info(
-            "You may have noticed some TypeScript warnings above related to missing type annotations. " +
-                'This is because Bunup uses TypeScript\'s "isolatedDeclarations" approach for generating declaration files. ' +
-                "This modern approach requires explicit type annotations on exports for better, more accurate type declarations. " +
-                "Adding the suggested type annotations will not only silence these warnings but also improve the quality " +
-                "of your published type definitions, making your library more reliable for consumers.",
-            {
-                muted: true,
-                verticalSpace: true,
-            },
-        );
-    }
-}
-
-function calculateDtsErrorLineAndColumn(
-    sourceText: string,
-    labelStart: number,
-): string {
-    if (labelStart === undefined) return "";
-
-    const lines = sourceText.slice(0, labelStart).split("\n");
-    const lineNumber = lines.length;
-    const columnStart = lines[lines.length - 1].length + 1;
-
-    return ` (${lineNumber}:${columnStart})`;
-}
-
-function formatDtsErrorMessage(errorMessage: string): string {
-    return errorMessage
-        .replace(" with --isolatedDeclarations", "")
-        .replace(" with --isolatedDeclaration", "");
-}
-
-export async function validateDtsFilesWithCleanup(
-    filesUsedToBundleDts: Set<string>,
-) {
-    if (filesUsedToBundleDts.size > 0) {
-        await validateFilesUsedToBundleDts(filesUsedToBundleDts);
-        filesUsedToBundleDts.clear();
-    }
 }

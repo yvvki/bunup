@@ -14,7 +14,7 @@ export async function generateDts(
 ): Promise<string> {
     const { absoluteEntry } = await validateInputs(rootDir, entry);
     const tsFiles = await collectTsFiles(absoluteEntry, tsconfig, rootDir);
-    const dtsMap = await generateDtsContent(tsFiles);
+    const dtsMap = await generateDtsContent(tsFiles, options.watch);
     return bundleDts(
         absoluteEntry,
         dtsMap,

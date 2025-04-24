@@ -47,8 +47,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
     logger.cli("Build started");
 
-    const { build, filesUsedToBundleDts } = await import("./build");
-    const { validateDtsFilesWithCleanup } = await import("./dts/validation");
+    const { build } = await import("./build");
 
     await Promise.all(
         configsToProcess.flatMap(({ options, rootDir }) => {
@@ -60,12 +59,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
                 };
 
                 if (partialOptions.watch) {
-                    await watch(
-                        partialOptions,
-                        rootDir,
-                        validateDtsFilesWithCleanup,
-                        filesUsedToBundleDts,
-                    );
+                    await watch(partialOptions, rootDir);
                 } else {
                     await build(partialOptions, rootDir);
                 }
@@ -77,8 +71,6 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     const timeDisplay = formatTime(buildTimeMs);
 
     logger.cli(`⚡️ Build completed in ${timeDisplay}`);
-
-    await validateDtsFilesWithCleanup(filesUsedToBundleDts);
 
     if (cliOptions.watch) {
         logger.cli("👀 Watching for file changes");

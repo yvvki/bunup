@@ -8,7 +8,7 @@ export function addField<T extends Record<string, unknown>>(
     objectOrArray: T | T[],
     field: string,
     value: unknown,
-) {
+): T | T[] {
     return Array.isArray(objectOrArray)
         ? objectOrArray.map((o) => ({ ...o, [field]: value }))
         : { ...objectOrArray, [field]: value };
@@ -50,7 +50,7 @@ export function isNodeCompatibleTarget(target: Target): boolean {
     return target === "node" || target === "bun";
 }
 
-export function isModulePackage(packageType: string | undefined) {
+export function isModulePackage(packageType: string | undefined): boolean {
     return packageType === "module";
 }
 
