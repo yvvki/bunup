@@ -3,11 +3,11 @@ import pc from "picocolors";
 
 import { parseErrorMessage } from "../errors";
 import { logger } from "../logger";
+import { getShortFilePath } from "../utils";
 import {
     calculateDtsErrorLineAndColumn,
     getDtsPathFromSourceCodePath,
 } from "./utils";
-import { getShortFilePath } from "../utils";
 
 /**
  * A map of the generated dts files.
