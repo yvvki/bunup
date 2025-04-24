@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
 
-export const TEST_DIR = resolve(process.cwd(), "tests");
-export const PROJECT_DIR = resolve(TEST_DIR, ".project");
-export const OUTPUT_DIR = resolve(TEST_DIR, PROJECT_DIR, ".output");
+export const TEST_DIR: string = resolve(process.cwd(), "tests");
+export const PROJECT_DIR: string = resolve(TEST_DIR, ".project");
+export const OUTPUT_DIR: string = resolve(TEST_DIR, PROJECT_DIR, ".output");

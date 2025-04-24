@@ -4,11 +4,11 @@ import path from "node:path";
 import { BunupBuildError } from "./errors";
 import type { Format, Target } from "./options";
 
-export function addField<T extends Record<string, unknown>>(
+export function addField<T extends Record<string, unknown>, F extends string>(
     objectOrArray: T | T[],
-    field: string,
+    field: F,
     value: unknown,
-): T | T[] {
+): (T & { [key in F]: unknown }) | (T[] & { [key in F]: unknown }[]) {
     return Array.isArray(objectOrArray)
         ? objectOrArray.map((o) => ({ ...o, [field]: value }))
         : { ...objectOrArray, [field]: value };

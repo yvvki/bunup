@@ -1,6 +1,5 @@
 import { isolatedDeclaration } from "oxc-transform";
 import pc from "picocolors";
-
 import { parseErrorMessage } from "../errors";
 import { logger } from "../logger";
 import { getShortFilePath } from "../utils";
@@ -64,12 +63,13 @@ export async function generateDtsContent(
 
     if (hasErrors && !isWatching) {
         logger.info(
-            `These errors are simply TypeScript asking for explicit type annotations on your exports. Adding these annotations helps improve the quality and accuracy of your library's type declarations. To catch these issues early—while you're writing code instead of during the build process—consider enabling "isolatedDeclarations: true" in your tsconfig.json.\n\n${pc.blue("https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations")}`,
+            `TypeScript is just asking for explicit type annotations on your exports. This helps ensure better, more reliable type declarations for your library. Bunup uses TypeScript's ${pc.blue("isolatedDeclarations")} feature to generate these declarations, which requires each export from your library to be fully typed. You can learn more here: ${pc.blue("https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations")}`,
             {
                 muted: true,
                 verticalSpace: true,
             },
         );
+
         process.exit(1);
     }
 
