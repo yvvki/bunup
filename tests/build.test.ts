@@ -238,7 +238,7 @@ describe("Build Process", () => {
             "src/jsx-file.jsx": "export const jsxVar = () => <div>JSX</div>;",
             "src/ts-file.ts": "export const tsVar: number = 2;",
             "src/tsx-file.tsx":
-                "export const tsxComponent = () => <div>TSX</div>;",
+                "export const tsxComponent = (): JSX.Element => <div>TSX</div>;",
             "src/mjs-file.mjs": "export const mjsVar = 3;",
             "src/cjs-file.cjs": "exports.cjsVar = 4;",
             "src/mts-file.mts": "export const mtsVar: number = 5;",
@@ -321,8 +321,9 @@ describe("Build Process", () => {
         createProject({
             "src/index.tsx": `
                 import ora from 'ora';
+                import type { Ora } from 'ora';
 
-                const spinner = ora('Loading...').start();
+                const spinner: Ora = ora('Loading...').start();
 
                 setTimeout(() => {
                   spinner.succeed('Done!');

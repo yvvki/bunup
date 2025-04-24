@@ -47,9 +47,9 @@ export async function runBuild(
 
     try {
         const buildOptions = {
-            ...options,
             outDir: ".output",
             silent: true,
+            ...options,
         };
 
         await build(buildOptions, PROJECT_DIR);

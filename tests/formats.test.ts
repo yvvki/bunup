@@ -310,13 +310,13 @@ describe("Complex Format Scenarios", () => {
             "package.json": `{"dependencies": {"react": "19.0.0"}}`,
             "src/js-file.js": "export const jsVar = 1;",
             "src/jsx-file.jsx": "export const jsxVar = () => <div>JSX</div>;",
-            "src/ts-file.ts": "export const tsVar = 2;",
+            "src/ts-file.ts": "export const tsVar: number = 2;",
             "src/tsx-file.tsx":
-                "export const tsxComponent = () => <div>TSX</div>;",
+                "export const tsxComponent = (): JSX.Element => <div>TSX</div>;",
             "src/mjs-file.mjs": "export const mjsVar = 3;",
             "src/cjs-file.cjs": "exports.cjsVar = 4;",
-            "src/mts-file.mts": "export const mtsVar = 5;",
-            "src/cts-file.cts": "export const ctsVar = 6;",
+            "src/mts-file.mts": "export const mtsVar: number = 5;",
+            "src/cts-file.cts": "export const ctsVar: number = 6;",
         });
 
         const result = await runBuild({

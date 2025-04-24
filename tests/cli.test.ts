@@ -100,16 +100,12 @@ describe("CLI Only Options", () => {
 
         const result = await runCli("src/index.ts --dts");
 
-        expect(result.success).toBe(true);
+        expect(result.success).toBe(false);
         expect(result.stderr).toContain(
             " Function must have an explicit return type annotation.",
         );
-        expect(result.stdout).toContain(
-            "TypeScript is just asking for explicit type annotations on your exports",
+        expect(result.stderr).toContain(
+            "TypeScript is asking for explicit type annotations on your exports",
         );
-        expect(result.stdout).toContain("isolatedDeclarations");
-
-        const dtsFile = findFile(result, "index", ".d.ts");
-        expect(dtsFile).toBeTruthy();
     });
 });

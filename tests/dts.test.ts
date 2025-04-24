@@ -275,7 +275,7 @@ describe("dts", () => {
             "src/features/dashboard.ts": `
                     export class Dashboard {
                         title = 'Main Dashboard';
-                        render() {
+                        render(): string {
                             return this.title;
                         }
                     }
@@ -283,7 +283,7 @@ describe("dts", () => {
             "src/features/settings.ts": `
                     export class Settings {
                         title = 'User Settings';
-                        render() {
+                        render(): string {
                             return this.title;
                         }
                     }
@@ -306,7 +306,7 @@ describe("dts", () => {
             "src/index.ts": `
                     import Logger = require('./logger');
 
-                    export function createLogger(name: string) {
+                    export function createLogger(name: string): Logger {
                         return new Logger(name);
                     }
 
@@ -316,7 +316,7 @@ describe("dts", () => {
                     class Logger {
                         constructor(private name: string) {}
 
-                        log(message: string) {
+                        log(message: string): void {
                             console.log(\`[\${this.name}] \${message}\`);
                         }
                     }
@@ -587,7 +587,7 @@ describe("dts", () => {
                 import { initApp } from './app';
                 import { ApiClient } from './api';
 
-                export function bootstrap() {
+                export function bootstrap(): void {
                     initApp();
                     new ApiClient().connect();
                 }
@@ -598,7 +598,7 @@ describe("dts", () => {
             "src/cli.ts": `
                 import { Command } from './command';
 
-                export function run(args: string[]) {
+                export function run(args: string[]): void {
                     new Command().execute(args);
                 }
 
@@ -610,13 +610,13 @@ describe("dts", () => {
                     version: string;
                 }
 
-                export function initApp() {
+                export function initApp(): void {
                     console.log('App initialized');
                 }
             `,
             "src/api.ts": `
                 export class ApiClient {
-                    connect() {
+                    connect(): boolean {
                         return true;
                     }
 
@@ -627,7 +627,7 @@ describe("dts", () => {
             `,
             "src/command.ts": `
                 export class Command {
-                    execute(args: string[]) {
+                    execute(args: string[]): void {
                         console.log('Executing command with args:', args);
                     }
                 }
@@ -748,7 +748,7 @@ describe("dts", () => {
                 }
 
                 export class Core implements CoreModule {
-                    init() {
+                    init(): void {
                         console.log('Core initialized');
                     }
                 }
@@ -771,7 +771,7 @@ describe("dts", () => {
                 export class ConsoleLogger implements Logger {
                     constructor(private core: CoreModule) {}
 
-                    log(message: string) {
+                    log(message: string): void {
                         console.log(message);
                     }
                 }
@@ -966,7 +966,7 @@ describe("dts", () => {
                 }
 
                 export class ComponentA {
-                    render(props: ComponentAProps) {
+                    render(props: ComponentAProps): string {
                         return props.title;
                     }
                 }
@@ -978,7 +978,7 @@ describe("dts", () => {
                 }
 
                 export class ComponentB {
-                    render(props: ComponentBProps) {
+                    render(props: ComponentBProps): string {
                         return props.items.join(', ');
                     }
                 }
@@ -1011,7 +1011,10 @@ describe("dts", () => {
                 import { Feature } from './features';
                 import { SubFeature } from './features/a/b/c/index';
 
-                export function initializeApp() {
+                export function initializeApp(): {
+                    feature: Feature;
+                    subFeature: SubFeature;
+                } {
                     const feature = new Feature();
                     const subFeature = new SubFeature();
                     return { feature, subFeature };

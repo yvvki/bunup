@@ -14,7 +14,7 @@ describe("dts-resolve", () => {
             "src/index.ts": `
                         import { SomeType } from 'external-lib';
 
-                        export function process(data: SomeType) {
+                        export function process(data: SomeType): SomeType {
                             return data;
                         }
                     `,
@@ -60,27 +60,27 @@ describe("dts-resolve", () => {
 
                     export type { DateFormat, UUID, ChalkColor };
 
-                    export function formatTimestamp() {
+                    export function formatTimestamp(): string {
                         return format(new Date(), 'yyyy-MM-dd');
                     }
 
-                    export function colorize(text: string) {
+                    export function colorize(text: string): string {
                         return chalk.blue(text);
                     }
 
-                    export function generateId() {
+                    export function generateId(): string {
                         return v4();
                     }
                 `,
             "node_modules/date-fns/index.d.ts": `
                     export type DateFormat = string;
-                    export function format(date, formatStr) {
+                    export function format(date: Date, formatStr: string): string {
                         return date.toISOString();
                     }
                 `,
             "node_modules/chalk/index.d.ts": `
                     export type ChalkColor = string;
-                    function blue(text) {
+                    function blue(text: string): string {
                         return text;
                     }
 
@@ -257,7 +257,10 @@ describe("dts-resolve", () => {
                 import { DepType } from 'dep-lib';
                 import { PeerType } from 'peer-lib';
 
-                export function useTypes(dep: DepType, peer: PeerType) {
+                export function useTypes(dep: DepType, peer: PeerType): {
+                    dep: DepType;
+                    peer: PeerType;
+                } {
                     return { dep, peer };
                 }
 
@@ -306,7 +309,10 @@ describe("dts-resolve", () => {
                 import { ExternalType } from 'external-pkg';
                 import { InternalType } from 'internal-pkg';
 
-                export function processData(ext: ExternalType, int: InternalType) {
+                export function processData(ext: ExternalType, int: InternalType): {
+                    ext: ExternalType;
+                    int: InternalType;
+                } {
                     return { ext, int };
                 }
 
@@ -363,8 +369,12 @@ describe("dts-resolve", () => {
                 import { TypeB } from 'lib-b';
                 import { TypeC } from 'lib-c';
 
-                export function combineTypes(a: TypeA, b: TypeB, c: TypeC) {
-                    return { ...a, ...b, ...c };
+                export function combineTypes(a: TypeA, b: TypeB, c: TypeC): {
+                    a: TypeA;
+                    b: TypeB;
+                    c: TypeC;
+                } {
+                    return { a, b, c };
                 }
 
                 export type { TypeA, TypeB, TypeC };
@@ -422,7 +432,10 @@ describe("dts-resolve", () => {
                 import { ExternalType } from 'external-lib';
                 import { IncludedType } from 'included-lib';
 
-                export function process(ext: ExternalType, inc: IncludedType) {
+                export function process(ext: ExternalType, inc: IncludedType): {
+                    ext: ExternalType;
+                    inc: IncludedType;
+                } {
                     return { ext, inc };
                 }
 
