@@ -19,6 +19,7 @@
     "homepage": "https://bunup.dev",
     "funding": "https://github.com/sponsors/arshad-yaseen",
     "keywords": ["bun", "bunup", "bun-bundler"],
+    "files": ["dist"],
     "bin": {
         "bunup": "./dist/cli.js"
     },
