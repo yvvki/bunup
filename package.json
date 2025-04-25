@@ -34,5 +34,5 @@
         "prepare": "husky",
         "fetch-latest-dep-versions": "bun run --cwd packages/create-bunup fetch-latest-dep-versions"
     },
-    "workspaces": ["docs", "benchmarks", "packages/*"]
+    "workspaces": ["docs", "benchmarks", "packages/*", "packages/bunup/tests"]
 }
