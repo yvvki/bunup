@@ -2,6 +2,7 @@ import { resolveTsImportPath } from "ts-import-resolver";
 import { parseErrorMessage } from "../errors";
 import type { TsConfigData } from "../loaders";
 import { logger } from "../logger";
+import { isDtsFile, isTypeScriptSourceCodeFile } from "./utils";
 
 const importRegex = /^\s*import\s+(?:[^'"]*?\s+from\s+)?['"]([^'"]+)['"]/gm;
 const exportRegex = /^\s*export\s+.*from\s+['"]([^'"]+)['"]/gm;
@@ -52,7 +53,25 @@ export async function collectTsFiles(
 
         try {
             const sourceText = await Bun.file(current).text();
-            const imports = extractImports(sourceText);
+            const allImports = extractImports(sourceText);
+            const imports = new Set<string>();
+
+            // Filter out imports that are not TypeScript or declaration files
+            for (const importPath of allImports) {
+                // If the import has no extension, keep it (likely an alias)
+                if (!importPath.includes(".")) {
+                    imports.add(importPath);
+                    continue;
+                }
+
+                // Check if it's a TypeScript or declaration file
+                if (
+                    isTypeScriptSourceCodeFile(importPath) ||
+                    isDtsFile(importPath)
+                ) {
+                    imports.add(importPath);
+                }
+            }
 
             for (const importPath of imports) {
                 const resolvedImport = tsconfig.tsconfig

@@ -64,7 +64,7 @@ export async function build(
     const { packageJson, path } = await loadPackageJson(rootDir);
 
     if (packageJson && path) {
-        logger.cli(`Using package.json: ${getShortFilePath(path, 2)}`, {
+        logger.cli(`Using ${getShortFilePath(path, 2)}`, {
             muted: true,
             identifier: options.name,
             once: `${path}:${options.name}`,
@@ -173,14 +173,11 @@ export async function build(
         );
 
         if (tsconfig.path) {
-            logger.cli(
-                `Using tsconfig: ${getShortFilePath(tsconfig.path, 2)}`,
-                {
-                    muted: true,
-                    identifier: options.name,
-                    once: `${tsconfig.path}:${options.name}`,
-                },
-            );
+            logger.cli(`Using ${getShortFilePath(tsconfig.path, 2)}`, {
+                muted: true,
+                identifier: options.name,
+                once: `${tsconfig.path}:${options.name}`,
+            });
         }
 
         const formatsToProcessDts = options.format.filter((fmt) => {

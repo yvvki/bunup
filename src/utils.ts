@@ -100,7 +100,3 @@ export async function cleanOutDir(
     }
     await fs.mkdir(outDirPath, { recursive: true });
 }
-
-export function isTypeScriptFile(file: string): boolean {
-    return [".ts", ".mts", ".cts", ".tsx"].some((ext) => file.endsWith(ext));
-}
