@@ -2,7 +2,7 @@ import pc from "picocolors";
 import { logger } from "./logger";
 
 class BunupError extends Error {
-    constructor(message: string) {
+    constructor(message?: string) {
         super(message);
         this.name = "BunupError";
     }
@@ -37,7 +37,7 @@ export class BunupWatchError extends BunupError {
 }
 
 export class BunupIsolatedDeclError extends BunupError {
-    constructor(message: string) {
+    constructor(message?: string) {
         super(message);
         this.name = "BunupIsolatedDeclError";
     }
@@ -106,12 +106,8 @@ export const handleError = (error: unknown, context?: string): void => {
             (error.errorType === errorType || !error.errorType),
     );
 
-    if (!knownError) {
-        console.error(
-            `${pc.red(errorType)} ${contextPrefix}${
-                isIsolatedDeclarationError ? pc.dim(errorMessage) : errorMessage
-            }`,
-        );
+    if (!knownError && !isIsolatedDeclarationError) {
+        console.error(`${pc.red(errorType)} ${contextPrefix}${errorMessage}`);
     }
 
     if (knownError) {

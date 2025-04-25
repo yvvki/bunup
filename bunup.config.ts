@@ -1,11 +1,15 @@
-const COMMON_OPTIONS = {
+import { type DefineConfigItem, defineWorkspace } from "bunup";
+import { report } from "bunup/plugins";
+
+const COMMON_OPTIONS: Partial<DefineConfigItem> = {
     outDir: "dist",
     minify: true,
     splitting: false,
     target: "bun",
+    plugins: [report()],
 };
 
-export default [
+export default defineWorkspace([
     {
         name: "bunup",
         root: "packages/bunup",
@@ -40,4 +44,4 @@ export default [
             },
         ],
     },
-];
+]);

@@ -5,7 +5,7 @@ import {
 } from "vitepress-plugin-group-icons";
 import llmstxt from "vitepress-plugin-llms";
 
-import { version } from "../../package.json";
+import { version } from "../../packages/bunup/package.json";
 
 export default defineConfig({
     title: "Bunup",
@@ -45,6 +45,15 @@ export default defineConfig({
                 items: [
                     { text: "Introduction", link: "/plugins" },
                     { text: "Built-in Plugins", link: "/plugins/built-in" },
+                ],
+            },
+            {
+                text: "Notes",
+                items: [
+                    {
+                        text: "Explicit Type Annotation Errors",
+                        link: "/notes/explicit-type-annotation-errors",
+                    },
                 ],
             },
         ],

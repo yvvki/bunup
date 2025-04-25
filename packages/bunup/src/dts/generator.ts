@@ -63,9 +63,15 @@ export async function generateDtsContent(
 
     if (hasErrors && !isWatching) {
         console.log("\n");
-        throw new BunupIsolatedDeclError(
-            `TypeScript is asking for explicit type annotations on your exports. This helps ensure better, more reliable type declarations for your library. Bunup uses TypeScript's ${pc.blue("isolatedDeclarations")} feature to generate these declarations, which requires each export from your library to be fully typed. You can learn more here: ${pc.blue("https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations")}`,
+        console.log(
+            pc.gray(
+                `See ${pc.blue(
+                    "https://bunup.dev/notes/explicit-type-annotation-errors",
+                )} for details.`,
+            ),
         );
+        console.log("\n");
+        throw new BunupIsolatedDeclError();
     }
 
     return dtsMap;
