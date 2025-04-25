@@ -53,25 +53,7 @@ export async function collectTsFiles(
 
         try {
             const sourceText = await Bun.file(current).text();
-            const allImports = extractImports(sourceText);
-            const imports = new Set<string>();
-
-            // Filter out imports that are not TypeScript or declaration files
-            for (const importPath of allImports) {
-                // If the import has no extension, keep it (likely an alias)
-                if (!importPath.includes(".")) {
-                    imports.add(importPath);
-                    continue;
-                }
-
-                // Check if it's a TypeScript or declaration file
-                if (
-                    isTypeScriptSourceCodeFile(importPath) ||
-                    isDtsFile(importPath)
-                ) {
-                    imports.add(importPath);
-                }
-            }
+            const imports = extractImports(sourceText);
 
             for (const importPath of imports) {
                 const resolvedImport = tsconfig.tsconfig
@@ -83,7 +65,14 @@ export async function collectTsFiles(
                       })
                     : null;
 
-                if (!resolvedImport) continue;
+                if (
+                    !resolvedImport ||
+                    !(
+                        isTypeScriptSourceCodeFile(resolvedImport) ||
+                        isDtsFile(resolvedImport)
+                    )
+                )
+                    continue;
 
                 if (!visited.has(resolvedImport)) {
                     visited.add(resolvedImport);
