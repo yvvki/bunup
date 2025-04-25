@@ -142,14 +142,22 @@ export async function build(
                     }
                 }
 
-                const relativePath = `${options.outDir}/${entry.name}${extension}`;
-                const outputPath = `${rootDir}/${relativePath}`;
+                const relativePathToOutputDir = getRelativePathToOutputDir(
+                    options.outDir,
+                    entry.name,
+                    extension,
+                );
+                const outputPath = getFullPath(
+                    rootDir,
+                    relativePathToOutputDir,
+                );
 
                 buildOutput.files.push({
-                    path: outputPath,
+                    fullPath: outputPath,
+                    relativePathToOutputDir,
                 });
 
-                logger.progress(fmt.toUpperCase(), relativePath, {
+                logger.progress(fmt.toUpperCase(), relativePathToOutputDir, {
                     identifier: options.name,
                 });
             }),
@@ -213,16 +221,26 @@ export async function build(
                                 }).dts ??
                                 getDefaultDtsExtention(fmt, packageType);
 
-                            const relativePath = `${options.outDir}/${entry.name}${extension}`;
-                            const outputPath = `${rootDir}/${relativePath}`;
+                            const relativePathToOutputDir =
+                                getRelativePathToOutputDir(
+                                    options.outDir,
+                                    entry.name,
+                                    extension,
+                                );
+
+                            const outputPath = getFullPath(
+                                rootDir,
+                                relativePathToOutputDir,
+                            );
 
                             buildOutput.files.push({
-                                path: outputPath,
+                                fullPath: outputPath,
+                                relativePathToOutputDir,
                             });
 
                             await Bun.write(outputPath, content);
 
-                            logger.progress("DTS", relativePath, {
+                            logger.progress("DTS", relativePathToOutputDir, {
                                 identifier: options.name,
                             });
                         }),
@@ -242,4 +260,16 @@ export async function build(
     if (options.onSuccess) {
         await options.onSuccess(options);
     }
+}
+
+function getRelativePathToOutputDir(
+    outputDir: string,
+    entryName: string,
+    extension: string,
+): string {
+    return `${outputDir}/${entryName}${extension}`;
+}
+
+function getFullPath(rootDir: string, relativePathToOutputDir: string): string {
+    return `${rootDir}/${relativePathToOutputDir}`;
 }

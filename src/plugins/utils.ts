@@ -18,7 +18,7 @@ export function filterBunupPlugins(
 export async function runPluginBuildStartHooks(
     bunupPlugins: BunupPlugin[] | undefined,
     options: BuildOptions,
-) {
+): Promise<void> {
     if (!bunupPlugins) return;
 
     for (const plugin of bunupPlugins) {
@@ -32,7 +32,7 @@ export async function runPluginBuildDoneHooks(
     bunupPlugins: BunupPlugin[] | undefined,
     options: BuildOptions,
     output: BuildOutput,
-) {
+): Promise<void> {
     if (!bunupPlugins) return;
 
     for (const plugin of bunupPlugins) {

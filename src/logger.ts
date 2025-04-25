@@ -188,4 +188,66 @@ class Logger {
     }
 }
 
+export interface TableColumn {
+    header: string;
+    align: "left" | "right";
+    color?: (str: string) => string;
+}
+
+export function logTable(
+    columns: TableColumn[],
+    data: Record<string, string>[],
+    footer?: Record<string, string>,
+): void {
+    const widths: Record<string, number> = {};
+    for (const col of columns) {
+        const headerLength = col.header.length;
+        const dataLengths = data.map((row) => row[col.header]?.length || 0);
+        const footerLength = footer ? footer[col.header]?.length || 0 : 0;
+        widths[col.header] = Math.max(
+            headerLength,
+            ...dataLengths,
+            footerLength,
+        );
+    }
+
+    const pad = (str: string, width: number, align: "left" | "right") => {
+        return align === "left" ? str.padEnd(width) : str.padStart(width);
+    };
+
+    const headerRow = columns
+        .map((col) => pad(col.header, widths[col.header], col.align))
+        .join(pc.gray(" | "));
+    console.log(pc.gray(headerRow));
+
+    const separator = columns
+        .map((col) => "-".repeat(widths[col.header]))
+        .join(" | ");
+    console.log(pc.gray(separator));
+
+    for (const row of data) {
+        const rowStr = columns
+            .map((col) => {
+                const value = row[col.header] || "";
+                const padded = pad(value, widths[col.header], col.align);
+                return col.color ? col.color(padded) : padded;
+            })
+            .join(pc.gray(" | "));
+        console.log(rowStr);
+    }
+
+    console.log(pc.gray(separator));
+
+    if (footer) {
+        const footerRow = columns
+            .map((col) => {
+                const value = footer[col.header] || "";
+                const padded = pad(value, widths[col.header], col.align);
+                return padded;
+            })
+            .join(pc.gray(" | "));
+        console.log(footerRow);
+    }
+}
+
 export const logger: Logger = Logger.getInstance();

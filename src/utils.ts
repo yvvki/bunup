@@ -8,7 +8,7 @@ export function addField<T extends Record<string, unknown>, F extends string>(
     objectOrArray: T | T[],
     field: F,
     value: unknown,
-) {
+): (T & { [key in F]: unknown }) | (T[] & { [key in F]: unknown }[]) {
     return Array.isArray(objectOrArray)
         ? objectOrArray.map((o) => ({ ...o, [field]: value }))
         : { ...objectOrArray, [field]: value };

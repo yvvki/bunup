@@ -20,7 +20,9 @@ export type BuildOutput = {
     /** Array of generated files with their paths and contents */
     files: Array<{
         /** Path to the generated file */
-        path: string;
+        fullPath: string;
+        /** Path to the generated file relative to the output directory */
+        relativePathToOutputDir: string;
     }>;
 };
 

@@ -70,7 +70,7 @@ describe("Bunup Plugins", () => {
                 output: expect.objectContaining({
                     files: expect.arrayContaining([
                         expect.objectContaining({
-                            path: expect.stringContaining("index.mjs"),
+                            fullPath: expect.stringContaining("index.mjs"),
                         }),
                     ]),
                 }),
@@ -282,7 +282,7 @@ describe("Bunup Plugins", () => {
             name: "output-access-plugin",
             hooks: {
                 onBuildDone: mock((ctx: BuildContext) => {
-                    outputFiles = ctx.output.files.map((file) => file.path);
+                    outputFiles = ctx.output.files.map((file) => file.fullPath);
                 }),
             },
         };
