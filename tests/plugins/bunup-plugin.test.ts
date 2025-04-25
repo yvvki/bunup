@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
-import type { BuildContext, BunupPlugin } from "../../src/plugins/types";
 import type { BuildOptions } from "../../src/options";
+import type { BuildContext, BunupPlugin } from "../../src/plugins/types";
 import {
     cleanProjectDir,
     createProject,
