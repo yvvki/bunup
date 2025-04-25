@@ -4,6 +4,7 @@ import { BunupCLIError } from "./errors";
 import { getEntryNameOnly } from "./helpers/entry";
 import { logger } from "./logger";
 import type { CliOptions } from "./options";
+import { version } from "../package.json";
 
 type OptionHandler = (
     value: string | boolean,
@@ -72,7 +73,7 @@ function showHelp(): void {
 }
 
 function showVersion(): void {
-    console.log("0.4.74");
+    console.log(version);
     process.exit(0);
 }
 

@@ -4,6 +4,7 @@ import { parseCliOptions } from "./cli-parse";
 import { handleErrorAndExit } from "./errors";
 import { logger, setSilent } from "./logger";
 import type { BuildOptions, CliOptions } from "./options";
+import { version } from "../package.json";
 
 import { loadConfig } from "coffi";
 import { type ProcessableConfig, processLoadedConfigs } from "./loaders";
@@ -32,7 +33,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
         ? [{ rootDir: cwd, options: cliOptions }]
         : await processLoadedConfigs(config, cwd, cliOptions.filter);
 
-    logger.cli(`Using bunup v${"0.4.74"} and bun v${Bun.version}`, {
+    logger.cli(`Using bunup v${version} and bun v${Bun.version}`, {
         muted: true,
     });
 
