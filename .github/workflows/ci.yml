@@ -11,11 +11,19 @@ on:
       - bunup.config.ts
       - tsconfig*.json
       - '!**/*.md'
+      - .github/workflows/ci.yml
 
   pull_request:
     paths:
       - packages/bunup/src/**
       - packages/bunup/tests/**
+      - packages/create-bunup/src/**
+      - package.json
+      - bun.lockb
+      - bunup.config.ts
+      - tsconfig*.json
+      - '!**/*.md'
+      - .github/workflows/ci.yml
 
 permissions: {}
 
