@@ -1,6 +1,6 @@
 import { basename, dirname, extname } from "node:path";
-import type { Entry } from "../options";
 import { isTypeScriptSourceCodeFile } from "../dts/utils";
+import type { Entry } from "../options";
 export type ProcessableEntry = {
     fullEntryPath: string;
     name: string;
