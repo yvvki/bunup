@@ -5,7 +5,6 @@ const COMMON_OPTIONS: Partial<DefineConfigItem> = {
     minify: true,
     splitting: false,
     target: "bun",
-    clean: false,
 };
 
 export default defineWorkspace([
