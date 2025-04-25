@@ -435,9 +435,11 @@ describe("Build Process", () => {
         const result = await runBuild({
             entry: "src/index.ts",
             format: ["esm"],
-            onBuildSuccess: (options) => {
-                callbackCalled = true;
-                callbackOptions = options;
+            callbacks: {
+                onBuildSuccess: (options) => {
+                    callbackCalled = true;
+                    callbackOptions = options;
+                },
             },
         });
 
@@ -458,8 +460,10 @@ describe("Build Process", () => {
             format: ["esm", "cjs"],
             minify: true,
             dts: true,
-            onBuildSuccess: (options) => {
-                passedOptions = options;
+            callbacks: {
+                onBuildSuccess: (options) => {
+                    passedOptions = options;
+                },
             },
         });
 
@@ -479,9 +483,11 @@ describe("Build Process", () => {
         const result = await runBuild({
             entry: "src/index.ts",
             format: ["esm"],
-            onBuildSuccess: async () => {
-                await new Promise((resolve) => setTimeout(resolve, 1));
-                asyncOperationCompleted = true;
+            callbacks: {
+                onBuildSuccess: async () => {
+                    await new Promise((resolve) => setTimeout(resolve, 1));
+                    asyncOperationCompleted = true;
+                },
             },
         });
 
@@ -497,8 +503,10 @@ describe("Build Process", () => {
         const result = await runBuild({
             entry: "src/index.ts",
             format: ["esm"],
-            onBuildSuccess: () => {
-                callbackCalled = true;
+            callbacks: {
+                onBuildSuccess: () => {
+                    callbackCalled = true;
+                },
             },
         });
 
