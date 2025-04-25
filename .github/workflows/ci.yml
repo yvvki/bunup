@@ -42,7 +42,7 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: 📦 Install dependencies
-        run: bun install --frozen-lockfile --filter=.
+        run: bun install --frozen-lockfile
 
       - name: 🔍 Lint
         run: |
