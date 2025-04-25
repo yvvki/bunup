@@ -18,31 +18,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 🛠️ Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
-      - name: 🛠️ Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
+      - name: 🛠️ Setup Bun
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2
 
       - name: 📦 Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: 🛠️ Build
-        run: pnpm run build
+        run: bun run build --config ./bunup.config.ts
 
       - name: 📜 Generate changelog
-        run: pnpm dlx changelogithub
+        run: bunx changelogithub
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🚀 Release
-        run: pnpm run publish:ci
+        run: bun run publish:ci
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
