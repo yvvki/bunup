@@ -245,15 +245,20 @@ export interface BuildOptions {
      */
     define?: Define;
     /**
-     * A callback function that runs after the build process completes
-     * This can be used for custom post-build operations like copying files,
-     * running additional tools, or logging build information
-     *
-     * If watch mode is enabled, this callback runs after each rebuild
-     *
-     * @param options The build options that were used
+     * A set of callbacks that will be called in different stages of the build process
      */
-    onBuildSuccess?: (options: Partial<BuildOptions>) => MaybePromise<void>;
+    callbacks?: {
+        /**
+         * A callback function that runs after the build process completes
+         * This can be used for custom post-build operations like copying files,
+         * running additional tools, or logging build information
+         *
+         * If watch mode is enabled, this callback runs after each rebuild
+         *
+         * @param options The build options that were used
+         */
+        onBuildSuccess?: (options: Partial<BuildOptions>) => MaybePromise<void>;
+    };
     /**
      * A banner to be added to the final bundle, this can be a directive like "use client" for react or a comment block such as a license for the code.
      *

@@ -173,8 +173,8 @@ export async function build(
         }
     }
 
-    if (options.onBuildSuccess) {
-        await options.onBuildSuccess(options);
+    if (options.callbacks?.onBuildSuccess) {
+        await options.callbacks.onBuildSuccess(options);
     }
 }
 
