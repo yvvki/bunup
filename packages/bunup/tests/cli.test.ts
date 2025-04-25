@@ -103,8 +103,6 @@ describe("CLI Only Options", () => {
         expect(result.stderr).toContain(
             " Function must have an explicit return type annotation.",
         );
-        expect(result.stderr).toContain(
-            "TypeScript is asking for explicit type annotations on your exports",
-        );
+        expect(result.stdout).toContain("for details.");
     });
 });
