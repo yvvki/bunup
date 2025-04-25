@@ -21,19 +21,26 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     const cwd = process.cwd();
 
     const { config, sources } = await loadConfig<LoadedConfig>({
-        sources: [
-            {
-                files: cliOptions.config || "bunup.config",
-                extensions: ["ts", "js", "mjs", "cjs"],
-            },
-            {
-                files: "package.json",
-                extensions: [],
-                rewrite(config: any) {
-                    return config?.bunup;
-                },
-            },
-        ],
+        sources: cliOptions.config
+            ? [
+                  {
+                      files: cliOptions.config,
+                      extensions: [],
+                  },
+              ]
+            : [
+                  {
+                      files: "bunup.config",
+                      extensions: ["ts", "js", "mjs", "cjs"],
+                  },
+                  {
+                      files: "package.json",
+                      extensions: [],
+                      rewrite(config: any) {
+                          return config?.bunup;
+                      },
+                  },
+              ],
         merge: false,
     });
 
