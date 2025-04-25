@@ -72,7 +72,7 @@
     },
     "lint-staged": {
         "*": "bun run format --no-errors-on-unmatched",
-        "src/**/*.(m|c)?(j|t)s": "bun run tsc"
+        "src/**/*.(m|c)?(j|t)s|(bump|bunup).config.ts": "bun run tsc"
     },
     "workspaces": ["tests", "docs", "benchmarks", "create-bunup"],
     "dependencies": {
