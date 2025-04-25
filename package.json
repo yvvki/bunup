@@ -1,7 +1,7 @@
 {
     "name": "bunup",
     "description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
-    "version": "0.4.85",
+    "version": "0.4.87",
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "type": "module",
@@ -58,13 +58,13 @@
     "workspaces": ["tests", "docs", "benchmarks", "create-bunup"],
     "dependencies": {
         "chokidar": "^4.0.3",
-        "coffi": "^0.1.23",
         "oxc-resolver": "^5.0.1",
         "oxc-transform": "^0.58.1",
         "rolldown": "1.0.0-beta.7",
         "rolldown-plugin-dts": "^0.7.0",
         "tinyexec": "^1.0.1",
-        "ts-import-resolver": "^0.1.10"
+        "ts-import-resolver": "^0.1.10",
+        "unconfig": "^7.3.2"
     },
     "peerDependencies": {
         "typescript": ">=4.5.0"

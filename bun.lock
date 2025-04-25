@@ -5,13 +5,13 @@
       "name": "bunup",
       "dependencies": {
         "chokidar": "^4.0.3",
-        "coffi": "^0.1.23",
         "oxc-resolver": "^5.0.1",
         "oxc-transform": "^0.58.1",
         "rolldown": "1.0.0-beta.7",
         "rolldown-plugin-dts": "^0.7.0",
         "tinyexec": "^1.0.1",
         "ts-import-resolver": "^0.1.10",
+        "unconfig": "^7.3.2",
       },
       "devDependencies": {
         "@biomejs/biome": "^1.9.4",
@@ -44,7 +44,7 @@
     },
     "create-bunup": {
       "name": "create-bunup",
-      "version": "0.4.78",
+      "version": "0.4.85",
       "bin": {
         "create-bunup": "dist/index.mjs",
       },

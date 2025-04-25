@@ -5,11 +5,11 @@ import { handleErrorAndExit } from "./errors";
 import { logger, setSilent } from "./logger";
 import type { BuildOptions, CliOptions } from "./options";
 
-import { loadConfig } from "coffi";
 import { type ProcessableConfig, processLoadedConfigs } from "./loaders";
 import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from "./types";
 import { ensureArray, formatTime, getShortFilePath } from "./utils";
 import { watch } from "./watch";
+import { loadConfig } from "unconfig";
 
 export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>;
 
@@ -20,13 +20,24 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
     const cwd = process.cwd();
 
-    const { config, filepath } = await loadConfig<LoadedConfig>({
-        name: "bunup.config",
-        extensions: [".ts", ".js", ".mjs", ".cjs"],
-        maxDepth: 1,
-        preferredPath: cliOptions.config,
-        packageJsonProperty: "bunup",
+    const { config, sources } = await loadConfig<LoadedConfig>({
+        sources: [
+            {
+                files: cliOptions.config || "bunup.config",
+                extensions: ["ts", "js", "mjs", "cjs"],
+            },
+            {
+                files: "package.json",
+                extensions: [],
+                rewrite(config: any) {
+                    return config?.bunup;
+                },
+            },
+        ],
+        merge: false,
     });
+
+    const filepath = sources?.[0];
 
     const configsToProcess: ProcessableConfig[] = !config
         ? [{ rootDir: cwd, options: cliOptions }]
