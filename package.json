@@ -71,7 +71,8 @@
         "fetch-latest-dep-versions": "bun run --cwd create-bunup fetch-latest-dep-versions"
     },
     "lint-staged": {
-        "*": "bun run format --no-errors-on-unmatched"
+        "*": "bun run format --no-errors-on-unmatched",
+        "src/**/*.(m|c)?(j|t)s": "bun run tsc"
     },
     "workspaces": ["tests", "docs", "benchmarks", "create-bunup"],
     "dependencies": {
