@@ -5,6 +5,7 @@ const COMMON_OPTIONS: Partial<DefineConfigItem> = {
     minify: true,
     splitting: false,
     target: "bun",
+    format: ["esm"],
 };
 
 export default defineWorkspace([
@@ -15,18 +16,15 @@ export default defineWorkspace([
             {
                 ...COMMON_OPTIONS,
                 entry: ["src/index.ts"],
-                format: ["cjs", "esm"],
                 dts: true,
             },
             {
                 ...COMMON_OPTIONS,
                 entry: ["src/cli.ts"],
-                format: ["esm"],
             },
             {
                 ...COMMON_OPTIONS,
                 entry: { plugins: "src/plugins/built-in/index.ts" },
-                format: ["esm", "cjs"],
                 dts: true,
             },
         ],
@@ -38,7 +36,6 @@ export default defineWorkspace([
             {
                 ...COMMON_OPTIONS,
                 entry: ["src/index.ts"],
-                format: ["esm"],
             },
         ],
     },

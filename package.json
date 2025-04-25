@@ -19,34 +19,15 @@
     "homepage": "https://bunup.dev",
     "funding": "https://github.com/sponsors/arshad-yaseen",
     "keywords": ["bun", "bunup", "bun-bundler"],
-    "types": "./dist/index.d.ts",
-    "main": "./dist/index.cjs",
-    "module": "./dist/index.js",
-    "files": ["dist"],
     "bin": {
         "bunup": "./dist/cli.js"
     },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "exports": {
-        ".": {
-            "import": {
-                "types": "./dist/index.d.ts",
-                "default": "./dist/index.js"
-            },
-            "require": {
-                "types": "./dist/index.d.cts",
-                "default": "./dist/index.cjs"
-            }
-        },
-        "./plugins": {
-            "import": {
-                "types": "./dist/plugins.d.ts",
-                "default": "./dist/plugins.js"
-            },
-            "require": {
-                "types": "./dist/plugins.d.cts",
-                "default": "./dist/plugins.cjs"
-            }
-        }
+        ".": "./dist/index.js",
+        "./plugins": "./dist/plugins.js"
     },
     "scripts": {
         "build": "bunup",
@@ -72,7 +53,7 @@
     },
     "lint-staged": {
         "*": "bun run format --no-errors-on-unmatched",
-        "src/**/*.(m|c)?(j|t)s|(bump|bunup).config.ts": "bun run tsc"
+        "src/**/*.(m|c)?(j|t)s": "bun run tsc"
     },
     "workspaces": ["tests", "docs", "benchmarks", "create-bunup"],
     "dependencies": {
