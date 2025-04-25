@@ -49,8 +49,8 @@
         }
     },
     "scripts": {
-        "build": "bunup",
-        "dev": "bunup --watch",
+        "build": "node_modules/.bin/bunup",
+        "dev": "node_modules/.bin/bunup --watch",
         "build:docs": "bun run --cwd docs build",
         "create-bunup": "create-bunup",
         "dev:docs": "bun run --cwd docs dev",
