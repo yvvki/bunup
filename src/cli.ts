@@ -5,11 +5,11 @@ import { handleErrorAndExit } from "./errors";
 import { logger, setSilent } from "./logger";
 import type { BuildOptions, CliOptions } from "./options";
 
+import { loadConfig } from "unconfig";
 import { type ProcessableConfig, processLoadedConfigs } from "./loaders";
 import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from "./types";
 import { ensureArray, formatTime, getShortFilePath } from "./utils";
 import { watch } from "./watch";
-import { loadConfig } from "unconfig";
 
 export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>;
 

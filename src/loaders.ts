@@ -1,9 +1,9 @@
 import path from "node:path";
+import { loadConfig } from "unconfig";
 import type { LoadedConfig } from "./cli";
 import type { BuildOptions } from "./options";
 import type { Arrayable, DefineWorkspaceItem } from "./types";
 import { addField } from "./utils";
-import { loadConfig } from "unconfig";
 
 export type ProcessableConfig = {
     rootDir: string;
