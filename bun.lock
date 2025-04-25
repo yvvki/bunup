@@ -6,7 +6,7 @@
         "@biomejs/biome": "^1.9.4",
         "@types/bun": "^1.2.5",
         "bumpp": "^10.1.0",
-        "bunup": "^0.4.92",
+        "bunup": "workspace:*",
         "create-bunup": "workspace:*",
         "husky": "^9.1.7",
         "lint-staged": "^15.5.1",
@@ -43,7 +43,7 @@
       },
       "dependencies": {
         "chokidar": "^4.0.3",
-        "coffi": "^0.1.24",
+        "coffi": "^0.1.25",
         "oxc-resolver": "^5.0.1",
         "oxc-transform": "^0.58.1",
         "rolldown": "1.0.0-beta.7",
@@ -581,7 +581,7 @@
 
     "cliui": ["cliui@8.0.1", "", { "dependencies": { "string-width": "^4.2.0", "strip-ansi": "^6.0.1", "wrap-ansi": "^7.0.0" } }, "sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ=="],
 
-    "coffi": ["coffi@0.1.24", "", {}, "sha512-Fqk7MzYgMySs3zrwYZWX87UC9qOiTKA7IiAtAtZ0dn7sGIesx8yW8K4Odw9TTeGGOBFmR58o+d/nhgnwvW00ZQ=="],
+    "coffi": ["coffi@0.1.25", "", {}, "sha512-7kXuMIdvs6YGvNXdbeLDpdc9TUr0Rfol8T6hiY0hGuyMZYRCEpE2XtRBNNKpwcDVnlTH/QFql3w/ltB+m8W64A=="],
 
     "color-convert": ["color-convert@2.0.1", "", { "dependencies": { "color-name": "~1.1.4" } }, "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ=="],
 

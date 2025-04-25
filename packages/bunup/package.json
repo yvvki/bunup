@@ -50,7 +50,7 @@
     },
     "dependencies": {
         "chokidar": "^4.0.3",
-        "coffi": "^0.1.24",
+        "coffi": "^0.1.25",
         "oxc-resolver": "^5.0.1",
         "oxc-transform": "^0.58.1",
         "rolldown": "1.0.0-beta.7",
