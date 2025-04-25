@@ -1,9 +1,9 @@
 import path from "node:path";
-import { loadConfig } from "coffi";
 import type { LoadedConfig } from "./cli";
 import type { BuildOptions } from "./options";
 import type { Arrayable, DefineWorkspaceItem } from "./types";
 import { addField } from "./utils";
+import { loadConfig } from "unconfig";
 
 export type ProcessableConfig = {
     rootDir: string;
@@ -38,15 +38,19 @@ export async function loadPackageJson(cwd: string): Promise<{
     packageJson: Record<string, unknown> | null;
     path: string | null;
 }> {
-    const { config, filepath } = await loadConfig<Record<string, unknown>>({
-        name: "package",
+    const { config, sources } = await loadConfig<Record<string, unknown>>({
+        sources: [
+            {
+                files: "package.json",
+                extensions: [],
+            },
+        ],
         cwd,
-        extensions: [".json"],
     });
 
     return {
         packageJson: config,
-        path: filepath,
+        path: sources?.[0],
     };
 }
 
@@ -59,15 +63,25 @@ export async function loadTsconfig(
     rootDir: string,
     preferredTsconfigPath: string | undefined,
 ): Promise<TsConfigData> {
-    const { config, filepath } = await loadConfig<Record<string, unknown>>({
-        name: "tsconfig",
+    const { config, sources } = await loadConfig<Record<string, unknown>>({
+        sources: preferredTsconfigPath
+            ? [
+                  {
+                      files: preferredTsconfigPath,
+                      extensions: [],
+                  },
+              ]
+            : [
+                  {
+                      files: "tsconfig.json",
+                      extensions: [],
+                  },
+              ],
         cwd: rootDir,
-        extensions: [".json"],
-        preferredPath: preferredTsconfigPath,
     });
 
     return {
         tsconfig: config,
-        path: filepath,
+        path: sources?.[0],
     };
 }
