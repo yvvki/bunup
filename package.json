@@ -1,7 +1,7 @@
 {
     "name": "bunup",
     "description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
-    "version": "0.4.91",
+    "version": "0.4.92",
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "type": "module",
@@ -19,16 +19,34 @@
     "homepage": "https://bunup.dev",
     "funding": "https://github.com/sponsors/arshad-yaseen",
     "keywords": ["bun", "bunup", "bun-bundler"],
+    "types": "./dist/index.d.ts",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
     "files": ["dist"],
     "bin": {
         "bunup": "./dist/cli.js"
     },
-    "main": "./dist/index.js",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.ts",
     "exports": {
-        ".": "./dist/index.js",
-        "./plugins": "./dist/plugins.js"
+        ".": {
+            "import": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            },
+            "require": {
+                "types": "./dist/index.d.cts",
+                "default": "./dist/index.cjs"
+            }
+        },
+        "./plugins": {
+            "import": {
+                "types": "./dist/plugins.d.ts",
+                "default": "./dist/plugins.js"
+            },
+            "require": {
+                "types": "./dist/plugins.d.cts",
+                "default": "./dist/plugins.cjs"
+            }
+        }
     },
     "scripts": {
         "build": "bunup",
@@ -59,13 +77,13 @@
     "workspaces": ["tests", "docs", "benchmarks", "create-bunup"],
     "dependencies": {
         "chokidar": "^4.0.3",
+        "coffi": "^0.1.24",
         "oxc-resolver": "^5.0.1",
         "oxc-transform": "^0.58.1",
         "rolldown": "1.0.0-beta.7",
         "rolldown-plugin-dts": "^0.7.0",
         "tinyexec": "^1.0.1",
-        "ts-import-resolver": "^0.1.10",
-        "unconfig": "^7.3.2"
+        "ts-import-resolver": "^0.1.10"
     },
     "peerDependencies": {
         "typescript": ">=4.5.0"
