@@ -14,20 +14,17 @@ describe("CLI Only Options", () => {
                 }
             `,
             "custom-bunup.config.ts": `
-                import { defineConfig } from "bunup";
-                export default defineConfig({
+                export default {
                     entry: "src/index.ts",
                     format: ["esm"],
                     banner: "// Hello, world!",
-                });
+                };
             `,
         });
 
         const result = await runCli(
             "src/index.ts --config custom-bunup.config.ts",
         );
-
-        console.log(result);
 
         expect(result.stdout).toContain("Using");
         expect(result.stdout).toContain("custom-bunup.config.ts");
