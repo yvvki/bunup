@@ -25,7 +25,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: 🛠️ Build
-        run: bun run build --config ./bunup.config.ts
+        run: bun run build --config bunup.config.ts
 
       - name: 📜 Generate changelog
         run: bunx changelogithub
