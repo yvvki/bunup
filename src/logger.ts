@@ -9,10 +9,6 @@ interface LogOptions {
     once?: string;
 }
 
-interface ProgressOptions extends LogOptions {
-    size?: string;
-}
-
 let silent = false;
 
 export function setSilent(value: boolean | undefined): void {
@@ -24,14 +20,12 @@ class Logger {
     private loggedOnceMessages = new Set<string>();
 
     public readonly MAX_LABEL_LENGTH = 3;
-    public readonly MAX_MESSAGE_LENGTH = 25;
 
     private cliColor = pc.blue;
     private mutedColor = pc.dim;
     private infoColor = pc.cyan;
     private warnColor = pc.yellow;
     private errorColor = pc.red;
-    private sizeColor = pc.green;
     private defaultColor = pc.white;
 
     private progressFgColorMap: Record<string, (text: string) => string> = {
@@ -80,7 +74,6 @@ class Logger {
         bgColor,
         label,
         message,
-        size,
         identifier,
         muted,
     }: {
@@ -88,7 +81,6 @@ class Logger {
         bgColor: (text: string) => string;
         label: string;
         message: string;
-        size?: string;
         identifier?: string;
         muted?: boolean;
     }): string {
@@ -96,18 +88,6 @@ class Logger {
             Math.max(0, this.MAX_LABEL_LENGTH - label.length),
         );
         const formattedMessage = muted ? this.mutedColor(message) : message;
-
-        if (size) {
-            const [path, ...rest] = formattedMessage.split(" ");
-            const messagePadding = " ".repeat(
-                Math.max(0, this.MAX_MESSAGE_LENGTH - path.length),
-            );
-            const identifierPart = identifier
-                ? ` ${bgColor(pc.black(` ${identifier} `))}`
-                : "";
-            return `${fgColor(label)} ${padding}${path}${messagePadding} ${this.sizeColor(size)} ${rest.join(" ")}${identifierPart}`;
-        }
-
         const identifierPart = identifier
             ? `   ${bgColor(pc.black(` ${identifier} `))}`
             : "";
@@ -190,22 +170,8 @@ class Logger {
     public progress(
         label: FormatType,
         message: string,
-        sizeOrOptions?: string | ProgressOptions,
-        identifier?: string,
+        options: LogOptions = {},
     ): void {
-        let size: string | undefined;
-        let actualIdentifier: string | undefined;
-        let options: LogOptions = {};
-
-        if (typeof sizeOrOptions === "string") {
-            size = sizeOrOptions;
-            actualIdentifier = identifier;
-        } else if (sizeOrOptions) {
-            size = sizeOrOptions.size;
-            actualIdentifier = sizeOrOptions.identifier;
-            options = sizeOrOptions;
-        }
-
         const fgColor = this.getProgressFgColor(label);
         const bgColor = this.getProgressBgColor(label);
 
@@ -214,8 +180,7 @@ class Logger {
             bgColor,
             label,
             message,
-            size,
-            identifier: actualIdentifier,
+            identifier: options.identifier,
             muted: options.muted,
         });
 

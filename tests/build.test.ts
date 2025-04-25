@@ -426,7 +426,7 @@ describe("Build Process", () => {
         );
     });
 
-    it("should call onBuildSuccess callback after successful build", async () => {
+    it("should call onSuccess callback after successful build", async () => {
         createProject({ "src/index.ts": "export const x = 1;" });
 
         let callbackCalled = false;
@@ -435,11 +435,9 @@ describe("Build Process", () => {
         const result = await runBuild({
             entry: "src/index.ts",
             format: ["esm"],
-            callbacks: {
-                onBuildSuccess: (options) => {
-                    callbackCalled = true;
-                    callbackOptions = options;
-                },
+            onSuccess: (options) => {
+                callbackCalled = true;
+                callbackOptions = options;
             },
         });
 
@@ -450,7 +448,7 @@ describe("Build Process", () => {
         expect(callbackOptions.format).toContain("esm");
     });
 
-    it("should pass correct build options to onBuildSuccess callback", async () => {
+    it("should pass correct build options to onSuccess callback", async () => {
         createProject({ "src/index.ts": "export const x = 1;" });
 
         let passedOptions: any = null;
@@ -460,10 +458,8 @@ describe("Build Process", () => {
             format: ["esm", "cjs"],
             minify: true,
             dts: true,
-            callbacks: {
-                onBuildSuccess: (options) => {
-                    passedOptions = options;
-                },
+            onSuccess: (options) => {
+                passedOptions = options;
             },
         });
 
@@ -475,7 +471,7 @@ describe("Build Process", () => {
         expect(passedOptions.dts).toBe(true);
     });
 
-    it("should support async onBuildSuccess callback", async () => {
+    it("should support async onSuccess callback", async () => {
         createProject({ "src/index.ts": "export const x = 1;" });
 
         let asyncOperationCompleted = false;
@@ -483,11 +479,9 @@ describe("Build Process", () => {
         const result = await runBuild({
             entry: "src/index.ts",
             format: ["esm"],
-            callbacks: {
-                onBuildSuccess: async () => {
-                    await new Promise((resolve) => setTimeout(resolve, 1));
-                    asyncOperationCompleted = true;
-                },
+            onSuccess: async () => {
+                await new Promise((resolve) => setTimeout(resolve, 1));
+                asyncOperationCompleted = true;
             },
         });
 
@@ -495,7 +489,7 @@ describe("Build Process", () => {
         expect(asyncOperationCompleted).toBe(true);
     });
 
-    it("should not execute onBuildSuccess callback when build fails", async () => {
+    it("should not execute onSuccess callback when build fails", async () => {
         createProject({ "src/index.ts": "export const x = " });
 
         let callbackCalled = false;
@@ -503,10 +497,8 @@ describe("Build Process", () => {
         const result = await runBuild({
             entry: "src/index.ts",
             format: ["esm"],
-            callbacks: {
-                onBuildSuccess: () => {
-                    callbackCalled = true;
-                },
+            onSuccess: () => {
+                callbackCalled = true;
             },
         });
 

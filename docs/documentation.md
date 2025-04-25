@@ -999,35 +999,43 @@ export default defineConfig({
 });
 ```
 
-## Callbacks (aka Hooks)
+## Post-build Operations
 
-A set of callbacks that will be called in different stages of the build process.
-
-### `onBuildSuccess`
-
-The `onBuildSuccess` callback runs after the build process successfully completes. This is useful for performing custom post-build operations:
+The `onSuccess` callback runs after the build process successfully completes. This is useful for performing custom post-build operations:
 
 ```typescript
 export default defineConfig({
 	entry: ['src/index.ts'],
-	callbacks: {
-		onBuildSuccess: (options) => {
-			console.log('Build completed successfully!');
-			// Perform post-build operations here
-			// The options parameter contains the build options that were used
-		},
+	onSuccess: (options) => {
+		console.log('Build completed successfully!');
+		// Perform post-build operations here
+		// The options parameter contains the build options that were used
 	},
 });
 ```
 
-::: info
-In watch mode, `onBuildSuccess` runs after each rebuild.
-:::
+If you enable watch mode, the `onSuccess` callback will execute after each successful rebuild. If you want to perform post-build operations only when not in watch mode, you can check the `watch` property in the options:
 
-#### Using CLI
+```typescript
+export default defineConfig({
+	entry: ['src/index.ts'],
+	onSuccess: (options) => {
+		if (options.watch) return;
+
+		console.log('Build completed! Only running in non-watch mode');
+		// Perform operations that should only happen in regular builds
+	},
+});
+```
+
+### Using CLI
 
 The `onSuccess` CLI option allows you to specify a shell command that will be executed after a successful build:
 
 ```sh
 bunup src/index.ts --onSuccess "echo 'Build done!' && node scripts/post-build.js"
 ```
+
+::: info
+In watch mode, `onSuccess` runs after each rebuild.
+:::
