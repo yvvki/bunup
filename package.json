@@ -26,6 +26,28 @@
     "bin": {
         "bunup": "./dist/cli.js"
     },
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            },
+            "require": {
+                "types": "./dist/index.d.cts",
+                "default": "./dist/index.cjs"
+            }
+        },
+        "./plugins": {
+            "import": {
+                "types": "./dist/plugins.d.ts",
+                "default": "./dist/plugins.js"
+            },
+            "require": {
+                "types": "./dist/plugins.d.cts",
+                "default": "./dist/plugins.cjs"
+            }
+        }
+    },
     "scripts": {
         "build": "bunup",
         "dev": "bunup --watch",
@@ -75,7 +97,7 @@
         "@biomejs/biome": "^1.9.4",
         "@types/bun": "^1.2.5",
         "bumpp": "^10.1.0",
-        "bunup": "^0.4.74",
+        "bunup": "^0.4.78",
         "create-bunup": "workspace:create-bunup",
         "husky": "^9.1.7",
         "lint-staged": "^15.5.1",
