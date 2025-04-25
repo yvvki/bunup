@@ -25,15 +25,17 @@
         "*": "bun run format --no-errors-on-unmatched",
         "src/**/*.(m|c)?(j|t)s": "bun run tsc"
     },
-    "workspaces": ["docs", "benchmarks", "packages/*", "packages/bunup/tests"],
+    "workspaces": ["docs", "benchmarks", "packages/*"],
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@types/bun": "^1.2.5",
         "bumpp": "^10.1.0",
-        "bunup": "workspace:*",
         "create-bunup": "workspace:*",
         "husky": "^9.1.7",
         "lint-staged": "^15.5.1",
         "typescript": "^5.8.3"
+    },
+    "dependencies": {
+        "bunup": "0.4.90"
     }
 }
