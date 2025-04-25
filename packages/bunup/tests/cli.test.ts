@@ -27,6 +27,8 @@ describe("CLI Only Options", () => {
             "src/index.ts --config custom-bunup.config.ts",
         );
 
+        console.log(result);
+
         expect(result.stdout).toContain("Using");
         expect(result.stdout).toContain("custom-bunup.config.ts");
         const file = findFile(result, "index", ".mjs");
