@@ -26,7 +26,6 @@
         "format:fix": "biome format --write .",
         "tsc": "tsc --noEmit",
         "release": "bumpp",
-        "npm-publish": "bun publish --access public --no-git-checks",
         "release:ci": "bumpp patch --yes",
         "publish:ci": "bun run --cwd packages/bunup npm-publish && bun run --cwd packages/create-bunup npm-publish",
         "benchmark": "bun run --cwd benchmarks benchmark",

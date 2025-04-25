@@ -58,6 +58,9 @@
         "tinyexec": "^1.0.1",
         "ts-import-resolver": "^0.1.10"
     },
+    "scripts": {
+        "npm-publish": "bun publish --access public --no-git-checks"
+    },
     "peerDependencies": {
         "typescript": ">=4.5.0"
     },
