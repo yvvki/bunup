@@ -25,7 +25,7 @@
         "*": "bun run format --no-errors-on-unmatched",
         "src/**/*.(m|c)?(j|t)s": "bun run tsc"
     },
-    "workspaces": ["docs", "benchmarks", "packages/*"],
+    "workspaces": ["docs", "benchmarks", "packages/*", "packages/bunup/tests"],
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@types/bun": "^1.2.5",
