@@ -1,7 +1,21 @@
 name: 🔄️ CI
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - packages/bunup/src/**
+      - packages/bunup/tests/**
+      - packages/create-bunup/src/**
+      - package.json
+      - bun.lockb
+      - bunup.config.ts
+      - tsconfig*.json
+      - '!**/*.md'
+
+  pull_request:
+    paths:
+      - packages/bunup/src/**
+      - packages/bunup/tests/**
 
 permissions: {}
 
