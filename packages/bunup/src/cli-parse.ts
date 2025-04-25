@@ -1,10 +1,10 @@
 import pc from "picocolors";
+import { version } from "../package.json";
 import { BUNUP_CLI_OPTIONS_URL } from "./constants";
 import { BunupCLIError } from "./errors";
 import { getEntryNameOnly } from "./helpers/entry";
 import { logger } from "./logger";
 import type { CliOptions } from "./options";
-import { version } from "../package.json";
 
 type OptionHandler = (
     value: string | boolean,

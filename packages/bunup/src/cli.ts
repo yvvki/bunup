@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 import { exec } from "tinyexec";
+import { version } from "../package.json";
 import { parseCliOptions } from "./cli-parse";
 import { handleErrorAndExit } from "./errors";
 import { logger, setSilent } from "./logger";
 import type { BuildOptions, CliOptions } from "./options";
-import { version } from "../package.json";
 
 import { loadConfig } from "coffi";
 import { type ProcessableConfig, processLoadedConfigs } from "./loaders";
