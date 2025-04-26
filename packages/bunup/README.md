@@ -35,7 +35,7 @@
 
 ## 📚 Documentation
 
-To get started, visit the [documentation](https://bunup.dev/documentation).
+To get started, visit the [documentation](https://bunup.dev/docs).
 
 ## ❤️ Contributing
 
