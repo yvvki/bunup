@@ -1,8 +1,4 @@
-export function createFixture(name: string): {
-    name: string;
-    path: string;
-    content: string;
-} {
+export function createFixture(name: string) {
     return {
         name,
         path: `./${name}`,

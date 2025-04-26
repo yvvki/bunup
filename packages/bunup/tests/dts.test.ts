@@ -899,8 +899,6 @@ describe("dts", () => {
             format: ["esm"],
         });
 
-        console.log(result);
-
         expect(result.success).toBe(true);
         const dtsFile = findFile(result, "index", ".d.mts");
         expect(dtsFile).toBeDefined();

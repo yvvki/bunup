@@ -2,16 +2,16 @@ import type { Plugin } from "rolldown";
 
 import { resolveTsImportPath } from "ts-import-resolver";
 import type { TsConfigData } from "../loaders";
+import { generateDtsContent } from "./generator";
 import {
+    NODE_MODULES_RE,
+    TS_DTS_RE,
     addDtsVirtualPrefix,
     getDtsPathFromSourceCodePath,
     isDtsVirtualFile,
     isTypeScriptSourceCodeFile,
-    NODE_MODULES_RE,
     removeDtsVirtualPrefix,
-    TS_DTS_RE,
 } from "./utils";
-import { generateDtsContent, runPostDtsValidation } from "./generator";
 
 export const DTS_VIRTUAL_FILE_PREFIX = "\0dts:";
 
@@ -19,7 +19,6 @@ export const virtualDtsPlugin = (
     entrySourceCodeFile: string,
     tsconfig: TsConfigData,
     rootDir: string,
-    isWatching: boolean,
 ): Plugin => {
     const dtsToSourceCodeFileMap = new Map<string, string>();
 
@@ -77,9 +76,6 @@ export const virtualDtsPlugin = (
                 }
                 return null;
             },
-        },
-        buildEnd() {
-            runPostDtsValidation(isWatching);
         },
     };
 };
