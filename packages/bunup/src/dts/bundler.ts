@@ -6,17 +6,15 @@ import type { TsConfigData } from "../loaders";
 import { logger } from "../logger";
 import type { BuildOptions } from "../options";
 import { typesResolvePlugin } from "../plugins/internal/types-resolve";
-import type { DtsMap } from "./generator";
 import {
     addDtsVirtualPrefix,
     dtsShouldTreatAsExternal,
     getDtsPathFromSourceCodePath,
 } from "./utils";
-import { gerVirtualFilesPlugin } from "./virtual-files";
+import { virtualDtsPlugin } from "./virtual-dts";
 
 export async function bundleDts(
     entryFile: string,
-    dtsMap: DtsMap,
     options: BuildOptions,
     packageJson: Record<string, unknown> | null,
     tsconfig: TsConfigData,
@@ -33,9 +31,6 @@ export async function bundleDts(
     try {
         const { output } = await build({
             input: initialDtsEntry,
-            output: {
-                dir: options.outDir,
-            },
             write: false,
             ...(tsconfig.path && {
                 resolve: {
@@ -54,7 +49,7 @@ export async function bundleDts(
                 handler(warning);
             },
             plugins: [
-                gerVirtualFilesPlugin(dtsMap, tsconfig, rootDir),
+                virtualDtsPlugin(entryFile, tsconfig, rootDir, !!options.watch),
                 dtsResolve && typesResolvePlugin(tsconfig, dtsResolve),
                 dts({
                     dtsInput: true,

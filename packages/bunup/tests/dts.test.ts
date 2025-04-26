@@ -899,6 +899,8 @@ describe("dts", () => {
             format: ["esm"],
         });
 
+        console.log(result);
+
         expect(result.success).toBe(true);
         const dtsFile = findFile(result, "index", ".d.mts");
         expect(dtsFile).toBeDefined();
@@ -955,7 +957,7 @@ describe("dts", () => {
                     return value * 2;
                 }
             `,
-            "src/components/ui/index.d.ts": `
+            "src/components/ui/index.ts": `
                 export * from './component-a';
                 export * from './component-b';
             `,
