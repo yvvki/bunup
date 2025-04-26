@@ -1,4 +1,4 @@
-bunup: 15.67ms - bunup (+dts): 29.64ms
-tsdown: 19.18ms - tsdown (+dts): 57.62ms
-unbuild: 56.84ms - unbuild (+dts): 350.29ms
-bunchee: 97.87ms - bunchee (+dts): 365.09ms
+bunup: 3.99ms - bunup (+dts): 22.15ms
+tsdown: 8.17ms - tsdown (+dts): 41.69ms
+unbuild: 44.38ms - unbuild (+dts): 312.35ms
+bunchee: 79.79ms - bunchee (+dts): 326.78ms

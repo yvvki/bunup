@@ -4,9 +4,9 @@
     "type": "module",
     "exports": {
         ".": {
-            "types": "./bunchee-dist/index.d.ts",
-            "import": "./bunchee-dist/index.js",
-            "require": "./bunchee-dist/index.cjs"
+            "types": "./dist/bunchee/index.d.ts",
+            "import": "./dist/bunchee/index.js",
+            "require": "./dist/bunchee/index.cjs"
         }
     },
     "scripts": {
