@@ -13,4 +13,4 @@ npx create-bunup@latest
 pnpx create-bunup@latest
 ```
 
-Check out our [TypeScript Library Starter documentation](https://bunup.dev/typescript-library-starter.html) for more details.
+Check out our [TypeScript Library Starter documentation](https://bunup.dev/docs/typescript-library-starter.html) for more details.

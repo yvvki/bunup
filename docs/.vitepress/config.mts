@@ -15,7 +15,7 @@ export default defineConfig({
         nav: [
             {
                 text: "Typescript Library Starter",
-                link: "/typescript-library-starter",
+                link: "/docs/typescript-library-starter",
             },
             {
                 text: `v${version}`,
@@ -35,24 +35,21 @@ export default defineConfig({
             {
                 text: "Guide",
                 items: [
-                    { text: "Documentation", link: "/documentation" },
-                    { text: "Workspaces", link: "/workspaces" },
-                    { text: "CLI Options", link: "/cli-options" },
+                    { text: "Documentation", link: "/docs/" },
+                    { text: "Workspaces", link: "/docs/guide/workspaces" },
+                    { text: "CLI Options", link: "/docs/guide/cli-options" },
+                    {
+                        text: "Built-In Plugins",
+                        link: "/docs/guide/built-in-plugins",
+                    },
                 ],
             },
             {
-                text: "Plugins",
-                items: [
-                    { text: "Introduction", link: "/plugins" },
-                    { text: "Built-in Plugins", link: "/plugins/built-in" },
-                ],
-            },
-            {
-                text: "Notes",
+                text: "Advanced",
                 items: [
                     {
-                        text: "Explicit Type Annotation Errors",
-                        link: "/notes/explicit-type-annotation-errors",
+                        text: "Plugin Development",
+                        link: "/docs/advanced/plugin-development",
                     },
                 ],
             },

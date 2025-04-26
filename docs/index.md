@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /documentation/
+      link: /docs
     - theme: alt
       text: Contribute
       link: https://github.com/arshad-yaseen/bunup

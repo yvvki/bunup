@@ -66,7 +66,7 @@ export async function generateDtsContent(
         console.log(
             pc.gray(
                 `See ${pc.blue(
-                    "https://bunup.dev/notes/explicit-type-annotation-errors",
+                    "https://bunup.dev/docs/troubleshooting/explicit-type-annotation-errors",
                 )} for details.`,
             ),
         );
