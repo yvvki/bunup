@@ -1,5 +1,10 @@
 import path from "node:path";
 
+import { bundle as buncheeBuild } from "bunchee";
+import { build as tsdownBuild } from "tsdown";
+import { build as unbuildBuild } from "unbuild";
+import { build as bunupBuild } from "../../packages/bunup/dist/index.js";
+
 import { ENTRY_POINT, RESULTS_FILE } from "./constants.mjs";
 import { runBenchmarksForBundlers, saveBenchmarkResults } from "./utils.mjs";
 
