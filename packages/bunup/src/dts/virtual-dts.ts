@@ -77,5 +77,8 @@ export const virtualDtsPlugin = (
                 return null;
             },
         },
+        buildEnd() {
+            dtsToSourceCodeFileMap.clear();
+        },
     };
 };
