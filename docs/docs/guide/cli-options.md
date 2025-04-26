@@ -37,6 +37,6 @@ bunup [...entries] [options]
 | `--env <mode>`                     |             | Control environment variable handling (inline, disable or PREFIX\_\*) [↗](/docs#environment-variables)                                 | -                |
 | `--config <path>`                  |             | Specify a custom path to the configuration file                                                                                                 | -                |
 | `--onSuccess <command>`            |             | Command to execute after a successful build                                                                                                     | -                |
-| `--filter <packages>`              |             | Build only specific packages in a workspace (comma-separated) [↗](/workspaces#building-specific-packages)                                       | -                |
+| `--filter <packages>`              |             | Build only specific packages in a workspace (comma-separated) [↗](/docs/guide/workspaces#building-specific-packages)                                       | -                |
 | `--version`                        | `-v`        | Display version information                                                                                                                     | -                |
 | `--help`                           | `-h`        | Display help information                                                                                                                        | -                |
