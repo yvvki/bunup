@@ -36,7 +36,6 @@ export default defineWorkspace([
             {
                 ...COMMON_OPTIONS,
                 entry: ["src/index.ts"],
-                format: ["esm"],
             },
         ],
     },
