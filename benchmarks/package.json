@@ -10,7 +10,7 @@
         }
     },
     "scripts": {
-        "benchmark": "bun run core/main.ts && node core/tsup.ts"
+        "benchmark": "bun run core/main.ts && node --experimental-strip-types core/tsup.ts"
     },
     "devDependencies": {
         "tsdown": "^0.9.6",

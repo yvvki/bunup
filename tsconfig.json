@@ -12,6 +12,10 @@
         "skipLibCheck": true,
         "allowJs": true
     },
-    "include": ["packages/bunup/src/**/*", "packages/create-bunup/src/**/*"],
+    "include": [
+        "packages/bunup/src/**/*",
+        "packages/create-bunup/src/**/*",
+        "packages/bunup/tests/**/*"
+    ],
     "exclude": ["node_modules", "dist"]
 }

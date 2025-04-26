@@ -2,8 +2,9 @@ import fs from "node:fs/promises";
 import { performance } from "node:perf_hooks";
 
 import { ITERATIONS } from "./constants.ts";
+import type { Bundler } from "./types.ts";
 
-export async function runBenchmarksForBundlers(bundlers) {
+export async function runBenchmarksForBundlers(bundlers: Bundler[]) {
     const results = [];
 
     console.log("Performing warmup builds...");
@@ -41,7 +42,12 @@ export async function runBenchmarksForBundlers(bundlers) {
     return results;
 }
 
-function formatBenchmarkResults(results) {
+function formatBenchmarkResults(results: {
+    name: string;
+    format: string;
+    dts: boolean;
+    averageTime: number;
+}[]) {
     const bundlerGroups = {};
 
     for (const result of results) {
@@ -64,22 +70,31 @@ function formatBenchmarkResults(results) {
     return lines.join("\n");
 }
 
-export async function saveBenchmarkResults(results, filePath) {
+export async function saveBenchmarkResults(results: {
+    name: string;
+    format: string;
+    dts: boolean;
+    averageTime: number;
+}[], filePath: string) {
     const formattedResults = formatBenchmarkResults(results);
     await fs.writeFile(filePath, formattedResults, "utf-8");
     console.log(`Benchmark results saved to ${filePath}`);
 }
 
-export async function appendBenchmarkResults(newResults, filePath) {
+export async function appendBenchmarkResults(
+    newResults: {
+        name: string;
+        format: string;
+        dts: boolean;
+        averageTime: number;
+    }[],
+    filePath: string,
+) {
     try {
         let existingContent = "";
-        try {
-            existingContent = await fs.readFile(filePath, "utf-8");
-            if (existingContent && !existingContent.endsWith("\n")) {
-                existingContent += "\n";
-            }
-        } catch (error) {
-            if (error.code !== "ENOENT") throw error;
+        existingContent = await fs.readFile(filePath, "utf-8");
+        if (existingContent && !existingContent.endsWith("\n")) {
+            existingContent += "\n";
         }
 
         const newFormattedResults = formatBenchmarkResults(newResults);

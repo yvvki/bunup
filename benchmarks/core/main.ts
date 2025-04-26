@@ -1,22 +1,22 @@
 import path from "node:path";
 
 import {
-    bundle as buncheeBuild,
     type BundleConfig as BuncheeOptions,
+    bundle as buncheeBuild,
 } from "bunchee";
-import { build as tsdownBuild, type Options as TsdownOptions } from "tsdown";
+import { type Options as TsdownOptions, build as tsdownBuild } from "tsdown";
 import {
-    build as unbuildBuild,
     type BuildOptions as UnbuildOptions,
+    build as unbuildBuild,
 } from "unbuild";
 import {
-    build as bunupBuild,
     type BuildOptions as BunupOptions,
-} from "../../dist/index.mjs";
+    build as bunupBuild,
+} from "../../packages/bunup/dist/index.js";
 
 import { ENTRY_POINT, RESULTS_FILE } from "./constants";
-import { runBenchmarksForBundlers, saveBenchmarkResults } from "./utils.js";
 import type { Bundler } from "./types";
+import { runBenchmarksForBundlers, saveBenchmarkResults } from "./utils.js";
 
 const bundlers: Bundler[] = [
     {
