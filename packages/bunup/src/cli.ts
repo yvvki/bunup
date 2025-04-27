@@ -7,6 +7,7 @@ import { logger, setSilent } from './logger'
 import type { BuildOptions, CliOptions } from './options'
 
 import { loadConfig } from 'coffi'
+import pc from 'picocolors'
 import { type ProcessableConfig, processLoadedConfigs } from './loaders'
 import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from './types'
 import { ensureArray, formatTime, getShortFilePath } from './utils'
@@ -70,7 +71,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 	const buildTimeMs = performance.now() - startTime
 	const timeDisplay = formatTime(buildTimeMs)
 
-	logger.cli(`⚡️ Build completed in ${timeDisplay}`)
+	logger.cli(`⚡️ Build completed in ${pc.green(timeDisplay)}`)
 
 	if (cliOptions.watch) {
 		logger.cli('👀 Watching for file changes')
