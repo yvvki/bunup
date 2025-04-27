@@ -60,39 +60,23 @@ describe('dts-resolve', () => {
 
                     export type { DateFormat, UUID, ChalkColor };
 
-                    export function formatTimestamp(): string {
-                        return format(new Date(), 'yyyy-MM-dd');
-                    }
+                    export declare function formatTimestamp(): string;
 
-                    export function colorize(text: string): string {
-                        return chalk.blue(text);
-                    }
+                    export declare function colorize(text: string): string;
 
-                    export function generateId(): string {
-                        return v4();
-                    }
+                    export declare function generateId(): string;
                 `,
 			'node_modules/date-fns/index.d.ts': `
                     export type DateFormat = string;
-                    export function format(date: Date, formatStr: string): string {
-                        return date.toISOString();
-                    }
+                    export declare function format(date: Date, formatStr: string): string;
                 `,
 			'node_modules/chalk/index.d.ts': `
                     export type ChalkColor = string;
-                    function blue(text: string): string {
-                        return text;
-                    }
-
-                    export default {
-                        blue
-                    };
+                    export declare function blue(text: string): string;
                 `,
 			'node_modules/uuid/index.d.mts': `
                     export type UUID = string;
-                    export function v4() {
-                        return '00000000-0000-0000-0000-000000000000';
-                    }
+                    export declare function v4(): UUID;
                 `,
 		})
 

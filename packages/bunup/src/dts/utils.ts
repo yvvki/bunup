@@ -1,6 +1,5 @@
 import { isExternal } from '../helpers/external'
 import type { BuildOptions, DtsResolve } from '../options'
-import { DTS_VIRTUAL_FILE_PREFIX } from './virtual-dts'
 
 export const TS_DTS_RE: RegExp = /\.(d\.ts|d\.mts|d\.cts|ts|mts|cts|tsx)$/
 export const NODE_MODULES_RE: RegExp = /[\\/]node_modules[\\/]/
@@ -46,18 +45,6 @@ export function getSourceCodePathFromDtsPath(filePath: string): string {
 	if (filePath.endsWith('.d.ts')) return `${filePath.slice(0, -5)}.ts`
 
 	return filePath
-}
-
-export function isDtsVirtualFile(filePath: string): boolean {
-	return filePath.startsWith(DTS_VIRTUAL_FILE_PREFIX)
-}
-
-export function removeDtsVirtualPrefix(filePath: string): string {
-	return filePath.replace(DTS_VIRTUAL_FILE_PREFIX, '')
-}
-
-export function addDtsVirtualPrefix(filePath: string): string {
-	return `${DTS_VIRTUAL_FILE_PREFIX}${filePath}`
 }
 
 export function dtsShouldTreatAsExternal(

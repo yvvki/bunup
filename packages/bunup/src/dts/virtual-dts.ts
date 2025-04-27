@@ -2,18 +2,14 @@ import type { Plugin } from 'rolldown'
 
 import { resolveTsImportPath } from 'ts-import-resolver'
 import type { TsConfigData } from '../loaders'
-import { generateDtsContent } from './generator'
+import { generateDtsContent } from './oxc'
 import {
 	NODE_MODULES_RE,
 	TS_DTS_RE,
-	addDtsVirtualPrefix,
 	getDtsPathFromSourceCodePath,
-	isDtsVirtualFile,
+	isDtsFile,
 	isTypeScriptSourceCodeFile,
-	removeDtsVirtualPrefix,
 } from './utils'
-
-export const DTS_VIRTUAL_FILE_PREFIX = '\0dts:'
 
 export const virtualDtsPlugin = (
 	entrySourceCodeFile: string,
@@ -26,17 +22,16 @@ export const virtualDtsPlugin = (
 		name: 'bunup:virtual-dts',
 		async resolveId(source: string, importer?: string) {
 			// entry file
-			if (isDtsVirtualFile(source)) {
+			if (importer === undefined) {
 				dtsToSourceCodeFileMap.set(source, entrySourceCodeFile)
 				return source
 			}
 			//
-			if (!importer || !isDtsVirtualFile(importer)) return null
 
 			const resolvedPath = tsconfig.tsconfig
 				? resolveTsImportPath({
 						path: source,
-						importer: removeDtsVirtualPrefix(importer),
+						importer,
 						tsconfig: tsconfig.tsconfig,
 						rootDir,
 					})
@@ -49,11 +44,9 @@ export const virtualDtsPlugin = (
 
 			if (!dtsPath) return null
 
-			const dtsPathWithVirtualPrefix = addDtsVirtualPrefix(dtsPath)
+			dtsToSourceCodeFileMap.set(dtsPath, resolvedPath)
 
-			dtsToSourceCodeFileMap.set(dtsPathWithVirtualPrefix, resolvedPath)
-
-			return dtsPathWithVirtualPrefix
+			return dtsPath
 		},
 		load: {
 			filter: {
@@ -63,7 +56,7 @@ export const virtualDtsPlugin = (
 				},
 			},
 			async handler(id: string) {
-				if (isDtsVirtualFile(id)) {
+				if (isDtsFile(id)) {
 					const sourceCodePath = dtsToSourceCodeFileMap.get(id)
 					if (!sourceCodePath) return null
 					const declaration = await generateDtsContent(sourceCodePath)

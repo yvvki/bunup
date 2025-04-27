@@ -1,27 +1,22 @@
 import { build } from 'rolldown'
 import { dts } from 'rolldown-plugin-dts'
 
+import path from 'node:path'
 import type { TsConfigData } from '../loaders'
 import { logger } from '../logger'
 import type { BuildOptions } from '../options'
-import { typesResolvePlugin } from '../plugins/internal/types-resolve'
-import { runPostDtsValidation } from './generator'
-import {
-	addDtsVirtualPrefix,
-	dtsShouldTreatAsExternal,
-	getDtsPathFromSourceCodePath,
-} from './utils'
+import { runPostDtsValidation } from './oxc'
+import { getDtsPathFromSourceCodePath } from './utils'
 import { virtualDtsPlugin } from './virtual-dts'
 
-export async function bundleDts(
-	entryFile: string,
+export async function generateDtsForEntry(
+	relativeEntryFile: string,
 	options: BuildOptions,
-	packageJson: Record<string, unknown> | null,
 	tsconfig: TsConfigData,
 	rootDir: string,
 ): Promise<string> {
+	const entryFile = path.resolve(rootDir, relativeEntryFile)
 	const entryDtsPath = getDtsPathFromSourceCodePath(entryFile)
-	const initialDtsEntry = addDtsVirtualPrefix(entryDtsPath)
 
 	const dtsResolve =
 		typeof options.dts === 'object' && 'resolve' in options.dts
@@ -29,7 +24,7 @@ export async function bundleDts(
 			: undefined
 
 	const { output } = await build({
-		input: initialDtsEntry,
+		input: entryDtsPath,
 		write: false,
 		...(tsconfig.path && {
 			resolve: {
@@ -49,14 +44,12 @@ export async function bundleDts(
 		},
 		plugins: [
 			virtualDtsPlugin(entryFile, tsconfig, rootDir),
-			dtsResolve && typesResolvePlugin(tsconfig, dtsResolve),
 			dts({
 				dtsInput: true,
 				emitDtsOnly: true,
+				resolve: dtsResolve,
 			}),
 		],
-		external: (source) =>
-			dtsShouldTreatAsExternal(source, options, packageJson, dtsResolve),
 	})
 
 	runPostDtsValidation(!!options.watch)

@@ -18,7 +18,7 @@ export async function watch(
 	const normalizedEntry = normalizeEntryToProcessableEntries(options.entry)
 
 	for (const entry of normalizedEntry) {
-		const entryPath = path.resolve(rootDir, entry.fullEntryPath)
+		const entryPath = path.resolve(rootDir, entry.fullPath)
 		const parentDir = path.dirname(entryPath)
 		watchPaths.add(parentDir)
 	}
@@ -47,7 +47,7 @@ export async function watch(
 			await build(
 				{
 					...options,
-					entry: normalizedEntry.map((entry) => entry.fullEntryPath),
+					entry: normalizedEntry.map((entry) => entry.fullPath),
 					clean: false,
 				},
 				rootDir,

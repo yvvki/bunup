@@ -1,4 +1,4 @@
-import { generateDts } from './dts'
+import { generateDtsForEntry } from './dts/generate'
 import {
 	BunupBuildError,
 	BunupDTSBuildError,
@@ -96,7 +96,7 @@ export async function build(
 					}).js ?? getDefaultOutputExtension(fmt, packageType)
 
 				const result = await Bun.build({
-					entrypoints: [`${rootDir}/${entry.fullEntryPath}`],
+					entrypoints: [`${rootDir}/${entry.fullPath}`],
 					format: fmt,
 					naming: {
 						entry: getEntryNamingFormat(entry.name, extension),
@@ -194,12 +194,11 @@ export async function build(
 		try {
 			await Promise.all(
 				dtsEntry.map(async (entry) => {
-					const content = await generateDts(
-						rootDir,
-						entry.fullEntryPath,
+					const content = await generateDtsForEntry(
+						entry.fullPath,
 						options,
 						tsconfig,
-						packageJson,
+						rootDir,
 					)
 
 					await Promise.all(

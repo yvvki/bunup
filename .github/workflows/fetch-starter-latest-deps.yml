@@ -52,9 +52,3 @@ jobs:
         run: |
           git add .
           git commit -m "chore: update starter root dev dependencies"
-
-      - name: 🚀 Release
-        if: steps.check_changes.outputs.changes == 'true'
-        run: bun run release:ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}

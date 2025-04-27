@@ -7,9 +7,7 @@ import {
 describe('Helpers', () => {
 	it('normalizes string entry', () => {
 		const result = normalizeEntryToProcessableEntries('src/index.ts')
-		expect(result).toEqual([
-			{ fullEntryPath: 'src/index.ts', name: 'index' },
-		])
+		expect(result).toEqual([{ fullPath: 'src/index.ts', name: 'index' }])
 	})
 
 	it('normalizes array entry', () => {
@@ -18,8 +16,8 @@ describe('Helpers', () => {
 			'src/utils.ts',
 		])
 		expect(result).toEqual([
-			{ fullEntryPath: 'src/index.ts', name: 'index' },
-			{ fullEntryPath: 'src/utils.ts', name: 'utils' },
+			{ fullPath: 'src/index.ts', name: 'index' },
+			{ fullPath: 'src/utils.ts', name: 'utils' },
 		])
 	})
 
@@ -27,9 +25,7 @@ describe('Helpers', () => {
 		const result = normalizeEntryToProcessableEntries({
 			main: 'src/index.ts',
 		})
-		expect(result).toEqual([
-			{ fullEntryPath: 'src/index.ts', name: 'main' },
-		])
+		expect(result).toEqual([{ fullPath: 'src/index.ts', name: 'main' }])
 	})
 
 	it('handles name conflicts in array entries', () => {
@@ -58,9 +54,7 @@ describe('Helpers', () => {
 
 	it('handles entries without file extensions', () => {
 		const result = normalizeEntryToProcessableEntries('src/README')
-		expect(result).toEqual([
-			{ fullEntryPath: 'src/README', name: 'README' },
-		])
+		expect(result).toEqual([{ fullPath: 'src/README', name: 'README' }])
 	})
 
 	it('handles deep nested paths', () => {
@@ -69,7 +63,7 @@ describe('Helpers', () => {
 		)
 		expect(result).toEqual([
 			{
-				fullEntryPath: 'src/components/ui/Button.ts',
+				fullPath: 'src/components/ui/Button.ts',
 				name: 'Button',
 			},
 		])
@@ -103,13 +97,13 @@ describe('Helpers', () => {
 		})
 
 		expect(result).toEqual([
-			{ fullEntryPath: 'src/index.ts', name: 'app' },
+			{ fullPath: 'src/index.ts', name: 'app' },
 			{
-				fullEntryPath: 'src/utils/index.ts',
+				fullPath: 'src/utils/index.ts',
 				name: 'utils',
 			},
 			{
-				fullEntryPath: 'src/components/Button.ts',
+				fullPath: 'src/components/Button.ts',
 				name: 'components/button',
 			},
 		])

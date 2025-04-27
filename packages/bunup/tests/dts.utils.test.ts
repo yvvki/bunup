@@ -1,14 +1,10 @@
 import { describe, expect, it } from 'bun:test'
 import {
-	addDtsVirtualPrefix,
 	getDtsPathFromSourceCodePath,
 	getSourceCodePathFromDtsPath,
-	isDtsVirtualFile,
 	isSourceCodeFile,
 	isTypeScriptSourceCodeFile,
-	removeDtsVirtualPrefix,
 } from '../src/dts/utils'
-import { DTS_VIRTUAL_FILE_PREFIX } from '../src/dts/virtual-dts'
 
 describe('DTS Utils', () => {
 	describe('getDtsPathFromSourceCodePath', () => {
@@ -186,52 +182,6 @@ describe('DTS Utils', () => {
 		})
 	})
 
-	describe('isDtsVirtualFile', () => {
-		it('returns true for paths with virtual prefix', () => {
-			expect(
-				isDtsVirtualFile(`${DTS_VIRTUAL_FILE_PREFIX}file.d.ts`),
-			).toBe(true)
-		})
-
-		it('returns false for paths without virtual prefix', () => {
-			expect(isDtsVirtualFile('file.d.ts')).toBe(false)
-		})
-
-		it('returns false for empty string', () => {
-			expect(isDtsVirtualFile('')).toBe(false)
-		})
-
-		it('handles paths with virtual prefix substring in the middle', () => {
-			const filePath = `/some/path/${DTS_VIRTUAL_FILE_PREFIX}file.d.ts`
-			expect(isDtsVirtualFile(filePath)).toBe(false)
-		})
-	})
-
-	describe('removeDtsVirtualPrefix', () => {
-		it('removes virtual prefix from path', () => {
-			const originalPath = 'file.d.ts'
-			const virtualPath = `${DTS_VIRTUAL_FILE_PREFIX}${originalPath}`
-			expect(removeDtsVirtualPrefix(virtualPath)).toBe(originalPath)
-		})
-
-		it('leaves path unchanged if no virtual prefix', () => {
-			const originalPath = 'file.d.ts'
-			expect(removeDtsVirtualPrefix(originalPath)).toBe(originalPath)
-		})
-
-		it('handles empty string', () => {
-			expect(removeDtsVirtualPrefix('')).toBe('')
-		})
-
-		it('handles multiple occurrences of the prefix', () => {
-			const virtualPrefix = DTS_VIRTUAL_FILE_PREFIX
-			const path = `${virtualPrefix}${virtualPrefix}file.d.ts`
-			expect(removeDtsVirtualPrefix(path)).toBe(
-				`${virtualPrefix}file.d.ts`,
-			)
-		})
-	})
-
 	describe('isTypeScriptSourceCodeFile', () => {
 		it('returns true for TypeScript files', () => {
 			expect(isTypeScriptSourceCodeFile('/path/to/file.ts')).toBe(true)
@@ -291,40 +241,6 @@ describe('DTS Utils', () => {
 
 		it('handles empty string', () => {
 			expect(isTypeScriptSourceCodeFile('')).toBe(false)
-		})
-	})
-
-	describe('addDtsVirtualPrefix', () => {
-		it('adds virtual prefix to path', () => {
-			const originalPath = 'file.d.ts'
-			expect(addDtsVirtualPrefix(originalPath)).toBe(
-				`${DTS_VIRTUAL_FILE_PREFIX}${originalPath}`,
-			)
-		})
-
-		it('handles empty string', () => {
-			expect(addDtsVirtualPrefix('')).toBe(DTS_VIRTUAL_FILE_PREFIX)
-		})
-
-		it('handles absolute paths', () => {
-			const originalPath = '/absolute/path/file.d.ts'
-			expect(addDtsVirtualPrefix(originalPath)).toBe(
-				`${DTS_VIRTUAL_FILE_PREFIX}${originalPath}`,
-			)
-		})
-
-		it('handles relative paths', () => {
-			const originalPath = './relative/path/file.d.ts'
-			expect(addDtsVirtualPrefix(originalPath)).toBe(
-				`${DTS_VIRTUAL_FILE_PREFIX}${originalPath}`,
-			)
-		})
-
-		it('adds prefix even if path already has prefix', () => {
-			const originalPath = `${DTS_VIRTUAL_FILE_PREFIX}file.d.ts`
-			expect(addDtsVirtualPrefix(originalPath)).toBe(
-				`${DTS_VIRTUAL_FILE_PREFIX}${originalPath}`,
-			)
 		})
 	})
 })
