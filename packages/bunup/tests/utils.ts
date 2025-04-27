@@ -37,6 +37,32 @@ function getFullExtension(fileName: string): string {
 	return firstDotIndex === -1 ? '' : baseName.substring(firstDotIndex)
 }
 
+function processDirectory(dir: string): FileResult[] {
+	const files = readdirSync(dir)
+	const newFiles: FileResult[] = []
+	for (const fileName of files) {
+		const filePath = join(dir, fileName)
+		if (statSync(filePath).isFile()) {
+			const fileContent = readFileSync(filePath, 'utf-8')
+			const fileStats = Bun.file(filePath)
+			const extension = getFullExtension(fileName)
+			const name = basename(fileName, extension)
+
+			newFiles.push({
+				path: filePath,
+				name,
+				extension,
+				size: fileStats.size,
+				content: fileContent,
+			})
+		} else if (statSync(filePath).isDirectory()) {
+			newFiles.push(...processDirectory(filePath))
+		}
+	}
+
+	return newFiles
+}
+
 export async function runBuild(
 	options: Omit<BuildOptions, 'outDir'>,
 ): Promise<BuildResult> {
@@ -60,25 +86,7 @@ export async function runBuild(
 			)
 		}
 
-		const outputFiles = readdirSync(OUTPUT_DIR)
-
-		for (const fileName of outputFiles) {
-			const filePath = join(OUTPUT_DIR, fileName)
-			if (statSync(filePath).isFile()) {
-				const fileContent = readFileSync(filePath, 'utf-8')
-				const fileStats = Bun.file(filePath)
-				const extension = getFullExtension(fileName)
-				const name = basename(fileName, extension)
-
-				result.files.push({
-					path: filePath,
-					name,
-					extension,
-					size: fileStats.size,
-					content: fileContent,
-				})
-			}
-		}
+		result.files = processDirectory(OUTPUT_DIR)
 	} catch (error) {
 		result.success = false
 		result.error = error instanceof Error ? error : new Error(String(error))
@@ -202,25 +210,7 @@ export async function runCli(options: string): Promise<RunCliResult> {
 			)
 		}
 
-		const outputFiles = readdirSync(OUTPUT_DIR)
-
-		for (const fileName of outputFiles) {
-			const filePath = join(OUTPUT_DIR, fileName)
-			if (statSync(filePath).isFile()) {
-				const stats = Bun.file(filePath)
-				const fileContent = readFileSync(filePath, 'utf-8')
-				const extension = getFullExtension(fileName)
-				const name = basename(fileName, extension)
-
-				result.files.push({
-					path: filePath,
-					name,
-					extension,
-					size: stats.size,
-					content: fileContent,
-				})
-			}
-		}
+		result.files = processDirectory(OUTPUT_DIR)
 	} catch (error) {
 		result.success = false
 		result.error = error instanceof Error ? error : new Error(String(error))

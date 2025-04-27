@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'bun:test'
 import {
 	cleanProjectDir,
 	createProject,
+	findFile,
 	runBuild,
 	validateBuildFiles,
 } from './utils'
@@ -676,6 +677,45 @@ describe('Build Process', () => {
 					'ui/header/index.d.mts',
 				],
 			}),
+		).toBe(true)
+	})
+
+	it('chunk name should have correct name and output to correct directory', async () => {
+		createProject({
+			'src/index.ts': `
+				import plain from './plain.txt'
+				import("./utils").then(({ hello }) => hello())
+
+				export { plain }
+			`,
+			'src/utils.ts': 'export function hello() { return "hello" }',
+			'src/plain.txt': 'plain',
+		})
+
+		const result = await runBuild({
+			entry: { 'nested/index': 'src/index.ts' },
+			format: ['esm'],
+			splitting: true,
+			loader: {
+				'.txt': 'file',
+			},
+		})
+
+		expect(result.success).toBe(true)
+		expect(
+			result.files.some((file) =>
+				/\/nested\/index-[a-zA-Z0-9]+\.js/.test(file.path),
+			),
+		).toBe(true)
+		expect(
+			result.files.some((file) =>
+				/\/nested\/index-plain-[a-zA-Z0-9]+\.txt/.test(file.path),
+			),
+		).toBe(true)
+		expect(
+			result.files.some((file) =>
+				file.path.includes('/nested/index.mjs'),
+			),
 		).toBe(true)
 	})
 })

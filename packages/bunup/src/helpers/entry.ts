@@ -126,5 +126,5 @@ export function getChunkNamingFormat(outputBasePath: string) {
 }
 
 export function getAssetNamingFormat(outputBasePath: string) {
-	return `${outputBasePath}-[hash].[ext]`
+	return `${outputBasePath}-[name]-[hash].[ext]`
 }
