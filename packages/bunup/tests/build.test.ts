@@ -680,7 +680,7 @@ describe('Build Process', () => {
 		).toBe(true)
 	})
 
-	it('chunk name should have correct name and output to correct directory', async () => {
+	it('should generate correctly named chunks and assets in the specified output directory', async () => {
 		createProject({
 			'src/index.ts': `
 				import plain from './plain.txt'
