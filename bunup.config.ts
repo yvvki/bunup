@@ -1,7 +1,4 @@
-import { type DefineConfigItem, defineWorkspace } from 'bunup'
-import { report } from 'bunup/plugins'
-
-const COMMON_OPTIONS: Partial<DefineConfigItem> = {
+const COMMON_OPTIONS = {
 	outDir: 'dist',
 	minify: true,
 	splitting: false,
@@ -9,7 +6,7 @@ const COMMON_OPTIONS: Partial<DefineConfigItem> = {
 	format: ['esm'],
 }
 
-export default defineWorkspace([
+export default [
 	{
 		name: 'bunup',
 		root: 'packages/bunup',
@@ -26,7 +23,6 @@ export default defineWorkspace([
 					plugins: 'src/plugins/built-in/index.ts',
 				},
 			},
-			plugins: [report()],
 		},
 	},
 	{
@@ -39,4 +35,4 @@ export default defineWorkspace([
 			},
 		],
 	},
-])
+]
