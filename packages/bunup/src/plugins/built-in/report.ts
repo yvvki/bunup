@@ -33,7 +33,7 @@ export function report(options: ReportPluginOptions = {}): BunupPlugin {
 
 				const files = await Promise.all(
 					output.files.map(async (file) => {
-						const name = file.relativePathToOutputDir
+						const name = file.relativePathToRootDir
 						const size = Bun.file(file.fullPath).size
 						let gzipSize: number | undefined
 						let formattedGzipSize: string | undefined

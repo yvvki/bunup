@@ -7,7 +7,9 @@ import {
 describe('Helpers', () => {
 	it('normalizes string entry', () => {
 		const result = normalizeEntryToProcessableEntries('src/index.ts')
-		expect(result).toEqual([{ fullPath: 'src/index.ts', name: 'index' }])
+		expect(result).toEqual([
+			{ fullPath: 'src/index.ts', outputBasePath: 'index' },
+		])
 	})
 
 	it('normalizes array entry', () => {
@@ -16,8 +18,8 @@ describe('Helpers', () => {
 			'src/utils.ts',
 		])
 		expect(result).toEqual([
-			{ fullPath: 'src/index.ts', name: 'index' },
-			{ fullPath: 'src/utils.ts', name: 'utils' },
+			{ fullPath: 'src/index.ts', outputBasePath: 'index' },
+			{ fullPath: 'src/utils.ts', outputBasePath: 'utils' },
 		])
 	})
 
@@ -25,7 +27,9 @@ describe('Helpers', () => {
 		const result = normalizeEntryToProcessableEntries({
 			main: 'src/index.ts',
 		})
-		expect(result).toEqual([{ fullPath: 'src/index.ts', name: 'main' }])
+		expect(result).toEqual([
+			{ fullPath: 'src/index.ts', outputBasePath: 'main' },
+		])
 	})
 
 	it('handles name conflicts in array entries', () => {
@@ -34,8 +38,8 @@ describe('Helpers', () => {
 			'lib/index.ts',
 		])
 		expect(result.length).toBe(2)
-		expect(result[0].name).toBe('index')
-		expect(result[1].name).toBe('lib/index')
+		expect(result[0].outputBasePath).toBe('index')
+		expect(result[1].outputBasePath).toBe('lib/index')
 	})
 
 	it('getEntryNameOnly extracts name', () => {
@@ -54,7 +58,9 @@ describe('Helpers', () => {
 
 	it('handles entries without file extensions', () => {
 		const result = normalizeEntryToProcessableEntries('src/README')
-		expect(result).toEqual([{ fullPath: 'src/README', name: 'README' }])
+		expect(result).toEqual([
+			{ fullPath: 'src/README', outputBasePath: 'README' },
+		])
 	})
 
 	it('handles deep nested paths', () => {
@@ -64,7 +70,7 @@ describe('Helpers', () => {
 		expect(result).toEqual([
 			{
 				fullPath: 'src/components/ui/Button.ts',
-				name: 'Button',
+				outputBasePath: 'Button',
 			},
 		])
 	})
@@ -77,7 +83,7 @@ describe('Helpers', () => {
 		])
 
 		expect(result.length).toBe(3)
-		const outputPaths = result.map((r) => r.name)
+		const outputPaths = result.map((r) => r.outputBasePath)
 
 		const uniquePaths = new Set(outputPaths)
 		expect(uniquePaths.size).toBe(3)
@@ -97,14 +103,14 @@ describe('Helpers', () => {
 		})
 
 		expect(result).toEqual([
-			{ fullPath: 'src/index.ts', name: 'app' },
+			{ fullPath: 'src/index.ts', outputBasePath: 'app' },
 			{
 				fullPath: 'src/utils/index.ts',
-				name: 'utils',
+				outputBasePath: 'utils',
 			},
 			{
 				fullPath: 'src/components/Button.ts',
-				name: 'components/button',
+				outputBasePath: 'components/button',
 			},
 		])
 	})

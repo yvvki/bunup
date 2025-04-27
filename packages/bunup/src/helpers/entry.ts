@@ -1,9 +1,20 @@
 import { basename, dirname, extname } from 'node:path'
 import { isTypeScriptSourceCodeFile } from '../dts/utils'
 import type { Entry } from '../options'
+
 export type ProcessableEntry = {
 	fullPath: string
-	name: string
+	/**
+	 * The relative path to the output directory.
+	 *
+	 * This is the path that will be used to name the output file.
+	 *
+	 * Examples:
+	 * - "src/index.ts" → "index"
+	 * - "src/plugins/index.ts" → "plugins/index"
+	 * - etc.
+	 */
+	outputBasePath: string
 }
 
 export function getEntryNameOnly(entry: string): string {
@@ -12,16 +23,6 @@ export function getEntryNameOnly(entry: string): string {
 	return extension ? filename.slice(0, -extension.length) : filename
 }
 
-/**
- * Normalizes different entry formats into a consistent array of ProcessableEntry objects.
- *
- * Examples:
- * - String: "src/index.ts" → [{ fullPath: "src/index.ts", name: "index" }]
- * - Array: ["src/index.ts", "src/utils.ts"] → [{ fullPath: "src/index.ts", name: "index" }, ...]
- * - Object: { main: "src/index.ts" } → [{ fullPath: "src/index.ts", name: "main" }]
- *
- * Handles name conflicts by using folder structure to create unique output paths.
- */
 export function normalizeEntryToProcessableEntries(
 	entry: Entry,
 ): ProcessableEntry[] {
@@ -29,7 +30,7 @@ export function normalizeEntryToProcessableEntries(
 		return [
 			{
 				fullPath: entry,
-				name: getEntryNameOnly(entry),
+				outputBasePath: getEntryNameOnly(entry),
 			},
 		]
 	}
@@ -37,7 +38,7 @@ export function normalizeEntryToProcessableEntries(
 	if (typeof entry === 'object' && !Array.isArray(entry)) {
 		return Object.entries(entry).map(([name, path]) => ({
 			fullPath: path as string,
-			name: name,
+			outputBasePath: name,
 		}))
 	}
 
@@ -48,7 +49,10 @@ export function normalizeEntryToProcessableEntries(
 		const baseName = getEntryNameOnly(path)
 
 		if (!usedOutputPaths.has(baseName)) {
-			result.push({ fullPath: path, name: baseName })
+			result.push({
+				fullPath: path,
+				outputBasePath: baseName,
+			})
 			usedOutputPaths.add(baseName)
 			continue
 		}
@@ -63,7 +67,10 @@ export function normalizeEntryToProcessableEntries(
 				newName = `${baseName}_${counter++}`
 			} while (usedOutputPaths.has(newName))
 
-			result.push({ fullPath: path, name: newName })
+			result.push({
+				fullPath: path,
+				outputBasePath: newName,
+			})
 			usedOutputPaths.add(newName)
 			continue
 		}
@@ -76,7 +83,7 @@ export function normalizeEntryToProcessableEntries(
 			if (!usedOutputPaths.has(newName)) {
 				result.push({
 					fullPath: path,
-					name: newName,
+					outputBasePath: newName,
 				})
 				usedOutputPaths.add(newName)
 				found = true
@@ -90,7 +97,10 @@ export function normalizeEntryToProcessableEntries(
 				newName = `${segments.join('/')}/${baseName}_${counter++}`
 			} while (usedOutputPaths.has(newName))
 
-			result.push({ fullPath: path, name: newName })
+			result.push({
+				fullPath: path,
+				outputBasePath: newName,
+			})
 			usedOutputPaths.add(newName)
 		}
 	}
@@ -104,6 +114,17 @@ export function filterTypeScriptEntries(
 	return entries.filter((entry) => isTypeScriptSourceCodeFile(entry.fullPath))
 }
 
-export function getEntryNamingFormat(name: string, extension: string) {
-	return `[dir]/${name}${extension}`
+export function getEntryNamingFormat(
+	outputBasePath: string,
+	extension: string,
+) {
+	return `[dir]/${outputBasePath}${extension}`
+}
+
+export function getChunkNamingFormat(outputBasePath: string) {
+	return `${outputBasePath}-[hash].[ext]`
+}
+
+export function getAssetNamingFormat(outputBasePath: string) {
+	return `${outputBasePath}-[hash].[ext]`
 }

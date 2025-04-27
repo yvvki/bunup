@@ -7,6 +7,8 @@ import {
 } from './errors'
 import {
 	filterTypeScriptEntries,
+	getAssetNamingFormat,
+	getChunkNamingFormat,
 	getEntryNamingFormat,
 	normalizeEntryToProcessableEntries,
 } from './helpers/entry'
@@ -19,6 +21,7 @@ import {
 	getResolvedDefine,
 	getResolvedEnv,
 	getResolvedMinify,
+	getResolvedSourcemap,
 	getResolvedSplitting,
 } from './options'
 import { externalPlugin } from './plugins/internal/external'
@@ -99,7 +102,12 @@ export async function build(
 					entrypoints: [`${rootDir}/${entry.fullPath}`],
 					format: fmt,
 					naming: {
-						entry: getEntryNamingFormat(entry.name, extension),
+						entry: getEntryNamingFormat(
+							entry.outputBasePath,
+							extension,
+						),
+						chunk: getChunkNamingFormat(entry.outputBasePath),
+						asset: getAssetNamingFormat(entry.outputBasePath),
 					},
 					splitting: getResolvedSplitting(options.splitting, fmt),
 					bytecode: getResolvedBytecode(options.bytecode, fmt),
@@ -112,7 +120,7 @@ export async function build(
 					minify: getResolvedMinify(options),
 					outdir: `${rootDir}/${options.outDir}`,
 					target: options.target,
-					sourcemap: options.sourcemap,
+					sourcemap: getResolvedSourcemap(options.sourcemap),
 					loader: options.loader,
 					drop: options.drop,
 					banner: options.banner,
@@ -140,19 +148,25 @@ export async function build(
 					}
 				}
 
-				const relativePathToOutputDir = getRelativePathToOutputDir(
+				// Add all outputs (main file, chunks, assets) to build output
+				for (const file of result.outputs) {
+					buildOutput.files.push({
+						fullPath: file.path,
+						relativePathToRootDir: file.path.replace(
+							`${rootDir}/`,
+							'',
+						),
+					})
+				}
+
+				const relativePathToRootDir = getRelativePathToRootDir(
 					options.outDir,
-					entry.name,
+					entry.outputBasePath,
 					extension,
 				)
-				const outputPath = getFullPath(rootDir, relativePathToOutputDir)
 
-				buildOutput.files.push({
-					fullPath: outputPath,
-					relativePathToOutputDir,
-				})
-
-				logger.progress(fmt.toUpperCase(), relativePathToOutputDir, {
+				// Only log the main file for cleaner console output
+				logger.progress(fmt.toUpperCase(), relativePathToRootDir, {
 					identifier: options.name,
 				})
 			}),
@@ -212,26 +226,26 @@ export async function build(
 								}).dts ??
 								getDefaultDtsExtention(fmt, packageType)
 
-							const relativePathToOutputDir =
-								getRelativePathToOutputDir(
+							const relativePathToRootDir =
+								getRelativePathToRootDir(
 									options.outDir,
-									entry.name,
+									entry.outputBasePath,
 									extension,
 								)
 
 							const outputPath = getFullPath(
 								rootDir,
-								relativePathToOutputDir,
+								relativePathToRootDir,
 							)
 
 							buildOutput.files.push({
 								fullPath: outputPath,
-								relativePathToOutputDir,
+								relativePathToRootDir,
 							})
 
 							await Bun.write(outputPath, content)
 
-							logger.progress('DTS', relativePathToOutputDir, {
+							logger.progress('DTS', relativePathToRootDir, {
 								identifier: options.name,
 							})
 						}),
@@ -253,14 +267,14 @@ export async function build(
 	}
 }
 
-function getRelativePathToOutputDir(
+function getRelativePathToRootDir(
 	outputDir: string,
-	entryName: string,
+	outputBasePath: string,
 	extension: string,
 ): string {
-	return `${outputDir}/${entryName}${extension}`
+	return `${outputDir}/${outputBasePath}${extension}`
 }
 
-function getFullPath(rootDir: string, relativePathToOutputDir: string): string {
-	return `${rootDir}/${relativePathToOutputDir}`
+function getFullPath(rootDir: string, relativePathToRootDir: string): string {
+	return `${rootDir}/${relativePathToRootDir}`
 }

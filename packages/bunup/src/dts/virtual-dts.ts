@@ -12,7 +12,7 @@ import {
 } from './utils'
 
 export const virtualDtsPlugin = (
-	entrySourceCodeFile: string,
+	entryFile: string,
 	tsconfig: TsConfigData,
 	rootDir: string,
 ): Plugin => {
@@ -23,7 +23,7 @@ export const virtualDtsPlugin = (
 		async resolveId(source: string, importer?: string) {
 			// entry file
 			if (importer === undefined) {
-				dtsToSourceCodeFileMap.set(source, entrySourceCodeFile)
+				dtsToSourceCodeFileMap.set(source, entryFile)
 				return source
 			}
 			//

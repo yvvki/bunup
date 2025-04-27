@@ -407,7 +407,7 @@ export interface BuildOptions {
 	 *
 	 * @example
 	 * outputExtension: ({ format, entry }) => ({
-	 *   js: entry.name === 'worker' ? '.worker.js' : `.${format}.js`,
+	 *   js: entry.outputBasePath === 'worker' ? '.worker.js' : `.${format}.js`,
 	 *   dts: `.${format}.d.ts`
 	 * })
 	 */
@@ -482,6 +482,18 @@ export function getResolvedBytecode(
 	format: Format,
 ): boolean | undefined {
 	return format === 'cjs' ? bytecode : undefined
+}
+
+export function getResolvedSourcemap(
+	sourcemap: boolean | string | undefined,
+): BunBuildOptions['sourcemap'] {
+	if (sourcemap === true) {
+		return 'inline'
+	}
+
+	return typeof sourcemap === 'string'
+		? (sourcemap as BunBuildOptions['sourcemap'])
+		: undefined
 }
 
 export function getResolvedDefine(

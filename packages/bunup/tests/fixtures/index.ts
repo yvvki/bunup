@@ -1,1 +1,7 @@
-export * from '@/utils'
+import('./utils').then(({ createFixture }) => {
+	createFixture('hello')
+})
+
+export function hello() {
+	return 'hello'
+}

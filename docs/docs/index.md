@@ -372,7 +372,7 @@ export default defineConfig({
 	entry: ['src/index.ts'],
 	format: ['esm', 'cjs'],
 	outputExtension: ({ format, entry }) => ({
-		js: entry.name === 'worker' ? '.worker.js' : `.${format}.js`,
+		js: entry.outputBasePath === 'worker' ? '.worker.js' : `.${format}.js`,
 		dts: `.${format}.d.ts`,
 	}),
 });

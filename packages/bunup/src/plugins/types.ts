@@ -21,8 +21,8 @@ export type BuildOutput = {
 	files: Array<{
 		/** Path to the generated file */
 		fullPath: string
-		/** Path to the generated file relative to the output directory */
-		relativePathToOutputDir: string
+		/** Path to the generated file relative to the root directory */
+		relativePathToRootDir: string
 	}>
 }
 
