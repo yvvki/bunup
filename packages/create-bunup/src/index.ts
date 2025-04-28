@@ -41,6 +41,7 @@ interface PackageJson {
 	version: string
 	description?: string
 	private?: boolean
+	type?: 'module' | 'commonjs'
 	workspaces?: string[]
 	main?: string
 	module?: string
@@ -688,8 +689,9 @@ function createRootPackageJson(options: ProjectOptions): PackageJson {
 		version: '0.1.0',
 		description: !isMonorepo ? description : undefined,
 		private: isMonorepo ? true : undefined,
-		main: './dist/index.js',
-		module: './dist/index.mjs',
+		type: 'module',
+		main: './dist/index.cjs',
+		module: './dist/index.js',
 		types: './dist/index.d.ts',
 		files: ['dist'],
 		...workspaces,
@@ -764,12 +766,13 @@ function createPackageJson(
 	return {
 		name: isMonorepo ? `@${projectName}/${packageName}` : packageName,
 		version: '0.1.0',
+		type: 'module',
 		description:
 			isMonorepo && packageName === options.packages[0]
 				? description
 				: undefined,
-		main: './dist/index.js',
-		module: './dist/index.mjs',
+		main: './dist/index.cjs',
+		module: './dist/index.js',
 		types: './dist/index.d.ts',
 		files: ['dist'],
 		scripts: {

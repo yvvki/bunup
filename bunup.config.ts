@@ -3,27 +3,28 @@ const COMMON_OPTIONS = {
 	minify: true,
 	splitting: false,
 	target: 'bun',
-	format: ['esm'],
 }
 
 export default [
 	{
 		name: 'bunup',
 		root: 'packages/bunup',
-		config: {
-			...COMMON_OPTIONS,
-			entry: {
-				index: 'src/index.ts',
-				cli: 'src/cli.ts',
-				plugins: 'src/plugins/built-in/index.ts',
-			},
-			dts: {
+		config: [
+			{
+				...COMMON_OPTIONS,
+				format: ['esm', 'cjs'],
 				entry: {
 					index: 'src/index.ts',
 					plugins: 'src/plugins/built-in/index.ts',
 				},
+				dts: true,
 			},
-		},
+			{
+				...COMMON_OPTIONS,
+				entry: ['src/cli.ts'],
+				format: ['esm'],
+			},
+		],
 	},
 	{
 		name: 'create-bunup',
@@ -31,6 +32,7 @@ export default [
 		config: [
 			{
 				...COMMON_OPTIONS,
+				format: ['esm'],
 				entry: ['src/index.ts'],
 			},
 		],
