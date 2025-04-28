@@ -39,8 +39,11 @@ export function report(options: ReportPluginOptions = {}): BunupPlugin {
 						let formattedGzipSize: string | undefined
 
 						if (gzip) {
-							const content = await Bun.file(file.fullPath).text()
-							gzipSize = Bun.gzipSync(content).length
+							gzipSize = Bun.gzipSync(
+								new Uint8Array(
+									await Bun.file(file.fullPath).arrayBuffer(),
+								),
+							).length
 							formattedGzipSize = formatFileSize(gzipSize)
 						}
 

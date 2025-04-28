@@ -28,14 +28,12 @@ export const virtualDtsPlugin = (
 			}
 			//
 
-			const resolvedPath = tsconfig.tsconfig
-				? resolveTsImportPath({
-						path: source,
-						importer,
-						tsconfig: tsconfig.tsconfig,
-						rootDir,
-					})
-				: null
+			const resolvedPath = resolveTsImportPath({
+				path: source,
+				importer,
+				tsconfig: tsconfig.tsconfig,
+				rootDir,
+			})
 
 			if (!resolvedPath || !isTypeScriptSourceCodeFile(resolvedPath))
 				return null
