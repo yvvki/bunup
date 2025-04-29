@@ -14,7 +14,7 @@
 	},
 	"devDependencies": {
 		"bunchee": "^6.5.1",
-		"tsdown": "^0.9.6",
+		"tsdown": "^0.10.1",
 		"tsup": "^8.4.0",
 		"unbuild": "^3.5.0"
 	},

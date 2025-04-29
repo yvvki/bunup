@@ -52,3 +52,8 @@ jobs:
         run: |
           git add .
           git commit -m "chore: update starter root dev dependencies"
+          
+      - name: 🚀 Push changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git push origin main
