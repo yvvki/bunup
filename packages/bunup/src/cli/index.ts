@@ -1,21 +1,27 @@
 #!/usr/bin/env bun
 import { exec } from 'tinyexec'
-import { version } from '../package.json'
-import { parseCliOptions } from './cli-parse'
-import { handleErrorAndExit } from './errors'
-import { logger, setSilent } from './logger'
-import type { BuildOptions, CliOptions } from './options'
+import { version } from '../../package.json'
+import { handleErrorAndExit } from '../errors'
+import { logger, setSilent } from '../logger'
+import type { BuildOptions, CliOptions } from '../options'
+import { parseCliOptions } from './parse'
 
 import { loadConfig } from 'coffi'
 import pc from 'picocolors'
-import { type ProcessableConfig, processLoadedConfigs } from './loaders'
-import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from './types'
-import { ensureArray, formatTime, getShortFilePath } from './utils'
-import { watch } from './watch'
+import { type ProcessableConfig, processLoadedConfigs } from '../loaders'
+import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from '../types'
+import { ensureArray, formatTime, getShortFilePath } from '../utils'
+import { watch } from '../watch'
 
 export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>
 
 async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
+	const commandWasExecuted = await registerCommands(args)
+
+	if (commandWasExecuted) {
+		return
+	}
+
 	const cliOptions = parseCliOptions(args)
 
 	setSilent(cliOptions.silent)
@@ -48,7 +54,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
 	logger.cli('Build started')
 
-	const { build } = await import('./build')
+	const { build } = await import('../build')
 
 	await Promise.all(
 		configsToProcess.flatMap(({ options, rootDir }) => {
@@ -98,6 +104,20 @@ function removeCliOnlyOptions(options: Partial<CliOptions>) {
 		onSuccess: undefined,
 		config: undefined,
 	}
+}
+
+async function registerCommands(args: string[]): Promise<boolean> {
+	const command = args[0]
+
+	switch (command) {
+		case 'init': {
+			const { init } = await import('./init')
+			init()
+			return true
+		}
+	}
+
+	return false
 }
 
 main().catch((error) => handleErrorAndExit(error))

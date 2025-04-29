@@ -20,10 +20,12 @@
 	"keywords": ["bun", "bunup", "bun-bundler"],
 	"files": ["dist"],
 	"dependencies": {
+		"@clack/prompts": "^0.10.1",
 		"chokidar": "^4.0.3",
 		"coffi": "^0.1.28",
 		"oxc-resolver": "^5.0.1",
 		"oxc-transform": "^0.58.1",
+		"package-manager-detector": "^1.2.0",
 		"rolldown": "1.0.0-beta.7",
 		"rolldown-plugin-dts": "^0.9.4",
 		"tinyexec": "^1.0.1",

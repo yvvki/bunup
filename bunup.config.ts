@@ -21,7 +21,7 @@ export default [
 			},
 			{
 				...COMMON_OPTIONS,
-				entry: ['src/cli.ts'],
+				entry: { cli: 'src/cli/index.ts' },
 				format: ['esm'],
 			},
 		],

@@ -166,7 +166,7 @@ Bunup focuses on performance. When contributing:
 Here's a brief overview of the project structure:
 
 - `src/` - Source code
-  - `cli.ts` - Command-line interface
+  - `cli/` - Command-line interface
   - `build.ts` - Core build functionality
   - `watch.ts` - Watch mode functionality
   - `plugins/` - Bundler plugins
