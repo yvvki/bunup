@@ -36,7 +36,7 @@
 		}
 	},
 	"bin": {
-		"bunup": "./bin/bunup.mjs"
+		"bunup": "bin/bunup.mjs"
 	},
 	"dependencies": {
 		"@clack/prompts": "^0.10.1",
