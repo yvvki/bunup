@@ -19,19 +19,19 @@ Add Bunup to your project with a single command:
 ::: code-group
 
 ```sh [bun]
-bunx bunup --init
+bunx bunup@latest --init
 ```
 
 ```sh [pnpm]
-pnpx bunup --init
+pnpx bunup@latest --init
 ```
 
 ```sh [npm]
-npx bunup --init
+npx bunup@latest --init
 ```
 
 ```sh [yarn]
-yarn dlx bunup --init
+yarn dlx bunup@latest --init
 ```
 
 See the next section for manual installation and setup.
