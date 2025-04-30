@@ -62,10 +62,10 @@ For more information about creating Bun plugins, see the [Bun plugin documentati
 Bunup plugins provide additional hooks into the build process beyond what Bun's native plugin system offers. These plugins can be used to extend Bunup's functionality with custom build steps, reporting, and more.
 
 ```ts
-import type { BunupPlugin } from "bunup";
+import type { Plugin } from "bunup";
 
 // Create a simple Bunup plugin
-export function myBunupPlugin(): BunupPlugin {
+export function myBunupPlugin(): Plugin {
   return {
     type: "bunup",
     name: "my-bunup-plugin",
