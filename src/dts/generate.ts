@@ -48,6 +48,7 @@ export async function generateDtsForEntry(
 				dtsInput: true,
 				emitDtsOnly: true,
 				resolve: dtsResolve,
+				tsconfig: tsconfig.path ?? false,
 			}),
 		],
 	})
