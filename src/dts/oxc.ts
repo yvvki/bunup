@@ -49,7 +49,7 @@ export function runPostDtsValidation(isWatching: boolean): void {
 
 	if (hasErrors && !isWatching) {
 		console.log(
-			`${pc.bgMagentaBright('Pro tip:')} Enable "isolatedDeclarations" in your ${pc.underline('tsconfig.json')} to get these errors early in your editor`,
+			`${pc.bgMagentaBright('Pro tip')} Enable "isolatedDeclarations" in your ${pc.underline('tsconfig.json')} to get these errors early in your editor`,
 		)
 		console.log('\n')
 		throw new BunupIsolatedDeclError()
