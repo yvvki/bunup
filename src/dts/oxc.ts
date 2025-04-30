@@ -49,7 +49,7 @@ export function runPostDtsValidation(isWatching: boolean): void {
 
 	if (hasErrors && !isWatching) {
 		console.log(
-			`${pc.bgMagentaBright('Pro tip')} Enable "isolatedDeclarations" in your ${pc.underline('tsconfig.json')} to get these errors early in your editor`,
+			`${pc.bgMagentaBright('Pro tip')} Enable "isolatedDeclarations" in your ${pc.underline('tsconfig.json')} to get these errors early in your editor\n\nSee why this is happening: ${pc.blueBright('https://bunup.dev/docs/troubleshooting/explicit-type-annotation-errors')}`,
 		)
 		console.log('\n')
 		throw new BunupIsolatedDeclError()

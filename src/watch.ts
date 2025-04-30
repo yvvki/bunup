@@ -44,14 +44,7 @@ export async function watch(
 		isRebuilding = true
 		try {
 			const start = performance.now()
-			await build(
-				{
-					...options,
-					entry: normalizedEntry.map((entry) => entry.fullPath),
-					clean: false,
-				},
-				rootDir,
-			)
+			await build(options, rootDir)
 			if (!initial) {
 				logger.cli(
 					`📦 Rebuild finished in ${formatTime(performance.now() - start)}`,
