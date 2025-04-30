@@ -3,8 +3,8 @@ import { exec } from 'tinyexec'
 import { version } from '../../package.json'
 import { handleErrorAndExit } from '../errors'
 import { logger, setSilent } from '../logger'
-import type { BuildOptions, CliOptions } from '../options'
-import { parseCliOptions } from './parse'
+import type { BuildOptions } from '../options'
+import { parseCliOptions, type CliOptions } from './options'
 
 import { loadConfig } from 'coffi'
 import pc from 'picocolors'
@@ -16,13 +16,13 @@ import { watch } from '../watch'
 export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>
 
 async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
-	const commandWasExecuted = await registerCommands(args)
+	const cliOptions = parseCliOptions(args)
 
-	if (commandWasExecuted) {
+	if (cliOptions.init) {
+		const { init } = await import('./init')
+		await init()
 		return
 	}
-
-	const cliOptions = parseCliOptions(args)
 
 	setSilent(cliOptions.silent)
 
@@ -103,21 +103,9 @@ function removeCliOnlyOptions(options: Partial<CliOptions>) {
 		...options,
 		onSuccess: undefined,
 		config: undefined,
+		filter: undefined,
+		init: undefined,
 	}
-}
-
-async function registerCommands(args: string[]): Promise<boolean> {
-	const command = args[0]
-
-	switch (command) {
-		case 'init': {
-			const { init } = await import('./init')
-			init()
-			return true
-		}
-	}
-
-	return false
 }
 
 main().catch((error) => handleErrorAndExit(error))

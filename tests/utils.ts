@@ -186,8 +186,8 @@ export async function runCli(options: string): Promise<RunCliResult> {
 
 	try {
 		const command = `bun run ${join(
-			PROJECT_DIR,
-			'../../src/cli/index.ts',
+			process.cwd(),
+			'bin/bunup.mjs',
 		)} ${options} --out-dir .output`
 
 		const execResult = await exec(command, [], {

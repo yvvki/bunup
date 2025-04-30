@@ -419,32 +419,6 @@ export interface BuildOptions {
 	}) => { js: string; dts: string }
 }
 
-export type CliOptions = BuildOptions & {
-	/**
-	 * Path to a specific configuration file to use instead of the default bunup.config.ts.
-	 *
-	 * @example
-	 * bunup src/index.ts --config=./bunup.config.ts
-	 */
-	config: string
-	/**
-	 * Command to execute after a successful build.
-	 * This command will be run when the build process completes without errors.
-	 *
-	 * @example
-	 * bunup src/index.ts --onSuccess="echo 'Build successful'"
-	 */
-	onSuccess?: string
-	/**
-	 * Filter specific packages to build in a workspace configuration.
-	 * This option is only relevant when using workspace configurations.
-	 *
-	 * @example
-	 * bunup --filter core,utils
-	 */
-	filter?: string[]
-}
-
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
 	entry: [],
 	format: ['cjs'],

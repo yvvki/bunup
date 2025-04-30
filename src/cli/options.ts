@@ -4,7 +4,41 @@ import { BUNUP_CLI_OPTIONS_URL } from '../constants'
 import { BunupCLIError } from '../errors'
 import { getEntryNameOnly } from '../helpers/entry'
 import { logger } from '../logger'
-import type { CliOptions } from '../options'
+import type { BuildOptions } from '../options'
+
+export type CliOptions = BuildOptions & {
+	/**
+	 * Path to a specific configuration file to use instead of the default bunup.config.ts.
+	 *
+	 * @example
+	 * bunup src/index.ts --config=./bunup.config.ts
+	 */
+	config: string
+	/**
+	 * Command to execute after a successful build.
+	 * This command will be run when the build process completes without errors.
+	 *
+	 * @example
+	 * bunup src/index.ts --onSuccess="echo 'Build successful'"
+	 */
+	onSuccess?: string
+	/**
+	 * Filter specific packages to build in a workspace configuration.
+	 * This option is only relevant when using workspace configurations.
+	 *
+	 * @example
+	 * bunup --filter core,utils
+	 */
+	filter?: string[]
+	/**
+	 * Initialize bunup in your project.
+	 * Sets up configuration files and scripts needed to build your project.
+	 *
+	 * @example
+	 * bunup --init
+	 */
+	init?: boolean
+}
 
 type OptionHandler = (
 	value: string | boolean,

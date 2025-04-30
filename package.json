@@ -42,8 +42,8 @@
 		"@clack/prompts": "^0.10.1",
 		"chokidar": "^4.0.3",
 		"coffi": "^0.1.28",
-		"oxc-resolver": "^5.0.1",
-		"oxc-transform": "^0.58.1",
+		"oxc-resolver": "^7.0.1",
+		"oxc-transform": "^0.67.0",
 		"package-manager-detector": "^1.2.0",
 		"rolldown": "1.0.0-beta.7",
 		"rolldown-plugin-dts": "^0.9.7",
@@ -81,8 +81,7 @@
 		"release": "bumpp",
 		"test": "bun test",
 		"test-build": "bun run --cwd tests build",
-		"tsc": "tsc --noEmit",
-		"upgrade-deps": "bunx taze -r -w && bun install && git add . && git commit -m 'chore: upgrade deps' && bun run release:ci"
+		"tsc": "tsc --noEmit"
 	},
 	"lint-staged": {
 		"*": "bun run format:fix && git add .",

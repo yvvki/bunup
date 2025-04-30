@@ -6,4 +6,4 @@ export function hello() {
 	return 'hello'
 }
 
-export * from './utils'
+export * from '@/utils'
