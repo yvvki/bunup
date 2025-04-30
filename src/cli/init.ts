@@ -14,6 +14,7 @@ import {
 import {
 	type Agent,
 	detect as detectPackageManager,
+	type DetectResult,
 	resolveCommand,
 } from 'package-manager-detector'
 import pc from 'picocolors'
@@ -43,6 +44,13 @@ async function pathExists(filePath: string): Promise<boolean> {
 
 export async function init(): Promise<void> {
 	intro(pc.bgCyan(pc.black(' Bunup ')))
+
+	const packageManager = await detectPackageManager()
+
+	if (!packageManager) {
+		log.error('No package manager detected')
+		process.exit(1)
+	}
 
 	const packageJsonPath = path.join(process.cwd(), 'package.json')
 	let packageJson: any
@@ -281,7 +289,7 @@ export async function init(): Promise<void> {
 		{
 			title: 'Installing bunup',
 			task: async () => {
-				await installBunup(packageJson)
+				await installBunup(packageJson, packageManager)
 				return 'Bunup installed'
 			},
 		},
@@ -296,12 +304,15 @@ export async function init(): Promise<void> {
 		process.exit(1)
 	}
 
+	const devCommand = resolveCommand(packageManager.agent, 'run', ['dev'])
+	const buildCommand = resolveCommand(packageManager.agent, 'run', ['build'])
+
 	outro(`
     ${pc.bold('🚀 Happy building with Bunup!')}
     
     Run these commands to get started:
-	${pc.cyan('bun run build')} - ${pc.gray('Build your project')}
-	${pc.cyan('bun run dev')}   - ${pc.gray('Build in watch mode')}
+	${pc.cyan(buildCommand?.command)} - ${pc.gray('Build your project')}
+	${pc.cyan(devCommand?.command)}   - ${pc.gray('Build in watch mode')}
     
     ${pc.dim('Edit')} ${pc.underline('bunup.config.ts')} ${pc.dim('to customize your build.')}
 	`)
@@ -412,16 +423,13 @@ async function updatePackageJson(packageJson: any, packageJsonPath: string) {
 	}
 }
 
-async function installBunup(packageJson: any) {
+async function installBunup(packageJson: any, packageManager: DetectResult) {
 	const hasDep =
 		packageJson.dependencies?.bunup || packageJson.devDependencies?.bunup
 	if (hasDep) {
 		log.info('Bunup is already installed\n')
 		return
 	}
-
-	const packageManager = await detectPackageManager()
-	if (!packageManager) throw new Error('No package manager detected')
 
 	const devFlag: Partial<Record<Agent, string>> = {
 		bun: '-d',
