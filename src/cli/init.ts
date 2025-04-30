@@ -13,8 +13,9 @@ import {
 } from '@clack/prompts'
 import {
 	type Agent,
-	detect as detectPackageManager,
 	type DetectResult,
+	type ResolvedCommand,
+	detect as detectPackageManager,
 	resolveCommand,
 } from 'package-manager-detector'
 import pc from 'picocolors'
@@ -311,8 +312,8 @@ export async function init(): Promise<void> {
     ${pc.bold('🚀 Happy building with Bunup!')}
     
     Run these commands to get started:
-	${pc.cyan(buildCommand?.command)} - ${pc.gray('Build your project')}
-	${pc.cyan(devCommand?.command)}   - ${pc.gray('Build in watch mode')}
+	${pc.cyan(getCommand(buildCommand))} - ${pc.gray('Build your project')}
+	${pc.cyan(getCommand(devCommand))}   - ${pc.gray('Build in watch mode')}
     
     ${pc.dim('Edit')} ${pc.underline('bunup.config.ts')} ${pc.dim('to customize your build.')}
 	`)
@@ -442,13 +443,15 @@ async function installBunup(packageJson: any, packageManager: DetectResult) {
 		devFlag[packageManager.agent] || '-D',
 		'bunup',
 	])
+
 	if (!installCommand) throw new Error('Failed to resolve install command')
 
-	await exec(
-		`${installCommand.command} ${installCommand.args.join(' ')}`,
-		[],
-		{
-			nodeOptions: { shell: true, stdio: 'pipe' },
-		},
-	)
+	await exec(getCommand(installCommand), [], {
+		nodeOptions: { shell: true, stdio: 'pipe' },
+	})
+}
+
+function getCommand(command: ResolvedCommand | null) {
+	if (!command) return ''
+	return `${command.command} ${command.args.join(' ')}`
 }
