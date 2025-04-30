@@ -4,7 +4,7 @@ import { version } from '../../package.json'
 import { handleErrorAndExit } from '../errors'
 import { logger, setSilent } from '../logger'
 import type { BuildOptions } from '../options'
-import { parseCliOptions, type CliOptions } from './options'
+import { type CliOptions, parseCliOptions } from './options'
 
 import { loadConfig } from 'coffi'
 import pc from 'picocolors'
