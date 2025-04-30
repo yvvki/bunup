@@ -44,6 +44,29 @@ node_modules/
 # vitepress cache directory
 **/.vitepress/cache
 
+# Build output
 **/dist
+.output
 
-packages/bunup/tests/.project
+# Test files
+tests/.project
+tests/fixtures
+
+# Coverage directory
+coverage/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.history
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary files
+*.tmp
+*.bak
+.cache

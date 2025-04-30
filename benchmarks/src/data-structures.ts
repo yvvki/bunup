@@ -1436,7 +1436,9 @@ export class Trie {
 				result.push(prefix)
 			}
 
-			for (const [char, childNode] of node.children) {
+			for (const [char, childNode] of Array.from(
+				node.children.entries(),
+			)) {
 				traverse(childNode, prefix + char)
 			}
 		}
@@ -1534,7 +1536,7 @@ export class Graph<T> {
 		if (!node) return false
 
 		// Remove all edges pointing to this node
-		for (const otherNode of this.nodes.values()) {
+		for (const otherNode of Array.from(this.nodes.values())) {
 			otherNode.removeEdge(node)
 		}
 

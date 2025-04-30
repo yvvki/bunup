@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'bun:test'
 import {
 	cleanProjectDir,
 	createProject,
-	findFile,
 	runBuild,
 	validateBuildFiles,
 } from './utils'

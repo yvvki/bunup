@@ -77,29 +77,23 @@ $ bunx create-bunup@latest
    pnpm install
    ```
 
-3. **Enable Git hooks**:
-
-   ```sh
-   bun run prepare
-   # or
-   pnpm prepare
-   ```
-
-4. **Create a GitHub repository**:
+3. **Create a GitHub repository**:
 
    - Go to [GitHub](https://github.com/new)
    - Create a new repository with the same name as your project
 
-5. **Initialize Git repository**:
-
-   The CLI automatically initializes a Git repository for you and adds the remote if you provided a GitHub repository. You only need to make your first commit:
+4. **Initialize Git repository**:
 
    ```sh
+   git init
    git add .
    git commit -m "chore: initial commit"
+   git branch -M main
+   git remote add origin https://github.com/username/my-ts-lib.git
+   git push -u origin main
    ```
 
-6. **Setup for Releases**:
+5. **Setup for Releases**:
 
    - Generate an npm token:
 

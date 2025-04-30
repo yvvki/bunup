@@ -1,3 +1,0 @@
-function server() {
-	return 'server'
-}

@@ -13,6 +13,6 @@
 		"declaration": true,
 		"isolatedDeclarations": true
 	},
-	"include": ["packages/bunup/src/**/*", "packages/create-bunup/src/**/*"],
+	"include": ["src/**/*", "docs/**/*", "benchmarks/**/*"],
 	"exclude": ["node_modules", "dist"]
 }

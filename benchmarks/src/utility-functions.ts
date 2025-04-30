@@ -1030,7 +1030,7 @@ export function mode<T>(array: T[]): T | undefined {
 	let maxCount = 0
 	let maxValue: T | undefined = undefined
 
-	for (const [value, count] of counts.entries()) {
+	for (const [value, count] of Array.from(counts.entries())) {
 		if (count > maxCount) {
 			maxCount = count
 			maxValue = value
@@ -1465,7 +1465,7 @@ export class Observable<T> {
 	}
 
 	private notify(): void {
-		for (const subscriber of this.subscribers) {
+		for (const subscriber of Array.from(this.subscribers)) {
 			subscriber(this.value)
 		}
 	}
@@ -1501,7 +1501,7 @@ export function createStore<T>(initialState: T): {
 	}
 
 	function notifyListeners(): void {
-		for (const listener of listeners) {
+		for (const listener of Array.from(listeners)) {
 			listener(state)
 		}
 	}

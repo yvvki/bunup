@@ -5,7 +5,7 @@ import {
 } from 'vitepress-plugin-group-icons'
 import llmstxt from 'vitepress-plugin-llms'
 
-import { version } from '../../packages/bunup/package.json'
+import { version } from '../../package.json'
 
 export default defineConfig({
 	title: 'Bunup',

@@ -93,7 +93,7 @@ export async function appendBenchmarkResults(
 		await fs.writeFile(filePath, combinedContent, 'utf-8')
 		console.log(`Updated benchmark results in ${filePath}`)
 	} catch (error) {
-		console.error(`Error appending benchmark results: ${error.message}`)
+		console.error(`Error appending benchmark results: ${String(error)}`)
 		throw error
 	}
 }

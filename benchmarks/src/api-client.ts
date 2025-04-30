@@ -356,7 +356,9 @@ export class HttpClient {
 	 * Cancels a request by URL
 	 */
 	cancelRequest(url: string): void {
-		for (const [requestId, controller] of this.abortControllers.entries()) {
+		for (const [requestId, controller] of Array.from(
+			this.abortControllers.entries(),
+		)) {
 			if (requestId.includes(url)) {
 				controller.abort()
 				this.abortControllers.delete(requestId)
@@ -368,7 +370,7 @@ export class HttpClient {
 	 * Cancels all pending requests
 	 */
 	cancelAllRequests(): void {
-		for (const controller of this.abortControllers.values()) {
+		for (const controller of Array.from(this.abortControllers.values())) {
 			controller.abort()
 		}
 		this.abortControllers.clear()
@@ -780,7 +782,7 @@ export class Store<T> implements Subject<T> {
 	 * Notifies all observers
 	 */
 	notify(): void {
-		for (const observer of this.observers) {
+		for (const observer of Array.from(this.observers)) {
 			observer.update(this.getState())
 		}
 	}

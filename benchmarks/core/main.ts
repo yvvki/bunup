@@ -12,7 +12,7 @@ import {
 import {
 	type BuildOptions as BunupOptions,
 	build as bunupBuild,
-} from '../../packages/bunup/dist/index'
+} from '../../dist/index'
 
 import { ENTRY_POINT, RESULTS_FILE } from './constants'
 import type { Bundler } from './types'

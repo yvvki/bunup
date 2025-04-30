@@ -12,6 +12,7 @@ import {
 	text,
 } from '@clack/prompts'
 import {
+	type Agent,
 	detect as detectPackageManager,
 	resolveCommand,
 } from 'package-manager-detector'
@@ -422,8 +423,15 @@ async function installBunup(packageJson: any) {
 	const packageManager = await detectPackageManager()
 	if (!packageManager) throw new Error('No package manager detected')
 
+	const devFlag: Partial<Record<Agent, string>> = {
+		bun: '-d',
+		npm: '-D',
+		pnpm: '-D',
+		yarn: '-D',
+	}
+
 	const installCommand = resolveCommand(packageManager.agent, 'add', [
-		'-d',
+		devFlag[packageManager.agent] || '-D',
 		'bunup',
 	])
 	if (!installCommand) throw new Error('Failed to resolve install command')
