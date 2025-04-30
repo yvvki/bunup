@@ -3,7 +3,7 @@
 Bunup is the ⚡️ **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for flawless developer experience and speed, **powered by Bun's native bundler** — up to **~50× faster than Tsup**.
 
 ::: tip 💖
-**Building with Bun? You need Bunup. Designed for the Bun ecosystem with the speed of Bun.**
+**Building with Bun? You need Bunup.**  Designed specifically for the Bun ecosystem with all the speed advantages that come with it.
 :::
 
 ## What Can It Bundle?
@@ -12,33 +12,33 @@ Bunup supports bundling for multiple environments — including **Node.js**, **b
 
 It can bundle JavaScript/TypeScript files, JSON, TOML, text files, and a variety of other assets. You can also customize how different file types are processed using the [loader](#custom-loaders) option.
 
-## Starter Template
+## Quick Start
 
-To start a modern TypeScript library even faster, in just 10 seconds, run:
+Add Bunup to your project with a single command:
 
 ::: code-group
 
 ```sh [bun]
-bunx create-bunup@latest
+bunx bunup --init
 ```
 
 ```sh [pnpm]
-pnpx create-bunup@latest
+pnpx bunup --init
 ```
 
 ```sh [npm]
-npx create-bunup@latest
+npx bunup --init
 ```
 
 ```sh [yarn]
-yarn dlx create-bunup@latest
+yarn dlx bunup --init
 ```
+
+See the next section for manual installation and setup.
 
 :::
 
-To learn more, see the [TypeScript Library Starter](/docs//typescript-library-starter) for full guide.
-
-## Quick Start
+## Getting Started with Bunup
 
 Get started with Bunup in seconds - install, configure, and build your TypeScript/JavaScript projects with minimal setup.
 
