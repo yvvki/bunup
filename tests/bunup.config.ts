@@ -1,5 +1,5 @@
-import { defineConfig } from '../dist/index.js'
-import { report } from '../dist/plugins.js'
+import { defineConfig } from '../src'
+import { report } from '../src/plugins/built-in'
 
 export default defineConfig({
 	entry: ['fixtures/index.ts'],
