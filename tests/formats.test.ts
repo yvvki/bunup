@@ -278,10 +278,7 @@ describe('Format Types and Output Extensions', () => {
 				format: ['esm'],
 				dts: true,
 				outputExtension: ({ entry }) => ({
-					js:
-						entry.outputBasePath === 'main'
-							? '.bundle.js'
-							: '.module.mjs',
+					js: entry === 'src/index.ts' ? '.bundle.js' : '.module.mjs',
 				}),
 			})
 

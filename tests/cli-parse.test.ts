@@ -46,6 +46,13 @@ describe('CLI Parsing', () => {
 		const options = parseCliOptions(['-f', 'esm'])
 		expect(options.format).toEqual(['esm'])
 	})
+	it('parses nested entry points', () => {
+		const options = parseCliOptions([
+			'--entry.nested/utils',
+			'src/utils.ts',
+		])
+		expect(options.entry).toEqual({ 'nested/utils': 'src/utils.ts' })
+	})
 })
 
 describe('Real-world CLI Usage', () => {

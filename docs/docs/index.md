@@ -283,7 +283,7 @@ Named entries allow you to specify custom output filenames.
 #### Using the CLI
 
 ```sh
-bunup --entry.main src/index.ts --entry.cli src/cli.ts
+bunup --entry.main src/index.ts --entry.api src/api/v1/index.ts --entry.nested/utils src/utils.ts
 ```
 
 #### Using a Configuration File
@@ -359,10 +359,10 @@ You can customize the output file extensions using the `outputExtension` option:
 
 ```typescript
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: ['src/index.ts', 'src/worker/index.ts'],
 	format: ['esm', 'cjs'],
 	outputExtension: ({ format, entry }) => ({
-		js: entry.outputBasePath === 'worker' ? '.worker.js' : `.${format}.js`,
+		js: entry === 'src/worker/index.ts' ? '.worker.js' : `.${format}.js`,
 	}),
 });
 ```
@@ -372,7 +372,7 @@ The `outputExtension` function receives:
 - `format`: The output format
 - `packageType`: The package.json "type" field value (typically 'module' or 'commonjs')
 - `options`: The complete resolved build options object
-- `entry`: The entry object containing `name` and `path` properties
+- `entry`: The entry which is the same as what you defined in the entry option
 
 It should return an object with:
 

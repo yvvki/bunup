@@ -86,11 +86,11 @@ export async function build(
 					format: fmt,
 					packageType,
 					options,
-					entry,
+					entry: entry.path,
 				}).js ?? getDefaultOutputExtension(fmt, packageType)
 
 			const result = await Bun.build({
-				entrypoints: [`${rootDir}/${entry.fullPath}`],
+				entrypoints: [`${rootDir}/${entry.path}`],
 				format: fmt,
 				naming: getResolvedNaming(entry.outputBasePath, extension),
 				splitting: getResolvedSplitting(options.splitting, fmt),

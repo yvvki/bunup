@@ -3,7 +3,7 @@ import type { BuildOptions } from '../options'
 import type { BunBuildOptions } from '../types'
 
 export type ProcessableEntry = {
-	fullPath: string
+	path: string
 	outputBasePath: string | null
 	dts: boolean
 }
@@ -27,7 +27,7 @@ export function getProcessableEntries(
 	if (typeof options.entry === 'string') {
 		entries = [
 			{
-				fullPath: options.entry,
+				path: options.entry,
 				outputBasePath: null,
 				dts: false,
 			},
@@ -37,13 +37,13 @@ export function getProcessableEntries(
 		!Array.isArray(options.entry)
 	) {
 		entries = Object.entries(options.entry).map(([name, path]) => ({
-			fullPath: path,
+			path,
 			outputBasePath: name,
 			dts: false,
 		}))
 	} else {
 		entries = options.entry.map((entry) => ({
-			fullPath: entry,
+			path: entry,
 			outputBasePath: null,
 			dts: false,
 		}))
@@ -60,20 +60,20 @@ export function getProcessableEntries(
 		if (typeof dtsEntry === 'string') {
 			dtsEntries = [
 				{
-					fullPath: dtsEntry,
+					path: dtsEntry,
 					outputBasePath: null,
 					dts: true,
 				},
 			]
 		} else if (typeof dtsEntry === 'object' && !Array.isArray(dtsEntry)) {
 			dtsEntries = Object.entries(dtsEntry).map(([name, path]) => ({
-				fullPath: path,
+				path,
 				outputBasePath: name,
 				dts: true,
 			}))
 		} else {
 			dtsEntries = dtsEntry.map((entry) => ({
-				fullPath: entry,
+				path: entry,
 				outputBasePath: null,
 				dts: true,
 			}))
@@ -84,11 +84,11 @@ export function getProcessableEntries(
 		entries = entries.map((entry) => {
 			const shouldGenerateDts = dtsEntries.some(
 				(dtsEntry) =>
-					dtsEntry.fullPath === entry.fullPath &&
+					dtsEntry.path === entry.path &&
 					dtsEntry.outputBasePath === entry.outputBasePath,
 			)
 			if (shouldGenerateDts) {
-				processedPaths.add(`${entry.fullPath}:${entry.outputBasePath}`)
+				processedPaths.add(`${entry.path}:${entry.outputBasePath}`)
 			}
 			return {
 				...entry,
@@ -99,7 +99,7 @@ export function getProcessableEntries(
 		for (const dtsEntry of dtsEntries) {
 			if (
 				!processedPaths.has(
-					`${dtsEntry.fullPath}:${dtsEntry.outputBasePath}`,
+					`${dtsEntry.path}:${dtsEntry.outputBasePath}`,
 				)
 			) {
 				entries.push(dtsEntry)

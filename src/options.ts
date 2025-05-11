@@ -1,4 +1,3 @@
-import type { ProcessableEntry } from './helpers/entry'
 import type { Plugin } from './plugins/types'
 import type {
 	Arrayable,
@@ -375,12 +374,12 @@ export interface BuildOptions {
 	/**
 	 * Customize the output file extension for each format.
 	 *
-	 * @param options Contains format, packageType, options, and entry information
+	 * @param options Contains format, packageType, options, and entry (which is the same as what you defined in the entry option)
 	 * @returns Object with js extension (including the leading dot). If dts is true, the dts file extension will be automatically derived from the js extension
 	 *
 	 * @example
 	 * outputExtension: ({ format, entry }) => ({
-	 *   js: entry.outputBasePath === 'worker' ? '.worker.js' : `.${format}.js`
+	 *   js: entry === 'src/worker.ts' ? '.worker.js' : `.${format}.js`
 	 *   // For example, if js is '.worker.js', the dts will automatically be '.worker.d.ts'
 	 * })
 	 */
@@ -388,7 +387,7 @@ export interface BuildOptions {
 		format: Format
 		packageType: string | undefined
 		options: BuildOptions
-		entry: ProcessableEntry
+		entry: string
 	}) => { js: string }
 }
 
