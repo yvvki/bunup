@@ -40,7 +40,6 @@ For more control, you can specify custom entry points for declarations:
 
 ```typescript
 export default defineConfig({
-	entry: ['src/index.ts', 'src/cli.ts'],
 	dts: {
 		// Only generate declarations for index.ts
 		entry: ['src/index.ts'],
@@ -54,10 +53,6 @@ You can use named entries for declarations:
 
 ```typescript
 export default defineConfig({
-	entry: {
-		main: 'src/index.ts',
-		cli: 'src/cli.ts',
-	},
 	outdir: "dist",
 	dts: {
 		entry: {

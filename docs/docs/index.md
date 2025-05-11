@@ -278,19 +278,23 @@ This will generate output files named after each input file (e.g., `dist/index.j
 
 ### Named Entries
 
-Named entries allow you to specify custom output filenames:
+Named entries allow you to specify custom output filenames.
+
+#### Using the CLI
 
 ```sh
-# CLI
 bunup --entry.main src/index.ts --entry.cli src/cli.ts
+```
 
-# Configuration file
+#### Using a Configuration File
+
+```typescript
 export default defineConfig({
-      entry: {
-            main: 'src/index.ts', // Outputs to dist/main.js
+	entry: {
+		main: 'src/index.ts', // Outputs to dist/main.js
 		api: 'src/api/v1/index.ts', // Outputs to dist/api.js
 		'nested/utils': 'src/utils.ts', // Outputs to dist/nested/utils.js
-      },
+	},
 });
 ```
 
