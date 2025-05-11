@@ -59,8 +59,8 @@ import WithinHero from "/components/WithinHero.vue";
       <tr>
         <td>tsdown</td>
         <td>esm, cjs</td>
-        <td>22.37ms</td>
-        <td>84.48ms</td>
+        <td>14.37ms</td>
+        <td>66.48ms</td>
       </tr>
       <tr>
         <td>unbuild</td>
