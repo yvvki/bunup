@@ -1,20 +1,11 @@
-import { basename, dirname, extname } from 'node:path'
-import { isTypeScriptSourceCodeFile } from '../dts/utils'
-import type { Entry } from '../options'
+import { basename, extname } from 'node:path'
+import type { BuildOptions } from '../options'
+import type { BunBuildOptions } from '../types'
 
 export type ProcessableEntry = {
 	fullPath: string
-	/**
-	 * The relative path to the output directory.
-	 *
-	 * This is the path that will be used to name the output file.
-	 *
-	 * Examples:
-	 * - "src/index.ts" → "index"
-	 * - "src/plugins/index.ts" → "plugins/index"
-	 * - etc.
-	 */
-	outputBasePath: string
+	outputBasePath: string | null
+	dts: boolean
 }
 
 export function getEntryNameOnly(entry: string): string {
@@ -23,108 +14,109 @@ export function getEntryNameOnly(entry: string): string {
 	return extension ? filename.slice(0, -extension.length) : filename
 }
 
-export function normalizeEntryToProcessableEntries(
-	entry: Entry,
+export function getProcessableEntries(
+	options: BuildOptions,
 ): ProcessableEntry[] {
-	if (typeof entry === 'string') {
-		return [
+	const dtsEntry =
+		typeof options.dts === 'object' && 'entry' in options.dts
+			? options.dts.entry
+			: undefined
+
+	let entries: ProcessableEntry[] = []
+
+	if (typeof options.entry === 'string') {
+		entries = [
 			{
-				fullPath: entry,
-				outputBasePath: getEntryNameOnly(entry),
+				fullPath: options.entry,
+				outputBasePath: null,
+				dts: false,
 			},
 		]
-	}
-
-	if (typeof entry === 'object' && !Array.isArray(entry)) {
-		return Object.entries(entry).map(([name, path]) => ({
-			fullPath: path as string,
+	} else if (
+		typeof options.entry === 'object' &&
+		!Array.isArray(options.entry)
+	) {
+		entries = Object.entries(options.entry).map(([name, path]) => ({
+			fullPath: path,
 			outputBasePath: name,
+			dts: false,
+		}))
+	} else {
+		entries = options.entry.map((entry) => ({
+			fullPath: entry,
+			outputBasePath: null,
+			dts: false,
 		}))
 	}
 
-	const result: ProcessableEntry[] = []
-	const usedOutputPaths = new Set<string>()
+	if (typeof options.dts !== 'undefined' && !dtsEntry) {
+		entries = entries.map((entry) => ({
+			...entry,
+			dts: true,
+		}))
+	} else if (dtsEntry) {
+		let dtsEntries: ProcessableEntry[] = []
 
-	for (const path of entry) {
-		const baseName = getEntryNameOnly(path)
-
-		if (!usedOutputPaths.has(baseName)) {
-			result.push({
+		if (typeof dtsEntry === 'string') {
+			dtsEntries = [
+				{
+					fullPath: dtsEntry,
+					outputBasePath: null,
+					dts: true,
+				},
+			]
+		} else if (typeof dtsEntry === 'object' && !Array.isArray(dtsEntry)) {
+			dtsEntries = Object.entries(dtsEntry).map(([name, path]) => ({
 				fullPath: path,
-				outputBasePath: baseName,
-			})
-			usedOutputPaths.add(baseName)
-			continue
+				outputBasePath: name,
+				dts: true,
+			}))
+		} else {
+			dtsEntries = dtsEntry.map((entry) => ({
+				fullPath: entry,
+				outputBasePath: null,
+				dts: true,
+			}))
 		}
 
-		const dir = dirname(path)
-		const segments = dir.split('/').filter((s) => s !== '.' && s !== '')
+		const processedPaths = new Set<string>()
 
-		if (segments.length === 0) {
-			let counter = 1
-			let newName: string
-			do {
-				newName = `${baseName}_${counter++}`
-			} while (usedOutputPaths.has(newName))
-
-			result.push({
-				fullPath: path,
-				outputBasePath: newName,
-			})
-			usedOutputPaths.add(newName)
-			continue
-		}
-
-		let found = false
-		for (let i = 1; i <= segments.length && !found; i++) {
-			const relevantSegments = segments.slice(-i)
-			const newName = `${relevantSegments.join('/')}/${baseName}`
-
-			if (!usedOutputPaths.has(newName)) {
-				result.push({
-					fullPath: path,
-					outputBasePath: newName,
-				})
-				usedOutputPaths.add(newName)
-				found = true
+		entries = entries.map((entry) => {
+			const shouldGenerateDts = dtsEntries.some(
+				(dtsEntry) =>
+					dtsEntry.fullPath === entry.fullPath &&
+					dtsEntry.outputBasePath === entry.outputBasePath,
+			)
+			if (shouldGenerateDts) {
+				processedPaths.add(`${entry.fullPath}:${entry.outputBasePath}`)
 			}
-		}
+			return {
+				...entry,
+				dts: shouldGenerateDts,
+			}
+		})
 
-		if (!found) {
-			let counter = 1
-			let newName: string
-			do {
-				newName = `${segments.join('/')}/${baseName}_${counter++}`
-			} while (usedOutputPaths.has(newName))
-
-			result.push({
-				fullPath: path,
-				outputBasePath: newName,
-			})
-			usedOutputPaths.add(newName)
+		for (const dtsEntry of dtsEntries) {
+			if (
+				!processedPaths.has(
+					`${dtsEntry.fullPath}:${dtsEntry.outputBasePath}`,
+				)
+			) {
+				entries.push(dtsEntry)
+			}
 		}
 	}
 
-	return result
+	return entries
 }
 
-export function filterTypeScriptEntries(
-	entries: ProcessableEntry[],
-): ProcessableEntry[] {
-	return entries.filter((entry) => isTypeScriptSourceCodeFile(entry.fullPath))
-}
-
-export function getEntryNamingFormat(
-	outputBasePath: string,
+export function getResolvedNaming(
+	outputBasePath: string | null,
 	extension: string,
-) {
-	return `[dir]/${outputBasePath}${extension}`
-}
-
-export function getChunkNamingFormat(outputBasePath: string) {
-	return `${outputBasePath}-[hash].[ext]`
-}
-
-export function getAssetNamingFormat(outputBasePath: string) {
-	return `${outputBasePath}-[name]-[hash].[ext]`
+): BunBuildOptions['naming'] {
+	return {
+		entry: `[dir]/${outputBasePath || '[name]'}${extension}`,
+		chunk: `${outputBasePath || '[name]'}-[hash].[ext]`,
+		asset: `${outputBasePath ? `${outputBasePath}-` : ''}[name]-[hash].[ext]`,
+	}
 }

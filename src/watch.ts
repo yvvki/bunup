@@ -2,7 +2,7 @@ import path from 'node:path'
 
 import { build } from './build'
 import { BunupWatchError, handleError, parseErrorMessage } from './errors'
-import { normalizeEntryToProcessableEntries } from './helpers/entry'
+import { getProcessableEntries } from './helpers/entry'
 import { logger } from './logger'
 import { type BuildOptions, createBuildOptions } from './options'
 import { formatTime } from './utils'
@@ -15,9 +15,9 @@ export async function watch(
 
 	const options = createBuildOptions(partialOptions)
 
-	const normalizedEntry = normalizeEntryToProcessableEntries(options.entry)
+	const processableEntries = getProcessableEntries(options)
 
-	for (const entry of normalizedEntry) {
+	for (const entry of processableEntries) {
 		const entryPath = path.resolve(rootDir, entry.fullPath)
 		const parentDir = path.dirname(entryPath)
 		watchPaths.add(parentDir)

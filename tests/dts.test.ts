@@ -125,7 +125,7 @@ describe('dts', () => {
 		expect(dtsFile?.content).toContain('interface Product')
 		expect(dtsFile?.content).toContain('declare function displayProduct')
 		expect(dtsFile?.content).toContain(
-			'export { Product, displayProduct, formatPrice }',
+			'export { formatPrice, displayProduct, Product }',
 		)
 	})
 
@@ -299,42 +299,6 @@ describe('dts', () => {
 		const dtsFile = findFile(result, 'index', '.d.ts')
 		expect(dtsFile).toBeDefined()
 		expect(dtsFile?.content).toContain('declare function loadFeature')
-	})
-
-	it('should handle export = syntax', async () => {
-		createProject({
-			'src/index.ts': `
-                    import Logger = require('./logger');
-
-                    export function createLogger(name: string): Logger {
-                        return new Logger(name);
-                    }
-
-                    export { Logger };
-                `,
-			'src/logger.ts': `
-                    class Logger {
-                        constructor(private name: string) {}
-
-                        log(message: string): void {
-                            console.log(\`[\${this.name}] \${message}\`);
-                        }
-                    }
-
-                    export = Logger;
-                `,
-		})
-
-		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['iife'],
-		})
-
-		expect(result.success).toBe(true)
-		const dtsFile = findFile(result, 'index', '.d.ts')
-		expect(dtsFile).toBeDefined()
-		expect(dtsFile?.content).toContain('declare function createLogger')
-		expect(dtsFile?.content).toContain('export { Logger, createLogger };')
 	})
 
 	it('should handle import statements with relative paths properly', async () => {

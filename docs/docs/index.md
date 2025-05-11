@@ -3,7 +3,7 @@
 Bunup is the ⚡️ **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for flawless developer experience and speed, **powered by Bun's native bundler** — up to **~50× faster than Tsup**.
 
 ::: tip 💖
-**Building with Bun? You need Bunup.**  Designed specifically for the Bun ecosystem with all the speed advantages that come with it.
+**Building with Bun? You need Bunup.** Designed specifically for the Bun ecosystem with all the speed advantages that come with it.
 :::
 
 ## What Can It Bundle?
@@ -287,28 +287,14 @@ bunup --entry.main src/index.ts --entry.cli src/cli.ts
 # Configuration file
 export default defineConfig({
       entry: {
-            main: 'src/index.ts',
-            cli: 'src/cli.ts',
+            main: 'src/index.ts', // Outputs to dist/main.js
+		api: 'src/api/v1/index.ts', // Outputs to dist/api.js
+		'nested/utils': 'src/utils.ts', // Outputs to dist/nested/utils.js
       },
 });
 ```
 
-This will generate output files with the specified names (e.g., `dist/main.js` and `dist/cli.js`).
-
-#### Organizing Output with Subdirectories
-
-You can include slashes in named entry keys to organize output files into subdirectories:
-
-```typescript
-export default defineConfig({
-	entry: {
-		'client/index': 'src/client/index.ts',
-		'server/index': 'src/server/index.ts',
-	},
-});
-```
-
-This will generate output files in the specified subdirectories (e.g., `dist/client/index.js` and `dist/server/index.js`). This approach is particularly useful when bundling code for different environments or platforms.
+This will generate output files with the specified names (e.g., `dist/main.js` from `src/index.ts`).
 
 ## Output Formats
 
@@ -353,7 +339,7 @@ The file extensions are determined automatically based on the format and your pa
 | ------ | -------------------- | -------------------------------- |
 | esm    | `.js`                | `.d.ts`                          |
 | cjs    | `.cjs`               | `.d.cts`                         |
-| iife   | `.global.js`         | `.d.ts`                          |
+| iife   | `.global.js`         | `.global.d.ts`                   |
 
 **When package.json has `"type": "commonjs"` or is unspecified:**
 
@@ -361,7 +347,7 @@ The file extensions are determined automatically based on the format and your pa
 | ------ | -------------------- | -------------------------------- |
 | esm    | `.mjs`               | `.d.mts`                         |
 | cjs    | `.js`                | `.d.ts`                          |
-| iife   | `.global.js`         | `.d.ts`                          |
+| iife   | `.global.js`         | `.global.d.ts`                   |
 
 ### Customizing Output Extensions
 
@@ -373,7 +359,6 @@ export default defineConfig({
 	format: ['esm', 'cjs'],
 	outputExtension: ({ format, entry }) => ({
 		js: entry.outputBasePath === 'worker' ? '.worker.js' : `.${format}.js`,
-		dts: `.${format}.d.ts`,
 	}),
 });
 ```
@@ -388,7 +373,13 @@ The `outputExtension` function receives:
 It should return an object with:
 
 - `js`: The JavaScript file extension (including the leading dot)
-- `dts`: The TypeScript declaration file extension (including the leading dot)
+
+The TypeScript declaration extension will be automatically derived from the JavaScript extension. For example:
+
+- If `js` is `.worker.js`, the dts will be `.worker.d.ts`
+- If `js` is `.utils.mjs`, the dts will be `.utils.d.mts`
+- If `js` is `.mjs`, the dts will be `.d.mts`
+- If `js` is `.cjs`, the dts will be `.d.cts`
 
 ## Named Configurations
 
@@ -461,7 +452,7 @@ export default defineConfig({
 
 ### Forcing External Packages to Be Bundled
 
-Sometimes, you may want to include specific modules in your bundle, even if they’re marked as external (e.g., part of `dependencies` or `peerDependencies`).
+Sometimes, you may want to include specific modules in your bundle, even if they're marked as external (e.g., part of `dependencies` or `peerDependencies`).
 
 #### Using the CLI
 

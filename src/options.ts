@@ -55,18 +55,8 @@ type DtsOptions = {
 	 * If it's a string or an array of strings, the file name (without extension)
 	 * will be used as the name for the output declaration file.
 	 *
-	 * @example
-	 * // Using a string path
-	 * entry: 'src/index.ts' // Generates index.d.ts
-	 *
-	 * // Using string paths in an array
-	 * entry: ['src/index.ts']  // Generates index.d.ts
-	 *
-	 * // Using named outputs as an object
-	 * entry: { myModule: 'src/index.ts', utils: 'src/utility-functions.ts' } // Generates myModule.d.ts and utils.d.ts
-	 *
-	 * // Organizing output with subdirectories
-	 * entry: { "client/index": "src/client/index.ts", "server/index": "src/server/index.ts" } // Generates client/index.d.ts and server/index.d.ts
+	 * @see https://bunup.dev/docs/guide/typescript-declarations#custom-entry-points
+	 * @see https://bunup.dev/docs/guide/typescript-declarations#named-entries
 	 */
 	entry?: Entry
 	/**
@@ -96,15 +86,7 @@ export interface BuildOptions {
 	 * If it's a string or an array of strings, the file name (without extension)
 	 * will be used as the name for the output file.
 	 *
-	 * @example
-	 * // Using a string path
-	 * entry: 'src/index.ts' // Generates index.js
-	 *
-	 * // Using string paths in an array
-	 * entry: ['src/index.ts']  // Generates index.js
-	 *
-	 * // Using named outputs as an object
-	 * entry: { myModule: 'src/index.ts', utils: 'src/utility-functions.ts' } // Generates myModule.js and utils.js
+	 * @see https://bunup.dev/docs/#entry-points
 	 */
 	entry: Entry
 
@@ -162,22 +144,6 @@ export interface BuildOptions {
 	 * Can also be configured with DtsOptions for more control
 	 */
 	dts?: boolean | DtsOptions
-
-	/**
-	 * Generate only TypeScript declaration files (.d.ts) without any JavaScript output
-	 * When set to true, bunup will skip the JavaScript bundling process entirely
-	 * and only generate declaration files for the specified entry points
-	 *
-	 * This is useful when you want to use bunup's fast declaration file generation
-	 * but handle the JavaScript bundling separately or not at all.
-	 *
-	 * Note: When this option is true, the `dts` option is implicitly set to true
-	 * and other bundling-related options are ignored.
-	 *
-	 * @example
-	 * dtsOnly: true
-	 */
-	dtsOnly?: boolean
 
 	/**
 	 * Path to a preferred tsconfig.json file to use for declaration generation
@@ -376,14 +342,15 @@ export interface BuildOptions {
 	 * Plugins to extend the build process functionality
 	 *
 	 * The Plugin type uses a discriminated union pattern with the 'type' field
-	 * to support different plugin systems. Currently, only "bun" plugins are supported,
-	 * but in the future, this will be extended to include "bunup" plugins as well.
+	 * to support different plugin systems. Both "bun" and "bunup" plugins are supported.
 	 *
 	 * Each plugin type has its own specific plugin implementation:
 	 * - "bun": Uses Bun's native plugin system (BunPlugin)
-	 * - "bunup": Will use bunup's own plugin system (coming in future versions)
+	 * - "bunup": Uses bunup's own plugin system with lifecycle hooks
 	 *
 	 * This architecture allows for extensibility as more plugin systems are added.
+	 *
+	 * @see https://bunup.dev/docs/advanced/plugin-development for more information on plugins
 	 *
 	 * @example
 	 * plugins: [
@@ -391,11 +358,17 @@ export interface BuildOptions {
 	 *     type: "bun",
 	 *     plugin: myBunPlugin()
 	 *   },
-	 *   // In the future:
-	 *   // {
-	 *   //   type: "bunup",
-	 *   //   plugin: myBunupPlugin()
-	 *   // }
+	 *   {
+	 *     type: "bunup",
+	 *     hooks: {
+	 *       onBuildStart: (options) => {
+	 *         console.log('Build started with options:', options)
+	 *       },
+	 *       onBuildDone: ({ options, output }) => {
+	 *         console.log('Build completed with output:', output)
+	 *       }
+	 *     }
+	 *   }
 	 * ]
 	 */
 	plugins?: Plugin[]
@@ -403,12 +376,12 @@ export interface BuildOptions {
 	 * Customize the output file extension for each format.
 	 *
 	 * @param options Contains format, packageType, options, and entry information
-	 * @returns Object with js and dts extensions (including the leading dot)
+	 * @returns Object with js extension (including the leading dot). If dts is true, the dts file extension will be automatically derived from the js extension
 	 *
 	 * @example
 	 * outputExtension: ({ format, entry }) => ({
-	 *   js: entry.outputBasePath === 'worker' ? '.worker.js' : `.${format}.js`,
-	 *   dts: `.${format}.d.ts`
+	 *   js: entry.outputBasePath === 'worker' ? '.worker.js' : `.${format}.js`
+	 *   // For example, if js is '.worker.js', the dts will automatically be '.worker.d.ts'
 	 * })
 	 */
 	outputExtension?: (options: {
@@ -416,7 +389,7 @@ export interface BuildOptions {
 		packageType: string | undefined
 		options: BuildOptions
 		entry: ProcessableEntry
-	}) => { js: string; dts: string }
+	}) => { js: string }
 }
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
