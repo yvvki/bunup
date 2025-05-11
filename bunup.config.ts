@@ -1,13 +1,11 @@
-import { type DefineConfigItem, defineConfig } from 'bunup'
-
-const COMMON_OPTIONS: Partial<DefineConfigItem> = {
+const COMMON_OPTIONS = {
 	outDir: 'dist',
 	minify: true,
 	splitting: false,
 	target: 'bun',
 }
 
-export default defineConfig([
+export default [
 	{
 		...COMMON_OPTIONS,
 		format: ['esm', 'cjs'],
@@ -22,4 +20,4 @@ export default defineConfig([
 		entry: { cli: 'src/cli/index.ts' },
 		format: ['esm'],
 	},
-])
+]
