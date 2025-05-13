@@ -13,7 +13,7 @@ import {
 	getResolvedSourcemap,
 	getResolvedSplitting,
 } from './options'
-import { externalPlugin } from './plugins/internal/external'
+import { externalOptionPlugin } from './plugins/internal/external-option'
 import { injectShimsPlugin } from './plugins/internal/shims'
 import type { BuildOutput } from './plugins/types'
 import {
@@ -70,7 +70,7 @@ export async function build(
 	const packageType = packageJson?.type as string | undefined
 
 	const plugins: BunPlugin[] = [
-		externalPlugin(options, packageJson),
+		externalOptionPlugin(options, packageJson),
 		...filterBunupBunPlugins(options.plugins).map((p) => p.plugin),
 	]
 
