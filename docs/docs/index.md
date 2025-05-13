@@ -780,36 +780,6 @@ The `env` option controls how `process.env.*` and `import.meta.env.*` expression
 
 For more information, see the [Bun documentation on environment variables](https://bun.sh/docs/bundler#env).
 
-## Node.js Compatibility Shims
-
-Bunup provides compatibility shims to help with ESM/CJS interoperability when targeting Node.js. These shims automatically add the necessary code to handle common Node.js globals across module formats.
-
-```sh
-# CLI
-bunup src/index.ts --shims
-
-# Configuration file
-export default defineConfig({
-      entry: ['src/index.ts'],
-      format: ['esm', 'cjs'],
-      # Enable all shims
-      shims: true,
-
-      # Or configure specific shims
-      shims: {
-            dirnameFilename: true, # Add __dirname and __filename for ESM files
-            importMetaUrl: true, # Add import.meta.url for CJS files
-      },
-});
-```
-
-These shims are only injected when needed, based on detecting the use of these globals in your code. For example, if your ESM code uses `__dirname`, Bunup will only inject the shim for that specific file.
-
-For example:
-
-- For cjs output, any `import.meta.url` references are transformed to `pathToFileURL(__filename).href`
-- For esm output, any `__dirname` references are transformed to `dirname(fileURLToPath(import.meta.url))`
-
 ## Target Environments
 
 Bunup allows you to specify the target environment for your bundle:

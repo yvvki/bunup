@@ -1,5 +1,9 @@
 import type { Plugin } from '../types'
 
+/**
+ * A plugin that removes the 'node:' protocol from import statements and require calls.
+ * This helps maintain compatibility with environments that don't support the node: protocol.
+ */
 export function removeNodeProtocol(): Plugin {
 	return {
 		name: 'remove-node-protocol',

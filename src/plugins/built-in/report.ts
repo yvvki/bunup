@@ -1,7 +1,7 @@
 import pc from 'picocolors'
 import { type TableColumn, logTable } from '../../logger'
 import { formatFileSize } from '../../utils'
-import type { BunupPlugin } from '../types'
+import type { Plugin } from '../types'
 
 type ReportPluginOptions = {
 	/**
@@ -21,7 +21,7 @@ type ReportPluginOptions = {
  * A plugin that logs a report of the bundle size.
  * @param options - The options for the report plugin.
  */
-export function report(options: ReportPluginOptions = {}): BunupPlugin {
+export function report(options: ReportPluginOptions = {}): Plugin {
 	const { maxBundleSize, gzip = true } = options
 
 	return {

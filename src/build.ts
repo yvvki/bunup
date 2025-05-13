@@ -14,7 +14,6 @@ import {
 	getResolvedSplitting,
 } from './options'
 import { externalOptionPlugin } from './plugins/internal/external-option'
-import { injectShimsPlugin } from './plugins/internal/shims'
 import type { BuildOutput } from './plugins/types'
 import {
 	filterBunupBunPlugins,
@@ -95,12 +94,7 @@ export async function build(
 				naming: getResolvedNaming(entry.outputBasePath, extension),
 				splitting: getResolvedSplitting(options.splitting, fmt),
 				bytecode: getResolvedBytecode(options.bytecode, fmt),
-				define: getResolvedDefine(
-					options.define,
-					options.shims,
-					options.env,
-					fmt,
-				),
+				define: getResolvedDefine(options.define, options.env),
 				minify: getResolvedMinify(options),
 				outdir: `${rootDir}/${options.outDir}`,
 				target: options.target,
@@ -142,11 +136,6 @@ export async function build(
 								}),
 							]
 						: []),
-					injectShimsPlugin({
-						format: fmt,
-						target: options.target,
-						shims: options.shims,
-					}),
 				],
 				throw: false,
 			})

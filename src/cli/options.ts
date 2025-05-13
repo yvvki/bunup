@@ -165,7 +165,6 @@ const optionConfigs = {
 		handler: stringHandler('publicPath'),
 	},
 	env: { flags: ['env'], handler: stringHandler('env') },
-	shims: { flags: ['shims'], handler: booleanHandler('shims') },
 	onSuccess: {
 		flags: ['onSuccess'],
 		handler: stringHandler('onSuccess'),

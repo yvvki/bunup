@@ -182,42 +182,46 @@ describe('Utils', () => {
 	})
 
 	describe('getResolvedDefine', () => {
-		it('returns custom define values', () => {
-			const define = { 'process.env.NODE_ENV': '"production"' }
-			const result = getResolvedDefine(define, undefined, {}, 'esm')
-			expect(result).toEqual(define)
-		})
-
-		it('adds import.meta.url for cjs format with shims=true', () => {
-			const result = getResolvedDefine(undefined, true, {}, 'cjs')
-			expect(result).toEqual({
-				'import.meta.url': 'importMetaUrl',
-			})
-		})
-
-		it('adds import.meta.url for cjs format with importMetaUrl shim', () => {
-			const result = getResolvedDefine(
-				undefined,
-				{ importMetaUrl: true },
-				{},
-				'cjs',
-			)
-			expect(result).toEqual({
-				'import.meta.url': 'importMetaUrl',
-			})
-		})
-
-		it('does not add import.meta.url for esm format', () => {
-			const result = getResolvedDefine(undefined, true, {}, 'esm')
+		it('returns undefined when both define and env are undefined', () => {
+			const result = getResolvedDefine(undefined, undefined)
 			expect(result).toEqual({})
 		})
 
-		it('merges custom define with shims', () => {
+		it('returns define values when only define is provided', () => {
+			const define = { 'process.env.NODE_ENV': '"production"' }
+			const result = getResolvedDefine(define, undefined)
+			expect(result).toEqual({ 'process.env.NODE_ENV': '"production"' })
+		})
+
+		it('creates entries for process.env and import.meta.env when env object is provided', () => {
+			const env = { API_KEY: 'abc123', DEBUG: 'true' }
+			const result = getResolvedDefine(undefined, env)
+			expect(result).toEqual({
+				'process.env.API_KEY': '"abc123"',
+				'import.meta.env.API_KEY': '"abc123"',
+				'process.env.DEBUG': '"true"',
+				'import.meta.env.DEBUG': '"true"',
+			})
+		})
+
+		it('merges define and env values when both are provided', () => {
 			const define = { VERSION: '"1.0.0"' }
-			const result = getResolvedDefine(define, true, {}, 'cjs')
+			const env = { NODE_ENV: 'production' }
+			const result = getResolvedDefine(define, env)
 			expect(result).toEqual({
 				VERSION: '"1.0.0"',
-				'import.meta.url': 'importMetaUrl',
+				'process.env.NODE_ENV': '"production"',
+				'import.meta.env.NODE_ENV': '"production"',
+			})
+		})
+
+		it('define values take precedence over env values', () => {
+			const define = { 'process.env.NODE_ENV': '"development"' }
+			const env = { NODE_ENV: 'production' }
+			const result = getResolvedDefine(define, env)
+			expect(result).toEqual({
+				'process.env.NODE_ENV': '"development"',
+				'import.meta.env.NODE_ENV': '"production"',
 			})
 		})
 	})

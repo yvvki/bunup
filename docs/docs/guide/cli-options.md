@@ -33,7 +33,6 @@ bunup [...entries] [options]
 | `--preferred-tsconfig-path <path>` | `-tsconfig` | Path to preferred tsconfig file used for typescript declaration files generation [↗](/docs#custom-typescript-configuration)            | -                |
 | `--bytecode`                       | `-bc`       | Generate bytecode for JavaScript/TypeScript entrypoints to improve startup times [↗](/docs#bytecode)                                   | `false`          |
 | `--silent`                         |             | Disable logging during the build process                                                                                                        | `false`          |
-| `--shims`                          |             | Inject Node.js compatibility shims for ESM/CJS interoperability [↗](/docs#node-js-compatibility-shims)                                 | `false`          |
 | `--env <mode>`                     |             | Control environment variable handling (inline, disable or PREFIX\_\*) [↗](/docs#environment-variables)                                 | -                |
 | `--config <path>`                  |             | Specify a custom path to the configuration file                                                                                                 | -                |
 | `--onSuccess <command>`            |             | Command to execute after a successful build                                                                                                     | -                |

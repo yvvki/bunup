@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { BunupBuildError } from './errors'
-import type { Format, Target } from './options'
+import type { Format } from './options'
 
 export function addField<T extends Record<string, unknown>, F extends string>(
 	objectOrArray: T | T[],
@@ -36,10 +36,6 @@ export function getEntryNameOnly(entry: string): string {
 	const filename = path.basename(entry)
 	const extension = path.extname(filename)
 	return extension ? filename.slice(0, -extension.length) : filename
-}
-
-export function isNodeCompatibleTarget(target: Target): boolean {
-	return target === 'node' || target === 'bun'
 }
 
 export function isModulePackage(packageType: string | undefined): boolean {

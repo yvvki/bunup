@@ -22,19 +22,6 @@ type Env = BunBuildOptions['env'] | Record<string, string>
 
 export type Entry = Arrayable<string> | Record<string, string>
 
-export type ShimOptions = {
-	/**
-	 * Adds __dirname and __filename shims for ESM files when used
-	 */
-	dirnameFilename?: boolean
-	/**
-	 * Adds import.meta.url shims for CJS files when used
-	 */
-	importMetaUrl?: boolean
-}
-
-export type Shims = boolean | ShimOptions
-
 export type DtsResolve = boolean | (string | RegExp)[]
 
 type DtsOptions = {
@@ -289,24 +276,6 @@ export interface BuildOptions {
 	publicPath?: string
 
 	/**
-	 * Inject Node.js compatibility shims for ESM/CJS interoperability
-	 *
-	 * When set to true, automatically injects all shims when needed
-	 * When set to an object, only injects the specified shims
-	 *
-	 * Available shims:
-	 * - dirnameFilename: Adds __dirname and __filename for ESM files when used
-	 * - importMetaUrl: Adds import.meta.url for CJS files when used
-	 *
-	 * @example
-	 * // Enable all shims
-	 * shims: true
-	 *
-	 * // Enable only specific shims
-	 * shims: { dirnameFilename: true, importMetaUrl: true }
-	 */
-	shims?: Shims
-	/**
 	 * Controls how environment variables are handled during bundling.
 	 *
 	 * Can be one of:
@@ -444,9 +413,7 @@ export function getResolvedSourcemap(
 
 export function getResolvedDefine(
 	define: Define | undefined,
-	shims: Shims | undefined,
 	env: Env | undefined,
-	format: Format,
 ): Record<string, string> | undefined {
 	return {
 		...(typeof env === 'object' &&
@@ -457,11 +424,6 @@ export function getResolvedDefine(
 				return acc
 			}, {})),
 		...define,
-		...(format === 'cjs' &&
-			(shims === true ||
-				(typeof shims === 'object' && shims.importMetaUrl)) && {
-				'import.meta.url': 'importMetaUrl',
-			}),
 	}
 }
 
