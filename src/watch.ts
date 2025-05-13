@@ -6,6 +6,7 @@ import { getProcessableEntries } from './helpers/entry'
 import { logger } from './logger'
 import { type BuildOptions, createBuildOptions } from './options'
 import { formatTime } from './utils'
+import pc from 'picocolors'
 
 export async function watch(
 	partialOptions: Partial<BuildOptions>,
@@ -47,7 +48,7 @@ export async function watch(
 			await build(options, rootDir)
 			if (!initial) {
 				logger.cli(
-					`📦 Rebuild finished in ${formatTime(performance.now() - start)}`,
+					`📦 Rebuild finished in ${pc.green(formatTime(performance.now() - start))}`,
 				)
 			}
 		} catch (error) {
