@@ -64,7 +64,6 @@ async function checkExistingConfig(): Promise<{
 
 export async function init(): Promise<void> {
 	intro(pc.bgCyan(pc.black(' Bunup ')))
-	await configureTsconfig()
 
 	const { exists: configExists, filepath: configPath } =
 		await checkExistingConfig()
