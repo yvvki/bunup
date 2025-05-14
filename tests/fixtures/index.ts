@@ -1,13 +1,17 @@
+import { readFileSync } from 'node:fs'
+
 import('./utils').then(({ createFixture }) => {
-	createFixture('hello')
+    createFixture('hello')
 })
 
 export function hello() {
-	return 'hello'
+    return 'hello'
 }
 
 export * from '@/utils'
 
-export const dirname: string = __dirname
-export const filename: string = __filename
-export const url: string = import.meta.url
+export const dirnames: string = __dirname
+export const filenames: string = __filename
+export const urls: string = import.meta.url
+
+console.log(readFileSync('bun.lockb', 'utf-8'))
