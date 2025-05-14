@@ -5,6 +5,6 @@ export default defineConfig({
     entry: ['fixtures/index.ts'],
     format: ['esm', 'cjs'],
     dts: true,
-    plugins: [removeNodeProtocol(), shims()],
+    plugins: [report(), shims(), removeNodeProtocol()],
     splitting: false,
 })
