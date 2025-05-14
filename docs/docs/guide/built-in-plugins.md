@@ -30,7 +30,7 @@ export default defineConfig({
 | `maxBundleSize` | `number`  | `undefined` | Maximum bundle size in bytes. If exceeded, a warning will be shown. |
 | `gzip`          | `boolean` | `true`      | Whether to show gzip sizes in the report.                           |
 
-## `removeNodeProtocol`
+<!-- ## `removeNodeProtocol`
 
 The Remove Node Protocol plugin automatically removes the `node:` protocol prefix from import statements and require calls. This is useful when working with code that uses Node.js protocol imports but needs to be compatible with environments that don't support this syntax.
 
@@ -81,4 +81,4 @@ For example:
 - For CJS output, any `import.meta.url` references are transformed to `pathToFileURL(__filename).href`
 - For ESM output, any `__dirname` and `__filename` references are transformed to use `dirname(fileURLToPath(import.meta.url))`
 
-This ensures your code works consistently across different module formats and environments without requiring manual compatibility code.
+This ensures your code works consistently across different module formats and environments without requiring manual compatibility code. -->
