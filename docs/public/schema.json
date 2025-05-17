@@ -46,6 +46,7 @@
     "definitions": {
         "Options": {
             "type": "object",
+            "markdownDescription": "Configuration options for [bunup](https://bunup.dev)",
             "properties": {
                 "name": {
                     "type": "string",
