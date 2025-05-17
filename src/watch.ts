@@ -18,8 +18,8 @@ export async function watch(
 
     const processableEntries = getProcessableEntries(options)
 
-    for (const entry of processableEntries) {
-        const entryPath = path.resolve(rootDir, entry.path)
+    for (const { entry } of processableEntries) {
+        const entryPath = path.resolve(rootDir, entry)
         const parentDir = path.dirname(entryPath)
         watchPaths.add(parentDir)
     }
