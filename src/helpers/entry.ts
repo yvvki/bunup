@@ -4,11 +4,12 @@ import { removeExtension } from '../utils'
 
 export type ProcessableEntry = {
     /** The entry same as the entry option in the config */
-    path: string
+    entry: string
     /**
-     * The base path of the output file relative to the output directory, excluding the file name
-     * Example: If the full output path is "path/to/dist/src/components/Button.js",
-     * the outputBasePath would be "src/components"
+     * The base path of the output file relative to the output directory, excluding the extension.
+     * Examples:
+     * - If the entry is "src/client/index.ts", the outputBasePath will be "client/index"
+     * - If the entry is "src/index.ts", the outputBasePath will be "index"
      */
     outputBasePath: string
     /** Whether to generate a dts file for this entry */
@@ -36,11 +37,11 @@ export function getProcessableEntries(
         const updatedEntries = entries.map((entry) => {
             const matchingDtsEntry = dtsEntries.find(
                 (dts) =>
-                    dts.path === entry.path &&
+                    dts.entry === entry.entry &&
                     dts.outputBasePath === entry.outputBasePath,
             )
             if (matchingDtsEntry) {
-                processedPaths.add(`${entry.path}:${entry.outputBasePath}`)
+                processedPaths.add(`${entry.entry}:${entry.outputBasePath}`)
             }
             return {
                 ...entry,
@@ -50,7 +51,7 @@ export function getProcessableEntries(
 
         const remainingDtsEntries = dtsEntries.filter(
             (entry) =>
-                !processedPaths.has(`${entry.path}:${entry.outputBasePath}`),
+                !processedPaths.has(`${entry.entry}:${entry.outputBasePath}`),
         )
 
         return [...updatedEntries, ...remainingDtsEntries]
@@ -63,7 +64,7 @@ function normalizeEntries(entry: Entry, isDts: boolean): ProcessableEntry[] {
     if (typeof entry === 'string') {
         return [
             {
-                path: entry,
+                entry,
                 outputBasePath: getEntryOutputBasePath(entry),
                 dts: isDts,
             },
@@ -72,15 +73,15 @@ function normalizeEntries(entry: Entry, isDts: boolean): ProcessableEntry[] {
 
     if (typeof entry === 'object' && !Array.isArray(entry)) {
         return Object.entries(entry).map(([name, path]) => ({
-            path,
+            entry: path,
             outputBasePath: name,
             dts: isDts,
         }))
     }
 
-    return entry.map((entryPath) => ({
-        path: entryPath,
-        outputBasePath: getEntryOutputBasePath(entryPath),
+    return entry.map((_entry) => ({
+        entry: _entry,
+        outputBasePath: getEntryOutputBasePath(_entry),
         dts: isDts,
     }))
 }
@@ -88,8 +89,8 @@ function normalizeEntries(entry: Entry, isDts: boolean): ProcessableEntry[] {
 // utils/index.ts -> index
 // src/index.ts -> index
 // src/client/index.ts -> client/index
-function getEntryOutputBasePath(path: string): string {
-    const pathSegments = removeExtension(path).split('/')
+function getEntryOutputBasePath(entry: string): string {
+    const pathSegments = removeExtension(entry).split('/')
     return pathSegments.length > 1
         ? pathSegments.slice(1).join('/')
         : pathSegments.join('/')

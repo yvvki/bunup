@@ -1,4 +1,4 @@
-import { dts } from 'bun-dts'
+import { dts as dtsPlugin } from 'bun-dts'
 import { BunupBuildError } from './errors'
 import { getProcessableEntries, getResolvedNaming } from './helpers/entry'
 import { loadPackageJson } from './loaders'
@@ -79,19 +79,19 @@ export async function build(
             : undefined
 
     const buildPromises = options.format.flatMap((fmt) =>
-        processableEntries.map(async (entry) => {
+        processableEntries.map(async ({ entry, outputBasePath, dts }) => {
             const extension =
                 options.outputExtension?.({
                     format: fmt,
                     packageType,
                     options,
-                    entry: entry.path,
+                    entry,
                 }).js ?? getDefaultOutputExtension(fmt, packageType)
 
             const result = await Bun.build({
-                entrypoints: [`${rootDir}/${entry.path}`],
+                entrypoints: [`${rootDir}/${entry}`],
                 format: fmt,
-                naming: getResolvedNaming(entry.outputBasePath, extension),
+                naming: getResolvedNaming(outputBasePath, extension),
                 splitting: getResolvedSplitting(options.splitting, fmt),
                 bytecode: getResolvedBytecode(options.bytecode, fmt),
                 define: getResolvedDefine(options.define, options.env),
@@ -107,9 +107,9 @@ export async function build(
                 env: getResolvedEnv(options.env),
                 plugins: [
                     ...plugins,
-                    ...(entry.dts
+                    ...(dts
                         ? [
-                              dts({
+                              dtsPlugin({
                                   cwd: rootDir,
                                   preferredTsConfigPath:
                                       options.preferredTsconfigPath,
@@ -125,8 +125,8 @@ export async function build(
                                           fullPath: filePath,
                                           relativePathToRootDir,
                                           dts: true,
-                                          entry: entry.path,
-                                          outputBasePath: entry.outputBasePath,
+                                          entry,
+                                          outputBasePath,
                                           format: fmt,
                                       })
                                       logger.progress(
@@ -169,8 +169,8 @@ export async function build(
                     fullPath: file.path,
                     relativePathToRootDir,
                     dts: false,
-                    entry: entry.path,
-                    outputBasePath: entry.outputBasePath,
+                    entry,
+                    outputBasePath,
                     format: fmt,
                 })
             }

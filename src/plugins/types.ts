@@ -32,9 +32,10 @@ export type BuildOutputFile = {
     /** The path to the entry file (defined in config.entry) that generated this output file */
     entry: string
     /**
-     * The base path of the output file relative to the output directory, excluding the file name
-     * Example: If the full output path is "path/to/dist/src/components/Button.js",
-     * the outputBasePath would be "src/components"
+     * The base path of the output file relative to the output directory, excluding the extension.
+     * Examples:
+     * - If the entry is "src/client/index.ts", the outputBasePath will be "client/index"
+     * - If the entry is "src/index.ts", the outputBasePath will be "index"
      */
     outputBasePath: string
     /** The format of the output file */
