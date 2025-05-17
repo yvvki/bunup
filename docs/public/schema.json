@@ -2,19 +2,49 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "bunup",
     "description": "Configuration for the bunup build tool",
-    "oneOf": [
+    "anyOf": [
         {
-            "$ref": "#/definitions/DefineConfigItem"
+            "type": "object",
+            "required": ["bunup"],
+            "additionalProperties": true,
+            "properties": {
+                "bunup": {
+                    "type": ["object", "array"],
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "$ref": "#/definitions/Options"
+                        },
+                        {
+                            "type": "array",
+                            "items": {
+                                "additionalProperties": false,
+                                "$ref": "#/definitions/Options"
+                            }
+                        }
+                    ]
+                }
+            }
         },
         {
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/DefineConfigItem"
-            }
+            "type": ["object", "array"],
+            "oneOf": [
+                {
+                    "type": "object",
+                    "$ref": "#/definitions/Options"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Options"
+                    }
+                }
+            ]
         }
     ],
     "definitions": {
-        "DefineConfigItem": {
+        "Options": {
             "type": "object",
             "properties": {
                 "name": {
