@@ -1,11 +1,6 @@
 import { logger } from '../../../logger'
 import type { Format } from '../../../options'
-import {
-    getBaseDirName,
-    getBaseFileName,
-    getJsonSpaceCount,
-    isIndexFile,
-} from '../../../utils'
+import { getJsonSpaceCount, isIndexFile } from '../../../utils'
 import type { BuildOutputFile, BunupPlugin } from '../../types'
 
 type ExportsField = Record<string, Record<string, string>>
@@ -97,15 +92,15 @@ function generateExportsFields(files: BuildOutputFile[]): {
     return { exportsField, otherExports }
 }
 
-export function formatToExportField(format: Format, dts: boolean): string {
-    return dts ? 'types' : format === 'esm' ? 'import' : 'require'
+function getExportKey(filePath: string): string {
+    return filePath
+        .split('/')
+        .filter((p) => p !== 'index')
+        .join('/')
 }
 
-function getExportKey(filePath: string): string {
-    if (isIndexFile(filePath)) {
-        return getBaseDirName(filePath)
-    }
-    return getBaseFileName(filePath)
+export function formatToExportField(format: Format, dts: boolean): string {
+    return dts ? 'types' : format === 'esm' ? 'import' : 'require'
 }
 
 function getPathDepth(path: string): number {
