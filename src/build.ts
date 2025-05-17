@@ -69,7 +69,7 @@ export async function build(
     const packageType = packageJson.data?.type as string | undefined
 
     const plugins: BunPlugin[] = [
-        externalOptionPlugin(options, packageJson),
+        externalOptionPlugin(options, packageJson.data),
         ...filterBunupBunPlugins(options.plugins).map((p) => p.plugin),
     ]
 
