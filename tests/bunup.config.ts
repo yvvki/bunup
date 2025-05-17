@@ -6,6 +6,7 @@ export default defineConfig({
         'fixtures/index.ts',
         'fixtures/client/index.ts',
         'fixtures/server/index.ts',
+        'fixtures/client/server.ts',
     ],
     format: ['esm', 'cjs'],
     dts: true,

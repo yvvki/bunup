@@ -218,25 +218,27 @@ describe('exports plugin', () => {
             './.output/index.d.ts',
         )
 
-        expect(result.packageJson.data.exports['./button']).toBeDefined()
-        expect(result.packageJson.data.exports['./button'].import).toBe(
-            './.output/components/button.mjs',
-        )
-        expect(result.packageJson.data.exports['./button'].require).toBe(
-            './.output/components/button.js',
-        )
-        expect(result.packageJson.data.exports['./button'].types).toBe(
-            './.output/components/button.d.ts',
-        )
+        expect(
+            result.packageJson.data.exports['./components/button'],
+        ).toBeDefined()
+        expect(
+            result.packageJson.data.exports['./components/button'].import,
+        ).toBe('./.output/components/button.mjs')
+        expect(
+            result.packageJson.data.exports['./components/button'].require,
+        ).toBe('./.output/components/button.js')
+        expect(
+            result.packageJson.data.exports['./components/button'].types,
+        ).toBe('./.output/components/button.d.ts')
 
-        expect(result.packageJson.data.exports['./format']).toBeDefined()
-        expect(result.packageJson.data.exports['./format'].import).toBe(
+        expect(result.packageJson.data.exports['./utils/format']).toBeDefined()
+        expect(result.packageJson.data.exports['./utils/format'].import).toBe(
             './.output/utils/format.mjs',
         )
-        expect(result.packageJson.data.exports['./format'].require).toBe(
+        expect(result.packageJson.data.exports['./utils/format'].require).toBe(
             './.output/utils/format.js',
         )
-        expect(result.packageJson.data.exports['./format'].types).toBe(
+        expect(result.packageJson.data.exports['./utils/format'].types).toBe(
             './.output/utils/format.d.ts',
         )
     })
@@ -365,9 +367,13 @@ describe('exports plugin', () => {
             './.output/index.mjs',
         )
 
-        expect(result.packageJson.data.exports['./ui']).toBeDefined()
-        expect(result.packageJson.data.exports['./button']).toBeDefined()
-        expect(result.packageJson.data.exports['./text']).toBeDefined()
+        expect(result.packageJson.data.exports['./components/ui']).toBeDefined()
+        expect(
+            result.packageJson.data.exports['./components/ui/button'],
+        ).toBeDefined()
+        expect(
+            result.packageJson.data.exports['./utils/formatting/text'],
+        ).toBeDefined()
     })
 
     it('should handle entries with index files', async () => {
@@ -435,12 +441,14 @@ describe('exports plugin', () => {
         expect(result.packageJson.data).toBeDefined()
         expect(result.packageJson.data.exports).toBeDefined()
 
-        expect(result.packageJson.data.exports['./file']).toBeDefined()
-        expect(result.packageJson.data.exports['./file'].import).toBe(
-            './.output/custom/path/to/file.mjs',
-        )
-        expect(result.packageJson.data.exports['./file'].types).toBe(
-            './.output/custom/path/to/file.d.mts',
-        )
+        expect(
+            result.packageJson.data.exports['./custom/path/to/file'],
+        ).toBeDefined()
+        expect(
+            result.packageJson.data.exports['./custom/path/to/file'].import,
+        ).toBe('./.output/custom/path/to/file.mjs')
+        expect(
+            result.packageJson.data.exports['./custom/path/to/file'].types,
+        ).toBe('./.output/custom/path/to/file.d.mts')
     })
 })

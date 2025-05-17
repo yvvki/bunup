@@ -38,6 +38,11 @@
             "types": "./dist/server/index.d.ts",
             "import": "./dist/server/index.mjs",
             "require": "./dist/server/index.js"
+        },
+        "./client/server": {
+            "types": "./dist/client/server.d.ts",
+            "import": "./dist/client/server.mjs",
+            "require": "./dist/client/server.js"
         }
     }
 }
