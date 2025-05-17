@@ -15,7 +15,6 @@ import {
     getJsonSpaceCount,
     getPackageDeps,
     getShortFilePath,
-    isIndexFile,
     isModulePackage,
     removeExtension,
 } from '../src/utils'
@@ -272,18 +271,6 @@ describe('Utils', () => {
   "name": "test"
 }`
             expect(getJsonSpaceCount(json)).toBe(2)
-        })
-    })
-
-    describe('isIndexFile', () => {
-        it('returns true for index.js', () => {
-            expect(isIndexFile('path/to/index.js')).toBe(true)
-        })
-        it('returns true for index.d.ts', () => {
-            expect(isIndexFile('path/to/index.d.ts')).toBe(true)
-        })
-        it('returns false for non-index files', () => {
-            expect(isIndexFile('path/to/app.js')).toBe(false)
         })
     })
 })

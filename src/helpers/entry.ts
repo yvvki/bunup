@@ -10,7 +10,7 @@ export type ProcessableEntry = {
      * Example: If the full output path is "path/to/dist/src/components/Button.js",
      * the outputBasePath would be "src/components"
      */
-    outputBasePath: string | null
+    outputBasePath: string
     /** Whether to generate a dts file for this entry */
     dts: boolean
 }
@@ -64,7 +64,7 @@ function normalizeEntries(entry: Entry, isDts: boolean): ProcessableEntry[] {
         return [
             {
                 path: entry,
-                outputBasePath: null,
+                outputBasePath: getEntryOutputBasePath(entry),
                 dts: isDts,
             },
         ]
@@ -78,29 +78,30 @@ function normalizeEntries(entry: Entry, isDts: boolean): ProcessableEntry[] {
         }))
     }
 
-    return entry.map((entryPath) => processEntryPath(entryPath, isDts))
+    return entry.map((entryPath) => ({
+        path: entryPath,
+        outputBasePath: getEntryOutputBasePath(entryPath),
+        dts: isDts,
+    }))
 }
 
-function processEntryPath(entryPath: string, isDts: boolean): ProcessableEntry {
-    const pathSegments = removeExtension(entryPath).split('/')
-
-    return {
-        path: entryPath,
-        outputBasePath:
-            pathSegments.length > 1
-                ? pathSegments.slice(1).join('/')
-                : pathSegments.join('/'),
-        dts: isDts,
-    }
+// utils/index.ts -> index
+// src/index.ts -> index
+// src/client/index.ts -> client/index
+function getEntryOutputBasePath(path: string): string {
+    const pathSegments = removeExtension(path).split('/')
+    return pathSegments.length > 1
+        ? pathSegments.slice(1).join('/')
+        : pathSegments.join('/')
 }
 
 export function getResolvedNaming(
-    outputBasePath: string | null,
+    outputBasePath: string,
     extension: string,
 ): BunBuildOptions['naming'] {
     return {
-        entry: `[dir]/${outputBasePath || '[name]'}${extension}`,
-        chunk: `${outputBasePath || '[name]'}-[hash].[ext]`,
-        asset: `${outputBasePath ? `${outputBasePath}-` : ''}[name]-[hash].[ext]`,
+        entry: `[dir]/${outputBasePath}${extension}`,
+        chunk: `${outputBasePath}-[hash].[ext]`,
+        asset: `${outputBasePath}-[name]-[hash].[ext]`,
     }
 }

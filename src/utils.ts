@@ -48,10 +48,6 @@ export function getJsonSpaceCount(fileContent: string): number {
     return match[1].length
 }
 
-export function isIndexFile(filePath: string): boolean {
-    const basename = path.basename(filePath, path.extname(filePath))
-    return basename === 'index' || basename === 'index.d'
-}
 export function isModulePackage(packageType: string | undefined): boolean {
     return packageType === 'module'
 }

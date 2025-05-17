@@ -36,7 +36,7 @@ export type BuildOutputFile = {
      * Example: If the full output path is "path/to/dist/src/components/Button.js",
      * the outputBasePath would be "src/components"
      */
-    outputBasePath: string | null
+    outputBasePath: string
     /** The format of the output file */
     format: Format
 }
