@@ -9,6 +9,7 @@ import { mkdirSync, rmSync } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import { exec } from 'tinyexec'
 import { build } from '../src/build'
+import type { PackageJson } from '../src/loaders'
 import type { BuildOptions } from '../src/options'
 import { OUTPUT_DIR, PROJECT_DIR } from './constants'
 
@@ -16,6 +17,7 @@ export interface BuildResult {
     success: boolean
     files: FileResult[]
     error?: Error
+    packageJson: PackageJson
 }
 
 export interface RunCliResult extends BuildResult {
@@ -70,7 +72,7 @@ function cleanPath(path: string): string {
 export async function runBuild(
     options: Omit<BuildOptions, 'outDir'>,
 ): Promise<BuildResult> {
-    const result: BuildResult = {
+    const result: Omit<BuildResult, 'packageJson'> = {
         success: true,
         files: [],
     }
@@ -96,7 +98,7 @@ export async function runBuild(
         result.error = error instanceof Error ? error : new Error(String(error))
     }
 
-    return result
+    return { ...result, packageJson: getPackageJson(PROJECT_DIR) }
 }
 
 export async function runDtsBuild(
@@ -131,21 +133,31 @@ export function validateBuildFiles(
         notExpectedFiles?: string[]
     },
 ): boolean {
-    if (!result.success) return false
+    if (!result.success) {
+        return false
+    }
 
     const allExpectedFilesExist = expectedFiles.every((fileName) => {
         const { name, extension } = parseFileName(fileName)
-        return result.files.some(
+        const exists = result.files.some(
             (file) => file.name === name && file.extension === extension,
         )
+        if (!exists) {
+            console.log(`Expected file not found: ${fileName}`)
+        }
+        return exists
     })
 
     const noUnexpectedFilesExist = notExpectedFiles
         ? notExpectedFiles.every((fileName) => {
               const { name, extension } = parseFileName(fileName)
-              return !result.files.some(
+              const exists = result.files.some(
                   (file) => file.name === name && file.extension === extension,
               )
+              if (exists) {
+                  console.log(`Unexpected file found: ${fileName}`)
+              }
+              return !exists
           })
         : true
 
@@ -182,7 +194,7 @@ export function createProject(tree: ProjectTree): void {
 }
 
 export async function runCli(options: string): Promise<RunCliResult> {
-    const result: RunCliResult = {
+    const result: Omit<RunCliResult, 'packageJson'> = {
         success: true,
         files: [],
         stdout: '',
@@ -210,7 +222,13 @@ export async function runCli(options: string): Promise<RunCliResult> {
             result.error = new Error(
                 `CLI command failed with exit code ${execResult.exitCode}: ${execResult.stderr}`,
             )
-            return result
+            return {
+                ...result,
+                packageJson: {
+                    data: null,
+                    path: null,
+                },
+            }
         }
 
         if (!existsSync(OUTPUT_DIR)) {
@@ -225,5 +243,21 @@ export async function runCli(options: string): Promise<RunCliResult> {
         result.error = error instanceof Error ? error : new Error(String(error))
     }
 
-    return result
+    return { ...result, packageJson: getPackageJson(PROJECT_DIR) }
+}
+
+function getPackageJson(rootDir: string): PackageJson {
+    try {
+        const packageJsonPath = join(rootDir, 'package.json')
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
+        return {
+            data: packageJson,
+            path: packageJsonPath,
+        }
+    } catch (error) {
+        return {
+            data: null,
+            path: null,
+        }
+    }
 }

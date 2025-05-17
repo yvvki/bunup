@@ -8,7 +8,7 @@ export function hello() {
     return 'hello'
 }
 
-export * from '@/utils'
+export * from 'fixtures/utils'
 
 export const dirnames: string = __dirname
 export const filenames: string = __filename

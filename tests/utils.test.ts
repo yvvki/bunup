@@ -10,6 +10,7 @@ import {
     ensureArray,
     formatFileSize,
     formatTime,
+    getBaseDirName,
     getBaseFileName,
     getDefaultOutputExtension,
     getJsonSpaceCount,
@@ -17,6 +18,7 @@ import {
     getShortFilePath,
     isIndexFile,
     isModulePackage,
+    removeExtension,
 } from '../src/utils'
 
 describe('Utils', () => {
@@ -238,6 +240,32 @@ describe('Utils', () => {
         })
         it('handles filenames with multiple dots', () => {
             expect(getBaseFileName('path/to/file.min.js')).toBe('file.min')
+        })
+    })
+
+    describe('getBaseDirName', () => {
+        it('returns parent directory name', () => {
+            expect(getBaseDirName('path/to/file.js')).toBe('to')
+        })
+        it('returns empty string for top-level path', () => {
+            expect(getBaseDirName('file.js')).toBe('')
+        })
+        it('handles paths with trailing slash', () => {
+            expect(getBaseDirName('path/to/')).toBe('to')
+        })
+    })
+
+    describe('removeExtension', () => {
+        it('removes file extension', () => {
+            expect(removeExtension('path/to/file.js')).toBe('path/to/file')
+        })
+        it('handles paths with no extension', () => {
+            expect(removeExtension('path/to/file')).toBe('path/to/file')
+        })
+        it('handles paths with multiple dots', () => {
+            expect(removeExtension('path/to/file.min.js')).toBe(
+                'path/to/file.min',
+            )
         })
     })
 

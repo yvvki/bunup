@@ -1,5 +1,6 @@
-import type { BuildOptions } from '../options'
+import type { BuildOptions, Entry } from '../options'
 import type { BunBuildOptions } from '../types'
+import { removeExtension } from '../utils'
 
 export type ProcessableEntry = {
     /** The entry same as the entry option in the config */
@@ -22,92 +23,75 @@ export function getProcessableEntries(
             ? options.dts.entry
             : undefined
 
-    let entries: ProcessableEntry[] = []
+    const entries = normalizeEntries(options.entry, false)
 
-    if (typeof options.entry === 'string') {
-        entries = [
-            {
-                path: options.entry,
-                outputBasePath: null,
-                dts: false,
-            },
-        ]
-    } else if (
-        typeof options.entry === 'object' &&
-        !Array.isArray(options.entry)
-    ) {
-        entries = Object.entries(options.entry).map(([name, path]) => ({
-            path,
-            outputBasePath: name,
-            dts: false,
-        }))
-    } else {
-        entries = options.entry.map((entry) => ({
-            path: entry,
-            outputBasePath: null,
-            dts: false,
-        }))
-    }
-
-    if (typeof options.dts !== 'undefined' && !dtsEntry) {
-        entries = entries.map((entry) => ({
-            ...entry,
-            dts: true,
-        }))
-    } else if (dtsEntry) {
-        let dtsEntries: ProcessableEntry[] = []
-
-        if (typeof dtsEntry === 'string') {
-            dtsEntries = [
-                {
-                    path: dtsEntry,
-                    outputBasePath: null,
-                    dts: true,
-                },
-            ]
-        } else if (typeof dtsEntry === 'object' && !Array.isArray(dtsEntry)) {
-            dtsEntries = Object.entries(dtsEntry).map(([name, path]) => ({
-                path,
-                outputBasePath: name,
-                dts: true,
-            }))
-        } else {
-            dtsEntries = dtsEntry.map((entry) => ({
-                path: entry,
-                outputBasePath: null,
-                dts: true,
-            }))
+    if (typeof options.dts !== 'undefined') {
+        if (!dtsEntry) {
+            return entries.map((entry) => ({ ...entry, dts: true }))
         }
 
+        const dtsEntries = normalizeEntries(dtsEntry, true)
         const processedPaths = new Set<string>()
 
-        entries = entries.map((entry) => {
-            const shouldGenerateDts = dtsEntries.some(
-                (dtsEntry) =>
-                    dtsEntry.path === entry.path &&
-                    dtsEntry.outputBasePath === entry.outputBasePath,
+        const updatedEntries = entries.map((entry) => {
+            const matchingDtsEntry = dtsEntries.find(
+                (dts) =>
+                    dts.path === entry.path &&
+                    dts.outputBasePath === entry.outputBasePath,
             )
-            if (shouldGenerateDts) {
+            if (matchingDtsEntry) {
                 processedPaths.add(`${entry.path}:${entry.outputBasePath}`)
             }
             return {
                 ...entry,
-                dts: shouldGenerateDts,
+                dts: !!matchingDtsEntry,
             }
         })
 
-        for (const dtsEntry of dtsEntries) {
-            if (
-                !processedPaths.has(
-                    `${dtsEntry.path}:${dtsEntry.outputBasePath}`,
-                )
-            ) {
-                entries.push(dtsEntry)
-            }
-        }
+        const remainingDtsEntries = dtsEntries.filter(
+            (entry) =>
+                !processedPaths.has(`${entry.path}:${entry.outputBasePath}`),
+        )
+
+        return [...updatedEntries, ...remainingDtsEntries]
     }
 
     return entries
+}
+
+function normalizeEntries(entry: Entry, isDts: boolean): ProcessableEntry[] {
+    if (typeof entry === 'string') {
+        return [
+            {
+                path: entry,
+                outputBasePath: null,
+                dts: isDts,
+            },
+        ]
+    }
+
+    if (typeof entry === 'object' && !Array.isArray(entry)) {
+        return Object.entries(entry).map(([name, path]) => ({
+            path,
+            outputBasePath: name,
+            dts: isDts,
+        }))
+    }
+
+    return entry.map((entryPath) => processEntryPath(entryPath, isDts))
+}
+
+function processEntryPath(entryPath: string, isDts: boolean): ProcessableEntry {
+    const pathSegments = removeExtension(entryPath).split('/')
+
+    return {
+        path: entryPath,
+        outputBasePath:
+            pathSegments.length > 1
+                ? pathSegments.slice(1).join('/')
+                : pathSegments.join('/'),
+        dts: isDts,
+    }
 }
 
 export function getResolvedNaming(

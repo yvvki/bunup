@@ -38,6 +38,15 @@ export function getBaseFileName(filePath: string): string {
     return extension ? filename.slice(0, -extension.length) : filename
 }
 
+export function getBaseDirName(path: string): string {
+    const parts = path.split('/')
+    return parts[parts.length - 2] || ''
+}
+
+export function removeExtension(filePath: string): string {
+    return filePath.replace(path.extname(filePath), '')
+}
+
 export function getJsonSpaceCount(fileContent: string): number {
     const match = fileContent.match(/{\n(\s+)/)
     if (!match) return 2
