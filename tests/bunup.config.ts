@@ -1,10 +1,10 @@
 import { defineConfig } from '../src'
-import { removeNodeProtocol, report, shims } from '../src/plugins/built-in'
+import { report, shims } from '../src/plugins/built-in'
 
 export default defineConfig({
     entry: ['fixtures/index.ts'],
     format: ['esm', 'cjs'],
     dts: true,
-    plugins: [report(), shims(), removeNodeProtocol()],
+    plugins: [report(), shims()],
     splitting: false,
 })
