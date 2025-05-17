@@ -42,10 +42,16 @@ export default defineConfig({
                     },
                     { text: 'Workspaces', link: '/docs/guide/workspaces' },
                     { text: 'CLI Options', link: '/docs/guide/cli-options' },
+                ],
+            },
+            {
+                text: 'Plugins',
+                items: [
                     {
-                        text: 'Built-In Plugins',
-                        link: '/docs/guide/built-in-plugins',
+                        text: 'Productivity',
+                        link: '/docs/plugins/productivity',
                     },
+                    { text: 'Node', link: '/docs/plugins/node' },
                 ],
             },
             {

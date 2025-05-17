@@ -20,5 +20,15 @@
     },
     "peerDependencies": {
         "ora": "^8.2.0"
+    },
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.js",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        }
     }
 }

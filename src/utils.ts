@@ -32,12 +32,22 @@ export function getDefaultOutputExtension(
     }
 }
 
-export function getEntryNameOnly(entry: string): string {
-    const filename = path.basename(entry)
+export function getBaseFileName(filePath: string): string {
+    const filename = path.basename(filePath)
     const extension = path.extname(filename)
     return extension ? filename.slice(0, -extension.length) : filename
 }
 
+export function getJsonSpaceCount(fileContent: string): number {
+    const match = fileContent.match(/{\n(\s+)/)
+    if (!match) return 2
+    return match[1].length
+}
+
+export function isIndexFile(filePath: string): boolean {
+    const basename = path.basename(filePath, path.extname(filePath))
+    return basename === 'index' || basename === 'index.d'
+}
 export function isModulePackage(packageType: string | undefined): boolean {
     return packageType === 'module'
 }

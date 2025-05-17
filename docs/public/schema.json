@@ -6,26 +6,24 @@
         {
             "type": "object",
             "required": ["bunup"],
-            "additionalProperties": true,
             "properties": {
                 "bunup": {
                     "type": ["object", "array"],
                     "oneOf": [
                         {
                             "type": "object",
-                            "additionalProperties": false,
                             "$ref": "#/definitions/Options"
                         },
                         {
                             "type": "array",
                             "items": {
-                                "additionalProperties": false,
                                 "$ref": "#/definitions/Options"
                             }
                         }
                     ]
                 }
-            }
+            },
+            "additionalProperties": true
         },
         {
             "type": ["object", "array"],

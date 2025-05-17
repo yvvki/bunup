@@ -50,13 +50,13 @@ export async function build(
 
     setSilent(options.silent)
 
-    const { packageJson, path } = await loadPackageJson(rootDir)
+    const packageJson = await loadPackageJson(rootDir)
 
-    if (packageJson && path) {
-        logger.cli(`Using ${getShortFilePath(path, 2)}`, {
+    if (packageJson.data && packageJson.path) {
+        logger.cli(`Using ${getShortFilePath(packageJson.path, 2)}`, {
             muted: true,
             identifier: options.name,
-            once: `${path}:${options.name}`,
+            once: `${packageJson.path}:${options.name}`,
         })
     }
 
@@ -66,7 +66,7 @@ export async function build(
 
     const processableEntries = getProcessableEntries(options)
 
-    const packageType = packageJson?.type as string | undefined
+    const packageType = packageJson.data?.type as string | undefined
 
     const plugins: BunPlugin[] = [
         externalOptionPlugin(options, packageJson),
@@ -124,6 +124,10 @@ export async function build(
                                       buildOutput.files.push({
                                           fullPath: filePath,
                                           relativePathToRootDir,
+                                          dts: true,
+                                          entry: entry.path,
+                                          outputBasePath: entry.outputBasePath,
+                                          format: fmt,
                                       })
                                       logger.progress(
                                           'DTS',
@@ -164,6 +168,10 @@ export async function build(
                 buildOutput.files.push({
                     fullPath: file.path,
                     relativePathToRootDir,
+                    dts: false,
+                    entry: entry.path,
+                    outputBasePath: entry.outputBasePath,
+                    format: fmt,
                 })
             }
         }),
@@ -171,7 +179,9 @@ export async function build(
 
     await Promise.all(buildPromises)
 
-    await runPluginBuildDoneHooks(bunupPlugins, options, buildOutput)
+    await runPluginBuildDoneHooks(bunupPlugins, options, buildOutput, {
+        packageJson,
+    })
 
     if (options.onSuccess) {
         await options.onSuccess(options)

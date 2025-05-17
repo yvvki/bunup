@@ -1,4 +1,4 @@
-import type { Plugin } from '../types'
+import type { Plugin } from '../../types'
 
 /**
  * A plugin that provides shims for Node.js globals and ESM/CJS interoperability.

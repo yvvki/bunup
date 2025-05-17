@@ -34,10 +34,14 @@ export async function processLoadedConfigs(
           ]
 }
 
-export async function loadPackageJson(cwd: string): Promise<{
-    packageJson: Record<string, unknown> | null
+export type PackageJson = {
+    /** The parsed content of the package.json file */
+    data: Record<string, unknown> | null
+    /** The path to the package.json file */
     path: string | null
-}> {
+}
+
+export async function loadPackageJson(cwd: string): Promise<PackageJson> {
     const { config, filepath } = await loadConfig<Record<string, unknown>>({
         name: 'package',
         cwd,
@@ -45,12 +49,7 @@ export async function loadPackageJson(cwd: string): Promise<{
     })
 
     return {
-        packageJson: config,
+        data: config,
         path: filepath,
     }
-}
-
-export type TsConfigData = {
-    tsconfig: Record<string, unknown> | null
-    path: string | null
 }

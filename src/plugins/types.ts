@@ -1,4 +1,5 @@
-import type { BuildOptions } from '../options'
+import type { PackageJson } from '../loaders'
+import type { BuildOptions, Format } from '../options'
 import type { BunPlugin, MaybePromise } from '../types'
 
 /**
@@ -14,16 +15,38 @@ export type BunupBunPlugin = {
 }
 
 /**
+ * Represents the meta data of the build
+ */
+export type BuildMeta = {
+    /** The package.json file */
+    packageJson: PackageJson
+}
+
+export type BuildOutputFile = {
+    /** Path to the generated file */
+    fullPath: string
+    /** Path to the generated file relative to the root directory */
+    relativePathToRootDir: string
+    /** Whether the file is a dts file */
+    dts: boolean
+    /** The path to the entry file (defined in config.entry) that generated this output file */
+    entry: string
+    /**
+     * The base path of the output file relative to the output directory, excluding the file name
+     * Example: If the full output path is "path/to/dist/src/components/Button.js",
+     * the outputBasePath would be "src/components"
+     */
+    outputBasePath: string | null
+    /** The format of the output file */
+    format: Format
+}
+
+/**
  * Represents the output of a build operation
  */
 export type BuildOutput = {
     /** Array of generated files with their paths and contents */
-    files: Array<{
-        /** Path to the generated file */
-        fullPath: string
-        /** Path to the generated file relative to the root directory */
-        relativePathToRootDir: string
-    }>
+    files: BuildOutputFile[]
 }
 
 /**
@@ -34,6 +57,8 @@ export type BuildContext = {
     options: BuildOptions
     /** The output of the build */
     output: BuildOutput
+    /** The meta data of the build */
+    meta: BuildMeta
 }
 
 /**

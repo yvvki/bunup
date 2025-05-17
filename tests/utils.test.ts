@@ -10,9 +10,12 @@ import {
     ensureArray,
     formatFileSize,
     formatTime,
+    getBaseFileName,
     getDefaultOutputExtension,
+    getJsonSpaceCount,
     getPackageDeps,
     getShortFilePath,
+    isIndexFile,
     isModulePackage,
 } from '../src/utils'
 
@@ -223,6 +226,49 @@ describe('Utils', () => {
                 'process.env.NODE_ENV': '"development"',
                 'import.meta.env.NODE_ENV': '"production"',
             })
+        })
+    })
+
+    describe('getBaseFileName', () => {
+        it('returns filename without extension', () => {
+            expect(getBaseFileName('path/to/file.js')).toBe('file')
+        })
+        it('returns filename with no extension as is', () => {
+            expect(getBaseFileName('path/to/file')).toBe('file')
+        })
+        it('handles filenames with multiple dots', () => {
+            expect(getBaseFileName('path/to/file.min.js')).toBe('file.min')
+        })
+    })
+
+    describe('getJsonSpaceCount', () => {
+        it('returns the number of spaces in first indented line', () => {
+            const json = `{
+    "name": "test"
+}`
+            expect(getJsonSpaceCount(json)).toBe(4)
+        })
+        it('returns 2 when no match is found', () => {
+            const json = `{"name":"test"}`
+            expect(getJsonSpaceCount(json)).toBe(2)
+        })
+        it('handles different indentation levels', () => {
+            const json = `{
+  "name": "test"
+}`
+            expect(getJsonSpaceCount(json)).toBe(2)
+        })
+    })
+
+    describe('isIndexFile', () => {
+        it('returns true for index.js', () => {
+            expect(isIndexFile('path/to/index.js')).toBe(true)
+        })
+        it('returns true for index.d.ts', () => {
+            expect(isIndexFile('path/to/index.d.ts')).toBe(true)
+        })
+        it('returns false for non-index files', () => {
+            expect(isIndexFile('path/to/app.js')).toBe(false)
         })
     })
 })

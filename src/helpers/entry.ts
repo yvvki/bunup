@@ -1,17 +1,17 @@
-import { basename, extname } from 'node:path'
 import type { BuildOptions } from '../options'
 import type { BunBuildOptions } from '../types'
 
 export type ProcessableEntry = {
+    /** The entry same as the entry option in the config */
     path: string
+    /**
+     * The base path of the output file relative to the output directory, excluding the file name
+     * Example: If the full output path is "path/to/dist/src/components/Button.js",
+     * the outputBasePath would be "src/components"
+     */
     outputBasePath: string | null
+    /** Whether to generate a dts file for this entry */
     dts: boolean
-}
-
-export function getEntryNameOnly(entry: string): string {
-    const filename = basename(entry)
-    const extension = extname(filename)
-    return extension ? filename.slice(0, -extension.length) : filename
 }
 
 export function getProcessableEntries(

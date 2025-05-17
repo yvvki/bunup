@@ -1,5 +1,11 @@
 import type { BuildOptions } from '../options'
-import type { BuildOutput, BunupBunPlugin, BunupPlugin, Plugin } from './types'
+import type {
+    BuildMeta,
+    BuildOutput,
+    BunupBunPlugin,
+    BunupPlugin,
+    Plugin,
+} from './types'
 
 export function filterBunupBunPlugins(
     plugins: Plugin[] | undefined,
@@ -32,12 +38,13 @@ export async function runPluginBuildDoneHooks(
     bunupPlugins: BunupPlugin[] | undefined,
     options: BuildOptions,
     output: BuildOutput,
+    meta: BuildMeta,
 ): Promise<void> {
     if (!bunupPlugins) return
 
     for (const plugin of bunupPlugins) {
         if (plugin.hooks.onBuildDone) {
-            await plugin.hooks.onBuildDone({ options, output })
+            await plugin.hooks.onBuildDone({ options, output, meta })
         }
     }
 }

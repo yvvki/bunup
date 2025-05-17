@@ -2,9 +2,9 @@ import pc from 'picocolors'
 import { version } from '../../package.json'
 import { BUNUP_CLI_OPTIONS_URL } from '../constants'
 import { BunupCLIError } from '../errors'
-import { getEntryNameOnly } from '../helpers/entry'
 import { logger } from '../logger'
 import type { BuildOptions } from '../options'
+import { getBaseFileName } from '../utils'
 
 export type CliOptions = BuildOptions & {
     /**
@@ -194,7 +194,7 @@ const optionConfigs = {
                 }
                 ;(entries as Record<string, string>)[subPath] = value
             } else {
-                const name = getEntryNameOnly(value)
+                const name = getBaseFileName(value)
                 if ((entries as Record<string, string>)[name]) {
                     logger.warn(
                         `Duplicate entry name '${name}' derived from '${value}'. Overwriting previous entry.`,
