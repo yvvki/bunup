@@ -279,8 +279,15 @@ export async function init(): Promise<void> {
         {
             value: 'report',
             label: 'Report',
-            hint: 'Logs bundle size report after build',
+            hint: 'Logs bundle size report after build (recommended)',
             configGenerator: () => 'report()',
+            defaultEnabled: true,
+        },
+        {
+            value: 'exports',
+            label: 'Exports',
+            hint: 'Generates exports field in package.json after build (recommended)',
+            configGenerator: () => 'exports()',
             defaultEnabled: true,
         },
     ]
