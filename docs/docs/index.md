@@ -185,6 +185,23 @@ You can also include your bunup configuration directly in your `package.json` fi
 
 This approach can be useful when you prefer keeping all project configuration in a single file.
 
+### JSON Schema Support
+
+Bunup provides a JSON schema at [https://bunup.dev/schema.json](https://bunup.dev/schema.json) for editor autocompletion and validation. You can enable autocomplete for the `bunup` field in your `package.json` by configuring VSCode:
+
+```json [.vscode/settings.json]
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["package.json"],
+      "url": "https://bunup.dev/schema.json"
+    }
+  ]
+}
+```
+
+This provides autocompletion, validation, and documentation when editing the bunup configuration in your package.json file.
+
 ### Custom Configuration Path
 
 If you need to use a configuration file with a non-standard name or location, you can specify its path using the `--config` CLI option:
