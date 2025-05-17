@@ -1,6 +1,6 @@
 import type { BuildOptions, Entry } from '../options'
 import type { BunBuildOptions } from '../types'
-import { removeExtension } from '../utils'
+import { cleanPath, removeExtension } from '../utils'
 
 export type ProcessableEntry = {
     /** The entry same as the entry option in the config */
@@ -90,7 +90,7 @@ function normalizeEntries(entry: Entry, isDts: boolean): ProcessableEntry[] {
 // src/index.ts -> index
 // src/client/index.ts -> client/index
 function getEntryOutputBasePath(entry: string): string {
-    const pathSegments = removeExtension(entry).split('/')
+    const pathSegments = cleanPath(removeExtension(entry)).split('/')
     return pathSegments.length > 1
         ? pathSegments.slice(1).join('/')
         : pathSegments.join('/')

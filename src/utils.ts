@@ -48,6 +48,10 @@ export function getJsonSpaceCount(fileContent: string): number {
     return match[1].length
 }
 
+export function cleanPath(filePath: string): string {
+    return filePath.replace(/\\/g, '/')
+}
+
 export function isModulePackage(packageType: string | undefined): boolean {
     return packageType === 'module'
 }
