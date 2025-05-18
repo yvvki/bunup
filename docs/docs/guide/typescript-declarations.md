@@ -38,7 +38,7 @@ export default defineConfig({
 
 If you only want to generate TypeScript declaration files without building JavaScript files:
 
-```sh 4
+```sh 7
 # CLI
 bunup src/index.ts --dts-only
 
