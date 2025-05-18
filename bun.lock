@@ -5,7 +5,7 @@
       "name": "bunup",
       "dependencies": {
         "@clack/prompts": "^0.10.1",
-        "bun-dts": "^0.1.24",
+        "bun-dts": "^0.1.26",
         "chokidar": "^4.0.3",
         "coffi": "^0.1.28",
         "package-manager-detector": "^1.2.0",
@@ -444,7 +444,7 @@
 
     "bumpp": ["bumpp@10.1.1", "", { "dependencies": { "ansis": "^4.0.0", "args-tokenizer": "^0.3.0", "c12": "^3.0.3", "cac": "^6.7.14", "escalade": "^3.2.0", "jsonc-parser": "^3.3.1", "package-manager-detector": "^1.3.0", "semver": "^7.7.2", "tinyexec": "^1.0.1", "tinyglobby": "^0.2.13", "yaml": "^2.8.0" }, "bin": { "bumpp": "bin/bumpp.mjs" } }, "sha512-69ejE1J5O5qDN3oRu2jRas1nQmi5zEYepjzbYPpi1znuDnp+zZ9Yezsf/nYauWeoMNALQ5toniNGET05Txj2cQ=="],
 
-    "bun-dts": ["bun-dts@0.1.24", "", { "dependencies": { "coffi": "^0.1.28", "oxc-parser": "^0.68.1", "oxc-resolver": "^8.0.0", "oxc-transform": "^0.67.0", "ts-import-resolver": "^0.1.19" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-EuvMEw4/35TuGXZLIpiQqxREJMSYp5fNtYXCyzbAAZUuOgSdqMSiC9hJCY/Ut5E7GMwPgFFTGTaXxz+kb1UI8w=="],
+    "bun-dts": ["bun-dts@0.1.26", "", { "dependencies": { "coffi": "^0.1.28", "oxc-parser": "^0.68.1", "oxc-resolver": "^8.0.0", "oxc-transform": "^0.67.0", "ts-import-resolver": "^0.1.19" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-Lj0VtQpI1OWQDxPSAqPgjhYEDp9KKIfC3YY7jdQwaRcbHD4bhl89evAAFcqdDo27XXlAWA2Qp/CwlJNvEqxpVA=="],
 
     "bun-types": ["bun-types@1.2.13", "", { "dependencies": { "@types/node": "*" } }, "sha512-rRjA1T6n7wto4gxhAO/ErZEtOXyEZEmnIHQfl0Dt1QQSB4QV0iP6BZ9/YB5fZaHFQ2dwHFrmPaRQ9GGMX01k9Q=="],
 

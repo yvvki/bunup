@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { generateDts } from 'bun-dts'
+import { generateDts, logIsolatedDeclarationErrors } from 'bun-dts'
 import { BunupBuildError } from './errors'
 import { getProcessableEntries, getResolvedNaming } from './helpers/entry'
 import { loadPackageJson } from './loaders'
@@ -171,7 +171,6 @@ export async function build(
                 const result = await generateDts(entry, {
                     cwd: rootDir,
                     preferredTsConfigPath: options.preferredTsconfigPath,
-                    warnInsteadOfError: options.watch,
                     resolve: dtsResolve,
                 })
 
@@ -204,7 +203,14 @@ export async function build(
                         format: fmt,
                     })
 
-                    await Bun.write(filePath, result)
+                    if (result.errors.length > 0) {
+                        logIsolatedDeclarationErrors(result.errors, {
+                            warnInsteadOfError: options.watch,
+                            shouldExit: true,
+                        })
+                    }
+
+                    await Bun.write(filePath, result.dts)
 
                     logger.progress('DTS', relativePathToRootDir, {
                         identifier: options.name,
