@@ -16,9 +16,23 @@ export async function watch(
 
     const options = createBuildOptions(partialOptions)
 
-    const processableEntries = getProcessableEntries(options)
+    const dtsEntry =
+        typeof options.dts === 'object' && 'entry' in options.dts
+            ? options.dts.entry
+            : undefined
 
-    for (const { entry } of processableEntries) {
+    const processableDtsEntries = dtsEntry
+        ? getProcessableEntries(dtsEntry)
+        : []
+
+    const processableEntries = getProcessableEntries(options.entry)
+
+    const uniqueEntries = new Set([
+        ...processableDtsEntries.map(({ entry }) => entry),
+        ...processableEntries.map(({ entry }) => entry),
+    ])
+
+    for (const entry of uniqueEntries) {
         const entryPath = path.resolve(rootDir, entry)
         const parentDir = path.dirname(entryPath)
         watchPaths.add(parentDir)
