@@ -10,7 +10,7 @@ If you have suggestions or ideas for Productivity plugins, please [open a new is
 
 This plugin automatically generates and updates the `exports` field in your package.json file after each build. 
 
-You can focus entirely on your code while Bunup handles mapping all entry points to their corresponding output files, including ESM/CJS formats and type declarations. The exports field stays perfectly in sync with your build configuration always - no manual updates needed when do any change to config.
+Bunup handles mapping all entry points to their corresponding output files, including ESM/CJS formats and type declarations. The exports field stays perfectly in sync with your build configuration always - no manual updates needed when do any change to config.
 
 ### Usage
 
