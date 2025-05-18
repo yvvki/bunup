@@ -23,8 +23,8 @@ export type CliOptions = BuildOptions & {
      */
     onSuccess?: string
     /**
-     * Filter specific packages to build in a workspace configuration.
-     * This option is only relevant when using workspace configurations.
+     * Filter specific packages to build in a workspace.
+     * This option is only relevant when using bunup workspaces.
      *
      * @example
      * bunup --filter core,utils
@@ -171,6 +171,7 @@ const optionConfigs = {
     },
     filter: { flags: ['filter'], handler: arrayHandler('filter') },
     init: { flags: ['init'], handler: booleanHandler('init') },
+    dtsOnly: { flags: ['dts-only'], handler: booleanHandler('dtsOnly') },
     entry: {
         flags: ['entry'],
         handler: (

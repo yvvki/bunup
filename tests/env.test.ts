@@ -9,9 +9,9 @@ describe('Environment Variables', () => {
     it('inlines specific environment variables from object', async () => {
         createProject({
             'src/index.ts': `
-                export const testVar = process.env.TEST_VAR;
-                export const anotherVar = process.env.ANOTHER_VAR;
-                export const undefinedVar = process.env.UNDEFINED_VAR;
+                export const testVar: string = process.env.TEST_VAR;
+                export const anotherVar: string = process.env.ANOTHER_VAR;
+                export const undefinedVar: string = process.env.UNDEFINED_VAR;
             `,
         })
 
@@ -35,7 +35,7 @@ describe('Environment Variables', () => {
     it('handles import.meta.env references', async () => {
         createProject({
             'src/index.ts': `
-                export const testVar = import.meta.env.TEST_VAR;
+                export const testVar: string = import.meta.env.TEST_VAR;
             `,
         })
 
@@ -55,10 +55,10 @@ describe('Environment Variables', () => {
     it('inlines environment variables with different types', async () => {
         createProject({
             'src/index.ts': `
-                export const stringVar = process.env.STRING_VAR;
-                export const numberVar = process.env.NUMBER_VAR;
-                export const booleanVar = process.env.BOOLEAN_VAR;
-                export const jsonVar = process.env.JSON_VAR;
+                export const stringVar: string = process.env.STRING_VAR;
+                export const numberVar: number = process.env.NUMBER_VAR;
+                export const booleanVar: boolean = process.env.BOOLEAN_VAR;
+                export const jsonVar: Record<string, string> = process.env.JSON_VAR;
             `,
         })
 
@@ -84,7 +84,7 @@ describe('Environment Variables', () => {
     it('works across multiple output formats', async () => {
         createProject({
             'src/index.ts': `
-                export const formatTest = process.env.FORMAT_TEST;
+                export const formatTest: string = process.env.FORMAT_TEST;
             `,
         })
 
@@ -106,8 +106,10 @@ describe('Environment Variables', () => {
 
     it('works with multiple entry points', async () => {
         createProject({
-            'src/index.ts': 'export const indexVar = process.env.MULTI_ENTRY;',
-            'src/other.ts': 'export const otherVar = process.env.MULTI_ENTRY;',
+            'src/index.ts':
+                'export const indexVar: string = process.env.MULTI_ENTRY;',
+            'src/other.ts':
+                'export const otherVar: string = process.env.MULTI_ENTRY;',
         })
 
         const result = await runBuild({
@@ -129,8 +131,8 @@ describe('Environment Variables', () => {
     it('interacts correctly with defined environment variables', async () => {
         createProject({
             'src/index.ts': `
-                export const definedEnv = process.env.DEFINED_ENV;
-                export const envAndDefine = process.env.ENV_AND_DEFINE;
+                export const definedEnv: string = process.env.DEFINED_ENV;
+                export const envAndDefine: string = process.env.ENV_AND_DEFINE;
             `,
         })
 

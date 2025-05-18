@@ -248,6 +248,7 @@ describe('Format Types and Output Extensions', () => {
                 dts: true,
                 outputExtension: ({ format }) => ({
                     js: `.${format}.js`,
+                    dts: `.d.${format}`,
                 }),
             })
 
@@ -256,9 +257,9 @@ describe('Format Types and Output Extensions', () => {
                 validateBuildFiles(result, {
                     expectedFiles: [
                         'index.esm.js',
-                        'index.esm.d.ts',
+                        'index.d.esm',
                         'index.cjs.js',
-                        'index.cjs.d.ts',
+                        'index.d.cjs',
                     ],
                 }),
             ).toBe(true)
@@ -279,6 +280,10 @@ describe('Format Types and Output Extensions', () => {
                 dts: true,
                 outputExtension: ({ entry }) => ({
                     js: entry === 'src/index.ts' ? '.bundle.js' : '.module.mjs',
+                    dts:
+                        entry === 'src/index.ts'
+                            ? '.bundle.d.ts'
+                            : '.custom.d.ts',
                 }),
             })
 
@@ -289,7 +294,7 @@ describe('Format Types and Output Extensions', () => {
                         'main.bundle.js',
                         'main.bundle.d.ts',
                         'utils.module.mjs',
-                        'utils.module.d.mts',
+                        'utils.custom.d.ts',
                     ],
                 }),
             ).toBe(true)
@@ -435,6 +440,14 @@ describe('Complex Format Scenarios', () => {
                         : format === 'esm'
                           ? '.mjs'
                           : '.js',
+                dts:
+                    packageType === 'module'
+                        ? format === 'esm'
+                            ? '.d.ts'
+                            : `.d.${format}`
+                        : format === 'esm'
+                          ? '.d.mts'
+                          : '.d.ts',
             }),
         })
 
@@ -445,7 +458,7 @@ describe('Complex Format Scenarios', () => {
                     'index.js',
                     'index.d.ts',
                     'index.cjs',
-                    'index.d.cts',
+                    'index.d.cjs',
                 ],
             }),
         ).toBe(true)

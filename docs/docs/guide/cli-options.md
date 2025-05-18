@@ -6,8 +6,8 @@ Bunup supports various command-line options:
 bunup [...entries] [options]
 ```
 
-| Option                             | Alias       | Description                                                                                                                                     | Default          |
-| ---------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| Option                             | Alias       | Description                                                                                                                            | Default          |
+| ---------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | `--entry <path>`                   |             | Entry file path [↗](/docs#entry-points)                                                                                                | `[]`             |
 | `--entry.<name> <path>`            |             | Named entry file path [↗](/docs#named-entries)                                                                                         | -                |
 | `--out-dir <dir>`                  | `-o`        | Output directory [↗](/docs#output-directory)                                                                                           | `dist`           |
@@ -29,13 +29,13 @@ bunup [...entries] [options]
 | `--public-path <url>`              | `-pp`       | Prefix to be appended to import paths in bundled code [↗](/docs#public-path)                                                           | -                |
 | `--name <name>`                    | `-n`        | Name for this build configuration [↗](/docs#named-configurations)                                                                      | -                |
 | `--resolve-dts <value>`            | `-rd`       | Resolve external types for declaration files (can be boolean flag or comma-separated package list) [↗](/docs#resolving-external-types) | `false`          |
-| `--dts-only`                       | `-do`       | Generate only TypeScript declaration files without JavaScript output [↗](/docs#declaration-only-generation)                            | `false`          |
+| `--dts-only`                       |             | Generate only TypeScript declaration files without JavaScript output [↗](/docs#declaration-only-mode)                                  | `false`          |
 | `--preferred-tsconfig-path <path>` | `-tsconfig` | Path to preferred tsconfig file used for typescript declaration files generation [↗](/docs#custom-typescript-configuration)            | -                |
 | `--bytecode`                       | `-bc`       | Generate bytecode for JavaScript/TypeScript entrypoints to improve startup times [↗](/docs#bytecode)                                   | `false`          |
-| `--silent`                         |             | Disable logging during the build process                                                                                                        | `false`          |
+| `--silent`                         |             | Disable logging during the build process                                                                                               | `false`          |
 | `--env <mode>`                     |             | Control environment variable handling (inline, disable or PREFIX\_\*) [↗](/docs#environment-variables)                                 | -                |
-| `--config <path>`                  |             | Specify a custom path to the configuration file                                                                                                 | -                |
-| `--onSuccess <command>`            |             | Command to execute after a successful build                                                                                                     | -                |
-| `--filter <packages>`              |             | Build only specific packages in a workspace (comma-separated) [↗](/docs/guide/workspaces#building-specific-packages)                                       | -                |
-| `--version`                        | `-v`        | Display version information                                                                                                                     | -                |
-| `--help`                           | `-h`        | Display help information                                                                                                                        | -                |
+| `--config <path>`                  |             | Specify a custom path to the configuration file                                                                                        | -                |
+| `--onSuccess <command>`            |             | Command to execute after a successful build                                                                                            | -                |
+| `--filter <packages>`              |             | Build only specific packages in a workspace (comma-separated) [↗](/docs/guide/workspaces#building-specific-packages)                   | -                |
+| `--version`                        | `-v`        | Display version information                                                                                                            | -                |
+| `--help`                           | `-h`        | Display help information                                                                                                               | -                |

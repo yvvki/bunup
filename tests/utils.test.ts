@@ -11,7 +11,8 @@ import {
     formatFileSize,
     formatTime,
     getBaseFileName,
-    getDefaultOutputExtension,
+    getDefaultDtsOutputExtension,
+    getDefaultJsOutputExtension,
     getJsonSpaceCount,
     getPackageDeps,
     getShortFilePath,
@@ -47,19 +48,43 @@ describe('Utils', () => {
         })
     })
 
-    describe('getDefaultOutputExtension', () => {
+    describe('getDefaultJsOutputExtension', () => {
         it('returns .mjs for esm format', () => {
-            expect(getDefaultOutputExtension('esm', undefined)).toBe('.mjs')
+            expect(getDefaultJsOutputExtension('esm', undefined)).toBe('.mjs')
         })
         it('returns .cjs for cjs format with module type', () => {
-            expect(getDefaultOutputExtension('cjs', 'module')).toBe('.cjs')
+            expect(getDefaultJsOutputExtension('cjs', 'module')).toBe('.cjs')
         })
         it('returns .js for cjs format with commonjs type', () => {
-            expect(getDefaultOutputExtension('cjs', 'commonjs')).toBe('.js')
+            expect(getDefaultJsOutputExtension('cjs', 'commonjs')).toBe('.js')
         })
         it('returns .global.js for iife format', () => {
-            expect(getDefaultOutputExtension('iife', undefined)).toBe(
+            expect(getDefaultJsOutputExtension('iife', undefined)).toBe(
                 '.global.js',
+            )
+        })
+    })
+
+    describe('getDefaultDtsOutputExtension', () => {
+        it('returns .d.mts for esm format with non-module type', () => {
+            expect(getDefaultDtsOutputExtension('esm', undefined)).toBe(
+                '.d.mts',
+            )
+        })
+        it('returns .d.ts for esm format with module type', () => {
+            expect(getDefaultDtsOutputExtension('esm', 'module')).toBe('.d.ts')
+        })
+        it('returns .d.cts for cjs format with module type', () => {
+            expect(getDefaultDtsOutputExtension('cjs', 'module')).toBe('.d.cts')
+        })
+        it('returns .d.ts for cjs format with commonjs type', () => {
+            expect(getDefaultDtsOutputExtension('cjs', 'commonjs')).toBe(
+                '.d.ts',
+            )
+        })
+        it('returns .global.d.ts for iife format', () => {
+            expect(getDefaultDtsOutputExtension('iife', undefined)).toBe(
+                '.global.d.ts',
             )
         })
     })

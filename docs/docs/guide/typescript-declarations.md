@@ -34,6 +34,21 @@ export default defineConfig({
 });
 ```
 
+## Declaration-only Mode
+
+If you only want to generate TypeScript declaration files without building JavaScript files:
+
+```sh 4
+# CLI
+bunup src/index.ts --dts-only
+
+# Configuration file
+export default defineConfig({
+    entry: ['src/index.ts'],
+    dtsOnly: true,
+});
+```
+
 ## Custom Entry Points
 
 For more control, you can specify custom entry points for declarations:

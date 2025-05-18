@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'bun:test'
 import {
     cleanProjectDir,
     createProject,
+    findFile,
     runBuild,
     validateBuildFiles,
 } from './utils'
@@ -659,5 +660,130 @@ describe('Build Process', () => {
                 file.path.includes('/nested/index.mjs'),
             ),
         ).toBe(true)
+    })
+
+    it('should only generate declaration files when dtsOnly option is true', async () => {
+        createProject({
+            'src/index.ts': `
+                export interface User {
+                    id: number;
+                    name: string;
+                }
+
+                export function getUserName(user: User): string {
+                    return user.name;
+                }
+            `,
+        })
+
+        const result = await runBuild({
+            entry: 'src/index.ts',
+            format: ['esm'],
+            dtsOnly: true,
+        })
+
+        expect(result.success).toBe(true)
+        expect(
+            validateBuildFiles(result, {
+                expectedFiles: ['index.d.mts'],
+                notExpectedFiles: ['index.mjs', 'index.js', 'index.global.js'],
+            }),
+        ).toBe(true)
+    })
+
+    it('should only generate declaration files for multiple formats when dtsOnly is true', async () => {
+        createProject({
+            'src/index.ts': `
+                export interface User {
+                    id: number;
+                    name: string;
+                }
+
+                export function getUserName(user: User): string {
+                    return user.name;
+                }
+            `,
+        })
+
+        const result = await runBuild({
+            entry: 'src/index.ts',
+            format: ['esm', 'cjs', 'iife'],
+            dtsOnly: true,
+        })
+
+        expect(result.success).toBe(true)
+        expect(
+            validateBuildFiles(result, {
+                expectedFiles: ['index.d.mts', 'index.d.ts', 'index.d.ts'],
+                notExpectedFiles: ['index.mjs', 'index.js', 'index.global.js'],
+            }),
+        ).toBe(true)
+    })
+
+    it('should only generate declaration files for multiple entries when dtsOnly is true', async () => {
+        createProject({
+            'src/index.ts': `
+                export interface User {
+                    id: number;
+                    name: string;
+                }
+            `,
+            'src/utils.ts': `
+                export function formatId(id: number): string {
+                    return \`ID-\${id.toString().padStart(5, '0')}\`;
+                }
+            `,
+        })
+
+        const result = await runBuild({
+            entry: ['src/index.ts', 'src/utils.ts'],
+            format: ['esm'],
+            dtsOnly: true,
+        })
+
+        expect(result.success).toBe(true)
+        expect(
+            validateBuildFiles(result, {
+                expectedFiles: ['index.d.mts', 'utils.d.mts'],
+                notExpectedFiles: ['index.mjs', 'utils.mjs'],
+            }),
+        ).toBe(true)
+    })
+
+    it('should generate the same declaration files with dtsOnly as with dts option', async () => {
+        createProject({
+            'src/index.ts': `
+                export interface Config {
+                    apiKey: string;
+                    debug: boolean;
+                }
+            `,
+        })
+
+        const resultWithDts = await runBuild({
+            entry: 'src/index.ts',
+            format: ['esm'],
+            dts: true,
+        })
+
+        const resultWithDtsOnly = await runBuild({
+            entry: 'src/index.ts',
+            format: ['esm'],
+            dtsOnly: true,
+        })
+
+        const dtsFile = findFile(resultWithDts, 'index', '.d.mts')
+        const dtsOnlyFile = findFile(resultWithDtsOnly, 'index', '.d.mts')
+
+        expect(resultWithDts.success).toBe(true)
+        expect(resultWithDtsOnly.success).toBe(true)
+
+        expect(dtsFile).toBeDefined()
+        expect(dtsOnlyFile).toBeDefined()
+
+        expect(dtsFile?.content).toBe(dtsOnlyFile?.content)
+
+        expect(findFile(resultWithDts, 'index', '.mjs')).toBeDefined()
+        expect(findFile(resultWithDtsOnly, 'index', '.mjs')).toBeUndefined()
     })
 })

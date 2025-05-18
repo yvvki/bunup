@@ -341,6 +341,12 @@ export interface BuildOptions {
      */
     plugins?: Plugin[]
     /**
+     * Whether to only generate TypeScript declaration files (.d.ts)
+     * When set to true, only generates declaration files for all entry points
+     * Can also be configured with dts option for more control
+     */
+    dtsOnly?: boolean
+    /**
      * Customize the output file extension for each format.
      *
      * @param options Contains format, packageType, options, and entry (which is the same as what you defined in the entry option)
@@ -353,7 +359,7 @@ export interface BuildOptions {
         packageType: string | undefined
         options: BuildOptions
         entry: string
-    }) => { js: string; dts: string }
+    }) => { js?: string; dts?: string }
 }
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
