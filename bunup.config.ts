@@ -1,3 +1,5 @@
+import { exports } from './src/plugins/built-in/productivity/exports'
+
 const COMMON_OPTIONS = {
     outDir: 'dist',
     minify: true,
@@ -14,6 +16,7 @@ export default [
             plugins: 'src/plugins/built-in/index.ts',
         },
         dts: true,
+        plugins: [exports()],
     },
     {
         ...COMMON_OPTIONS,

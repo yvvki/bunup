@@ -1,6 +1,6 @@
 import { logger } from '../../../logger'
 import type { Format } from '../../../options'
-import { getJsonSpaceCount, makePortablePath } from '../../../utils'
+import { getUpdatedPackageJson, makePortablePath } from '../../../utils'
 import type { BuildOutputFile, BunupPlugin } from '../../types'
 
 type ExportsField = Record<string, Record<string, string>>
@@ -36,10 +36,9 @@ export function exports(): BunupPlugin {
 
                     await Bun.write(
                         meta.packageJson.path,
-                        JSON.stringify(
+                        getUpdatedPackageJson(
+                            packageJsonContent,
                             newPackageJson,
-                            null,
-                            getJsonSpaceCount(packageJsonContent),
                         ),
                     )
 

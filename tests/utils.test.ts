@@ -15,6 +15,7 @@ import {
     getJsonSpaceCount,
     getPackageDeps,
     getShortFilePath,
+    getUpdatedPackageJson,
     isModulePackage,
     makePortablePath,
     removeExtension,
@@ -300,6 +301,71 @@ describe('Utils', () => {
             expect(
                 makePortablePath('D:\\\\multiple\\//slashes//\\file.js'),
             ).toBe('multiple/slashes/file.js')
+        })
+    })
+
+    describe('getUpdatedPackageJson', () => {
+        it('merges updates with existing package.json content', () => {
+            const packageJsonContent = `{
+  "name": "test-package",
+  "version": "1.0.0"
+}`
+            const updates = { description: 'Test package' }
+            const result = getUpdatedPackageJson(packageJsonContent, updates)
+            const expected = `{
+  "name": "test-package",
+  "version": "1.0.0",
+  "description": "Test package"
+}`
+            expect(result).toBe(expected)
+        })
+
+        it('preserves original indentation', () => {
+            const packageJsonContent = `{
+    "name": "test-package",
+    "version": "1.0.0"
+}`
+            const updates = { description: 'Test package' }
+            const result = getUpdatedPackageJson(packageJsonContent, updates)
+            const expected = `{
+    "name": "test-package",
+    "version": "1.0.0",
+    "description": "Test package"
+}`
+            expect(result).toBe(expected)
+        })
+
+        it('preserves trailing newline if present in original', () => {
+            const packageJsonContent = `{
+  "name": "test-package",
+  "version": "1.0.0"
+}
+`
+            const updates = { description: 'Test package' }
+            const result = getUpdatedPackageJson(packageJsonContent, updates)
+            expect(result.endsWith('\n')).toBe(true)
+        })
+
+        it('does not add trailing newline if not present in original', () => {
+            const packageJsonContent = `{
+  "name": "test-package",
+  "version": "1.0.0"
+}`
+            const updates = { description: 'Test package' }
+            const result = getUpdatedPackageJson(packageJsonContent, updates)
+            expect(result.endsWith('\n')).toBe(false)
+        })
+
+        it('overwrites existing fields with updates', () => {
+            const packageJsonContent = `{
+  "name": "test-package",
+  "version": "1.0.0",
+  "description": "Original description"
+}`
+            const updates = { description: 'Updated description' }
+            const result = getUpdatedPackageJson(packageJsonContent, updates)
+            const parsed = JSON.parse(result)
+            expect(parsed.description).toBe('Updated description')
         })
     })
 })

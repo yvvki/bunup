@@ -118,3 +118,18 @@ export function makePortablePath(path: string): string {
 
     return cleaned
 }
+
+export function getUpdatedPackageJson(
+    packageJsonContent: string,
+    updates: Record<string, unknown>,
+): string {
+    const parsedPackageJson = JSON.parse(packageJsonContent)
+    const hasTrailingNewline = packageJsonContent.endsWith('\n')
+    return (
+        JSON.stringify(
+            { ...parsedPackageJson, ...updates },
+            null,
+            getJsonSpaceCount(packageJsonContent),
+        ) + (hasTrailingNewline ? '\n' : '')
+    )
+}
