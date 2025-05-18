@@ -18,7 +18,7 @@ export function ensureArray<T>(value: T | T[]): T[] {
     return Array.isArray(value) ? value : [value]
 }
 
-export function getDefaultOutputExtension(
+export function getDefaultJsOutputExtension(
     format: Format,
     packageType: string | undefined,
 ): string {
@@ -29,6 +29,20 @@ export function getDefaultOutputExtension(
             return isModulePackage(packageType) ? '.cjs' : '.js'
         case 'iife':
             return '.global.js'
+    }
+}
+
+export function getDefaultDtsOutputExtension(
+    format: Format,
+    packageType: string | undefined,
+): string {
+    switch (format) {
+        case 'esm':
+            return isModulePackage(packageType) ? '.d.ts' : '.d.mts'
+        case 'cjs':
+            return isModulePackage(packageType) ? '.d.cts' : '.d.ts'
+        case 'iife':
+            return '.global.d.ts'
     }
 }
 

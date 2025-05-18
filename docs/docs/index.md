@@ -394,13 +394,16 @@ The `outputExtension` function receives:
 It should return an object with:
 
 - `js`: The JavaScript file extension (including the leading dot)
+- `dts`: The TypeScript declaration file extension (including the leading dot)
 
-The TypeScript declaration extension will be automatically derived from the JavaScript extension. For example:
+Both extensions can be customized independently. For example:
 
-- If `js` is `.worker.js`, the dts will be `.worker.d.ts`
-- If `js` is `.utils.mjs`, the dts will be `.utils.d.mts`
-- If `js` is `.mjs`, the dts will be `.d.mts`
-- If `js` is `.cjs`, the dts will be `.d.cts`
+```typescript
+outputExtension: ({ format, entry }) => ({
+  js: entry === 'src/worker/index.ts' ? '.worker.js' : `.${format}.js`,
+  dts: entry === 'src/worker/index.ts' ? '.worker.d.ts' : `.${format}.d.ts`
+})
+```
 
 ## Named Configurations
 

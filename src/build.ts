@@ -1,4 +1,5 @@
-import { dts as dtsPlugin } from 'bun-dts'
+import path from 'node:path'
+import { generateDts } from 'bun-dts'
 import { BunupBuildError } from './errors'
 import { getProcessableEntries, getResolvedNaming } from './helpers/entry'
 import { loadPackageJson } from './loaders'
@@ -24,7 +25,8 @@ import {
 import type { BunPlugin } from './types'
 import {
     cleanOutDir,
-    getDefaultOutputExtension,
+    getDefaultDtsOutputExtension,
+    getDefaultJsOutputExtension,
     getShortFilePath,
 } from './utils'
 
@@ -64,7 +66,7 @@ export async function build(
 
     await runPluginBuildStartHooks(bunupPlugins, options)
 
-    const processableEntries = getProcessableEntries(options)
+    const processableEntries = getProcessableEntries(options.entry)
 
     const packageType = packageJson.data?.type as string | undefined
 
@@ -79,14 +81,14 @@ export async function build(
             : undefined
 
     const buildPromises = options.format.flatMap((fmt) =>
-        processableEntries.map(async ({ entry, outputBasePath, dts }) => {
+        processableEntries.map(async ({ entry, outputBasePath }) => {
             const extension =
                 options.outputExtension?.({
                     format: fmt,
                     packageType,
                     options,
                     entry,
-                }).js ?? getDefaultOutputExtension(fmt, packageType)
+                }).js ?? getDefaultJsOutputExtension(fmt, packageType)
 
             const result = await Bun.build({
                 entrypoints: [`${rootDir}/${entry}`],
@@ -105,42 +107,7 @@ export async function build(
                 footer: options.footer,
                 publicPath: options.publicPath,
                 env: getResolvedEnv(options.env),
-                plugins: [
-                    ...plugins,
-                    ...(dts
-                        ? [
-                              dtsPlugin({
-                                  cwd: rootDir,
-                                  preferredTsConfigPath:
-                                      options.preferredTsconfigPath,
-                                  warnInsteadOfError: options.watch,
-                                  resolve: dtsResolve,
-                                  onDeclarationGenerated: (filePath) => {
-                                      const relativePathToRootDir =
-                                          getRelativePathToRootDir(
-                                              filePath,
-                                              rootDir,
-                                          )
-                                      buildOutput.files.push({
-                                          fullPath: filePath,
-                                          relativePathToRootDir,
-                                          dts: true,
-                                          entry,
-                                          outputBasePath,
-                                          format: fmt,
-                                      })
-                                      logger.progress(
-                                          'DTS',
-                                          relativePathToRootDir,
-                                          {
-                                              identifier: options.name,
-                                          },
-                                      )
-                                  },
-                              }),
-                          ]
-                        : []),
-                ],
+                plugins: plugins,
                 throw: false,
             })
 
@@ -178,6 +145,64 @@ export async function build(
     )
 
     await Promise.all(buildPromises)
+
+    const dtsEntry =
+        typeof options.dts === 'object' && 'entry' in options.dts
+            ? options.dts.entry
+            : undefined
+
+    const processableDtsEntries = dtsEntry
+        ? getProcessableEntries(dtsEntry)
+        : processableEntries
+
+    const dtsPromises = processableDtsEntries.map(
+        async ({ entry, outputBasePath }) => {
+            const result = await generateDts(entry, {
+                cwd: rootDir,
+                preferredTsConfigPath: options.preferredTsconfigPath,
+                warnInsteadOfError: options.watch,
+                resolve: dtsResolve,
+            })
+
+            for (const fmt of options.format) {
+                const extension =
+                    options.outputExtension?.({
+                        format: fmt,
+                        packageType,
+                        options,
+                        entry,
+                    }).dts ?? getDefaultDtsOutputExtension(fmt, packageType)
+
+                const filePath = path.join(
+                    rootDir,
+                    options.outDir,
+                    `${outputBasePath}${extension}`,
+                )
+
+                const relativePathToRootDir = getRelativePathToRootDir(
+                    filePath,
+                    rootDir,
+                )
+
+                buildOutput.files.push({
+                    fullPath: filePath,
+                    relativePathToRootDir,
+                    dts: true,
+                    entry,
+                    outputBasePath,
+                    format: fmt,
+                })
+
+                await Bun.write(filePath, result)
+
+                logger.progress('DTS', relativePathToRootDir, {
+                    identifier: options.name,
+                })
+            }
+        },
+    )
+
+    await Promise.all(dtsPromises)
 
     await runPluginBuildDoneHooks(bunupPlugins, options, buildOutput, {
         packageJson,

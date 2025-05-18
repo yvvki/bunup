@@ -344,20 +344,16 @@ export interface BuildOptions {
      * Customize the output file extension for each format.
      *
      * @param options Contains format, packageType, options, and entry (which is the same as what you defined in the entry option)
-     * @returns Object with js extension (including the leading dot). If dts is true, the dts file extension will be automatically derived from the js extension
+     * @returns Object with js and dts extension (including the leading dot).
      *
-     * @example
-     * outputExtension: ({ format, entry }) => ({
-     *   js: entry === 'src/worker.ts' ? '.worker.js' : `.${format}.js`
-     *   // For example, if js is '.worker.js', the dts will automatically be '.worker.d.ts'
-     * })
+     * @see https://bunup.dev/docs/#customizing-output-extensions
      */
     outputExtension?: (options: {
         format: Format
         packageType: string | undefined
         options: BuildOptions
         entry: string
-    }) => { js: string }
+    }) => { js: string; dts: string }
 }
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
