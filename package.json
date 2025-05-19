@@ -68,8 +68,8 @@
         "src/**/*.(m|c)?(j|t)s": "bun run tsc"
     },
     "workspaces": ["docs", "tests"],
-    "import": "./dist/index.js",
-    "require": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "main": "./dist/index.cjs",
     "types": "./dist/index.d.cts",
     "exports": {
         ".": {

@@ -451,4 +451,47 @@ describe('exports plugin', () => {
             result.packageJson.data.exports['./custom/path/to/file'].types,
         ).toContain('.output/custom/path/to/file.d.mts')
     })
+
+    it('should set main module entrypoint correctly', async () => {
+        createProject({
+            'package.json': JSON.stringify({
+                name: 'test-package',
+                version: '1.0.0',
+            }),
+            'src/index.ts': 'export const main = "main";',
+        })
+
+        const result = await runBuild({
+            entry: ['src/index.ts'],
+            format: ['cjs'],
+            plugins: [exports()],
+        })
+
+        expect(result.success).toBe(true)
+        expect(result.packageJson.data).toBeDefined()
+        expect(result.packageJson.data.main).toBeDefined()
+        expect(result.packageJson.data.main).toContain('.output/index.js')
+    })
+
+    it('should set types entrypoint correctly', async () => {
+        createProject({
+            'package.json': JSON.stringify({
+                name: 'test-package',
+                version: '1.0.0',
+            }),
+            'src/index.ts': 'export const main = "main";',
+        })
+
+        const result = await runBuild({
+            entry: ['src/index.ts'],
+            format: ['esm'],
+            dts: true,
+            plugins: [exports()],
+        })
+
+        expect(result.success).toBe(true)
+        expect(result.packageJson.data).toBeDefined()
+        expect(result.packageJson.data.types).toBeDefined()
+        expect(result.packageJson.data.types).toContain('.output/index.d.mts')
+    })
 })

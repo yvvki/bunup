@@ -25,12 +25,13 @@ export function exports(): BunupPlugin {
 
                     const packageJson = JSON.parse(packageJsonContent)
 
-                    const { exportsField, otherExports } =
-                        generateExportsFields(output.files)
+                    const { exportsField, entryPoints } = generateExportsFields(
+                        output.files,
+                    )
 
                     const newPackageJson = {
                         ...packageJson,
-                        ...otherExports,
+                        ...entryPoints,
                         exports: exportsField,
                     }
 
@@ -55,10 +56,10 @@ export function exports(): BunupPlugin {
 
 function generateExportsFields(files: BuildOutputFile[]): {
     exportsField: ExportsField
-    otherExports: Record<string, string>
+    entryPoints: Record<string, string>
 } {
     const exportsField: ExportsField = {}
-    const otherExports: Record<string, string> = {}
+    const entryPoints: Record<string, string> = {}
 
     for (const file of files) {
         const exportType = formatToExportField(file.format, file.dts)
@@ -72,11 +73,12 @@ function generateExportsFields(files: BuildOutputFile[]): {
         }
 
         for (const field of Object.keys(exportsField['.'] ?? {})) {
-            otherExports[field] = exportsField['.'][field]
+            entryPoints[exportFieldToEntryPoint(field, file.dts)] =
+                exportsField['.'][field]
         }
     }
 
-    return { exportsField, otherExports }
+    return { exportsField, entryPoints }
 }
 
 function getExportKey(outputBasePath: string): string {
@@ -92,6 +94,10 @@ function getExportKey(outputBasePath: string): string {
     }
 
     return `./${pathSegments.filter((p) => p !== 'index').join('/')}`
+}
+
+function exportFieldToEntryPoint(exportField: string, dts: boolean): string {
+    return dts ? 'types' : exportField === 'require' ? 'main' : 'module'
 }
 
 export function formatToExportField(format: Format, dts: boolean): string {
