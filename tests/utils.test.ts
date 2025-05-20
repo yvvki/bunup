@@ -330,17 +330,21 @@ describe('Utils', () => {
     })
 
     describe('getUpdatedPackageJson', () => {
-        it('merges updates with existing package.json content', () => {
+        it('replaces the original content with the new JSON object', () => {
             const packageJsonContent = `{
   "name": "test-package",
   "version": "1.0.0"
 }`
-            const updates = { description: 'Test package' }
+            const updates = {
+                description: 'Test package',
+                dependencies: { foo: '1.0.0' },
+            }
             const result = getUpdatedPackageJson(packageJsonContent, updates)
             const expected = `{
-  "name": "test-package",
-  "version": "1.0.0",
-  "description": "Test package"
+  "description": "Test package",
+  "dependencies": {
+    "foo": "1.0.0"
+  }
 }`
             expect(result).toBe(expected)
         })
@@ -353,8 +357,6 @@ describe('Utils', () => {
             const updates = { description: 'Test package' }
             const result = getUpdatedPackageJson(packageJsonContent, updates)
             const expected = `{
-    "name": "test-package",
-    "version": "1.0.0",
     "description": "Test package"
 }`
             expect(result).toBe(expected)
@@ -379,18 +381,6 @@ describe('Utils', () => {
             const updates = { description: 'Test package' }
             const result = getUpdatedPackageJson(packageJsonContent, updates)
             expect(result.endsWith('\n')).toBe(false)
-        })
-
-        it('overwrites existing fields with updates', () => {
-            const packageJsonContent = `{
-  "name": "test-package",
-  "version": "1.0.0",
-  "description": "Original description"
-}`
-            const updates = { description: 'Updated description' }
-            const result = getUpdatedPackageJson(packageJsonContent, updates)
-            const parsed = JSON.parse(result)
-            expect(parsed.description).toBe('Updated description')
         })
     })
 })

@@ -31,7 +31,7 @@ Bunup is the **blazing-fast build tool** for TypeScript and JavaScript libraries
 - 🔥 **Bytecode Generation**: Faster startups by compiling to Bun bytecode—perfect for CLIs.
 - 📦 **[Workspace](https://bunup.dev/docs/guide/workspaces) Support**: Build multiple packages within one config file and command.
 - 🔄 **Tsup Familiarity**: Familiar tsup-like CLI and config.
-- 🎯 **Bun Target**: First-class bundling support for libraries built with Bun.
+- 🎯 **Bun Target**: First-class bundling support for libraries that are intended to run in Bun.
 
 ## 📚 Documentation
 
