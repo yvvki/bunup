@@ -14,8 +14,8 @@ export default defineConfig({
         logo: '/logo.svg',
         nav: [
             {
-                text: 'Typescript Library Starter',
-                link: '/docs/typescript-library-starter',
+                text: 'Scaffold with Bunup',
+                link: '/docs/scaffold-with-bunup',
             },
             {
                 text: `v${version}`,
@@ -36,6 +36,10 @@ export default defineConfig({
                 text: 'Guide',
                 items: [
                     { text: 'Documentation', link: '/docs/' },
+                    {
+                        text: 'Options',
+                        link: '/docs/guide/options',
+                    },
                     {
                         text: 'Typescript Declarations',
                         link: '/docs/guide/typescript-declarations',

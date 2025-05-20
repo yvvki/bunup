@@ -1,3 +1,4 @@
+import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import path, { normalize } from 'node:path'
 
@@ -134,16 +135,24 @@ export function makePortablePath(path: string): string {
 }
 
 export function getUpdatedPackageJson(
-    packageJsonContent: string,
-    updates: Record<string, unknown>,
+    oldPackageJson: string,
+    newPackageJson: Record<string, unknown>,
 ): string {
-    const parsedPackageJson = JSON.parse(packageJsonContent)
-    const hasTrailingNewline = packageJsonContent.endsWith('\n')
+    const hasTrailingNewline = oldPackageJson.endsWith('\n')
     return (
         JSON.stringify(
-            { ...parsedPackageJson, ...updates },
+            newPackageJson,
             null,
-            getJsonSpaceCount(packageJsonContent),
+            getJsonSpaceCount(oldPackageJson),
         ) + (hasTrailingNewline ? '\n' : '')
     )
+}
+
+export function pathExistsSync(filePath: string): boolean {
+    try {
+        fsSync.accessSync(filePath)
+        return true
+    } catch (error) {
+        return false
+    }
 }

@@ -18,9 +18,9 @@ export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>
 async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     const cliOptions = parseCliOptions(args)
 
-    if (cliOptions.init) {
-        const { init } = await import('./init')
-        await init()
+    if (cliOptions.new) {
+        const { newProject } = await import('./new')
+        await newProject()
         return
     }
 
@@ -104,7 +104,7 @@ function removeCliOnlyOptions(options: Partial<CliOptions>) {
         onSuccess: undefined,
         config: undefined,
         filter: undefined,
-        init: undefined,
+        new: undefined,
     }
 }
 

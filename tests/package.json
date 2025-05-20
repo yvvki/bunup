@@ -1,6 +1,18 @@
 {
     "name": "tests",
     "private": true,
+    "files": ["dist"],
+    "module": "./dist/index.mjs",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
     "dependencies": {
         "chalk": "^5.4.1",
         "lodash": "^4.17.21",
@@ -9,7 +21,8 @@
     },
     "scripts": {
         "build": "bun run ../src/cli/index.ts",
-        "dev": "bun run ../src/cli/index.ts --watch"
+        "dev": "bun run ../src/cli/index.ts --watch",
+        "new": "bun run ../src/cli/index.ts --new"
     },
     "devDependencies": {
         "ora": "^8.2.0",
@@ -19,15 +32,5 @@
     },
     "peerDependencies": {
         "ora": "^8.2.0"
-    },
-    "module": "./dist/index.mjs",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        }
     }
 }

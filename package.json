@@ -28,7 +28,9 @@
         "bun-dts": "^0.1.26",
         "chokidar": "^4.0.3",
         "coffi": "^0.1.28",
+        "giget": "^2.0.0",
         "package-manager-detector": "^1.2.0",
+        "replace-in-file": "^8.3.0",
         "tinyexec": "^1.0.1"
     },
     "devDependencies": {
@@ -73,14 +75,14 @@
     "types": "./dist/index.d.cts",
     "exports": {
         ".": {
-            "types": "./dist/index.d.cts",
             "import": "./dist/index.js",
-            "require": "./dist/index.cjs"
+            "require": "./dist/index.cjs",
+            "types": "./dist/index.d.cts"
         },
         "./plugins": {
-            "types": "./dist/plugins.d.cts",
             "import": "./dist/plugins.js",
-            "require": "./dist/plugins.cjs"
+            "require": "./dist/plugins.cjs",
+            "types": "./dist/plugins.d.cts"
         }
     }
 }

@@ -3,7 +3,9 @@ import type { Format } from '../../../options'
 import { getUpdatedPackageJson, makePortablePath } from '../../../utils'
 import type { BuildOutputFile, BunupPlugin } from '../../types'
 
-type ExportsField = Record<string, Record<string, string>>
+type ExportField = 'require' | 'import' | 'types'
+type EntryPoint = 'main' | 'module' | 'types'
+type ExportsField = Record<string, Record<ExportField, string>>
 
 /**
  * A plugin that generates the exports field in the package.json file automatically.
@@ -13,7 +15,7 @@ export function exports(): BunupPlugin {
         type: 'bunup',
         name: 'exports',
         hooks: {
-            onBuildDone: async ({ output, meta }) => {
+            onBuildDone: async ({ output, options, meta }) => {
                 if (!meta.packageJson.path || !meta.packageJson.data) {
                     return
                 }
@@ -29,10 +31,45 @@ export function exports(): BunupPlugin {
                         output.files,
                     )
 
-                    const newPackageJson = {
-                        ...packageJson,
+                    const files = Array.isArray(packageJson.files)
+                        ? [...new Set([...packageJson.files, options.outDir])]
+                        : [options.outDir]
+
+                    const existingExports = packageJson.exports || {}
+                    const mergedExports = { ...existingExports }
+
+                    for (const [key, value] of Object.entries(exportsField)) {
+                        mergedExports[key] = {
+                            ...(mergedExports[key] || {}),
+                            ...value,
+                        }
+                    }
+
+                    const newPackageJson: Record<string, unknown> = {
+                        name: packageJson.name,
+                        description: packageJson.description,
+                        version: packageJson.version,
+                        type: packageJson.type,
+                        private: packageJson.private,
+                        files,
                         ...entryPoints,
-                        exports: exportsField,
+                        exports: mergedExports,
+                    }
+
+                    for (const key in packageJson) {
+                        if (
+                            Object.prototype.hasOwnProperty.call(
+                                packageJson,
+                                key,
+                            ) &&
+                            !Object.prototype.hasOwnProperty.call(
+                                newPackageJson,
+                                key,
+                            )
+                        ) {
+                            newPackageJson[key] =
+                                packageJson[key as keyof typeof packageJson]
+                        }
                     }
 
                     await Bun.write(
@@ -43,11 +80,9 @@ export function exports(): BunupPlugin {
                         ),
                     )
 
-                    logger.cli('Added exports field to package.json')
-                } catch {
-                    logger.error(
-                        'Failed to generate exports field in package.json',
-                    )
+                    logger.cli('Updated package.json with exports')
+                } catch (error) {
+                    logger.error('Failed to update package.json')
                 }
             },
         },
@@ -56,10 +91,10 @@ export function exports(): BunupPlugin {
 
 function generateExportsFields(files: BuildOutputFile[]): {
     exportsField: ExportsField
-    entryPoints: Record<string, string>
+    entryPoints: Partial<Record<EntryPoint, string>>
 } {
     const exportsField: ExportsField = {}
-    const entryPoints: Record<string, string> = {}
+    const entryPoints: Partial<Record<EntryPoint, string>> = {}
 
     for (const file of files) {
         const exportType = formatToExportField(file.format, file.dts)
@@ -73,8 +108,9 @@ function generateExportsFields(files: BuildOutputFile[]): {
         }
 
         for (const field of Object.keys(exportsField['.'] ?? {})) {
-            entryPoints[exportFieldToEntryPoint(field, file.dts)] =
-                exportsField['.'][field]
+            entryPoints[
+                exportFieldToEntryPoint(field as ExportField, file.dts)
+            ] = exportsField['.'][field as ExportField]
         }
     }
 
@@ -96,10 +132,13 @@ function getExportKey(outputBasePath: string): string {
     return `./${pathSegments.filter((p) => p !== 'index').join('/')}`
 }
 
-function exportFieldToEntryPoint(exportField: string, dts: boolean): string {
+function exportFieldToEntryPoint(
+    exportField: ExportField,
+    dts: boolean,
+): EntryPoint {
     return dts ? 'types' : exportField === 'require' ? 'main' : 'module'
 }
 
-export function formatToExportField(format: Format, dts: boolean): string {
+function formatToExportField(format: Format, dts: boolean): ExportField {
     return dts ? 'types' : format === 'esm' ? 'import' : 'require'
 }
