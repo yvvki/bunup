@@ -75,6 +75,42 @@ describe('Build Process', () => {
         ).toBe(true)
     })
 
+    it('ensures "use client" directive appears at the top of the file', async () => {
+        createProject({
+            'src/component.tsx': `"use client";
+import { useState } from 'react';
+
+export function Counter() {
+    const [count, setCount] = useState(0);
+    return (
+        <button onClick={() => setCount(count + 1)}>
+            Count: {count}
+        </button>
+    );
+}`,
+        })
+
+        const result = await runBuild({
+            entry: 'src/component.tsx',
+            format: ['esm'],
+        })
+
+        expect(result.success).toBe(true)
+
+        const outputFile = result.files.find((f) =>
+            f.path.endsWith('component.mjs'),
+        )
+        expect(outputFile).toBeDefined()
+
+        expect(outputFile.content.trimStart().startsWith('"use client";')).toBe(
+            true,
+        )
+
+        const clientDirectivePos = outputFile.content.indexOf('"use client";')
+        const importPos = outputFile.content.indexOf('import')
+        expect(clientDirectivePos).toBeLessThan(importPos)
+    })
+
     it('respects minify options', async () => {
         const result = await runBuild({
             entry: 'src/index.ts',

@@ -5,16 +5,6 @@ import path, { normalize } from 'node:path'
 import { BunupBuildError } from './errors'
 import type { Format } from './options'
 
-export function addField<T extends Record<string, unknown>, F extends string>(
-    objectOrArray: T | T[],
-    field: F,
-    value: unknown,
-): (T & { [key in F]: unknown }) | (T[] & { [key in F]: unknown }[]) {
-    return Array.isArray(objectOrArray)
-        ? objectOrArray.map((o) => ({ ...o, [field]: value }))
-        : { ...objectOrArray, [field]: value }
-}
-
 export function ensureArray<T>(value: T | T[]): T[] {
     return Array.isArray(value) ? value : [value]
 }
@@ -118,17 +108,20 @@ export async function cleanOutDir(
     await fs.mkdir(outDirPath, { recursive: true })
 }
 
+/**
+ * Converts a file path to a portable format by:
+ * - Normalizing path separators to forward slashes
+ * - Removing Windows drive letters (e.g. C:/)
+ * - Removing leading slashes
+ * - Collapsing multiple slashes to single slash
+ */
 export function makePortablePath(path: string): string {
-    // First normalize and convert all backslashes to forward slashes
     let cleaned = normalize(path).replace(/\\/g, '/')
 
-    // Remove Windows drive letter prefix
     cleaned = cleaned.replace(/^[a-zA-Z]:\//, '')
 
-    // Remove any leading slashes
     cleaned = cleaned.replace(/^\/+/, '')
 
-    // Remove any duplicate slashes
     cleaned = cleaned.replace(/\/+/g, '/')
 
     return cleaned

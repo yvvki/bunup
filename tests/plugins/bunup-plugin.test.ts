@@ -38,7 +38,6 @@ describe('Bunup Plugins', () => {
             expect.objectContaining({
                 entry: 'src/index.ts',
                 format: ['esm'],
-                plugins: [testPlugin],
             }),
         )
     })

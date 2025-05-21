@@ -1,3 +1,4 @@
+import { renameSync } from 'node:fs'
 import path from 'node:path'
 import {
     cancel,
@@ -26,6 +27,7 @@ const TEMPLATE_REPO = 'bunup-new'
 const GITHUB_USERNAME_PLACEHOLDER = 'username'
 const GITHUB_REPO_PLACEHOLDER = 'repo-name'
 const MONOREPO_FIRST_PACKAGE_NAME_PLACEHOLDER = 'package-1'
+const MONOREPO_PACKAGES_DIR = 'packages'
 
 const TEMPLATES: Template[] = [
     {
@@ -146,6 +148,19 @@ export async function newProject(): Promise<void> {
                         to: [monorepoFirstPackageName],
                         ignore: ['node_modules', 'dist', 'bun.lock'],
                     })
+
+                    renameSync(
+                        path.join(
+                            projectPath,
+                            MONOREPO_PACKAGES_DIR,
+                            MONOREPO_FIRST_PACKAGE_NAME_PLACEHOLDER,
+                        ),
+                        path.join(
+                            projectPath,
+                            MONOREPO_PACKAGES_DIR,
+                            monorepoFirstPackageName,
+                        ),
+                    )
                 }
             },
         },

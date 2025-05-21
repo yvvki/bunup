@@ -3,7 +3,6 @@ import { loadConfig } from 'coffi'
 import type { LoadedConfig } from './cli'
 import type { BuildOptions } from './options'
 import type { Arrayable, DefineWorkspaceItem } from './types'
-import { addField } from './utils'
 
 export type ProcessableConfig = {
     rootDir: string
@@ -32,6 +31,16 @@ export async function processLoadedConfigs(
                   options: config as Arrayable<BuildOptions>,
               },
           ]
+}
+
+export function addField<T extends Record<string, unknown>, F extends string>(
+    objectOrArray: T | T[],
+    field: F,
+    value: unknown,
+): (T & { [key in F]: unknown }) | (T[] & { [key in F]: unknown }[]) {
+    return Array.isArray(objectOrArray)
+        ? objectOrArray.map((o) => ({ ...o, [field]: value }))
+        : { ...objectOrArray, [field]: value }
 }
 
 export type PackageJson = {

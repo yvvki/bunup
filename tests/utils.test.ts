@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test'
+import { addField } from '../src/loaders'
 import {
     getResolvedBytecode,
     getResolvedDefine,
@@ -6,7 +7,6 @@ import {
     getResolvedSplitting,
 } from '../src/options'
 import {
-    addField,
     ensureArray,
     formatFileSize,
     formatTime,

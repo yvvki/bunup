@@ -1,3 +1,4 @@
+import { useClient } from './plugins/internal/use-client'
 import type { Plugin } from './plugins/types'
 import type {
     Arrayable,
@@ -373,11 +374,17 @@ const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
 export function createBuildOptions(
     partialOptions: Partial<BuildOptions>,
 ): BuildOptions {
-    return {
+    const options = {
         ...DEFAULT_OPTIONS,
         ...partialOptions,
     }
+
+    return {
+        ...options,
+        plugins: [...(options.plugins ?? []), useClient()],
+    }
 }
+
 export function getResolvedMinify(options: BuildOptions): {
     whitespace: boolean
     identifiers: boolean
