@@ -2,7 +2,6 @@ import { exports } from './src/plugins/built-in/productivity/exports'
 
 const COMMON_OPTIONS = {
     outDir: 'dist',
-    minify: true,
     splitting: false,
     target: 'bun',
 }

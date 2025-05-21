@@ -20,7 +20,9 @@ export function useClient(): BunupPlugin {
                 for (const file of output.files) {
                     let text = await Bun.file(file.fullPath).text()
 
-                    const hasUseClient = text.includes(`"use client";`)
+                    const hasUseClient = text
+                        .split('\n')
+                        .some((line) => line.trim().startsWith(`"use client";`))
                     if (hasUseClient) {
                         text = text.replaceAll(`"use client";`, '')
                         text = `"use client";\n${text}`

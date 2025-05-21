@@ -1,4 +1,3 @@
-import fs from 'node:fs'
 import path from 'node:path'
 import {
     type CustomAtRules,
@@ -75,7 +74,7 @@ export function injectStyles(options?: InjectStylesPluginOptions): Plugin {
                 )
 
                 build.onLoad({ filter: CSS_RE }, async (args) => {
-                    const source = await fs.promises.readFile(args.path, 'utf8')
+                    const source = await Bun.file(args.path).text()
 
                     const { code, warnings } = transform({
                         ...transformOptions,
