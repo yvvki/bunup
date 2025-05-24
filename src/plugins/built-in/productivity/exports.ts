@@ -37,13 +37,10 @@ export function exports(): BunupPlugin {
                         : [options.outDir]
 
                     const existingExports = packageJson.exports || {}
-                    const mergedExports = { ...existingExports }
+                    const mergedExports: ExportsField = { ...existingExports }
 
                     for (const [key, value] of Object.entries(exportsField)) {
-                        mergedExports[key] = {
-                            ...(mergedExports[key] || {}),
-                            ...value,
-                        }
+                        mergedExports[key] = value
                     }
 
                     const newPackageJson: Record<string, unknown> = {
