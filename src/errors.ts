@@ -36,6 +36,13 @@ export class BunupWatchError extends BunupError {
     }
 }
 
+export class BunupPluginError extends BunupError {
+    constructor(message: string) {
+        super(message)
+        this.name = 'BunupPluginError'
+    }
+}
+
 export const parseErrorMessage = (error: unknown): string => {
     if (error instanceof Error) {
         return error.message
@@ -81,6 +88,8 @@ export const handleError = (error: unknown, context?: string): void => {
         errorType = 'CLI ERROR'
     } else if (error instanceof BunupWatchError) {
         errorType = 'WATCH ERROR'
+    } else if (error instanceof BunupPluginError) {
+        errorType = 'PLUGIN ERROR'
     } else if (error instanceof BunupError) {
         errorType = 'BUNUP ERROR'
     }

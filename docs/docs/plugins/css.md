@@ -16,20 +16,20 @@ The `injectStyles` plugin uses LightningCSS under the hood. You'll need to insta
 
 ::: code-group
 
-```bash [npm]
-npm install --save-dev lightningcss
-```
-
-```bash [yarn]
-yarn add --dev lightningcss
+```bash [bun]
+bun add --dev lightningcss
 ```
 
 ```bash [pnpm]
 pnpm add --save-dev lightningcss
 ```
 
-```bash [bun]
-bun add --dev lightningcss
+```bash [npm]
+npm install --save-dev lightningcss
+```
+
+```bash [yarn]
+yarn add --dev lightningcss
 ```
 
 :::

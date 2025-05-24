@@ -29,7 +29,7 @@ type InjectStylesPluginOptions = Pick<
 /**
  * A plugin that injects styles into the document head.
  *
- * @see https://bunup.dev/docs/plugins/css#inject-styles
+ * @see https://bunup.dev/docs/plugins/css#injectstyles
  */
 export function injectStyles(options?: InjectStylesPluginOptions): Plugin {
     const { inject, ...transformOptions } = options ?? {}
