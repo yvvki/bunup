@@ -8,6 +8,7 @@ import { type CliOptions, parseCliOptions } from './options'
 
 import { loadConfig } from 'coffi'
 import pc from 'picocolors'
+import { build } from '../build'
 import { type ProcessableConfig, processLoadedConfigs } from '../loaders'
 import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from '../types'
 import { ensureArray, formatTime, getShortFilePath } from '../utils'
@@ -53,8 +54,6 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     const startTime = performance.now()
 
     logger.cli('Build started')
-
-    const { build } = await import('../build')
 
     await Promise.all(
         configsToProcess.flatMap(({ options, rootDir }) => {

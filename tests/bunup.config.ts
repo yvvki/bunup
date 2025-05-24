@@ -1,10 +1,10 @@
 import { defineConfig } from '../src'
-import { injectStyles, report } from '../src/plugins/built-in'
+import { exports, injectStyles, report } from '../src/plugins/built-in'
 
 export default defineConfig({
     entry: ['fixtures/index.ts'],
-    format: ['esm', 'cjs'],
+    format: ['esm'],
     dts: true,
-    plugins: [report(), injectStyles()],
+    plugins: [report(), injectStyles(), exports()],
     splitting: false,
 })

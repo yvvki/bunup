@@ -41,9 +41,7 @@ export async function watch(
     const chokidar = await import('chokidar')
 
     const watcher = chokidar.watch(Array.from(watchPaths), {
-        persistent: true,
         ignoreInitial: true,
-        atomic: true,
         ignorePermissionErrors: true,
         ignored: [
             /[\\/]\.git[\\/]/,
@@ -55,7 +53,9 @@ export async function watch(
     let isRebuilding = false
 
     const triggerRebuild = async (initial = false) => {
-        if (isRebuilding) return
+        if (isRebuilding) {
+            return
+        }
         isRebuilding = true
         try {
             const start = performance.now()

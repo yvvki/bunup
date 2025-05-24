@@ -72,7 +72,7 @@ export const handleError = (error: unknown, context?: string): void => {
     const errorMessage = parseErrorMessage(error)
     const contextPrefix = context ? `[${context}] ` : ''
 
-    let errorType = ''
+    let errorType = 'UNKNOWN ERROR'
     if (error instanceof BunupBuildError) {
         errorType = 'BUILD ERROR'
     } else if (error instanceof BunupDTSBuildError) {
