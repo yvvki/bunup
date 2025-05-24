@@ -60,8 +60,6 @@ When you're ready to release your package, simply run:
 
 ```sh
 bun run release
-# or
-pnpm release
 ```
 
 This will:
