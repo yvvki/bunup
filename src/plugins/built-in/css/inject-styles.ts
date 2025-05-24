@@ -1,16 +1,14 @@
 import path from 'node:path'
-import {
-    type CustomAtRules,
-    type TransformOptions,
-    transform,
-} from 'lightningcss'
 import { CSS_RE } from '../../../constants/re'
 import { logger } from '../../../logger'
 import type { MaybePromise } from '../../../types'
 import type { Plugin } from '../../types'
+import { getPackageForPlugin } from '../../utils'
 
 type InjectStylesPluginOptions = Pick<
-    TransformOptions<CustomAtRules>,
+    import('lightningcss').TransformOptions<
+        import('lightningcss').CustomAtRules
+    >,
     | 'sourceMap'
     | 'inputSourceMap'
     | 'targets'
@@ -41,7 +39,11 @@ export function injectStyles(options?: InjectStylesPluginOptions): Plugin {
         name: 'inject-styles',
         plugin: {
             name: 'bunup:inject-styles',
-            setup(build) {
+            async setup(build) {
+                const lightningcss = await getPackageForPlugin<
+                    typeof import('lightningcss')
+                >('lightningcss', 'inject-styles')
+
                 build.onResolve({ filter: /^__inject-style$/ }, () => {
                     return {
                         path: '__inject-style',
@@ -76,7 +78,7 @@ export function injectStyles(options?: InjectStylesPluginOptions): Plugin {
                 build.onLoad({ filter: CSS_RE }, async (args) => {
                     const source = await Bun.file(args.path).text()
 
-                    const { code, warnings } = transform({
+                    const { code, warnings } = lightningcss.transform({
                         ...transformOptions,
                         filename: path.basename(args.path),
                         code: Buffer.from(source),
