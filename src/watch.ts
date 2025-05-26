@@ -58,6 +58,7 @@ export async function watch(
         }
         isRebuilding = true
         try {
+            await new Promise((resolve) => setTimeout(resolve, 20))
             const start = performance.now()
             await build(options, rootDir)
             if (!initial) {

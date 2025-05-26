@@ -109,10 +109,7 @@ export async function build(
 
                 for (const log of result.logs) {
                     if (log.level === 'error') {
-                        console.log('\n')
-                        console.log(log)
-                        console.log('\n')
-                        throw new Error()
+                        throw new BunupBuildError(log.message)
                     }
                     if (log.level === 'warning') logger.warn(log.message)
                     else if (log.level === 'info') logger.info(log.message)
