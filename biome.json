@@ -13,12 +13,10 @@
 			"style": {
 				"noUselessElse": "off"
 			}
-		},
-		"ignore": ["**/dist", "**/bun.lock"]
+		}
 	},
 	"formatter": {
-		"useEditorconfig": true,
-		"ignore": ["**/dist", "**/bun.lock"]
+		"useEditorconfig": true
 	},
 	"javascript": {
 		"formatter": {
