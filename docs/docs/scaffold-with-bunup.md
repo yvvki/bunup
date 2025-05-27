@@ -4,7 +4,7 @@ Quickly scaffold modern TypeScript and React libraries in just 10 seconds with B
 
 - 🚀 **Ready to Code**: Just run the command and start coding - no renaming or setup needed
 - 📦 **Modern Stack**: ESM/CJS formats, TypeScript declarations, and optional monorepo support
-- ⚡️ **Complete Tooling**: Bun-powered development with testing, linting, and formatting
+- ⚡️ **Complete Tooling**: Bun-powered development with testing, Biome for linting and formatting
 - 🚢 **Automated Releases**: Built-in GitHub Actions for testing and publishing to npm
 - 🔥 **Ultra-Fast Builds**: Instant builds that feel instantaneous
 
