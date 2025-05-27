@@ -12,25 +12,25 @@ import type { BunupPlugin } from '../types'
  * Track the upstream fix at {@link https://github.com/oven-sh/bun/issues/6854}
  */
 export function useClient(): BunupPlugin {
-    return {
-        type: 'bunup',
-        name: 'use-client',
-        hooks: {
-            onBuildDone: async ({ output }) => {
-                for (const file of output.files) {
-                    let text = await Bun.file(file.fullPath).text()
+	return {
+		type: 'bunup',
+		name: 'use-client',
+		hooks: {
+			onBuildDone: async ({ output }) => {
+				for (const file of output.files) {
+					let text = await Bun.file(file.fullPath).text()
 
-                    const hasUseClient = text
-                        .split('\n')
-                        .some((line) => line.trim().startsWith(`"use client";`))
-                    if (hasUseClient) {
-                        text = text.replaceAll(`"use client";`, '')
-                        text = `"use client";\n${text}`
-                    }
+					const hasUseClient = text
+						.split('\n')
+						.some((line) => line.trim().startsWith(`"use client";`))
+					if (hasUseClient) {
+						text = text.replaceAll(`"use client";`, '')
+						text = `"use client";\n${text}`
+					}
 
-                    await Bun.write(file.fullPath, text)
-                }
-            },
-        },
-    }
+					await Bun.write(file.fullPath, text)
+				}
+			},
+		},
+	}
 }

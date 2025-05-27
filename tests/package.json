@@ -1,33 +1,33 @@
 {
-    "name": "tests",
-    "private": true,
-    "files": ["dist"],
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.mts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.mjs",
-            "types": "./dist/index.d.mts"
-        }
-    },
-    "dependencies": {
-        "chalk": "^5.4.1",
-        "lodash": "^4.17.21",
-        "zx": "^8.5.3",
-        "zx-extra": "^4.0.5"
-    },
-    "scripts": {
-        "build": "bun run ../src/cli/index.ts",
-        "dev": "bun run ../src/cli/index.ts --watch",
-        "new": "bun run ../src/cli/index.ts --new"
-    },
-    "devDependencies": {
-        "ora": "^8.2.0",
-        "picocolors": "^1.1.1",
-        "uvu": "^0.5.6",
-        "uvu-expect": "^0.5.0"
-    },
-    "peerDependencies": {
-        "ora": "^8.2.0"
-    }
+	"name": "tests",
+	"private": true,
+	"files": ["dist"],
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.mts"
+		}
+	},
+	"dependencies": {
+		"chalk": "^5.4.1",
+		"lodash": "^4.17.21",
+		"zx": "^8.5.3",
+		"zx-extra": "^4.0.5"
+	},
+	"scripts": {
+		"build": "bun run ../src/cli/index.ts",
+		"dev": "bun run ../src/cli/index.ts --watch",
+		"new": "bun run ../src/cli/index.ts --new"
+	},
+	"devDependencies": {
+		"ora": "^8.2.0",
+		"picocolors": "^1.1.1",
+		"uvu": "^0.5.6",
+		"uvu-expect": "^0.5.0"
+	},
+	"peerDependencies": {
+		"ora": "^8.2.0"
+	}
 }

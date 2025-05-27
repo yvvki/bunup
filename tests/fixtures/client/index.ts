@@ -1,3 +1,3 @@
 export function client() {
-    return 'client'
+	return 'client'
 }

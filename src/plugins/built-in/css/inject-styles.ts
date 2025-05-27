@@ -6,24 +6,22 @@ import type { Plugin } from '../../types'
 import { getPackageForPlugin } from '../../utils'
 
 type InjectStylesPluginOptions = Pick<
-    import('lightningcss').TransformOptions<
-        import('lightningcss').CustomAtRules
-    >,
-    | 'sourceMap'
-    | 'inputSourceMap'
-    | 'targets'
-    | 'nonStandard'
-    | 'minify'
-    | 'pseudoClasses'
-    | 'unusedSymbols'
-    | 'errorRecovery'
-    | 'visitor'
-    | 'customAtRules'
-    | 'include'
-    | 'exclude'
-    | 'drafts'
+	import('lightningcss').TransformOptions<import('lightningcss').CustomAtRules>,
+	| 'sourceMap'
+	| 'inputSourceMap'
+	| 'targets'
+	| 'nonStandard'
+	| 'minify'
+	| 'pseudoClasses'
+	| 'unusedSymbols'
+	| 'errorRecovery'
+	| 'visitor'
+	| 'customAtRules'
+	| 'include'
+	| 'exclude'
+	| 'drafts'
 > & {
-    inject?: (css: string, filePath: string) => MaybePromise<string>
+	inject?: (css: string, filePath: string) => MaybePromise<string>
 }
 
 /**
@@ -32,30 +30,30 @@ type InjectStylesPluginOptions = Pick<
  * @see https://bunup.dev/docs/plugins/css#injectstyles
  */
 export function injectStyles(options?: InjectStylesPluginOptions): Plugin {
-    const { inject, ...transformOptions } = options ?? {}
+	const { inject, ...transformOptions } = options ?? {}
 
-    return {
-        type: 'bun',
-        name: 'inject-styles',
-        plugin: {
-            name: 'bunup:inject-styles',
-            async setup(build) {
-                const lightningcss = await getPackageForPlugin<
-                    typeof import('lightningcss')
-                >('lightningcss', 'inject-styles')
+	return {
+		type: 'bun',
+		name: 'inject-styles',
+		plugin: {
+			name: 'bunup:inject-styles',
+			async setup(build) {
+				const lightningcss = await getPackageForPlugin<
+					typeof import('lightningcss')
+				>('lightningcss', 'inject-styles')
 
-                build.onResolve({ filter: /^__inject-style$/ }, () => {
-                    return {
-                        path: '__inject-style',
-                        namespace: '__inject-style',
-                    }
-                })
+				build.onResolve({ filter: /^__inject-style$/ }, () => {
+					return {
+						path: '__inject-style',
+						namespace: '__inject-style',
+					}
+				})
 
-                build.onLoad(
-                    { filter: /^__inject-style$/, namespace: '__inject-style' },
-                    () => {
-                        return {
-                            contents: `
+				build.onLoad(
+					{ filter: /^__inject-style$/, namespace: '__inject-style' },
+					() => {
+						return {
+							contents: `
                       export default function injectStyle(css) {
                         if (!css || typeof document === 'undefined') return
                       
@@ -70,41 +68,41 @@ export function injectStyles(options?: InjectStylesPluginOptions): Plugin {
                         }
                       }
                       `,
-                            loader: 'js',
-                        }
-                    },
-                )
+							loader: 'js',
+						}
+					},
+				)
 
-                build.onLoad({ filter: CSS_RE }, async (args) => {
-                    const source = await Bun.file(args.path).text()
+				build.onLoad({ filter: CSS_RE }, async (args) => {
+					const source = await Bun.file(args.path).text()
 
-                    const { code, warnings } = lightningcss.transform({
-                        ...transformOptions,
-                        filename: path.basename(args.path),
-                        code: Buffer.from(source),
-                        minify:
-                            transformOptions.minify ??
-                            (build.config.minify === true ||
-                                (typeof build.config.minify === 'object' &&
-                                    build.config.minify.whitespace)),
-                    })
+					const { code, warnings } = lightningcss.transform({
+						...transformOptions,
+						filename: path.basename(args.path),
+						code: Buffer.from(source),
+						minify:
+							transformOptions.minify ??
+							(build.config.minify === true ||
+								(typeof build.config.minify === 'object' &&
+									build.config.minify.whitespace)),
+					})
 
-                    for (const warning of warnings) {
-                        logger.warn(warning.message)
-                    }
+					for (const warning of warnings) {
+						logger.warn(warning.message)
+					}
 
-                    const stringifiedCode = JSON.stringify(code.toString())
+					const stringifiedCode = JSON.stringify(code.toString())
 
-                    const js = inject
-                        ? await inject(stringifiedCode, args.path)
-                        : `import injectStyle from '__inject-style';injectStyle(${stringifiedCode})`
+					const js = inject
+						? await inject(stringifiedCode, args.path)
+						: `import injectStyle from '__inject-style';injectStyle(${stringifiedCode})`
 
-                    return {
-                        contents: js,
-                        loader: 'js',
-                    }
-                })
-            },
-        },
-    }
+					return {
+						contents: js,
+						loader: 'js',
+					}
+				})
+			},
+		},
+	}
 }

@@ -1,91 +1,91 @@
 {
-    "name": "bunup",
-    "description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
-    "version": "0.8.7",
-    "type": "module",
-    "files": ["dist", "bin"],
-    "module": "./dist/index.js",
-    "main": "./dist/index.cjs",
-    "types": "./dist/index.d.cts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs",
-            "types": "./dist/index.d.cts"
-        },
-        "./plugins": {
-            "import": "./dist/plugins.js",
-            "require": "./dist/plugins.cjs",
-            "types": "./dist/plugins.d.cts"
-        }
-    },
-    "license": "MIT",
-    "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
-    "maintainers": [
-        {
-            "name": "Arshad Yaseen",
-            "email": "m@arshadyaseen.com",
-            "url": "https://arshadyaseen.com"
-        }
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/arshad-yaseen/bunup.git"
-    },
-    "funding": "https://github.com/sponsors/arshad-yaseen",
-    "homepage": "https://bunup.dev",
-    "keywords": ["bun", "bunup", "bun-bundler"],
-    "bin": {
-        "bunup": "bin/bunup.mjs"
-    },
-    "dependencies": {
-        "@clack/prompts": "^0.10.1",
-        "bun-dts": "^0.1.28",
-        "chokidar": "^4.0.3",
-        "coffi": "^0.1.29",
-        "giget": "^2.0.0",
-        "replace-in-file": "^8.3.0",
-        "tinyexec": "^1.0.1"
-    },
-    "devDependencies": {
-        "@biomejs/biome": "^1.9.4",
-        "@types/bun": "^1.2.5",
-        "bumpp": "^10.1.0",
-        "husky": "^9.1.7",
-        "lint-staged": "^15.5.1",
-        "typescript": "^5.8.3"
-    },
-    "peerDependencies": {
-        "typescript": ">=4.5.0",
-        "lightningcss": ">=1.17.0"
-    },
-    "peerDependenciesMeta": {
-        "typescript": {
-            "optional": true
-        },
-        "lightningcss": {
-            "optional": true
-        }
-    },
-    "scripts": {
-        "build": "bunx bunup@latest",
-        "build:docs": "bun run --cwd docs build",
-        "dev": "bunx bunup@latest --watch",
-        "dev:docs": "bun run --cwd docs dev",
-        "format": "biome format .",
-        "format:fix": "biome format --write .",
-        "lint": "biome check .",
-        "lint:fix": "biome check --write .",
-        "prepare": "husky",
-        "test": "bun test",
-        "test-build": "bun run --cwd tests build",
-        "tsc": "tsc --noEmit",
-        "publish:ci": "bun publish --access public --no-git-checks",
-        "release": "bumpp"
-    },
-    "lint-staged": {
-        "*": "bun run format:fix && git add .",
-        "src/**/*.(m|c)?(j|t)s": "bun run tsc"
-    },
-    "workspaces": ["docs", "tests"]
+	"name": "bunup",
+	"description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
+	"version": "0.8.7",
+	"type": "module",
+	"files": ["dist", "bin"],
+	"module": "./dist/index.js",
+	"main": "./dist/index.cjs",
+	"types": "./dist/index.d.cts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
+			"types": "./dist/index.d.cts"
+		},
+		"./plugins": {
+			"import": "./dist/plugins.js",
+			"require": "./dist/plugins.cjs",
+			"types": "./dist/plugins.d.cts"
+		}
+	},
+	"license": "MIT",
+	"author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
+	"maintainers": [
+		{
+			"name": "Arshad Yaseen",
+			"email": "m@arshadyaseen.com",
+			"url": "https://arshadyaseen.com"
+		}
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/arshad-yaseen/bunup.git"
+	},
+	"funding": "https://github.com/sponsors/arshad-yaseen",
+	"homepage": "https://bunup.dev",
+	"keywords": ["bun", "bunup", "bun-bundler"],
+	"bin": {
+		"bunup": "bin/bunup.mjs"
+	},
+	"dependencies": {
+		"@clack/prompts": "^0.10.1",
+		"bun-dts": "^0.1.28",
+		"chokidar": "^4.0.3",
+		"coffi": "^0.1.29",
+		"giget": "^2.0.0",
+		"replace-in-file": "^8.3.0",
+		"tinyexec": "^1.0.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@types/bun": "^1.2.5",
+		"bumpp": "^10.1.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^15.5.1",
+		"typescript": "^5.8.3"
+	},
+	"peerDependencies": {
+		"typescript": ">=4.5.0",
+		"lightningcss": ">=1.17.0"
+	},
+	"peerDependenciesMeta": {
+		"typescript": {
+			"optional": true
+		},
+		"lightningcss": {
+			"optional": true
+		}
+	},
+	"scripts": {
+		"build": "bunx bunup@latest",
+		"build:docs": "bun run --cwd docs build",
+		"dev": "bunx bunup@latest --watch",
+		"dev:docs": "bun run --cwd docs dev",
+		"format": "biome format .",
+		"format:fix": "biome format --write .",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"prepare": "husky",
+		"test": "bun test",
+		"test-build": "bun run --cwd tests build",
+		"tsc": "tsc --noEmit",
+		"publish:ci": "bun publish --access public --no-git-checks",
+		"release": "bumpp"
+	},
+	"lint-staged": {
+		"*": "bun run format:fix && git add .",
+		"src/**/*.(m|c)?(j|t)s": "bun run tsc"
+	},
+	"workspaces": ["docs", "tests"]
 }

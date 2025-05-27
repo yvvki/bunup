@@ -17,94 +17,94 @@ import { watch } from '../watch'
 export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>
 
 async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
-    const cliOptions = parseCliOptions(args)
+	const cliOptions = parseCliOptions(args)
 
-    if (cliOptions.new) {
-        const { newProject } = await import('./new')
-        await newProject()
-        return
-    }
+	if (cliOptions.new) {
+		const { newProject } = await import('./new')
+		await newProject()
+		return
+	}
 
-    setSilent(cliOptions.silent)
+	setSilent(cliOptions.silent)
 
-    const cwd = process.cwd()
+	const cwd = process.cwd()
 
-    const { config, filepath } = await loadConfig<LoadedConfig>({
-        name: 'bunup.config',
-        extensions: ['.ts', '.js', '.mjs', '.cjs'],
-        maxDepth: 1,
-        preferredPath: cliOptions.config,
-        packageJsonProperty: 'bunup',
-    })
+	const { config, filepath } = await loadConfig<LoadedConfig>({
+		name: 'bunup.config',
+		extensions: ['.ts', '.js', '.mjs', '.cjs'],
+		maxDepth: 1,
+		preferredPath: cliOptions.config,
+		packageJsonProperty: 'bunup',
+	})
 
-    const configsToProcess: ProcessableConfig[] = !config
-        ? [{ rootDir: cwd, options: cliOptions }]
-        : await processLoadedConfigs(config, cwd, cliOptions.filter)
+	const configsToProcess: ProcessableConfig[] = !config
+		? [{ rootDir: cwd, options: cliOptions }]
+		: await processLoadedConfigs(config, cwd, cliOptions.filter)
 
-    logger.cli(`Using bunup v${version} and bun v${Bun.version}`, {
-        muted: true,
-    })
+	logger.cli(`Using bunup v${version} and bun v${Bun.version}`, {
+		muted: true,
+	})
 
-    if (filepath) {
-        logger.cli(`Using ${getShortFilePath(filepath, 2)}`, {
-            muted: true,
-        })
-    }
+	if (filepath) {
+		logger.cli(`Using ${getShortFilePath(filepath, 2)}`, {
+			muted: true,
+		})
+	}
 
-    const startTime = performance.now()
+	const startTime = performance.now()
 
-    logger.cli('Build started')
+	logger.cli('Build started')
 
-    await Promise.all(
-        configsToProcess.flatMap(({ options, rootDir }) => {
-            const optionsArray = ensureArray(options)
-            return optionsArray.map(async (o) => {
-                const partialOptions: Partial<BuildOptions> = {
-                    ...o,
-                    ...removeCliOnlyOptions(cliOptions),
-                }
+	await Promise.all(
+		configsToProcess.flatMap(({ options, rootDir }) => {
+			const optionsArray = ensureArray(options)
+			return optionsArray.map(async (o) => {
+				const partialOptions: Partial<BuildOptions> = {
+					...o,
+					...removeCliOnlyOptions(cliOptions),
+				}
 
-                if (partialOptions.watch) {
-                    await watch(partialOptions, rootDir)
-                } else {
-                    await build(partialOptions, rootDir)
-                }
-            })
-        }),
-    )
+				if (partialOptions.watch) {
+					await watch(partialOptions, rootDir)
+				} else {
+					await build(partialOptions, rootDir)
+				}
+			})
+		}),
+	)
 
-    const buildTimeMs = performance.now() - startTime
-    const timeDisplay = formatTime(buildTimeMs)
+	const buildTimeMs = performance.now() - startTime
+	const timeDisplay = formatTime(buildTimeMs)
 
-    logger.cli(`⚡️ Build completed in ${pc.green(timeDisplay)}`)
+	logger.cli(`⚡️ Build completed in ${pc.green(timeDisplay)}`)
 
-    if (cliOptions.watch) {
-        logger.cli('👀 Watching for file changes')
-    }
+	if (cliOptions.watch) {
+		logger.cli('👀 Watching for file changes')
+	}
 
-    if (cliOptions.onSuccess) {
-        logger.cli(`Running command: ${cliOptions.onSuccess}`, {
-            muted: true,
-        })
+	if (cliOptions.onSuccess) {
+		logger.cli(`Running command: ${cliOptions.onSuccess}`, {
+			muted: true,
+		})
 
-        await exec(cliOptions.onSuccess, [], {
-            nodeOptions: { shell: true, stdio: 'inherit' },
-        })
-    }
+		await exec(cliOptions.onSuccess, [], {
+			nodeOptions: { shell: true, stdio: 'inherit' },
+		})
+	}
 
-    if (!cliOptions.watch) {
-        process.exit(process.exitCode ?? 0)
-    }
+	if (!cliOptions.watch) {
+		process.exit(process.exitCode ?? 0)
+	}
 }
 
 function removeCliOnlyOptions(options: Partial<CliOptions>) {
-    return {
-        ...options,
-        onSuccess: undefined,
-        config: undefined,
-        filter: undefined,
-        new: undefined,
-    }
+	return {
+		...options,
+		onSuccess: undefined,
+		config: undefined,
+		filter: undefined,
+		new: undefined,
+	}
 }
 
 main().catch((error) => handleErrorAndExit(error))

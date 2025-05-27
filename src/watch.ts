@@ -9,82 +9,80 @@ import { type BuildOptions, createBuildOptions } from './options'
 import { formatTime } from './utils'
 
 export async function watch(
-    partialOptions: Partial<BuildOptions>,
-    rootDir: string,
+	partialOptions: Partial<BuildOptions>,
+	rootDir: string,
 ): Promise<void> {
-    const watchPaths = new Set<string>()
+	const watchPaths = new Set<string>()
 
-    const options = createBuildOptions(partialOptions)
+	const options = createBuildOptions(partialOptions)
 
-    const dtsEntry =
-        typeof options.dts === 'object' && 'entry' in options.dts
-            ? options.dts.entry
-            : undefined
+	const dtsEntry =
+		typeof options.dts === 'object' && 'entry' in options.dts
+			? options.dts.entry
+			: undefined
 
-    const processableDtsEntries = dtsEntry
-        ? getProcessableEntries(dtsEntry)
-        : []
+	const processableDtsEntries = dtsEntry ? getProcessableEntries(dtsEntry) : []
 
-    const processableEntries = getProcessableEntries(options.entry)
+	const processableEntries = getProcessableEntries(options.entry)
 
-    const uniqueEntries = new Set([
-        ...processableDtsEntries.map(({ entry }) => entry),
-        ...processableEntries.map(({ entry }) => entry),
-    ])
+	const uniqueEntries = new Set([
+		...processableDtsEntries.map(({ entry }) => entry),
+		...processableEntries.map(({ entry }) => entry),
+	])
 
-    for (const entry of uniqueEntries) {
-        const entryPath = path.resolve(rootDir, entry)
-        const parentDir = path.dirname(entryPath)
-        watchPaths.add(parentDir)
-    }
+	for (const entry of uniqueEntries) {
+		const entryPath = path.resolve(rootDir, entry)
+		const parentDir = path.dirname(entryPath)
+		watchPaths.add(parentDir)
+	}
 
-    const chokidar = await import('chokidar')
+	const chokidar = await import('chokidar')
 
-    const watcher = chokidar.watch(Array.from(watchPaths), {
-        ignoreInitial: true,
-        ignorePermissionErrors: true,
-        ignored: [
-            /[\\/]\.git[\\/]/,
-            /[\\/]node_modules[\\/]/,
-            path.join(rootDir, options.outDir),
-        ],
-    })
+	const watcher = chokidar.watch(Array.from(watchPaths), {
+		ignoreInitial: true,
+		ignorePermissionErrors: true,
+		ignored: [
+			/[\\/]\.git[\\/]/,
+			/[\\/]node_modules[\\/]/,
+			path.join(rootDir, options.outDir),
+		],
+	})
 
-    let isRebuilding = false
+	let isRebuilding = false
 
-    const triggerRebuild = async (initial = false) => {
-        if (isRebuilding) {
-            return
-        }
-        isRebuilding = true
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 20))
-            const start = performance.now()
-            await build(options, rootDir)
-            if (!initial) {
-                logger.cli(
-                    `📦 Rebuild finished in ${pc.green(formatTime(performance.now() - start))}`,
-                )
-            }
-        } catch (error) {
-            handleError(error)
-        } finally {
-            isRebuilding = false
-        }
-    }
+	const triggerRebuild = async (initial = false) => {
+		if (isRebuilding) {
+			return
+		}
+		isRebuilding = true
+		try {
+			await new Promise((resolve) => setTimeout(resolve, 20))
+			const start = performance.now()
+			await build(options, rootDir)
+			if (!initial) {
+				logger.cli(
+					`📦 Rebuild finished in ${pc.green(formatTime(performance.now() - start))}`,
+				)
+			}
+		} catch (error) {
+			handleError(error)
+		} finally {
+			isRebuilding = false
+		}
+	}
 
-    watcher.on('change', (filePath) => {
-        const changedFile = path.relative(rootDir, filePath)
-        logger.cli(`File changed: ${changedFile}`, {
-            muted: true,
-            once: changedFile,
-        })
-        triggerRebuild()
-    })
+	watcher.on('change', (filePath) => {
+		const changedFile = path.relative(rootDir, filePath)
+		logger.cli(`File changed: ${changedFile}`, {
+			muted: true,
+			once: changedFile,
+		})
+		triggerRebuild()
+	})
 
-    watcher.on('error', (error) => {
-        throw new BunupWatchError(`Watcher error: ${parseErrorMessage(error)}`)
-    })
+	watcher.on('error', (error) => {
+		throw new BunupWatchError(`Watcher error: ${parseErrorMessage(error)}`)
+	})
 
-    await triggerRebuild(true)
+	await triggerRebuild(true)
 }

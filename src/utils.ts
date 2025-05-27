@@ -6,106 +6,106 @@ import { BunupBuildError } from './errors'
 import type { Format } from './options'
 
 export function ensureArray<T>(value: T | T[]): T[] {
-    return Array.isArray(value) ? value : [value]
+	return Array.isArray(value) ? value : [value]
 }
 
 export function getDefaultJsOutputExtension(
-    format: Format,
-    packageType: string | undefined,
+	format: Format,
+	packageType: string | undefined,
 ): string {
-    switch (format) {
-        case 'esm':
-            return isModulePackage(packageType) ? '.js' : '.mjs'
-        case 'cjs':
-            return isModulePackage(packageType) ? '.cjs' : '.js'
-        case 'iife':
-            return '.global.js'
-    }
+	switch (format) {
+		case 'esm':
+			return isModulePackage(packageType) ? '.js' : '.mjs'
+		case 'cjs':
+			return isModulePackage(packageType) ? '.cjs' : '.js'
+		case 'iife':
+			return '.global.js'
+	}
 }
 
 export function getDefaultDtsOutputExtension(
-    format: Format,
-    packageType: string | undefined,
+	format: Format,
+	packageType: string | undefined,
 ): string {
-    switch (format) {
-        case 'esm':
-            return isModulePackage(packageType) ? '.d.ts' : '.d.mts'
-        case 'cjs':
-            return isModulePackage(packageType) ? '.d.cts' : '.d.ts'
-        case 'iife':
-            return '.global.d.ts'
-    }
+	switch (format) {
+		case 'esm':
+			return isModulePackage(packageType) ? '.d.ts' : '.d.mts'
+		case 'cjs':
+			return isModulePackage(packageType) ? '.d.cts' : '.d.ts'
+		case 'iife':
+			return '.global.d.ts'
+	}
 }
 
 export function getBaseFileName(filePath: string): string {
-    const filename = path.basename(filePath)
-    const extension = path.extname(filename)
-    return extension ? filename.slice(0, -extension.length) : filename
+	const filename = path.basename(filePath)
+	const extension = path.extname(filename)
+	return extension ? filename.slice(0, -extension.length) : filename
 }
 
 export function removeExtension(filePath: string): string {
-    return filePath.replace(path.extname(filePath), '')
+	return filePath.replace(path.extname(filePath), '')
 }
 
 export function getJsonSpaceCount(fileContent: string): number {
-    const match = fileContent.match(/{\n(\s+)/)
-    if (!match) return 2
-    return match[1].length
+	const match = fileContent.match(/{\n(\s+)/)
+	if (!match) return 2
+	return match[1].length
 }
 
 export function cleanPath(filePath: string): string {
-    return filePath.replace(/\\/g, '/')
+	return filePath.replace(/\\/g, '/')
 }
 
 export function isModulePackage(packageType: string | undefined): boolean {
-    return packageType === 'module'
+	return packageType === 'module'
 }
 
 export function formatTime(ms: number): string {
-    return ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${Math.round(ms)}ms`
+	return ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${Math.round(ms)}ms`
 }
 
 export function getPackageDeps(
-    packageJson: Record<string, unknown> | null,
+	packageJson: Record<string, unknown> | null,
 ): string[] {
-    if (!packageJson) return []
+	if (!packageJson) return []
 
-    return Array.from(
-        new Set([
-            ...Object.keys(packageJson.dependencies || {}),
-            ...Object.keys(packageJson.peerDependencies || {}),
-        ]),
-    )
+	return Array.from(
+		new Set([
+			...Object.keys(packageJson.dependencies || {}),
+			...Object.keys(packageJson.peerDependencies || {}),
+		]),
+	)
 }
 
 export function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 B'
+	if (bytes === 0) return '0 B'
 
-    const units = ['B', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(1024))
+	const units = ['B', 'KB', 'MB', 'GB']
+	const i = Math.floor(Math.log(bytes) / Math.log(1024))
 
-    if (i === 0) return `${bytes} ${units[i]}`
+	if (i === 0) return `${bytes} ${units[i]}`
 
-    return `${(bytes / 1024 ** i).toFixed(2)} ${units[i]}`
+	return `${(bytes / 1024 ** i).toFixed(2)} ${units[i]}`
 }
 
 export function getShortFilePath(filePath: string, maxLength = 3): string {
-    const fileParts = filePath.split('/')
-    const shortPath = fileParts.slice(-maxLength).join('/')
-    return shortPath
+	const fileParts = filePath.split('/')
+	const shortPath = fileParts.slice(-maxLength).join('/')
+	return shortPath
 }
 
 export async function cleanOutDir(
-    rootDir: string,
-    outDir: string,
+	rootDir: string,
+	outDir: string,
 ): Promise<void> {
-    const outDirPath = path.join(rootDir, outDir)
-    try {
-        await fs.rm(outDirPath, { recursive: true, force: true })
-    } catch (error) {
-        throw new BunupBuildError(`Failed to clean output directory: ${error}`)
-    }
-    await fs.mkdir(outDirPath, { recursive: true })
+	const outDirPath = path.join(rootDir, outDir)
+	try {
+		await fs.rm(outDirPath, { recursive: true, force: true })
+	} catch (error) {
+		throw new BunupBuildError(`Failed to clean output directory: ${error}`)
+	}
+	await fs.mkdir(outDirPath, { recursive: true })
 }
 
 /**
@@ -116,36 +116,33 @@ export async function cleanOutDir(
  * - Collapsing multiple slashes to single slash
  */
 export function makePortablePath(path: string): string {
-    let cleaned = normalize(path).replace(/\\/g, '/')
+	let cleaned = normalize(path).replace(/\\/g, '/')
 
-    cleaned = cleaned.replace(/^[a-zA-Z]:\//, '')
+	cleaned = cleaned.replace(/^[a-zA-Z]:\//, '')
 
-    cleaned = cleaned.replace(/^\/+/, '')
+	cleaned = cleaned.replace(/^\/+/, '')
 
-    cleaned = cleaned.replace(/\/+/g, '/')
+	cleaned = cleaned.replace(/\/+/g, '/')
 
-    return cleaned
+	return cleaned
 }
 
 export function getUpdatedPackageJson(
-    oldPackageJson: string,
-    newPackageJson: Record<string, unknown>,
+	oldPackageJson: string,
+	newPackageJson: Record<string, unknown>,
 ): string {
-    const hasTrailingNewline = oldPackageJson.endsWith('\n')
-    return (
-        JSON.stringify(
-            newPackageJson,
-            null,
-            getJsonSpaceCount(oldPackageJson),
-        ) + (hasTrailingNewline ? '\n' : '')
-    )
+	const hasTrailingNewline = oldPackageJson.endsWith('\n')
+	return (
+		JSON.stringify(newPackageJson, null, getJsonSpaceCount(oldPackageJson)) +
+		(hasTrailingNewline ? '\n' : '')
+	)
 }
 
 export function pathExistsSync(filePath: string): boolean {
-    try {
-        fsSync.accessSync(filePath)
-        return true
-    } catch (error) {
-        return false
-    }
+	try {
+		fsSync.accessSync(filePath)
+		return true
+	} catch (error) {
+		return false
+	}
 }
