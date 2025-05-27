@@ -16,6 +16,7 @@
 		}
 	},
 	"formatter": {
+		"enabled": true,
 		"useEditorconfig": true
 	},
 	"javascript": {
