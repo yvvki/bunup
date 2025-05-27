@@ -1,11 +1,12 @@
 # Scaffold with Bunup
 
-Quickly scaffold modern libraries in just 10 seconds with Bun. Powered by Bunup - the fastest bundler available ⚡️.
+Quickly scaffold modern TypeScript and React libraries in just 10 seconds with Bun. Powered by Bunup - the fastest bundler available ⚡️.
 
 - 🚀 **Ready to Code**: Just run the command and start coding - no renaming or setup needed
-- 📦 **Modern Stack**: ESM/CJS formats, TypeScript declarations, and workspace support for monorepos
+- 📦 **Modern Stack**: ESM/CJS formats, TypeScript declarations, and optional monorepo support
 - ⚡️ **Complete Tooling**: Bun-powered development with testing, linting, and formatting
 - 🚢 **Automated Releases**: Built-in GitHub Actions for testing and publishing to npm
+- 🔥 **Ultra-Fast Builds**: Instant builds that feel instantaneous
 
 ## Getting Started
 
@@ -34,7 +35,7 @@ That's it! You can now start coding.
 
 After completing the setup, here's how to use your project:
 
-### Common Commands
+### TypeScript Library Commands
 
 ```sh
 bun run dev        # Start development mode with hot reloading
@@ -45,6 +46,32 @@ bun run format:fix # Fix code formatting issues
 bun run tsc        # Type check TypeScript code
 bun run build      # Build production bundle
 ```
+
+### React Library Development
+
+React libraries have a special development workflow optimized for component development:
+
+```sh
+bun run dev        # Watch source files and rebuild library instantly
+bun run dev:test   # Start Next.js preview app at http://localhost:3000
+bun run lint       # Check code style and find problems
+bun run lint:fix   # Fix linting issues automatically
+bun run format:fix # Fix code formatting issues
+bun run tsc        # Type check TypeScript code
+bun run build      # Build production bundle
+```
+
+#### 🚀 Full Development Mode (React Libraries)
+
+For the ultimate development experience with React libraries:
+
+1. **Terminal 1**: Run `bun run dev` - Watches your source files and rebuilds the library instantly on any change
+2. **Terminal 2**: Run `bun run dev:test` - Starts a Next.js preview app at http://localhost:3000
+
+**Why This is Amazing:**
+- ⚡️ **Ultra-Fast Builds**: Changes build instantly, no waiting
+- 🔥 **Blazing HMR**: Instant reflection of changes in the live preview app
+- 💫 **Seamless Experience**: Code, save, see - that's it!
 
 ## CI/CD Workflows
 

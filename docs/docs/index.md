@@ -14,7 +14,7 @@ It can bundle JavaScript/TypeScript files (`.js`, `.jsx`, `.ts`, `.tsx`), JSON (
 
 ## Scaffold new Project
 
-Quickly scaffold a new modern library with Bunup in just 10 seconds.
+Quickly scaffold a new modern TypeScript or React library with Bunup in just 10 seconds.
 
 ::: code-group
 
@@ -144,7 +144,6 @@ export default defineConfig({
 	entry: ['src/index.ts'],
 	format: ['esm', 'cjs'],
 	dts: true,
-	minify: true,
 });
 ```
 

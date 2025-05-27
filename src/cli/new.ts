@@ -36,6 +36,11 @@ const TEMPLATES: Template[] = [
 		dir: 'ts-lib',
 		monorepoDir: 'ts-lib-monorepo',
 	},
+	{
+		defaultName: 'my-react-lib',
+		name: 'React Library',
+		dir: 'react-lib',
+	},
 ]
 
 export async function newProject(): Promise<void> {
