@@ -51,7 +51,7 @@ export default defineConfig({
 
 ## `copy`
 
-This plugin copies files and directories to the output directory after each build. It supports glob patterns for flexible file selection.
+This plugin copies files and directories to the output directory after each build. It supports glob patterns for flexible file selection. If no destination is specified, files are copied to the build output directory.
 
 ### Usage
 
@@ -66,9 +66,17 @@ export default defineConfig({
 });
 ```
 
-### Parameters
+**Basic copying:**
+```ts
+copy(['README.md', 'assets/**/*'])
+```
 
-| Parameter | Type       | Description                                                    |
-| --------- | ---------- | -------------------------------------------------------------- |
-| `patterns` | `string[]` | Array of file/directory paths or glob patterns to copy.       |
-| `outDir`   | `string?`  | Optional output directory. Defaults to the build output dir.  |
+**Copy and rename a file:**
+```ts
+copy(['README.md'], 'dist/documentation.md')
+```
+
+**Copy to a specific directory:**
+```ts
+copy(['assets/**/*'], 'dist/static')
+```

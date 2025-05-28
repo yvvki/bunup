@@ -5,6 +5,6 @@ export default defineConfig({
 	entry: ['fixtures/index.ts'],
 	format: ['esm'],
 	dts: true,
-	plugins: [report(), copy(['package.json'])],
+	plugins: [report(), copy(['fixtures/**/*.css'], 'dist/cool')],
 	splitting: false,
 })

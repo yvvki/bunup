@@ -1,39 +1,38 @@
-import { mkdir, stat } from 'node:fs/promises'
-import { dirname } from 'node:path'
+import { join } from 'node:path'
+import { basename } from 'node:path'
+import { isDirectoryPath } from '../../../utils'
 import type { BunupPlugin } from '../../types'
 
 /**
  * A plugin that copies files and directories to the output directory.
  *
+ * @param patterns - Array of glob patterns to match files for copying
+ * @param outPath - Optional output path. If not provided, uses the build output directory
  * @see https://bunup.dev/docs/plugins/productivity#copy
  */
-export function copy(patterns: string[], outDir?: string): BunupPlugin {
+export function copy(patterns: string[], outPath?: string): BunupPlugin {
 	return {
 		type: 'bunup',
 		name: 'copy',
 		hooks: {
 			onBuildDone: async ({ options, meta }) => {
-				const targetDir = outDir || options.outDir
-				const baseDir = meta.rootDir
+				const destinationPath = outPath || options.outDir
 
 				for (const pattern of patterns) {
-					let globPattern = pattern
+					const glob = new Bun.Glob(pattern)
 
-					if (!pattern.includes('*') && !pattern.includes('?')) {
-						try {
-							const stats = await stat(`${baseDir}/${pattern}`)
-							if (stats.isDirectory()) {
-								globPattern = `${pattern}/**/*`
-							}
-						} catch {}
-					}
+					for await (const filePath of glob.scan({
+						cwd: meta.rootDir,
+						dot: true,
+					})) {
+						const sourceFile = Bun.file(join(meta.rootDir, filePath))
 
-					const glob = new Bun.Glob(globPattern)
-
-					for await (const file of glob.scan(baseDir)) {
-						const targetPath = `${targetDir}/${file}`
-						await mkdir(dirname(targetPath), { recursive: true })
-						await Bun.write(targetPath, Bun.file(`${baseDir}/${file}`))
+						await Bun.write(
+							outPath && isDirectoryPath(outPath)
+								? join(destinationPath, basename(filePath))
+								: destinationPath,
+							sourceFile,
+						)
 					}
 				}
 			},

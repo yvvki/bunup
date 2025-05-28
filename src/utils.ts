@@ -138,6 +138,10 @@ export function getUpdatedPackageJson(
 	)
 }
 
+export function isDirectoryPath(filePath: string): boolean {
+	return path.extname(filePath) === ''
+}
+
 export function pathExistsSync(filePath: string): boolean {
 	try {
 		fsSync.accessSync(filePath)
