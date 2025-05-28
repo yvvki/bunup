@@ -20,6 +20,8 @@ export type BunupBunPlugin = {
 export type BuildMeta = {
 	/** The package.json file */
 	packageJson: PackageJson
+	/** The root directory of the build */
+	rootDir: string
 }
 
 export type BuildOutputFile = {

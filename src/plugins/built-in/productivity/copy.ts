@@ -1,6 +1,5 @@
 import { mkdir, stat } from 'node:fs/promises'
 import { dirname } from 'node:path'
-import { Glob } from 'bun'
 import type { BunupPlugin } from '../../types'
 
 /**
@@ -13,27 +12,28 @@ export function copy(patterns: string[], outDir?: string): BunupPlugin {
 		type: 'bunup',
 		name: 'copy',
 		hooks: {
-			onBuildDone: async ({ options }) => {
+			onBuildDone: async ({ options, meta }) => {
 				const targetDir = outDir || options.outDir
+				const baseDir = meta.rootDir
 
 				for (const pattern of patterns) {
 					let globPattern = pattern
 
 					if (!pattern.includes('*') && !pattern.includes('?')) {
 						try {
-							const stats = await stat(pattern)
+							const stats = await stat(`${baseDir}/${pattern}`)
 							if (stats.isDirectory()) {
 								globPattern = `${pattern}/**/*`
 							}
 						} catch {}
 					}
 
-					const glob = new Glob(globPattern)
+					const glob = new Bun.Glob(globPattern)
 
-					for await (const file of glob.scan('.')) {
+					for await (const file of glob.scan(baseDir)) {
 						const targetPath = `${targetDir}/${file}`
 						await mkdir(dirname(targetPath), { recursive: true })
-						await Bun.write(targetPath, Bun.file(file))
+						await Bun.write(targetPath, Bun.file(`${baseDir}/${file}`))
 					}
 				}
 			},

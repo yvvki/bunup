@@ -48,3 +48,27 @@ export default defineConfig({
 | --------------- | --------- | ----------- | ------------------------------------------------------------------- |
 | `maxBundleSize` | `number`  | `undefined` | Maximum bundle size in bytes. If exceeded, a warning will be shown. |
 | `gzip`          | `boolean` | `true`      | Whether to show gzip sizes in the report.                           |
+
+## `copy`
+
+This plugin copies files and directories to the output directory after each build. It supports glob patterns for flexible file selection.
+
+### Usage
+
+```ts
+import { defineConfig } from 'bunup';
+import { copy } from 'bunup/plugins';
+
+export default defineConfig({
+	entry: ['src/index.ts'],
+	format: ['esm', 'cjs'],
+	plugins: [copy(['README.md', 'assets/**/*'])],
+});
+```
+
+### Parameters
+
+| Parameter | Type       | Description                                                    |
+| --------- | ---------- | -------------------------------------------------------------- |
+| `patterns` | `string[]` | Array of file/directory paths or glob patterns to copy.       |
+| `outDir`   | `string?`  | Optional output directory. Defaults to the build output dir.  |

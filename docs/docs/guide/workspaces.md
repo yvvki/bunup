@@ -116,6 +116,9 @@ For example, with this configuration:
 }
 ```
 
+::: tip Plugin Path Resolution
+When using plugins that accept path options (like the `copy` plugin), those paths are also resolved relative to the package's root directory. For example, `copy(['assets'])` will copy from `packages/core/assets` when used in the `core` package configuration.
+:::
 
 ## Build Packages
 

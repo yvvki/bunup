@@ -217,6 +217,7 @@ export async function build(
 
 	await runPluginBuildDoneHooks(bunupPlugins, options, buildOutput, {
 		packageJson,
+		rootDir,
 	})
 
 	if (options.onSuccess) {

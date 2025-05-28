@@ -8,7 +8,7 @@ Designed specifically for the Bun ecosystem with unmatched speed. **Bunup is the
 
 ## What Can It Bundle?
 
-Bunup supports bundling for multiple environments — including **Node.js**, **browsers**, and a special **Bun** target. The **bun** target is specifically optimized for libraries intended to run on Bun. It's also perfect for building **React libraries** with its excellent support for JSX/TSX files.
+Bunup supports bundling for multiple environments — including **Node.js**, **browsers**, and a special **Bun** target. The **bun** target is specifically optimized for libraries intended to run on Bun.
 
 It can bundle JavaScript/TypeScript files (`.js`, `.jsx`, `.ts`, `.tsx`), JSON (`.json`), TOML (`.toml`), text files (`.txt`), and a variety of other assets.
 
