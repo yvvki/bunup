@@ -43,7 +43,27 @@ const TEMPLATES: Template[] = [
 	},
 ]
 
+function displayBunupGradientArt(): void {
+	const art = `
+██████╗ ██╗   ██╗███╗   ██╗██╗   ██╗██████╗ 
+██╔══██╗██║   ██║████╗  ██║██║   ██║██╔══██╗
+██████╔╝██║   ██║██╔██╗ ██║██║   ██║██████╔╝
+██╔══██╗██║   ██║██║╚██╗██║██║   ██║██╔═══╝ 
+██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝██║     
+╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     
+	`.trim()
+
+	const lines = art.split('\n')
+
+	console.log()
+	for (const line of lines) {
+		console.log(pc.cyan(line))
+	}
+	console.log()
+}
+
 export async function newProject(): Promise<void> {
+	displayBunupGradientArt()
 	intro(pc.bgCyan(pc.black(' Scaffold a new project with Bunup ')))
 
 	const selectedTemplateDir = await select({
@@ -112,7 +132,7 @@ export async function newProject(): Promise<void> {
 
 	await tasks([
 		{
-			title: 'Downloading template',
+			title: 'Creating project',
 			task: async () => {
 				const templatePath = useMonorepo ? template.monorepoDir : template.dir
 				await downloadTemplate(
