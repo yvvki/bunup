@@ -12,6 +12,7 @@ import {
 import { downloadTemplate } from 'giget'
 import pc from 'picocolors'
 import { replaceInFile } from 'replace-in-file'
+import { logger } from '../logger'
 import { pathExistsSync } from '../utils'
 
 type Template = {
@@ -55,11 +56,11 @@ function displayBunupGradientArt(): void {
 
 	const lines = art.split('\n')
 
-	console.log()
+	logger.space()
 	for (const line of lines) {
-		console.log(pc.cyan(line))
+		logger.output(pc.cyan(line))
 	}
-	console.log()
+	logger.space()
 }
 
 export async function newProject(): Promise<void> {

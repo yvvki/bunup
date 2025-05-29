@@ -1,5 +1,6 @@
 import pc from 'picocolors'
 import { type TableColumn, logTable } from '../../logger'
+import { logger } from '../../logger'
 import { formatFileSize } from '../../utils'
 import type { BunupPlugin } from '../types'
 
@@ -68,9 +69,9 @@ export function report(): BunupPlugin {
 					Gzip: formattedTotalGzipSize,
 				}
 
-				console.log('')
+				logger.space()
 				logTable(columns, data, footer)
-				console.log('')
+				logger.space()
 			},
 		},
 	}

@@ -156,6 +156,11 @@ class Logger {
 		this.output(formattedMessage, options, console.error)
 	}
 
+	public space(): void {
+		if (silent) return
+		console.log('')
+	}
+
 	private getProgressFgColor(label: string): (text: string) => string {
 		for (const [key, colorFn] of Object.entries(this.progressFgColorMap)) {
 			if (label.includes(key)) return colorFn
@@ -204,6 +209,8 @@ export function logTable(
 	data: Record<string, string>[],
 	footer?: Record<string, string>,
 ): void {
+	if (silent) return
+
 	const widths: Record<string, number> = {}
 	for (const col of columns) {
 		const headerLength = col.header.length
