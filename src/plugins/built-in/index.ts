@@ -1,5 +1,5 @@
 export * from './node/shims'
 export * from './productivity/exports'
-export * from './productivity/report'
 export * from './css/inject-styles'
 export * from './productivity/copy'
+export * from '../internal/report'

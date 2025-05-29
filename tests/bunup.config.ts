@@ -1,10 +1,10 @@
 import { defineConfig } from '../src'
-import { copy, report } from '../src/plugins/built-in'
+import { copy } from '../src/plugins/built-in'
 
 export default defineConfig({
 	entry: ['fixtures/index.ts'],
 	format: ['esm'],
 	dts: true,
-	plugins: [report(), copy(['fixtures/**/*.css'], 'dist/cool')],
+	plugins: [copy(['fixtures/**/*.css'], 'dist/cool')],
 	splitting: false,
 })

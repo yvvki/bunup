@@ -1,3 +1,4 @@
+import { report } from './plugins/built-in'
 import { useClient } from './plugins/internal/use-client'
 import type { Plugin } from './plugins/types'
 import type {
@@ -381,7 +382,13 @@ export function createBuildOptions(
 
 	return {
 		...options,
-		plugins: [...(options.plugins ?? []), useClient()],
+		plugins: [
+			// filter out the report plugin, because it's enabled by default
+			// remove this once we remove the report plugin from the built-in plugins
+			...(options.plugins?.filter((p) => p.name !== 'report') ?? []),
+			useClient(),
+			report(),
+		],
 	}
 }
 
