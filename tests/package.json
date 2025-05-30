@@ -19,7 +19,8 @@
 	"scripts": {
 		"build": "bun run ../src/cli/index.ts",
 		"dev": "bun run ../src/cli/index.ts --watch",
-		"new": "bun run ../src/cli/index.ts --new"
+		"new": "bun run ../src/cli/index.ts --new",
+		"init": "bun run ../src/cli/index.ts --init"
 	},
 	"devDependencies": {
 		"ora": "^8.2.0",

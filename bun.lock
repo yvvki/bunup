@@ -48,6 +48,7 @@
         "zx-extra": "^4.0.5",
       },
       "devDependencies": {
+        "bunup": "^0.8.13",
         "ora": "^8.2.0",
         "picocolors": "^1.1.1",
         "uvu": "^0.5.6",
@@ -454,6 +455,8 @@
     "bun-dts": ["bun-dts@0.1.30", "", { "dependencies": { "coffi": "^0.1.30", "oxc-parser": "^0.68.1", "oxc-resolver": "^8.0.0", "oxc-transform": "^0.67.0", "picocolors": "^1.1.1", "ts-import-resolver": "^0.1.19" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-fqBkfvNdrGb3XyHRtfv7S6SHv8gFuC2s9IS/PdtwPTnYtXY110WLWtghzHtwawRabsIuchCanQta+m5VIEVj7Q=="],
 
     "bun-types": ["bun-types@1.2.13", "", { "dependencies": { "@types/node": "*" } }, "sha512-rRjA1T6n7wto4gxhAO/ErZEtOXyEZEmnIHQfl0Dt1QQSB4QV0iP6BZ9/YB5fZaHFQ2dwHFrmPaRQ9GGMX01k9Q=="],
+
+    "bunup": ["bunup@0.8.13", "", { "dependencies": { "@clack/prompts": "^0.10.1", "bun-dts": "^0.1.30", "chokidar": "^4.0.3", "coffi": "^0.1.30", "giget": "^2.0.0", "replace-in-file": "^8.3.0", "tinyexec": "^1.0.1" }, "peerDependencies": { "lightningcss": ">=1.17.0", "typescript": ">=4.5.0" }, "optionalPeers": ["lightningcss", "typescript"], "bin": { "bunup": "bin/bunup.mjs" } }, "sha512-MJoj32Im9L+aDTuEfR2yY2Un6J6UEtVrMctIjjTW8GUHnBUl0ki9ipOLhZO4Ee14TlVfsaN+m91/1B37glM8Hw=="],
 
     "byte-size": ["byte-size@9.0.1", "", { "peerDependencies": { "@75lb/nature": "latest" }, "optionalPeers": ["@75lb/nature"] }, "sha512-YLe9x3rabBrcI0cueCdLS2l5ONUKywcRpTs02B8KP9/Cimhj7o3ZccGrPnRvcbyHMbb7W79/3MUJl7iGgTXKEw=="],
 

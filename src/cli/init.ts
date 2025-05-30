@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import path from 'node:path'
 import {
 	confirm,
 	intro,
@@ -15,6 +16,14 @@ import { loadPackageJson } from '../loaders'
 import { formatListWithAnd } from '../utils'
 import { displayBunupGradientArt } from './utils'
 
+interface WorkspacePackage {
+	name: string
+	root: string
+	entryFiles: string[]
+	outputFormats: string[]
+	shouldGenerateDts: boolean
+}
+
 export async function init(): Promise<void> {
 	displayBunupGradientArt()
 	intro(pc.bgCyan(pc.black(' Initialize bunup in an existing project ')))
@@ -26,6 +35,44 @@ export async function init(): Promise<void> {
 		process.exit(1)
 	}
 
+	const shouldSetupWorkspace = await promptForWorkspace()
+
+	if (shouldSetupWorkspace) {
+		await initializeWorkspace(packageJsonPath)
+	} else {
+		await initializeSinglePackage(packageJsonPath)
+	}
+
+	await tasks([
+		{
+			title: 'Installing bunup',
+			task: async () => {
+				await installBunup()
+				return 'Bunup installed'
+			},
+		},
+	])
+
+	showSuccessOutro(shouldSetupWorkspace)
+}
+
+async function promptForWorkspace(): Promise<boolean> {
+	return (await confirm({
+		message:
+			'Do you want to setup a Bunup workspace? (for building multiple packages with one command)',
+		initialValue: false,
+	})) as boolean
+}
+
+async function initializeWorkspace(packageJsonPath: string): Promise<void> {
+	const workspacePackages = await collectWorkspacePackages()
+	const configMethod = await selectWorkspaceConfigurationMethod()
+
+	await generateWorkspaceConfiguration(configMethod, workspacePackages)
+	await handleWorkspaceBuildScripts(packageJsonPath)
+}
+
+async function initializeSinglePackage(packageJsonPath: string): Promise<void> {
 	const entryFiles = await collectEntryFiles()
 	const outputFormats = await selectOutputFormats()
 	const shouldGenerateDts = await promptForTypeScriptDeclarations(entryFiles)
@@ -46,18 +93,101 @@ export async function init(): Promise<void> {
 		shouldGenerateDts,
 		configMethod,
 	)
+}
 
-	await tasks([
-		{
-			title: 'Installing bunup',
-			task: async () => {
-				await installBunup()
-				return 'Bunup installed'
+async function collectWorkspacePackages(): Promise<WorkspacePackage[]> {
+	const packages: WorkspacePackage[] = []
+
+	while (true) {
+		const packageName = (await text({
+			message:
+				packages.length > 0
+					? 'Enter the next package name:'
+					: 'Enter the first package name:',
+			placeholder: 'core',
+			validate: (value) => {
+				if (!value) return 'Package name is required'
+				if (packages.some((pkg) => pkg.name === value))
+					return 'Package name already exists'
 			},
-		},
-	])
+		})) as string
 
-	showSuccessOutro()
+		const packageRoot = (await text({
+			message: `Enter the root directory for "${packageName}":`,
+			placeholder: `packages/${packageName}`,
+			defaultValue: `packages/${packageName}`,
+			validate: (value) => {
+				if (!value) return 'Package root is required'
+				if (!fs.existsSync(value))
+					return 'Package root directory does not exist'
+				if (!fs.statSync(value).isDirectory())
+					return 'Package root must be a directory'
+			},
+		})) as string
+
+		const entryFiles = await collectEntryFilesForPackage(
+			packageRoot,
+			packageName,
+		)
+		const outputFormats = await selectOutputFormats()
+		const shouldGenerateDts = await promptForTypeScriptDeclarations(entryFiles)
+
+		packages.push({
+			name: packageName,
+			root: packageRoot,
+			entryFiles,
+			outputFormats,
+			shouldGenerateDts,
+		})
+
+		const shouldAddMore = await confirm({
+			message: 'Do you want to add another package?',
+			initialValue: true,
+		})
+
+		if (!shouldAddMore) break
+	}
+
+	return packages
+}
+
+async function collectEntryFilesForPackage(
+	packageRoot: string,
+	packageName: string,
+): Promise<string[]> {
+	const entryFiles: string[] = []
+
+	while (true) {
+		const entryFile = (await text({
+			message:
+				entryFiles.length > 0
+					? `Where is the next entry file for "${packageName}"? (relative to ${packageRoot})`
+					: `Where is the entry file for "${packageName}"? (relative to ${packageRoot})`,
+			placeholder: 'src/index.ts',
+			defaultValue: 'src/index.ts',
+			validate: (value) => {
+				if (!value) return 'Entry file is required'
+
+				const fullPath = path.join(packageRoot, value)
+				if (!fs.existsSync(fullPath))
+					return `Entry file does not exist at ${fullPath}`
+				if (!fs.statSync(fullPath).isFile()) return 'Entry file must be a file'
+				if (entryFiles.includes(value))
+					return 'You have already added this entry file'
+			},
+		})) as string
+
+		entryFiles.push(entryFile)
+
+		const shouldAddMore = await confirm({
+			message: 'Do you want to add another entry file for this package?',
+			initialValue: false,
+		})
+
+		if (!shouldAddMore) break
+	}
+
+	return entryFiles
 }
 
 async function collectEntryFiles(): Promise<string[]> {
@@ -120,6 +250,17 @@ async function promptForTypeScriptDeclarations(
 	})) as boolean
 }
 
+async function selectWorkspaceConfigurationMethod(): Promise<string> {
+	return (await select({
+		message: 'How would you like to configure your workspace?',
+		options: [
+			{ value: 'ts', label: 'bunup.config.ts', hint: 'Recommended' },
+			{ value: 'js', label: 'bunup.config.js' },
+		],
+		initialValue: 'ts',
+	})) as string
+}
+
 async function selectConfigurationMethod(): Promise<string> {
 	return (await select({
 		message: 'How would you like to configure Bunup?',
@@ -135,6 +276,14 @@ async function selectConfigurationMethod(): Promise<string> {
 		],
 		initialValue: 'ts',
 	})) as string
+}
+
+async function generateWorkspaceConfiguration(
+	configMethod: string,
+	workspacePackages: WorkspacePackage[],
+): Promise<void> {
+	const configContent = createWorkspaceConfigFileContent(workspacePackages)
+	await Bun.write(`bunup.config.${configMethod}`, configContent)
 }
 
 async function generateConfiguration(
@@ -169,6 +318,37 @@ async function generateConfiguration(
 		}
 		await Bun.write(packageJsonPath, JSON.stringify(updatedConfig, null, 2))
 	}
+}
+
+async function handleWorkspaceBuildScripts(
+	packageJsonPath: string,
+): Promise<void> {
+	const { data: packageJsonConfig } = await loadPackageJson()
+	const existingScripts = packageJsonConfig?.scripts ?? {}
+	const newScripts = createWorkspaceBuildScripts()
+
+	const conflictingScripts = Object.keys(newScripts).filter(
+		(script) => existingScripts[script],
+	)
+
+	if (conflictingScripts.length > 0) {
+		const shouldOverride = await confirm({
+			message: `The ${formatListWithAnd(conflictingScripts)} ${conflictingScripts.length > 1 ? 'scripts already exist' : 'script already exists'} in package.json. Override ${conflictingScripts.length > 1 ? 'them' : 'it'}?`,
+			initialValue: true,
+		})
+
+		if (!shouldOverride) {
+			log.info('Skipped adding build scripts to avoid conflicts.')
+			return
+		}
+	}
+
+	const updatedConfig = {
+		...packageJsonConfig,
+		scripts: { ...existingScripts, ...newScripts },
+	}
+
+	await Bun.write(packageJsonPath, JSON.stringify(updatedConfig, null, 2))
 }
 
 async function handleBuildScripts(
@@ -212,6 +392,30 @@ async function handleBuildScripts(
 	await Bun.write(packageJsonPath, JSON.stringify(updatedConfig, null, 2))
 }
 
+function createWorkspaceConfigFileContent(
+	workspacePackages: WorkspacePackage[],
+): string {
+	const packagesConfig = workspacePackages
+		.map((pkg) => {
+			return `  {
+    name: '${pkg.name}',
+    root: '${pkg.root}',
+    config: {
+      entry: [${pkg.entryFiles.map((file) => `'${file}'`).join(', ')}],
+      format: [${pkg.outputFormats.map((format) => `'${format}'`).join(', ')}],${pkg.shouldGenerateDts ? '\n      dts: true,' : ''}
+    },
+  }`
+		})
+		.join(',\n')
+
+	return `import { defineWorkspace } from 'bunup'
+
+export default defineWorkspace([
+${packagesConfig}
+])
+`
+}
+
 function createConfigFileContent(
 	entryFiles: string[],
 	outputFormats: string[],
@@ -238,6 +442,13 @@ function createPackageJsonConfig(
 	}
 }
 
+function createWorkspaceBuildScripts(): Record<string, string> {
+	return {
+		build: 'bunup',
+		dev: 'bunup --watch',
+	}
+}
+
 function createBuildScripts(
 	entryFiles: string[],
 	outputFormats: string[],
@@ -255,14 +466,26 @@ function createBuildScripts(
 	}
 }
 
-function showSuccessOutro(): void {
+function showSuccessOutro(isWorkspace: boolean): void {
+	const buildCommand = isWorkspace
+		? `${pc.cyan('bun run build')} - Build all packages in your workspace`
+		: `${pc.cyan('bun run build')} - Build your library`
+
+	const devCommand = isWorkspace
+		? `${pc.cyan('bun run dev')} - Start development mode (watches all packages)`
+		: `${pc.cyan('bun run dev')} - Start development mode`
+
+	const filterCommand = isWorkspace
+		? `${pc.cyan('bunup --filter core,utils')} - Build specific packages`
+		: ''
+
 	outro(`
   ${pc.green('✨ Bunup initialized successfully! ✨')}
   
-  ${pc.cyan('bun run build')} - Build your library
-  ${pc.cyan('bun run dev')} - Start development mode
+  ${buildCommand}
+  ${devCommand}${isWorkspace ? `\n  ${filterCommand}` : ''}
   
-  ${pc.dim('Learn more:')} ${pc.underline('https://bunup.dev/docs')}
+  ${pc.dim('Learn more:')} ${pc.underline('https://bunup.dev/docs/')}
   
   ${pc.yellow('Happy building!')} 🚀
   `)
