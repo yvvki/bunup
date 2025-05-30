@@ -12,8 +12,8 @@ import {
 import { downloadTemplate } from 'giget'
 import pc from 'picocolors'
 import { replaceInFile } from 'replace-in-file'
-import { logger } from '../logger'
 import { pathExistsSync } from '../utils'
+import { displayBunupGradientArt } from './utils'
 
 type Template = {
 	defaultName: string
@@ -43,25 +43,6 @@ const TEMPLATES: Template[] = [
 		dir: 'react-lib',
 	},
 ]
-
-function displayBunupGradientArt(): void {
-	const art = `
-██████╗ ██╗   ██╗███╗   ██╗██╗   ██╗██████╗ 
-██╔══██╗██║   ██║████╗  ██║██║   ██║██╔══██╗
-██████╔╝██║   ██║██╔██╗ ██║██║   ██║██████╔╝
-██╔══██╗██║   ██║██║╚██╗██║██║   ██║██╔═══╝ 
-██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝██║     
-╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     
-	`.trim()
-
-	const lines = art.split('\n')
-
-	logger.space()
-	for (const line of lines) {
-		logger.output(pc.cyan(line))
-	}
-	logger.space()
-}
 
 export async function newProject(): Promise<void> {
 	displayBunupGradientArt()
@@ -186,16 +167,18 @@ export async function newProject(): Promise<void> {
 	])
 
 	outro(`
-  ${pc.green('✨ Project scaffolded successfully! ✨')} 
-
-  ${pc.bold('Ready to launch your awesome new project?')}
-  
-  ${pc.cyan('cd')} ${projectName}
-  ${pc.cyan('bun install')}
-  ${pc.cyan('bun run dev')}
-  
-  ${pc.yellow('Happy coding!')} 🚀
-  `)
+		${pc.green('✨ Project scaffolded successfully! ✨')} 
+	    
+		${pc.bold('Ready to launch your awesome new project?')}
+		
+		${pc.cyan('cd')} ${projectName}
+		${pc.cyan('bun install')}
+		${pc.cyan('bun run dev')}
+		
+		${pc.dim('Learn more:')} ${pc.underline('https://bunup.dev/docs')}
+		
+		${pc.yellow('Happy coding!')} 🚀
+		`)
 }
 
 function getProjectPath(projectName: string): string {

@@ -14,25 +14,9 @@ The `injectStyles` plugin transforms CSS files and automatically injects them in
 
 The `injectStyles` plugin uses LightningCSS under the hood. You'll need to install it as a dev dependency:
 
-::: code-group
-
-```bash [bun]
+```bash
 bun add --dev lightningcss
 ```
-
-```bash [pnpm]
-pnpm add --save-dev lightningcss
-```
-
-```bash [npm]
-npm install --save-dev lightningcss
-```
-
-```bash [yarn]
-yarn add --dev lightningcss
-```
-
-:::
 
 ### Usage
 

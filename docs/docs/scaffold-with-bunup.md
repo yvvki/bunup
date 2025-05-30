@@ -2,17 +2,17 @@
 
 Quickly scaffold modern TypeScript and React libraries in just 10 seconds with Bun. Powered by Bunup - the fastest bundler available ⚡️.
 
-- 🚀 **Ready to Code**: Just run the command and start coding - no renaming or setup needed
-- 📦 **Modern Stack**: ESM/CJS formats, TypeScript declarations, and optional monorepo support
-- ⚡️ **Complete Tooling**: Bun-powered development with testing, Biome for linting and formatting
-- 🚢 **Automated Releases**: Built-in GitHub Actions for testing and publishing to npm
-- 🔥 **Ultra-Fast Builds**: Instant builds that feel instantaneous
+- 🚀 **Instant Setup**: Scaffold, code, edit README, and publish with a single command - with nothing to rename or configure
+- 📦 **Modern**: ESM/CJS formats, TypeScript declarations, and optional monorepo support
+- 🛠️ **DX First**: Integrated Bun-powered testing, Biome linting and formatting that just works out of the box
+- 🚢 **Publishing**: One-command releases with automatic semantic versioning, GitHub tags, and detailed release notes
+- ⚡️ **Mind-Blowing Speed**: Build times so fast they feel instantaneous - a library building experience you've never experienced before
 
 ## Getting Started
 
 You can create a new project by using:
 
-```sh [bun]
+```sh
 bunx bunup@latest --new
 ```
 
@@ -61,17 +61,14 @@ bun run tsc        # Type check TypeScript code
 bun run build      # Build production bundle
 ```
 
-#### 🚀 Full Development Mode (React Libraries)
+#### Full Development Mode
 
 For the ultimate development experience with React libraries:
 
 1. **Terminal 1**: Run `bun run dev` - Watches your source files and rebuilds the library instantly on any change
 2. **Terminal 2**: Run `bun run dev:test` - Starts a Next.js preview app at http://localhost:3000
 
-**Why This is Amazing:**
-- ⚡️ **Ultra-Fast Builds**: Changes build instantly, no waiting
-- 🔥 **Blazing HMR**: Instant reflection of changes in the live preview app
-- 💫 **Seamless Experience**: Code, save, see - that's it!
+🔥 Instant reflection of changes in the live preview app
 
 ## CI/CD Workflows
 

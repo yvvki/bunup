@@ -1,42 +1,32 @@
 # Introduction
 
-Bunup is the ⚡️ **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for flawless developer experience and speed, **powered by Bun** — up to **~100× faster than Tsup**.
+Bunup is the ⚡️ **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
 
 ::: tip 💖
-Designed specifically for the Bun ecosystem with unmatched speed. **Bunup is the bundler in your bun stack**.
+Bunup is the bundler in your bun stack.
 :::
 
 ## What Can It Bundle?
 
 Bunup supports bundling for multiple environments — including **Node.js**, **browsers**, and a special **Bun** target. The **bun** target is specifically optimized for libraries intended to run on Bun.
 
-It can bundle JavaScript/TypeScript files (`.js`, `.jsx`, `.ts`, `.tsx`), JSON (`.json`), TOML (`.toml`), text files (`.txt`), and a variety of other assets.
+It can bundle JavaScript and TypeScript files (including JSX and TSX), JSON files, TOML files, text files, and a variety of other assets.
 
-## Scaffold new Project
+## Quick Start
 
 Quickly scaffold a new modern TypeScript or React library with Bunup in just 10 seconds.
 
-::: code-group
-
-```sh [bun]
+```sh
 bunx bunup@latest --new
-```
-
-```sh [pnpm]
-pnpx bunup@latest --new
-```
-
-```sh [npm]
-npx bunup@latest --new
-```
-
-```sh [yarn]
-yarn dlx bunup@latest --new
 ```
 
 See the [Scaffold with Bunup](./scaffold-with-bunup.md) page for more details.
 
-:::
+Or, initialize bunup in an existing project:
+
+```sh
+bunx bunup@latest --init
+```
 
 ## Getting Started
 
@@ -54,25 +44,9 @@ export function greet(name: string): string {
 
 Bundle it with bunup:
 
-::: code-group
-
-```sh [bun]
+```sh
 bunx bunup src/index.ts
 ```
-
-```sh [pnpm]
-pnpx bunup src/index.ts
-```
-
-```sh [npm]
-npx bunup src/index.ts
-```
-
-```sh [yarn]
-yarn dlx bunup src/index.ts
-```
-
-:::
 
 This will create a bundled output in the `dist` directory with CommonJS format (the default).
 
@@ -80,25 +54,9 @@ This will create a bundled output in the `dist` directory with CommonJS format (
 
 First, install bunup as a dev dependency:
 
-::: code-group
-
-```sh [bun]
+```sh
 bun add --dev bunup
 ```
-
-```sh [pnpm]
-pnpm add --save-dev bunup
-```
-
-```sh [npm]
-npm install --save-dev bunup
-```
-
-```sh [yarn]
-yarn add --dev bunup
-```
-
-:::
 
 Add a build script to your `package.json`:
 
@@ -113,25 +71,9 @@ Add a build script to your `package.json`:
 
 Then run:
 
-::: code-group
-
-```sh [bun]
+```sh
 bun run build
 ```
-
-```sh [pnpm]
-pnpm build
-```
-
-```sh [npm]
-npm run build
-```
-
-```sh [yarn]
-yarn build
-```
-
-:::
 
 ## Configuration
 
@@ -233,22 +175,6 @@ Or in package.json:
 
 Then run:
 
-::: code-group
-
-```sh [bun]
+```sh
 bun run dev
 ```
-
-```sh [pnpm]
-pnpm dev
-```
-
-```sh [npm]
-npm run dev
-```
-
-```sh [yarn]
-yarn dev
-```
-
-:::

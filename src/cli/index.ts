@@ -25,6 +25,12 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 		return
 	}
 
+	if (cliOptions.init) {
+		const { init } = await import('./init')
+		await init()
+		return
+	}
+
 	setSilent(cliOptions.silent)
 
 	const cwd = process.cwd()
@@ -104,6 +110,7 @@ function removeCliOnlyOptions(options: Partial<CliOptions>) {
 		config: undefined,
 		filter: undefined,
 		new: undefined,
+		init: undefined,
 	}
 }
 

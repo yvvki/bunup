@@ -150,3 +150,10 @@ export function pathExistsSync(filePath: string): boolean {
 		return false
 	}
 }
+
+export function formatListWithAnd(arr: string[]): string {
+	return new Intl.ListFormat('en', {
+		style: 'long',
+		type: 'conjunction',
+	}).format(arr)
+}

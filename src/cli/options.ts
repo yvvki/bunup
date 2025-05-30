@@ -37,6 +37,13 @@ export type CliOptions = BuildOptions & {
 	 * bunup --new
 	 */
 	new?: boolean
+	/**
+	 * Initialize bunup in an existing project.
+	 *
+	 * @example
+	 * bunup --init
+	 */
+	init?: boolean
 }
 
 type OptionHandler = (
@@ -163,6 +170,7 @@ const optionConfigs = {
 	},
 	filter: { flags: ['filter'], handler: arrayHandler('filter') },
 	new: { flags: ['new'], handler: booleanHandler('new') },
+	init: { flags: ['init'], handler: booleanHandler('init') },
 	dtsOnly: { flags: ['dts-only'], handler: booleanHandler('dtsOnly') },
 	entry: {
 		flags: ['entry'],

@@ -45,13 +45,15 @@ export function addField<T extends Record<string, unknown>, F extends string>(
 
 export type PackageJson = {
 	/** The parsed content of the package.json file */
-	data: Record<string, unknown> | null
+	data: Record<string, any> | null
 	/** The path to the package.json file */
 	path: string | null
 }
 
-export async function loadPackageJson(cwd: string): Promise<PackageJson> {
-	const { config, filepath } = await loadConfig<Record<string, unknown>>({
+export async function loadPackageJson(
+	cwd: string = process.cwd(),
+): Promise<PackageJson> {
+	const { config, filepath } = await loadConfig<Record<string, any>>({
 		name: 'package',
 		cwd,
 		extensions: ['.json'],
