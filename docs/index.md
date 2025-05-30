@@ -17,7 +17,7 @@ features:
   - title: Speed of Bun
     icon: ⚡️
     details: |
-      Lightning-fast builds — up to <strong style="color:var(--vp-c-brand-1)">~100× faster than Tsup</strong> and powered by Bun's native bundler and Oxc
+      Lightning-fast builds powered by Bun's native bundler
   - title: Bytecode Generation
     icon: 🔥
     details: |
