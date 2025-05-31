@@ -11,7 +11,6 @@
         "giget": "^2.0.0",
         "replace-in-file": "^8.3.0",
         "tinyexec": "^1.0.1",
-        "ts-import-resolver": "^0.1.19",
       },
       "devDependencies": {
         "@biomejs/biome": "^1.9.4",
