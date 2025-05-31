@@ -14,10 +14,8 @@ import {
 	getBaseFileName,
 	getDefaultDtsOutputExtension,
 	getDefaultJsOutputExtension,
-	getJsonSpaceCount,
 	getPackageDeps,
 	getShortFilePath,
-	getUpdatedPackageJson,
 	isDirectoryPath,
 	isModulePackage,
 	makePortablePath,
@@ -276,25 +274,6 @@ describe('Utils', () => {
 		})
 	})
 
-	describe('getJsonSpaceCount', () => {
-		it('returns the number of spaces in first indented line', () => {
-			const json = `{
-    "name": "test"
-}`
-			expect(getJsonSpaceCount(json)).toBe(4)
-		})
-		it('returns 2 when no match is found', () => {
-			const json = `{"name":"test"}`
-			expect(getJsonSpaceCount(json)).toBe(2)
-		})
-		it('handles different indentation levels', () => {
-			const json = `{
-  "name": "test"
-}`
-			expect(getJsonSpaceCount(json)).toBe(2)
-		})
-	})
-
 	describe('makePortablePath', () => {
 		it('converts backslashes to forward slashes', () => {
 			expect(makePortablePath('path\\to\\file.js')).toBe('path/to/file.js')
@@ -316,61 +295,6 @@ describe('Utils', () => {
 			expect(makePortablePath('D:\\\\multiple\\//slashes//\\file.js')).toBe(
 				'multiple/slashes/file.js',
 			)
-		})
-	})
-
-	describe('getUpdatedPackageJson', () => {
-		it('replaces the original content with the new JSON object', () => {
-			const packageJsonContent = `{
-  "name": "test-package",
-  "version": "1.0.0"
-}`
-			const updates = {
-				description: 'Test package',
-				dependencies: { foo: '1.0.0' },
-			}
-			const result = getUpdatedPackageJson(packageJsonContent, updates)
-			const expected = `{
-  "description": "Test package",
-  "dependencies": {
-    "foo": "1.0.0"
-  }
-}`
-			expect(result).toBe(expected)
-		})
-
-		it('preserves original indentation', () => {
-			const packageJsonContent = `{
-    "name": "test-package",
-    "version": "1.0.0"
-}`
-			const updates = { description: 'Test package' }
-			const result = getUpdatedPackageJson(packageJsonContent, updates)
-			const expected = `{
-    "description": "Test package"
-}`
-			expect(result).toBe(expected)
-		})
-
-		it('preserves trailing newline if present in original', () => {
-			const packageJsonContent = `{
-  "name": "test-package",
-  "version": "1.0.0"
-}
-`
-			const updates = { description: 'Test package' }
-			const result = getUpdatedPackageJson(packageJsonContent, updates)
-			expect(result.endsWith('\n')).toBe(true)
-		})
-
-		it('does not add trailing newline if not present in original', () => {
-			const packageJsonContent = `{
-  "name": "test-package",
-  "version": "1.0.0"
-}`
-			const updates = { description: 'Test package' }
-			const result = getUpdatedPackageJson(packageJsonContent, updates)
-			expect(result.endsWith('\n')).toBe(false)
 		})
 	})
 
