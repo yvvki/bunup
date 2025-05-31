@@ -66,6 +66,10 @@ export default defineConfig({
 						text: 'Plugin Development',
 						link: '/docs/advanced/plugin-development',
 					},
+					{
+						text: 'Programmatic Usage',
+						link: '/docs/advanced/programmatic-usage',
+					},
 				],
 			},
 		],
