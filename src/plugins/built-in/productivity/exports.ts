@@ -1,7 +1,7 @@
 import { JS_DTS_RE } from '../../../constants/re'
 import { logger } from '../../../logger'
 import type { Format } from '../../../options'
-import { getUpdatedPackageJson, makePortablePath } from '../../../utils'
+import { makePortablePath } from '../../../utils'
 import type { BuildOutputFile, BunupPlugin } from '../../types'
 
 type ExportField = 'require' | 'import' | 'types'
@@ -22,21 +22,15 @@ export function exports(): BunupPlugin {
 				}
 
 				try {
-					const packageJsonContent = await Bun.file(
-						meta.packageJson.path,
-					).text()
-
-					const packageJson = JSON.parse(packageJsonContent)
-
 					const { exportsField, entryPoints } = generateExportsFields(
 						output.files,
 					)
 
-					const files = Array.isArray(packageJson.files)
-						? [...new Set([...packageJson.files, options.outDir])]
+					const files = Array.isArray(meta.packageJson.data.files)
+						? [...new Set([...meta.packageJson.data.files, options.outDir])]
 						: [options.outDir]
 
-					const existingExports = packageJson.exports || {}
+					const existingExports = meta.packageJson.data.exports || {}
 					const mergedExports: ExportsField = { ...existingExports }
 
 					for (const [key, value] of Object.entries(exportsField)) {
@@ -44,28 +38,32 @@ export function exports(): BunupPlugin {
 					}
 
 					const newPackageJson: Record<string, unknown> = {
-						name: packageJson.name,
-						description: packageJson.description,
-						version: packageJson.version,
-						type: packageJson.type,
-						private: packageJson.private,
+						name: meta.packageJson.data.name,
+						description: meta.packageJson.data.description,
+						version: meta.packageJson.data.version,
+						type: meta.packageJson.data.type,
+						private: meta.packageJson.data.private,
 						files,
 						...entryPoints,
 						exports: mergedExports,
 					}
 
-					for (const key in packageJson) {
+					for (const key in meta.packageJson.data) {
 						if (
-							Object.prototype.hasOwnProperty.call(packageJson, key) &&
+							Object.prototype.hasOwnProperty.call(
+								meta.packageJson.data,
+								key,
+							) &&
 							!Object.prototype.hasOwnProperty.call(newPackageJson, key)
 						) {
-							newPackageJson[key] = packageJson[key as keyof typeof packageJson]
+							newPackageJson[key] =
+								meta.packageJson.data[key as keyof typeof meta.packageJson.data]
 						}
 					}
 
 					await Bun.write(
 						meta.packageJson.path,
-						getUpdatedPackageJson(packageJsonContent, newPackageJson),
+						JSON.stringify(newPackageJson, null, 2),
 					)
 
 					logger.cli('Updated package.json with exports')

@@ -47,12 +47,6 @@ export function removeExtension(filePath: string): string {
 	return filePath.replace(path.extname(filePath), '')
 }
 
-export function getJsonSpaceCount(fileContent: string): number {
-	const match = fileContent.match(/{\n(\s+)/)
-	if (!match) return 2
-	return match[1].length
-}
-
 export function cleanPath(filePath: string): string {
 	return filePath.replace(/\\/g, '/')
 }
@@ -125,17 +119,6 @@ export function makePortablePath(path: string): string {
 	cleaned = cleaned.replace(/\/+/g, '/')
 
 	return cleaned
-}
-
-export function getUpdatedPackageJson(
-	oldPackageJson: string,
-	newPackageJson: Record<string, unknown>,
-): string {
-	const hasTrailingNewline = oldPackageJson.endsWith('\n')
-	return (
-		JSON.stringify(newPackageJson, null, getJsonSpaceCount(oldPackageJson)) +
-		(hasTrailingNewline ? '\n' : '')
-	)
 }
 
 export function isDirectoryPath(filePath: string): boolean {
