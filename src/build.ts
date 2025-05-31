@@ -1,6 +1,14 @@
 import path from 'node:path'
-import { generateDts, logIsolatedDeclarationErrors } from 'bun-dts'
-import { BunupBuildError } from './errors'
+import {
+	type GenerateDtsResult,
+	generateDts,
+	logIsolatedDeclarationErrors,
+} from 'bun-dts'
+import {
+	BunupBuildError,
+	BunupDTSBuildError,
+	parseErrorMessage,
+} from './errors'
 import { getProcessableEntries, getResolvedNaming } from './helpers/entry'
 import { loadPackageJson } from './loaders'
 import { logger, setSilent } from './logger'
@@ -161,11 +169,16 @@ export async function build(
 
 		const dtsPromises = processableDtsEntries.map(
 			async ({ entry, outputBasePath }) => {
-				const result = await generateDts(entry, {
-					cwd: rootDir,
-					preferredTsConfigPath: options.preferredTsconfigPath,
-					resolve: dtsResolve,
-				})
+				let result: GenerateDtsResult | undefined
+				try {
+					result = await generateDts(entry, {
+						cwd: rootDir,
+						preferredTsConfigPath: options.preferredTsconfigPath,
+						resolve: dtsResolve,
+					})
+				} catch (error) {
+					throw new BunupDTSBuildError(parseErrorMessage(error))
+				}
 
 				for (const fmt of options.format) {
 					const extension =
