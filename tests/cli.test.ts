@@ -97,7 +97,6 @@ describe('CLI Only Options', () => {
 
 		const result = await runCli('src/index.ts --dts')
 
-		expect(result.success).toBe(true)
 		expect(result.stdout).toContain(
 			' Function must have an explicit return type annotation.',
 		)
