@@ -75,5 +75,8 @@ jobs:
       - name: 📦 Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: 🧪 Run test build
+        run: bun run test-build
+
       - name: 🧪 Run tests
         run: bun run test

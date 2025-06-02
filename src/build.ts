@@ -211,7 +211,6 @@ export async function build(
 
 					if (result.errors.length > 0) {
 						logIsolatedDeclarationErrors(result.errors, {
-							warnInsteadOfError: options.watch,
 							shouldExit: true,
 						})
 					}
