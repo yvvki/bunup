@@ -14,7 +14,7 @@
 
 Bunup is the **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
 
-![bunup-demo](https://github.com/user-attachments/assets/ce3bc944-fd8a-47b5-bbcb-00e8224fc387)
+<img src="https://github.com/user-attachments/assets/ce3bc944-fd8a-47b5-bbcb-00e8224fc387" alt="bunup-demo" style="border: 1px solid #444; border-radius: 16px;" />
 
 
 </div>
