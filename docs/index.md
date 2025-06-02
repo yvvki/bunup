@@ -37,3 +37,72 @@ features:
 import WithinHero from "/components/WithinHero.vue";
 
 </script>
+
+<WithinHero>
+<div class="benchmark-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Bundler</th>
+        <th>Format</th>
+        <th>Build Time</th>
+        <th>Build Time (with dts)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>bunup</strong></td>
+        <td><strong>esm, cjs</strong></td>
+        <td><strong>3.42ms ⚡️</strong></td>
+        <td><strong>8.28ms ⚡️</strong></td>
+      </tr>
+      <tr>
+        <td>tsdown</td>
+        <td>esm, cjs</td>
+        <td>21.37ms</td>
+        <td>87.48ms</td>
+      </tr>
+      <tr>
+        <td>unbuild</td>
+        <td>esm, cjs</td>
+        <td>63.22ms</td>
+        <td>386.65ms</td>
+      </tr>
+      <tr>
+        <td>bunchee</td>
+        <td>esm, cjs</td>
+        <td>94.98ms</td>
+        <td>427.38ms</td>
+      </tr>
+      <tr>
+        <td>tsup</td>
+        <td>esm, cjs</td>
+        <td>82.59ms</td>
+        <td>1035.61ms</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</WithinHero>
+
+<style>
+.benchmark-table {
+  margin: 2rem 0;
+}
+.benchmark-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.benchmark-table th,
+.benchmark-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid var(--vp-c-divider);
+}
+.benchmark-table thead {
+  background-color: var(--vp-c-bg-soft);
+}
+.benchmark-table tbody tr:nth-child(1) {
+  font-weight: bold;
+}
+</style>
