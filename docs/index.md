@@ -54,13 +54,13 @@ import WithinHero from "/components/WithinHero.vue";
         <td><strong>bunup</strong></td>
         <td><strong>esm, cjs</strong></td>
         <td><strong>3.42ms ⚡️</strong></td>
-        <td><strong>8.28ms ⚡️</strong></td>
+        <td><strong>10.46ms ⚡️</strong></td>
       </tr>
       <tr>
         <td>tsdown</td>
         <td>esm, cjs</td>
-        <td>21.37ms</td>
-        <td>87.48ms</td>
+        <td>20.76ms</td>
+        <td>46.32ms</td>
       </tr>
       <tr>
         <td>unbuild</td>
@@ -82,6 +82,7 @@ import WithinHero from "/components/WithinHero.vue";
       </tr>
     </tbody>
   </table>
+  <div class="benchmark-note">Benchmark of build time via CLI for an average-sized project</div>
 </div>
 </WithinHero>
 
@@ -104,5 +105,12 @@ import WithinHero from "/components/WithinHero.vue";
 }
 .benchmark-table tbody tr:nth-child(1) {
   font-weight: bold;
+}
+.benchmark-note {
+  font-size: 0.8rem;
+  color: var(--vp-c-text-2);
+  text-align: right;
+  margin-top: 0.5rem;
+  font-style: italic;
 }
 </style>
