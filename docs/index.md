@@ -54,7 +54,7 @@ import WithinHero from "/components/WithinHero.vue";
         <td><strong>bunup</strong></td>
         <td><strong>esm, cjs</strong></td>
         <td><strong>3.42ms ⚡️</strong></td>
-        <td><strong>10.46ms ⚡️</strong></td>
+        <td><strong>18.52ms ⚡️</strong></td>
       </tr>
       <tr>
         <td>tsdown</td>
