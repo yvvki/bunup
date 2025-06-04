@@ -48,7 +48,7 @@ export type BuildOutput = {
 /**
  * Context provided to build hooks
  */
-export type BuildContext = {
+type BuildContext = {
 	/** The build options that were used */
 	options: BuildOptions
 	/** The output of the build */
@@ -60,7 +60,7 @@ export type BuildContext = {
 /**
  * Hooks that can be implemented by Bunup plugins
  */
-export type BunupPluginHooks = {
+type BunupPluginHooks = {
 	/**
 	 * Called when a build is successfully completed
 	 * @param ctx Build context containing options and output

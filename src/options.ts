@@ -12,15 +12,15 @@ type Sourcemap = BunBuildOptions['sourcemap']
 
 export type Format = Exclude<BunBuildOptions['format'], undefined>
 
-export type Target = BunBuildOptions['target']
+type Target = BunBuildOptions['target']
 
 type External = (string | RegExp)[]
 
 type Env = BunBuildOptions['env'] | Record<string, string>
 
-export type DtsResolve = boolean | (string | RegExp)[]
+type DtsResolve = boolean | (string | RegExp)[]
 
-export type Naming = string | { entry?: string; chunk?: string; asset?: string }
+type Naming = string | { entry?: string; chunk?: string; asset?: string }
 
 type DtsOptions = {
 	/**
@@ -443,7 +443,7 @@ export function getResolvedSplitting(
 	return splitting === undefined ? format === 'esm' : splitting
 }
 
-export const DEFAULT_ENTRY_NAMING = '[dir]/[name].[ext]'
+const DEFAULT_ENTRY_NAMING = '[dir]/[name].[ext]'
 
 export function getResolvedNaming(
 	naming: Naming | undefined,

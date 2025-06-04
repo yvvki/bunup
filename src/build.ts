@@ -23,7 +23,12 @@ import {
 	runPluginBuildStartHooks,
 } from './plugins/utils'
 import type { BunPlugin } from './types'
-import { cleanOutDir, ensureArray, getShortFilePath } from './utils'
+import {
+	cleanOutDir,
+	ensureArray,
+	getFilesFromGlobs,
+	getShortFilePath,
+} from './utils'
 
 export async function build(
 	partialOptions: Partial<BuildOptions>,
@@ -76,7 +81,9 @@ export async function build(
 			dts({
 				resolve,
 				preferredTsConfigPath: options.preferredTsconfigPath,
-				entry,
+				entry: entry
+					? await getFilesFromGlobs(ensureArray(entry), rootDir)
+					: undefined,
 				cwd: rootDir,
 				splitting,
 				onDeclarationsGenerated({ results, buildConfig }) {
@@ -111,9 +118,10 @@ export async function build(
 
 	const buildPromises = options.format.flatMap(async (fmt) => {
 		const result = await Bun.build({
-			entrypoints: ensureArray(options.entry).map((e) => {
-				return `${rootDir}/${e}`
-			}),
+			entrypoints: await getFilesFromGlobs(
+				ensureArray(options.entry),
+				rootDir,
+			).then((files) => files.map((file) => `${rootDir}/${file}`)),
 			format: fmt,
 			naming: getResolvedNaming(options.naming, fmt, packageType),
 			splitting: getResolvedSplitting(options.splitting, fmt),

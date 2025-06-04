@@ -41,29 +41,28 @@ export default defineConfig({
 
 This will generate output files named after each input file (e.g., `dist/index.js` and `dist/cli.js`).
 
-### Named Entries
+### Using Glob Patterns
 
-Named entries allow you to specify custom output filenames.
-
-#### Using the CLI
+You can use glob patterns to include multiple files that match a pattern:
 
 ```sh
-bunup --entry.main src/index.ts --entry.api src/api/v1/index.ts --entry.nested/utils src/utils.ts
-```
+# CLI
+bunup 'src/**/*.ts' '!src/**/*.test.ts'
 
-#### Using a Configuration File
-
-```typescript
+# Configuration file
 export default defineConfig({
-	entry: {
-		main: 'src/index.ts', // Outputs to dist/main.js
-		api: 'src/api/v1/index.ts', // Outputs to dist/api.js
-		'nested/utils': 'src/utils.ts', // Outputs to dist/nested/utils.js
-	},
+      entry: [
+            'src/**/*.ts',
+            '!src/**/*.test.ts',
+            '!src/internal/**/*.ts'
+      ],
 });
 ```
 
-This will generate output files with the specified names (e.g., `dist/main.js` from `src/index.ts`).
+Glob pattern features:
+- Use patterns like `**/*.ts` to match files recursively
+- Prefix patterns with `!` to exclude files that match the pattern
+- Patterns are resolved relative to the project root
 
 ## Output Formats
 
@@ -117,41 +116,6 @@ The file extensions are determined automatically based on the format and your pa
 | esm    | `.mjs`               | `.d.mts`                         |
 | cjs    | `.js`                | `.d.ts`                          |
 | iife   | `.global.js`         | `.global.d.ts`                   |
-
-### Customizing Output Extensions
-
-You can customize the output file extensions using the `outputExtension` option:
-
-```typescript
-export default defineConfig({
-	entry: ['src/index.ts', 'src/worker/index.ts'],
-	format: ['esm', 'cjs'],
-	outputExtension: ({ format, entry }) => ({
-		js: entry === 'src/worker/index.ts' ? '.worker.js' : `.${format}.js`,
-	}),
-});
-```
-
-The `outputExtension` function receives:
-
-- `format`: The output format
-- `packageType`: The package.json "type" field value (typically 'module' or 'commonjs')
-- `options`: The complete resolved build options object
-- `entry`: The entry which is the same as what you defined in the entry option
-
-It should return an object with:
-
-- `js`: The JavaScript file extension (including the leading dot)
-- `dts`: The TypeScript declaration file extension (including the leading dot)
-
-Both extensions can be customized independently. For example:
-
-```typescript
-outputExtension: ({ format, entry }) => ({
-  js: entry === 'src/worker/index.ts' ? '.worker.js' : `.${format}.js`,
-  dts: entry === 'src/worker/index.ts' ? '.worker.d.ts' : `.${format}.d.ts`
-})
-```
 
 ## Named Configurations
 

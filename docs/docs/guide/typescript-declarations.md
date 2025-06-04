@@ -34,21 +34,6 @@ export default defineConfig({
 });
 ```
 
-## Declaration-only Mode
-
-If you only want to generate TypeScript declaration files without building JavaScript files:
-
-```sh 7
-# CLI
-bunup src/index.ts --dts-only
-
-# Configuration file
-export default defineConfig({
-    entry: ['src/index.ts'],
-    dtsOnly: true,
-});
-```
-
 ## Custom Entry Points
 
 For more control, you can specify custom entry points for declarations:
@@ -63,22 +48,79 @@ export default defineConfig({
 });
 ```
 
-## Named Entries
+## Using Glob Patterns
 
-You can use named entries for declarations:
+Bunup supports glob patterns for both main entries and declaration file entries:
 
 ```typescript
 export default defineConfig({
-	entry: ['src/index.ts', 'src/cli.ts'],
-	outdir: "dist",
 	dts: {
-		entry: {
-			types: 'src/index.ts', // Outputs to dist/types.d.ts
-			api: 'src/api/v1/index.ts', // Outputs to dist/api.d.ts
-			'nested/types': 'src/types.ts', // Outputs to dist/nested/types.d.ts
-		},
-	},
+		entry: [
+			'src/public/**/*.ts',
+			'!src/public/dev/**/*'
+		]
+	}
 });
+```
+
+You can use:
+- Simple patterns like `src/**/*.ts` to include files
+- Exclude patterns starting with `!` to filter out specific files
+- Both for main entries and declaration entries
+
+## Declaration Splitting
+
+Declaration splitting optimizes TypeScript `.d.ts` files when multiple entry points share types. Instead of duplicating shared types across declaration files, Bunup extracts them into shared chunk files that are imported where needed.
+
+### Example
+
+**Project structure:**
+
+```
+src/
+├── shared-types.ts  // Types shared by both entries
+├── index.ts
+└── cli.ts
+```
+
+**Without splitting:**
+
+```
+dist/
+├── index.d.ts  // Contains all shared types, duplicated
+├── cli.d.ts    // Also contains all shared types, duplicated
+```
+
+**With splitting:**
+
+```
+dist/
+├── index.d.ts          // Imports shared types
+├── cli.d.ts            // Imports shared types
+├── chunk-abc123.d.ts   // Shared types here
+```
+
+### How to Enable
+
+Add to config:
+
+```typescript
+export default defineConfig({
+  entry: ['src/index.ts', 'src/cli.ts'],
+  dts: {
+    splitting: true
+  }
+});
+```
+
+Splitting is enabled by default if:
+- Using ESM (`format: ['esm']`)
+- Code splitting is enabled
+
+To disable:
+
+```typescript
+dts: { splitting: false }
 ```
 
 ## TypeScript Configuration

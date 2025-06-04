@@ -3,29 +3,42 @@
 	"private": true,
 	"files": ["dist"],
 	"types": "./dist/index.d.ts",
-	"module": "./dist/index.mjs",
 	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js"
+			"require": "./dist/index.js",
+			"import": "./dist/index.mjs"
 		},
 		"./client": {
 			"types": "./dist/client/index.d.ts",
-			"import": "./dist/client/index.mjs",
-			"require": "./dist/client/index.js"
+			"require": "./dist/client/index.js",
+			"import": "./dist/client/index.mjs"
 		},
 		"./server": {
 			"types": "./dist/server/index.d.ts",
-			"import": "./dist/server/index.mjs",
-			"require": "./dist/server/index.js"
+			"require": "./dist/server/index.js",
+			"import": "./dist/server/index.mjs"
 		},
 		"./chunk-j13ke0sf.js": {
 			"require": "./dist/chunk-j13ke0sf.js"
 		},
 		"./chunk-6czjhedk.d.ts": {
 			"types": "./dist/chunk-6czjhedk.d.ts"
+		},
+		"./chunk-j13ke0sf": {
+			"require": "./dist/chunk-j13ke0sf.js"
+		},
+		"./client/server": {
+			"types": "./dist/client/server.d.ts",
+			"require": "./dist/client/server.js",
+			"import": "./dist/client/server.mjs"
+		},
+		"./utils": {
+			"types": "./dist/utils.d.mts",
+			"import": "./dist/utils.mjs",
+			"require": "./dist/utils.js"
 		}
 	},
 	"dependencies": {

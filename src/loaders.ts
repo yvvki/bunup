@@ -33,7 +33,7 @@ export async function processLoadedConfigs(
 			]
 }
 
-export function addField<T extends Record<string, unknown>, F extends string>(
+function addField<T extends Record<string, unknown>, F extends string>(
 	objectOrArray: T | T[],
 	field: F,
 	value: unknown,

@@ -86,7 +86,7 @@ function generateExportsFields(files: BuildOutputFile[]): {
 		const exportType = formatToExportField(file.format, file.dts)
 		const relativePath = `./${cleanPath(file.relativePathToRootDir)}`
 
-		const exportKey = getExportKey(file.relativePathToOutputDir)
+		const exportKey = getExportKey(cleanPath(file.relativePathToOutputDir))
 
 		exportsField[exportKey] = {
 			...exportsField[exportKey],
@@ -103,7 +103,7 @@ function generateExportsFields(files: BuildOutputFile[]): {
 	return { exportsField, entryPoints }
 }
 
-export function filterJsDtsFiles(files: BuildOutputFile[]): BuildOutputFile[] {
+function filterJsDtsFiles(files: BuildOutputFile[]): BuildOutputFile[] {
 	return files.filter((file) => JS_DTS_RE.test(file.fullPath))
 }
 

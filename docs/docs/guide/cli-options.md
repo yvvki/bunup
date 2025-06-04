@@ -8,8 +8,7 @@ bunup [...entries] [options]
 
 | Option                             | Alias       | Description                                                                                        | Default          |
 | ---------------------------------- | ----------- | -------------------------------------------------------------------------------------------------- | ---------------- |
-| `--entry <path>`                   |             | Entry file path                                                                                    | `[]`             |
-| `--entry.<name> <path>`            |             | Named entry file path                                                                              | -                |
+| `--entry <path>`                   |             | Entry file path or glob pattern (use '!' prefix to exclude files)                                   | `[]`             |
 | `--out-dir <dir>`                  | `-o`        | Output directory                                                                                   | `dist`           |
 | `--format <formats>`               | `-f`        | Output formats (comma-separated: esm,cjs,iife)                                                     | `cjs`            |
 | `--minify`                         | `-m`        | Enable all minification options                                                                    | `false`          |
