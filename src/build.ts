@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { dts } from 'bun-dts'
-import { BunupBuildError } from './errors'
+import { BunupBuildError, BunupDTSBuildError } from './errors'
 import { loadPackageJson } from './loaders'
 import { logger, setSilent } from './logger'
 import {
@@ -78,13 +78,22 @@ export async function build(
 		const { resolve, entry, splitting } =
 			typeof options.dts === 'object' ? options.dts : {}
 
+		let entrypoints: string[] | undefined
+		if (entry) {
+			entrypoints = await getFilesFromGlobs(ensureArray(entry), rootDir)
+		}
+
+		if (Array.isArray(entrypoints) && !entrypoints.length) {
+			throw new BunupDTSBuildError(
+				'The dts entrypoints you provided do not exist. Please make sure the entrypoints point to valid files.',
+			)
+		}
+
 		plugins.push(
 			dts({
 				resolve,
 				preferredTsConfigPath: options.preferredTsconfigPath,
-				entry: entry
-					? await getFilesFromGlobs(ensureArray(entry), rootDir)
-					: undefined,
+				entry: entrypoints,
 				cwd: rootDir,
 				splitting,
 				onDeclarationsGenerated({ results, buildConfig }) {
@@ -118,12 +127,20 @@ export async function build(
 		)
 	}
 
+	const entrypoints = await getFilesFromGlobs(
+		ensureArray(options.entry),
+		rootDir,
+	)
+
+	if (!entrypoints.length) {
+		throw new BunupBuildError(
+			'The entrypoints you provided do not exist. Please make sure the entrypoints point to valid files.',
+		)
+	}
+
 	const buildPromises = options.format.flatMap(async (fmt) => {
 		const result = await Bun.build({
-			entrypoints: await getFilesFromGlobs(
-				ensureArray(options.entry),
-				rootDir,
-			).then((files) => files.map((file) => `${rootDir}/${file}`)),
+			entrypoints: entrypoints.map((file) => `${rootDir}/${file}`),
 			format: fmt,
 			naming: getResolvedNaming(options.naming, fmt, packageType),
 			splitting: getResolvedSplitting(options.splitting, fmt),

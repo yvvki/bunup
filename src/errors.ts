@@ -15,6 +15,13 @@ export class BunupBuildError extends BunupError {
 	}
 }
 
+export class BunupDTSBuildError extends BunupError {
+	constructor(message: string) {
+		super(message)
+		this.name = 'BunupDTSBuildError'
+	}
+}
+
 export class BunupCLIError extends BunupError {
 	constructor(message: string) {
 		super(message)
@@ -75,6 +82,8 @@ export const handleError = (error: unknown, context?: string): void => {
 	let errorType = 'UNKNOWN ERROR'
 	if (error instanceof BunupBuildError) {
 		errorType = 'BUILD ERROR'
+	} else if (error instanceof BunupDTSBuildError) {
+		errorType = 'DTS ERROR'
 	} else if (error instanceof BunupCLIError) {
 		errorType = 'CLI ERROR'
 	} else if (error instanceof BunupWatchError) {
