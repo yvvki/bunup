@@ -38,7 +38,7 @@ export function removeExtension(filePath: string): string {
 		: path.join(directory, nameWithoutExtensions)
 }
 
-function isModulePackage(packageType: string | undefined): boolean {
+export function isModulePackage(packageType: string | undefined): boolean {
 	return packageType === 'module'
 }
 
