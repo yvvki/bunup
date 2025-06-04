@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'bun:test'
 import {
 	cleanProjectDir,
 	createProject,
-	findFile,
 	runBuild,
 	validateBuildFiles,
 } from './utils'
@@ -646,6 +645,101 @@ export function Counter() {
 				],
 			}),
 		).toBe(true)
+	})
+
+	it('should support glob patterns in entry points', async () => {
+		createProject({
+			'src/components/button.ts': "export const Button = () => 'button';",
+			'src/components/card.ts': "export const Card = () => 'card';",
+			'src/utils/string.ts':
+				'export const capitalize = (s: string) => s.toUpperCase();',
+			'src/utils/number.ts':
+				'export const add = (a: number, b: number) => a + b;',
+		})
+
+		const result = await runBuild({
+			entry: ['src/**/*.ts'],
+			format: ['esm'],
+		})
+
+		expect(result.success).toBe(true)
+		expect(
+			validateBuildFiles(result, {
+				expectedFiles: [
+					'components/button.mjs',
+					'components/card.mjs',
+					'utils/string.mjs',
+					'utils/number.mjs',
+				],
+			}),
+		).toBe(true)
+	})
+
+	it('should support exclude patterns in entry points', async () => {
+		createProject({
+			'src/index.ts': "export const version = '1.0.0';",
+			'src/utils.ts': 'export const sum = (a: number, b: number) => a + b;',
+			'src/utils.test.ts': "import { sum } from './utils';",
+			'src/components/button.ts': "export const Button = () => 'button';",
+			'src/components/button.test.ts': "import { Button } from './button';",
+		})
+
+		const result = await runBuild({
+			entry: ['src/**/*.ts', '!src/**/*.test.ts'],
+			format: ['esm'],
+		})
+
+		expect(result.success).toBe(true)
+		expect(
+			validateBuildFiles(result, {
+				expectedFiles: ['index.mjs', 'utils.mjs', 'components/button.mjs'],
+				notExpectedFiles: ['utils.test.mjs', 'components/button.test.mjs'],
+			}),
+		).toBe(true)
+	})
+
+	it('should support complex include/exclude glob patterns', async () => {
+		createProject({
+			'src/index.ts': "export const version = '1.0.0';",
+			'src/utils/common.ts': 'export const noop = () => {};',
+			'src/utils/internal.ts': 'export const privateMethod = () => {};',
+			'src/utils/test-helpers.ts': 'export const createMock = () => ({});',
+			'src/components/button.ts': "export const Button = () => 'button';",
+			'src/components/internal/base.ts':
+				'export const BaseComponent = () => {};',
+			'lib/helpers.ts': 'export const logger = () => console.log;',
+			'tests/setup.ts': 'export const beforeAll = () => {};',
+		})
+
+		const result = await runBuild({
+			entry: [
+				'src/**/*.ts',
+				'lib/**/*.ts',
+				'!src/**/internal*.ts',
+				'!src/**/internal/**/*.ts',
+				'!tests/**/*.ts',
+			],
+			format: ['esm'],
+		})
+
+		expect(result.success).toBe(true)
+		expect(
+			validateBuildFiles(result, {
+				expectedFiles: [
+					'index.mjs',
+					'utils/common.mjs',
+					'utils/test-helpers.mjs',
+					'components/button.mjs',
+					'helpers.mjs',
+				],
+			}),
+		).toBe(true)
+		expect(result.files.some((file) => file.path.includes('internal'))).toBe(
+			false,
+		)
+		expect(result.files.some((file) => file.path.includes('tests/'))).toBe(
+			false,
+		)
 	})
 
 	it('should generate correctly named chunks and assets in the specified output directory', async () => {
