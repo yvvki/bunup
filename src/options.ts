@@ -1,12 +1,8 @@
 import { report } from './plugins/built-in'
 import { useClient } from './plugins/internal/use-client'
 import type { Plugin } from './plugins/types'
-import type {
-	Arrayable,
-	BunBuildOptions,
-	MaybePromise,
-	WithRequired,
-} from './types'
+import type { BunBuildOptions, MaybePromise, WithRequired } from './types'
+import { getDefaultJsOutputExtension } from './utils'
 
 type Loader = NonNullable<BunBuildOptions['loader']>[string]
 
@@ -22,35 +18,35 @@ type External = (string | RegExp)[]
 
 type Env = BunBuildOptions['env'] | Record<string, string>
 
-export type Entry = Arrayable<string> | Record<string, string>
-
 export type DtsResolve = boolean | (string | RegExp)[]
+
+export type Naming = string | { entry?: string; chunk?: string; asset?: string }
 
 type DtsOptions = {
 	/**
 	 * Entry point files for TypeScript declaration file generation
 	 *
-	 * This can be:
-	 * - A string path to a file
-	 * - An array of file paths
-	 * - An object where keys are output names and values are input file paths
-	 *
-	 * The key names are used for the generated declaration files.
-	 * For example, `{custom: 'src/index.ts'}` will generate `custom.d.ts`
-	 *
 	 * If not specified, the main entry points will be used for declaration file generation.
-	 *
-	 * If it's a string or an array of strings, the file name (without extension)
-	 * will be used as the name for the output declaration file.
 	 *
 	 * @see https://bunup.dev/docs/guide/typescript-declarations#custom-entry-points
 	 * @see https://bunup.dev/docs/guide/typescript-declarations#named-entries
 	 */
-	entry?: Entry
+	entry?: string | string[]
 	/**
 	 * Resolve external types used in dts files from node_modules
 	 */
 	resolve?: DtsResolve
+	/**
+	 * Whether to split declaration files when multiple entrypoints import the same files,
+	 * modules, or share types. When enabled, shared types will be extracted to separate
+	 * .d.ts files, and other declaration files will import these shared files.
+	 *
+	 * This helps reduce bundle size by preventing duplication of type definitions
+	 * across multiple entrypoints.
+	 *
+	 * This option is enabled by default if splitting is enabled in the Bun build config or format is esm.
+	 */
+	splitting?: boolean
 }
 
 export interface BuildOptions {
@@ -66,17 +62,10 @@ export interface BuildOptions {
 	 * This can be:
 	 * - A string path to a file
 	 * - An array of file paths
-	 * - An object where keys are output names and values are input file paths
-	 *
-	 * The key names are used for the generated output files.
-	 * For example, `{custom: 'src/index.ts'}` will generate `custom.js`
-	 *
-	 * If it's a string or an array of strings, the file name (without extension)
-	 * will be used as the name for the output file.
 	 *
 	 * @see https://bunup.dev/docs/#entry-points
 	 */
-	entry: Entry
+	entry: string | string[]
 
 	/**
 	 * Output directory for the bundled files
@@ -102,6 +91,30 @@ export interface BuildOptions {
 	 * Defaults to true for ESM format, false for CJS format
 	 */
 	splitting?: boolean
+
+	/**
+	 * Customizes the generated file names
+	 * Defaults to './[dir]/[name].[ext]'
+	 *
+	 * Supports the following tokens:
+	 * - [name] - The name of the entrypoint file, without the extension
+	 * - [ext] - The extension of the generated bundle
+	 * - [hash] - A hash of the bundle contents
+	 * - [dir] - The relative path from the project root to the parent directory of the source file
+	 *
+	 * Can be a string template or an object with separate templates for entry points, chunks, and assets
+	 *
+	 * @example
+	 * naming: "[dir]/[name]-[hash].[ext]"
+	 *
+	 * @example
+	 * naming: {
+	 *   entry: "[dir]/[name].[ext]",
+	 *   chunk: "[name]-[hash].[ext]",
+	 *   asset: "[name]-[hash].[ext]"
+	 * }
+	 */
+	naming?: Naming
 
 	/**
 	 * Whether to minify whitespace in the output
@@ -342,26 +355,6 @@ export interface BuildOptions {
 	 * ]
 	 */
 	plugins?: Plugin[]
-	/**
-	 * Whether to only generate TypeScript declaration files (.d.ts)
-	 * When set to true, only generates declaration files for all entry points
-	 * Can also be configured with dts option for more control
-	 */
-	dtsOnly?: boolean
-	/**
-	 * Customize the output file extension for each format.
-	 *
-	 * @param options Contains format, packageType, options, and entry (which is the same as what you defined in the entry option)
-	 * @returns Object with js and dts extension (including the leading dot).
-	 *
-	 * @see https://bunup.dev/docs/#customizing-output-extensions
-	 */
-	outputExtension?: (options: {
-		format: Format
-		packageType: string | undefined
-		options: BuildOptions
-		entry: string
-	}) => { js?: string; dts?: string }
 }
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
@@ -448,6 +441,31 @@ export function getResolvedSplitting(
 	format: Format,
 ): boolean {
 	return splitting === undefined ? format === 'esm' : splitting
+}
+
+export const DEFAULT_ENTRY_NAMING = '[dir]/[name].[ext]'
+
+export function getResolvedNaming(
+	naming: Naming | undefined,
+	fmt: Format,
+	packageType: string | undefined,
+): Naming {
+	const resolvedNaming =
+		typeof naming === 'object'
+			? { entry: DEFAULT_ENTRY_NAMING, ...naming }
+			: (naming ?? DEFAULT_ENTRY_NAMING)
+
+	const replaceExt = (pattern: string): string =>
+		pattern.replace('.[ext]', getDefaultJsOutputExtension(fmt, packageType))
+
+	if (typeof resolvedNaming === 'string') {
+		return replaceExt(resolvedNaming)
+	}
+
+	return {
+		...resolvedNaming,
+		entry: replaceExt(resolvedNaming.entry),
+	}
 }
 
 export function getResolvedEnv(

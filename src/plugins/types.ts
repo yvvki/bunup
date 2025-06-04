@@ -29,17 +29,10 @@ export type BuildOutputFile = {
 	fullPath: string
 	/** Path to the generated file relative to the root directory */
 	relativePathToRootDir: string
+	/** Path to the generated file relative to the output directory */
+	relativePathToOutputDir: string
 	/** Whether the file is a dts file */
 	dts: boolean
-	/** The path to the entry file (defined in config.entry) that generated this output file */
-	entry: string
-	/**
-	 * The base path of the output file relative to the output directory, excluding the extension.
-	 * Examples:
-	 * - If the entry is "src/client/index.ts", the outputBasePath will be "client/index"
-	 * - If the entry is "src/index.ts", the outputBasePath will be "index"
-	 */
-	outputBasePath: string
 	/** The format of the output file */
 	format: Format
 }

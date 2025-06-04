@@ -11,14 +11,11 @@ import {
 	ensureArray,
 	formatFileSize,
 	formatTime,
-	getBaseFileName,
-	getDefaultDtsOutputExtension,
 	getDefaultJsOutputExtension,
 	getPackageDeps,
 	getShortFilePath,
 	isDirectoryPath,
 	isModulePackage,
-	makePortablePath,
 	removeExtension,
 } from '../src/utils'
 
@@ -60,26 +57,6 @@ describe('Utils', () => {
 		})
 		it('returns .global.js for iife format', () => {
 			expect(getDefaultJsOutputExtension('iife', undefined)).toBe('.global.js')
-		})
-	})
-
-	describe('getDefaultDtsOutputExtension', () => {
-		it('returns .d.mts for esm format with non-module type', () => {
-			expect(getDefaultDtsOutputExtension('esm', undefined)).toBe('.d.mts')
-		})
-		it('returns .d.ts for esm format with module type', () => {
-			expect(getDefaultDtsOutputExtension('esm', 'module')).toBe('.d.ts')
-		})
-		it('returns .d.cts for cjs format with module type', () => {
-			expect(getDefaultDtsOutputExtension('cjs', 'module')).toBe('.d.cts')
-		})
-		it('returns .d.ts for cjs format with commonjs type', () => {
-			expect(getDefaultDtsOutputExtension('cjs', 'commonjs')).toBe('.d.ts')
-		})
-		it('returns .global.d.ts for iife format', () => {
-			expect(getDefaultDtsOutputExtension('iife', undefined)).toBe(
-				'.global.d.ts',
-			)
 		})
 	})
 
@@ -250,18 +227,6 @@ describe('Utils', () => {
 		})
 	})
 
-	describe('getBaseFileName', () => {
-		it('returns filename without extension', () => {
-			expect(getBaseFileName('path/to/file.js')).toBe('file')
-		})
-		it('returns filename with no extension as is', () => {
-			expect(getBaseFileName('path/to/file')).toBe('file')
-		})
-		it('handles filenames with multiple dots', () => {
-			expect(getBaseFileName('path/to/file.min.js')).toBe('file.min')
-		})
-	})
-
 	describe('removeExtension', () => {
 		it('removes file extension', () => {
 			expect(removeExtension('path/to/file.js')).toBe('path/to/file')
@@ -270,35 +235,33 @@ describe('Utils', () => {
 			expect(removeExtension('path/to/file')).toBe('path/to/file')
 		})
 		it('handles paths with multiple dots', () => {
-			expect(removeExtension('path/to/file.min.js')).toBe('path/to/file.min')
+			expect(removeExtension('path/to/file.min.js')).toBe('path/to/file')
 		})
 	})
 
 	describe('makePortablePath', () => {
 		it('converts backslashes to forward slashes', () => {
-			expect(makePortablePath('path\\to\\file.js')).toBe('path/to/file.js')
+			expect(cleanPath('path\\to\\file.js')).toBe('path/to/file.js')
 		})
 
 		it('strips Windows drive letters', () => {
-			expect(makePortablePath('C:/path/to/file.js')).toBe('path/to/file.js')
+			expect(cleanPath('C:/path/to/file.js')).toBe('path/to/file.js')
 		})
 
 		it('removes leading slashes', () => {
-			expect(makePortablePath('/path/to/file.js')).toBe('path/to/file.js')
+			expect(cleanPath('/path/to/file.js')).toBe('path/to/file.js')
 		})
 
 		it('handles already normalized paths', () => {
-			expect(makePortablePath('path/to/file.js')).toBe('path/to/file.js')
+			expect(cleanPath('path/to/file.js')).toBe('path/to/file.js')
 		})
 
 		it('handles complex paths with multiple transformations', () => {
-			expect(makePortablePath('D:\\\\multiple\\//slashes//\\file.js')).toBe(
+			expect(cleanPath('D:\\\\multiple\\//slashes//\\file.js')).toBe(
 				'multiple/slashes/file.js',
 			)
 		})
-	})
 
-	describe('cleanPath', () => {
 		it('converts backslashes to forward slashes', () => {
 			expect(cleanPath('path\\to\\file.js')).toBe('path/to/file.js')
 		})
@@ -313,16 +276,12 @@ describe('Utils', () => {
 			)
 		})
 
-		it('handles empty string', () => {
-			expect(cleanPath('')).toBe('')
-		})
-
 		it('handles path with no slashes', () => {
 			expect(cleanPath('filename.js')).toBe('filename.js')
 		})
 
 		it('handles multiple consecutive backslashes', () => {
-			expect(cleanPath('path\\\\to\\\\file.js')).toBe('path//to//file.js')
+			expect(cleanPath('path\\\\to\\\\file.js')).toBe('path/to/file.js')
 		})
 	})
 

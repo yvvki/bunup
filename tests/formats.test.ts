@@ -218,82 +218,6 @@ describe('Format Types and Output Extensions', () => {
 			).toBe(true)
 		})
 	})
-
-	describe('Custom Output Extensions', () => {
-		it('should respect custom output extensions for JS files', async () => {
-			const result = await runBuild({
-				entry: 'src/index.ts',
-				format: ['esm', 'cjs'],
-				outputExtension: ({ format }) => ({
-					js: `.custom.${format}.js`,
-					dts: `.d.${format}`,
-				}),
-			})
-
-			expect(result.success).toBe(true)
-			expect(
-				validateBuildFiles(result, {
-					expectedFiles: ['index.custom.esm.js', 'index.custom.cjs.js'],
-				}),
-			).toBe(true)
-		})
-
-		it('should respect custom output extensions for DTS files', async () => {
-			const result = await runBuild({
-				entry: 'src/index.ts',
-				format: ['esm', 'cjs'],
-				dts: true,
-				outputExtension: ({ format }) => ({
-					js: `.${format}.js`,
-					dts: `.d.${format}`,
-				}),
-			})
-
-			expect(result.success).toBe(true)
-			expect(
-				validateBuildFiles(result, {
-					expectedFiles: [
-						'index.esm.js',
-						'index.d.esm',
-						'index.cjs.js',
-						'index.d.cjs',
-					],
-				}),
-			).toBe(true)
-		})
-
-		it('should support entry-specific output extensions', async () => {
-			createProject({
-				'src/index.ts': 'export const x = 1;',
-				'src/utils.ts': "export const util = () => 'utility';",
-			})
-
-			const result = await runBuild({
-				entry: {
-					main: 'src/index.ts',
-					utils: 'src/utils.ts',
-				},
-				format: ['esm'],
-				dts: true,
-				outputExtension: ({ entry }) => ({
-					js: entry === 'src/index.ts' ? '.bundle.js' : '.module.mjs',
-					dts: entry === 'src/index.ts' ? '.bundle.d.ts' : '.custom.d.ts',
-				}),
-			})
-
-			expect(result.success).toBe(true)
-			expect(
-				validateBuildFiles(result, {
-					expectedFiles: [
-						'main.bundle.js',
-						'main.bundle.d.ts',
-						'utils.module.mjs',
-						'utils.custom.d.ts',
-					],
-				}),
-			).toBe(true)
-		})
-	})
 })
 
 describe('Complex Format Scenarios', () => {
@@ -379,7 +303,7 @@ describe('Complex Format Scenarios', () => {
 		})
 
 		const cjsResult = await runBuild({
-			entry: { library: 'src/lib.ts' },
+			entry: ['src/lib.ts'],
 			format: ['cjs'],
 			dts: true,
 			banner: '// CJS Build',
@@ -399,57 +323,11 @@ describe('Complex Format Scenarios', () => {
 		expect(cjsResult.success).toBe(true)
 		expect(
 			validateBuildFiles(cjsResult, {
-				expectedFiles: [
-					'library.js',
-					'library.d.ts',
-					'index.mjs',
-					'index.d.mts',
-				],
+				expectedFiles: ['lib.js', 'lib.d.ts', 'index.mjs', 'index.d.mts'],
 			}),
 		).toBe(true)
 
-		const cjsFile = findFile(cjsResult, 'library', '.js')
+		const cjsFile = findFile(cjsResult, 'lib', '.js')
 		expect(cjsFile?.content).toContain('// CJS Build')
-	})
-
-	it('should support environment-specific extensions with custom output extensions', async () => {
-		createProject({
-			'src/index.ts': 'export const x = 1;',
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				type: 'module',
-			}),
-		})
-
-		const result = await runBuild({
-			entry: 'src/index.ts',
-			format: ['esm', 'cjs'],
-			dts: true,
-			outputExtension: ({ format, packageType }) => ({
-				js:
-					packageType === 'module'
-						? format === 'esm'
-							? '.js'
-							: `.${format}`
-						: format === 'esm'
-							? '.mjs'
-							: '.js',
-				dts:
-					packageType === 'module'
-						? format === 'esm'
-							? '.d.ts'
-							: `.d.${format}`
-						: format === 'esm'
-							? '.d.mts'
-							: '.d.ts',
-			}),
-		})
-
-		expect(result.success).toBe(true)
-		expect(
-			validateBuildFiles(result, {
-				expectedFiles: ['index.js', 'index.d.ts', 'index.cjs', 'index.d.cjs'],
-			}),
-		).toBe(true)
 	})
 })

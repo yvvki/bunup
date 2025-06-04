@@ -1,6 +1,33 @@
 {
 	"name": "tests",
 	"private": true,
+	"files": ["dist"],
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.mjs",
+	"main": "./dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js"
+		},
+		"./client": {
+			"types": "./dist/client/index.d.ts",
+			"import": "./dist/client/index.mjs",
+			"require": "./dist/client/index.js"
+		},
+		"./server": {
+			"types": "./dist/server/index.d.ts",
+			"import": "./dist/server/index.mjs",
+			"require": "./dist/server/index.js"
+		},
+		"./chunk-j13ke0sf.js": {
+			"require": "./dist/chunk-j13ke0sf.js"
+		},
+		"./chunk-6czjhedk.d.ts": {
+			"types": "./dist/chunk-6czjhedk.d.ts"
+		}
+	},
 	"dependencies": {
 		"chalk": "^5.4.1",
 		"lodash": "^4.17.21",

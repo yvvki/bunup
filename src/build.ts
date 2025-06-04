@@ -1,15 +1,6 @@
 import path from 'node:path'
-import {
-	type GenerateDtsResult,
-	generateDts,
-	logIsolatedDeclarationErrors,
-} from 'bun-dts'
-import {
-	BunupBuildError,
-	BunupDTSBuildError,
-	parseErrorMessage,
-} from './errors'
-import { getProcessableEntries, getResolvedNaming } from './helpers/entry'
+import { dts } from 'bun-dts'
+import { BunupBuildError } from './errors'
 import { loadPackageJson } from './loaders'
 import { logger, setSilent } from './logger'
 import {
@@ -19,6 +10,7 @@ import {
 	getResolvedDefine,
 	getResolvedEnv,
 	getResolvedMinify,
+	getResolvedNaming,
 	getResolvedSourcemap,
 	getResolvedSplitting,
 } from './options'
@@ -31,12 +23,7 @@ import {
 	runPluginBuildStartHooks,
 } from './plugins/utils'
 import type { BunPlugin } from './types'
-import {
-	cleanOutDir,
-	getDefaultDtsOutputExtension,
-	getDefaultJsOutputExtension,
-	getShortFilePath,
-} from './utils'
+import { cleanOutDir, ensureArray, getShortFilePath } from './utils'
 
 export async function build(
 	partialOptions: Partial<BuildOptions>,
@@ -74,8 +61,6 @@ export async function build(
 
 	await runPluginBuildStartHooks(bunupPlugins, options)
 
-	const processableEntries = getProcessableEntries(options.entry)
-
 	const packageType = packageJson.data?.type as string | undefined
 
 	const plugins: BunPlugin[] = [
@@ -83,149 +68,100 @@ export async function build(
 		...filterBunupBunPlugins(options.plugins).map((p) => p.plugin),
 	]
 
-	if (!options.dtsOnly) {
-		const buildPromises = options.format.flatMap((fmt) =>
-			processableEntries.map(async ({ entry, outputBasePath }) => {
-				const extension =
-					options.outputExtension?.({
-						format: fmt,
-						packageType,
-						options,
-						entry,
-					}).js ?? getDefaultJsOutputExtension(fmt, packageType)
+	if (options.dts) {
+		const { resolve, entry, splitting } =
+			typeof options.dts === 'object' ? options.dts : {}
 
-				const result = await Bun.build({
-					entrypoints: [`${rootDir}/${entry}`],
-					format: fmt,
-					naming: getResolvedNaming(outputBasePath, extension),
-					splitting: getResolvedSplitting(options.splitting, fmt),
-					bytecode: getResolvedBytecode(options.bytecode, fmt),
-					define: getResolvedDefine(options.define, options.env),
-					minify: getResolvedMinify(options),
-					outdir: `${rootDir}/${options.outDir}`,
-					target: options.target,
-					sourcemap: getResolvedSourcemap(options.sourcemap),
-					loader: options.loader,
-					drop: options.drop,
-					banner: options.banner,
-					footer: options.footer,
-					publicPath: options.publicPath,
-					env: getResolvedEnv(options.env),
-					plugins: plugins,
-					throw: false,
-				})
-
-				for (const log of result.logs) {
-					if (log.level === 'error') {
-						throw new BunupBuildError(log.message)
-					}
-					if (log.level === 'warning') logger.warn(log.message)
-					else if (log.level === 'info') logger.info(log.message)
-				}
-
-				for (const file of result.outputs) {
-					const relativePathToRootDir = getRelativePathToRootDir(
-						file.path,
-						rootDir,
-					)
-					if (file.kind === 'entry-point') {
-						logger.progress(fmt.toUpperCase(), relativePathToRootDir, {
+		plugins.push(
+			dts({
+				resolve,
+				preferredTsConfigPath: options.preferredTsconfigPath,
+				entry,
+				cwd: rootDir,
+				splitting,
+				onDeclarationsGenerated({ results, buildConfig }) {
+					for (const result of results) {
+						logger.progress('DTS', `${options.outDir}/${result.outputPath}`, {
 							identifier: options.name,
 						})
+
+						const fullPath = path.join(
+							rootDir,
+							options.outDir,
+							result.outputPath,
+						)
+
+						if (buildConfig.format) {
+							buildOutput.files.push({
+								fullPath,
+								relativePathToRootDir: getRelativePathToRootDir(
+									fullPath,
+									rootDir,
+								),
+								relativePathToOutputDir: result.outputPath,
+								dts: true,
+								format: buildConfig.format,
+							})
+						}
 					}
-					buildOutput.files.push({
-						fullPath: file.path,
-						relativePathToRootDir,
-						dts: false,
-						entry,
-						outputBasePath,
-						format: fmt,
-					})
-				}
+				},
 			}),
 		)
-
-		await Promise.all(buildPromises)
 	}
 
-	if (
-		options.dts === true ||
-		typeof options.dts === 'object' ||
-		options.dtsOnly
-	) {
-		const dtsResolve =
-			typeof options.dts === 'object' && 'resolve' in options.dts
-				? options.dts.resolve
-				: undefined
+	const buildPromises = options.format.flatMap(async (fmt) => {
+		const result = await Bun.build({
+			entrypoints: ensureArray(options.entry).map((e) => {
+				return `${rootDir}/${e}`
+			}),
+			format: fmt,
+			naming: getResolvedNaming(options.naming, fmt, packageType),
+			splitting: getResolvedSplitting(options.splitting, fmt),
+			bytecode: getResolvedBytecode(options.bytecode, fmt),
+			define: getResolvedDefine(options.define, options.env),
+			minify: getResolvedMinify(options),
+			outdir: `${rootDir}/${options.outDir}`,
+			target: options.target,
+			sourcemap: getResolvedSourcemap(options.sourcemap),
+			loader: options.loader,
+			drop: options.drop,
+			banner: options.banner,
+			footer: options.footer,
+			publicPath: options.publicPath,
+			env: getResolvedEnv(options.env),
+			plugins,
+			throw: false,
+		})
 
-		const dtsEntry =
-			typeof options.dts === 'object' && 'entry' in options.dts
-				? options.dts.entry
-				: undefined
+		for (const log of result.logs) {
+			if (log.level === 'error') {
+				throw new BunupBuildError(log.message)
+			}
+			if (log.level === 'warning') logger.warn(log.message)
+			else if (log.level === 'info') logger.info(log.message)
+		}
 
-		const processableDtsEntries = dtsEntry
-			? getProcessableEntries(dtsEntry)
-			: processableEntries
+		for (const file of result.outputs) {
+			const relativePathToRootDir = getRelativePathToRootDir(file.path, rootDir)
+			if (file.kind === 'entry-point') {
+				logger.progress(fmt.toUpperCase(), relativePathToRootDir, {
+					identifier: options.name,
+				})
+			}
+			buildOutput.files.push({
+				fullPath: file.path,
+				relativePathToRootDir,
+				relativePathToOutputDir: getRelativePathToOutputDir(
+					relativePathToRootDir,
+					options.outDir,
+				),
+				dts: false,
+				format: fmt,
+			})
+		}
+	})
 
-		const dtsPromises = processableDtsEntries.map(
-			async ({ entry, outputBasePath }) => {
-				let result: GenerateDtsResult | undefined
-				try {
-					result = await generateDts(entry, {
-						cwd: rootDir,
-						preferredTsConfigPath: options.preferredTsconfigPath,
-						resolve: dtsResolve,
-					})
-				} catch (error) {
-					throw new BunupDTSBuildError(parseErrorMessage(error))
-				}
-
-				for (const fmt of options.format) {
-					const extension =
-						options.outputExtension?.({
-							format: fmt,
-							packageType,
-							options,
-							entry,
-						}).dts ?? getDefaultDtsOutputExtension(fmt, packageType)
-
-					const filePath = path.join(
-						rootDir,
-						options.outDir,
-						`${outputBasePath}${extension}`,
-					)
-
-					const relativePathToRootDir = getRelativePathToRootDir(
-						filePath,
-						rootDir,
-					)
-
-					buildOutput.files.push({
-						fullPath: filePath,
-						relativePathToRootDir,
-						dts: true,
-						entry,
-						outputBasePath,
-						format: fmt,
-					})
-
-					if (result.errors.length > 0) {
-						logIsolatedDeclarationErrors(result.errors, {
-							shouldExit: true,
-						})
-					}
-
-					await Bun.write(filePath, result.dts)
-
-					logger.progress('DTS', relativePathToRootDir, {
-						identifier: options.name,
-					})
-				}
-			},
-		)
-
-		await Promise.all(dtsPromises)
-	}
+	await Promise.all(buildPromises)
 
 	await runPluginBuildDoneHooks(bunupPlugins, options, buildOutput, {
 		packageJson,
@@ -239,4 +175,11 @@ export async function build(
 
 function getRelativePathToRootDir(filePath: string, rootDir: string) {
 	return filePath.replace(`${rootDir}/`, '')
+}
+
+function getRelativePathToOutputDir(
+	relativePathToRootDir: string,
+	outDir: string,
+) {
+	return relativePathToRootDir.replace(`${outDir}/`, '')
 }

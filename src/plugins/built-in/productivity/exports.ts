@@ -1,7 +1,7 @@
 import { JS_DTS_RE } from '../../../constants/re'
 import { logger } from '../../../logger'
 import type { Format } from '../../../options'
-import { makePortablePath } from '../../../utils'
+import { cleanPath, removeExtension } from '../../../utils'
 import type { BuildOutputFile, BunupPlugin } from '../../types'
 
 type ExportField = 'require' | 'import' | 'types'
@@ -67,7 +67,7 @@ export function exports(): BunupPlugin {
 					)
 
 					logger.cli('Updated package.json with exports')
-				} catch (error) {
+				} catch {
 					logger.error('Failed to update package.json')
 				}
 			},
@@ -84,19 +84,20 @@ function generateExportsFields(files: BuildOutputFile[]): {
 
 	for (const file of filterJsDtsFiles(files)) {
 		const exportType = formatToExportField(file.format, file.dts)
-		const relativePath = `./${makePortablePath(file.relativePathToRootDir)}`
+		const relativePath = `./${cleanPath(file.relativePathToRootDir)}`
 
-		const exportKey = getExportKey(file.outputBasePath)
+		const exportKey = getExportKey(file.relativePathToOutputDir)
 
 		exportsField[exportKey] = {
 			...exportsField[exportKey],
 			[exportType]: relativePath,
 		}
+	}
 
-		for (const field of Object.keys(exportsField['.'] ?? {})) {
-			entryPoints[exportFieldToEntryPoint(field as ExportField, file.dts)] =
-				exportsField['.'][field as ExportField]
-		}
+	for (const field of Object.keys(exportsField['.'] ?? {})) {
+		const entryPoint = exportFieldToEntryPoint(field as ExportField)
+
+		entryPoints[entryPoint] = exportsField['.'][field as ExportField]
 	}
 
 	return { exportsField, entryPoints }
@@ -106,26 +107,27 @@ export function filterJsDtsFiles(files: BuildOutputFile[]): BuildOutputFile[] {
 	return files.filter((file) => JS_DTS_RE.test(file.fullPath))
 }
 
-function getExportKey(outputBasePath: string): string {
-	const pathSegments = outputBasePath.split('/')
+function getExportKey(relativePathToOutputDir: string): string {
+	const pathSegments = relativePathToOutputDir.split('/')
 
-	// index -> .
-	// client/index -> ./client
-	// utils/index -> ./utils
-	// components/ui/button -> ./components/ui/button
+	// index.ts -> .
+	// client/index.ts -> ./client
+	// utils/index.ts -> ./utils
+	// components/ui/button.ts -> ./components/ui/button
 
-	if (pathSegments.length === 1 && pathSegments[0] === 'index') {
+	if (pathSegments.length === 1 && pathSegments[0].startsWith('index')) {
 		return '.'
 	}
 
-	return `./${pathSegments.filter((p) => p !== 'index').join('/')}`
+	return `./${removeExtension(pathSegments.filter((p) => !p.startsWith('index')).join('/'))}`
 }
 
-function exportFieldToEntryPoint(
-	exportField: ExportField,
-	dts: boolean,
-): EntryPoint {
-	return dts ? 'types' : exportField === 'require' ? 'main' : 'module'
+function exportFieldToEntryPoint(exportField: ExportField): EntryPoint {
+	return exportField === 'types'
+		? 'types'
+		: exportField === 'require'
+			? 'main'
+			: 'module'
 }
 
 function formatToExportField(format: Format, dts: boolean): ExportField {

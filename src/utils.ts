@@ -23,32 +23,19 @@ export function getDefaultJsOutputExtension(
 	}
 }
 
-export function getDefaultDtsOutputExtension(
-	format: Format,
-	packageType: string | undefined,
-): string {
-	switch (format) {
-		case 'esm':
-			return isModulePackage(packageType) ? '.d.ts' : '.d.mts'
-		case 'cjs':
-			return isModulePackage(packageType) ? '.d.cts' : '.d.ts'
-		case 'iife':
-			return '.global.d.ts'
-	}
-}
-
-export function getBaseFileName(filePath: string): string {
-	const filename = path.basename(filePath)
-	const extension = path.extname(filename)
-	return extension ? filename.slice(0, -extension.length) : filename
-}
-
 export function removeExtension(filePath: string): string {
-	return filePath.replace(path.extname(filePath), '')
-}
+	const basename = path.basename(filePath)
+	const firstDotIndex = basename.indexOf('.')
+	if (firstDotIndex === -1) {
+		return filePath
+	}
 
-export function cleanPath(filePath: string): string {
-	return filePath.replace(/\\/g, '/')
+	const nameWithoutExtensions = basename.slice(0, firstDotIndex)
+	const directory = path.dirname(filePath)
+
+	return directory === '.'
+		? nameWithoutExtensions
+		: path.join(directory, nameWithoutExtensions)
 }
 
 export function isModulePackage(packageType: string | undefined): boolean {
@@ -102,14 +89,7 @@ export async function cleanOutDir(
 	await fs.mkdir(outDirPath, { recursive: true })
 }
 
-/**
- * Converts a file path to a portable format by:
- * - Normalizing path separators to forward slashes
- * - Removing Windows drive letters (e.g. C:/)
- * - Removing leading slashes
- * - Collapsing multiple slashes to single slash
- */
-export function makePortablePath(path: string): string {
+export function cleanPath(path: string): string {
 	let cleaned = normalize(path).replace(/\\/g, '/')
 
 	cleaned = cleaned.replace(/^[a-zA-Z]:\//, '')

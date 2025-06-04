@@ -4,15 +4,15 @@ import { parseCliOptions } from '../src/cli/options'
 describe('CLI Parsing', () => {
 	it('parses positional entry', () => {
 		const options = parseCliOptions(['src/index.ts'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 	})
 	it('parses --entry', () => {
 		const options = parseCliOptions(['--entry', 'src/index.ts'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 	})
 	it('parses --entry.name', () => {
 		const options = parseCliOptions(['--entry.main', 'src/index.ts'])
-		expect(options.entry).toEqual({ main: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 	})
 	it('parses format', () => {
 		const options = parseCliOptions(['--format', 'esm,cjs'])
@@ -37,10 +37,7 @@ describe('CLI Parsing', () => {
 	})
 	it('parses multiple entries', () => {
 		const options = parseCliOptions(['src/index.ts', 'src/utils.ts'])
-		expect(options.entry).toEqual({
-			index: 'src/index.ts',
-			utils: 'src/utils.ts',
-		})
+		expect(options.entry).toEqual(['src/index.ts', 'src/utils.ts'])
 	})
 	it('handles short flags', () => {
 		const options = parseCliOptions(['-f', 'esm'])
@@ -48,19 +45,19 @@ describe('CLI Parsing', () => {
 	})
 	it('parses nested entry points', () => {
 		const options = parseCliOptions(['--entry.nested/utils', 'src/utils.ts'])
-		expect(options.entry).toEqual({ 'nested/utils': 'src/utils.ts' })
+		expect(options.entry).toEqual(['src/utils.ts'])
 	})
 })
 
 describe('Real-world CLI Usage', () => {
 	it('bunup src/index.ts', () => {
 		const options = parseCliOptions(['src/index.ts'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 	})
 
 	it('bunup src/index.ts --format esm', () => {
 		const options = parseCliOptions(['src/index.ts', '--format', 'esm'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.format).toEqual(['esm'])
 	})
 
@@ -71,14 +68,14 @@ describe('Real-world CLI Usage', () => {
 			'esm,cjs',
 			'--minify',
 		])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.format).toEqual(['esm', 'cjs'])
 		expect(options.minify).toBe(true)
 	})
 
 	it('bunup src/index.ts --out-dir dist', () => {
 		const options = parseCliOptions(['src/index.ts', '--out-dir', 'dist'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.outDir).toBe('dist')
 	})
 
@@ -91,7 +88,7 @@ describe('Real-world CLI Usage', () => {
 			'esm',
 			'-m',
 		])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.outDir).toBe('dist')
 		expect(options.format).toEqual(['esm'])
 		expect(options.minify).toBe(true)
@@ -104,28 +101,25 @@ describe('Real-world CLI Usage', () => {
 			'--entry.utils',
 			'src/utils.ts',
 		])
-		expect(options.entry).toEqual({
-			main: 'src/main.ts',
-			utils: 'src/utils.ts',
-		})
+		expect(options.entry).toEqual(['src/main.ts', 'src/utils.ts'])
 	})
 
 	it('bunup src/index.ts --watch', () => {
 		const options = parseCliOptions(['src/index.ts', '--watch'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.watch).toBe(true)
 	})
 
 	it('bunup src/index.ts -w --dts', () => {
 		const options = parseCliOptions(['src/index.ts', '-w', '--dts'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.watch).toBe(true)
 		expect(options.dts).toBe(true)
 	})
 
 	it('bunup src/index.ts --dts --resolve-dts', () => {
 		const options = parseCliOptions(['src/index.ts', '--dts', '--resolve-dts'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.dts).toEqual({ resolve: true })
 	})
 
@@ -135,31 +129,31 @@ describe('Real-world CLI Usage', () => {
 			'--external',
 			'react,react-dom',
 		])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.external).toEqual(['react', 'react-dom'])
 	})
 
 	it('bunup src/index.ts --no-external lodash', () => {
 		const options = parseCliOptions(['src/index.ts', '--no-external', 'lodash'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.noExternal).toEqual(['lodash'])
 	})
 
 	it('bunup src/index.ts --sourcemap (flag only)', () => {
 		const options = parseCliOptions(['src/index.ts', '--sourcemap'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.sourcemap).toBe(true)
 	})
 
 	it('bunup src/index.ts --sourcemap linked', () => {
 		const options = parseCliOptions(['src/index.ts', '--sourcemap', 'linked'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.sourcemap).toBe('linked')
 	})
 
 	it('bunup src/index.ts --target browser', () => {
 		const options = parseCliOptions(['src/index.ts', '--target', 'browser'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.target).toBe('browser')
 	})
 
@@ -170,7 +164,7 @@ describe('Real-world CLI Usage', () => {
 			'--minify-identifiers',
 			'--minify-syntax',
 		])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.minifyWhitespace).toBe(true)
 		expect(options.minifyIdentifiers).toBe(true)
 		expect(options.minifySyntax).toBe(true)
@@ -178,7 +172,7 @@ describe('Real-world CLI Usage', () => {
 
 	it('bunup src/index.ts --splitting --clean', () => {
 		const options = parseCliOptions(['src/index.ts', '--splitting', '--clean'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.splitting).toBe(true)
 		expect(options.clean).toBe(true)
 	})
@@ -189,19 +183,19 @@ describe('Real-world CLI Usage', () => {
 			'--tsconfig',
 			'tsconfig.custom.json',
 		])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.preferredTsconfigPath).toBe('tsconfig.custom.json')
 	})
 
 	it('bunup src/index.ts --bytecode', () => {
 		const options = parseCliOptions(['src/index.ts', '--bytecode'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.bytecode).toBe(true)
 	})
 
 	it('bunup src/index.ts --silent', () => {
 		const options = parseCliOptions(['src/index.ts', '--silent'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.silent).toBe(true)
 	})
 
@@ -211,7 +205,7 @@ describe('Real-world CLI Usage', () => {
 			'--config',
 			'bunup.config.js',
 		])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.config).toBe('bunup.config.js')
 	})
 
@@ -221,7 +215,7 @@ describe('Real-world CLI Usage', () => {
 			'--banner',
 			'console.log("banner");',
 		])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.banner).toBe('console.log("banner");')
 	})
 
@@ -231,7 +225,7 @@ describe('Real-world CLI Usage', () => {
 			'--footer',
 			'console.log("footer");',
 		])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.footer).toBe('console.log("footer");')
 	})
 
@@ -247,10 +241,7 @@ describe('Real-world CLI Usage', () => {
 			'--dts',
 			'--watch',
 		])
-		expect(options.entry).toEqual({
-			index: 'src/index.ts',
-			types: 'src/types.ts',
-		})
+		expect(options.entry).toEqual(['src/index.ts', 'src/types.ts'])
 		expect(options.format).toEqual(['esm', 'cjs'])
 		expect(options.minify).toBe(true)
 		expect(options.outDir).toBe('dist')
@@ -272,7 +263,7 @@ describe('Real-world CLI Usage', () => {
 			'--dts',
 			'--resolve-dts',
 		])
-		expect(options.entry).toEqual({ lib: 'src/lib.ts' })
+		expect(options.entry).toEqual(['src/lib.ts'])
 		expect(options.format).toEqual(['esm'])
 		expect(options.minify).toBe(true)
 		expect(options.external).toEqual(['react', 'react-dom'])
@@ -282,13 +273,13 @@ describe('Real-world CLI Usage', () => {
 
 	it('bunup with option using equals sign: src/index.ts --format=esm', () => {
 		const options = parseCliOptions(['src/index.ts', '--format=esm'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.format).toEqual(['esm'])
 	})
 
 	it('bunup with multiple formats using equals sign: src/index.ts --format=esm,cjs', () => {
 		const options = parseCliOptions(['src/index.ts', '--format=esm,cjs'])
-		expect(options.entry).toEqual({ index: 'src/index.ts' })
+		expect(options.entry).toEqual(['src/index.ts'])
 		expect(options.format).toEqual(['esm', 'cjs'])
 	})
 
@@ -312,10 +303,7 @@ describe('Real-world CLI Usage', () => {
 			'--clean',
 			'--splitting',
 		])
-		expect(options.entry).toEqual({
-			main: 'src/main.ts',
-			types: 'src/types.ts',
-		})
+		expect(options.entry).toEqual(['src/main.ts', 'src/types.ts'])
 		expect(options.format).toEqual(['esm', 'cjs'])
 		expect(options.minify).toBe(true)
 		expect(options.external).toEqual(['react', 'react-dom'])

@@ -105,7 +105,8 @@ export async function runDtsBuild(
 	options: Omit<BuildOptions, 'outDir'>,
 ): Promise<BuildResult> {
 	return runBuild({
-		dtsOnly: true,
+		dts: true,
+		external: [/.*/],
 		...options,
 	})
 }

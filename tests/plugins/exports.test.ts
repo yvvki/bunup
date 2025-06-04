@@ -241,94 +241,6 @@ describe('exports plugin', () => {
 		)
 	})
 
-	it('should handle named entry points', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/main.ts': 'export const main: string = "main entry";',
-			'src/secondary.ts': 'export const secondary: string = "secondary entry";',
-		})
-
-		const result = await runBuild({
-			entry: {
-				main: 'src/main.ts',
-				secondary: 'src/secondary.ts',
-			},
-			format: ['esm'],
-			dts: true,
-			plugins: [exports()],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['./main']).toBeDefined()
-		expect(result.packageJson.data.exports['./main'].import).toContain(
-			'.output/main.mjs',
-		)
-		expect(result.packageJson.data.exports['./main'].types).toContain(
-			'.output/main.d.mts',
-		)
-
-		expect(result.packageJson.data.exports['./secondary']).toBeDefined()
-		expect(result.packageJson.data.exports['./secondary'].import).toContain(
-			'.output/secondary.mjs',
-		)
-		expect(result.packageJson.data.exports['./secondary'].types).toContain(
-			'.output/secondary.d.mts',
-		)
-	})
-
-	it('should handle named entry points with custom subpaths', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/entry.ts': 'export const entry: string = "entry";',
-			'src/lib/utils.ts': 'export const utils: string = "utils";',
-		})
-
-		const result = await runBuild({
-			entry: {
-				index: 'src/entry.ts',
-				'utils/index': 'src/lib/utils.ts',
-			},
-			format: ['esm', 'cjs'],
-			dts: true,
-			plugins: [exports()],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toContain(
-			'.output/index.mjs',
-		)
-		expect(result.packageJson.data.exports['.'].require).toContain(
-			'.output/index.js',
-		)
-		expect(result.packageJson.data.exports['.'].types).toContain(
-			'.output/index.d.ts',
-		)
-
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils'].import).toContain(
-			'.output/utils/index.mjs',
-		)
-		expect(result.packageJson.data.exports['./utils'].require).toContain(
-			'.output/utils/index.js',
-		)
-		expect(result.packageJson.data.exports['./utils'].types).toContain(
-			'.output/utils/index.d.ts',
-		)
-	})
-
 	it('should handle complex directory structures with nested subdirectories', async () => {
 		createProject({
 			'package.json': JSON.stringify({
@@ -408,39 +320,6 @@ describe('exports plugin', () => {
 		expect(result.packageJson.data.exports['./components'].import).toContain(
 			'.output/components/index.mjs',
 		)
-	})
-
-	it('should handle custom output paths', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/main.ts': 'export const main = "main";',
-		})
-
-		const result = await runBuild({
-			entry: {
-				'custom/path/to/file': 'src/main.ts',
-			},
-			format: ['esm'],
-			dts: true,
-			plugins: [exports()],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(
-			result.packageJson.data.exports['./custom/path/to/file'],
-		).toBeDefined()
-		expect(
-			result.packageJson.data.exports['./custom/path/to/file'].import,
-		).toContain('.output/custom/path/to/file.mjs')
-		expect(
-			result.packageJson.data.exports['./custom/path/to/file'].types,
-		).toContain('.output/custom/path/to/file.d.mts')
 	})
 
 	it('should set main module entrypoint correctly', async () => {

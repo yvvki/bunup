@@ -4,7 +4,6 @@ import { BUNUP_CLI_OPTIONS_URL } from '../constants'
 import { BunupCLIError } from '../errors'
 import { logger } from '../logger'
 import type { BuildOptions } from '../options'
-import { getBaseFileName } from '../utils'
 
 export type CliOptions = BuildOptions & {
 	/**
@@ -171,7 +170,6 @@ const optionConfigs = {
 	filter: { flags: ['filter'], handler: arrayHandler('filter') },
 	new: { flags: ['new'], handler: booleanHandler('new') },
 	init: { flags: ['init'], handler: booleanHandler('init') },
-	dtsOnly: { flags: ['dts-only'], handler: booleanHandler('dtsOnly') },
 	entry: {
 		flags: ['entry'],
 		handler: (
@@ -185,23 +183,18 @@ const optionConfigs = {
 				)
 			}
 
-			const entries = options.entry || {}
+			const entries = Array.isArray(options.entry) ? [...options.entry] : []
 
 			if (subPath) {
-				if (entries[subPath as keyof typeof entries]) {
-					logger.warn(
-						`Duplicate entry name '${subPath}' provided via --entry.${subPath}. Overwriting previous entry.`,
-					)
-				}
-				;(entries as Record<string, string>)[subPath] = value
+				logger.warn(
+					`Subpath '${subPath}' provided via --entry.${subPath}, but object entry format is not supported. Adding entry as string.`,
+				)
+			}
+
+			if (entries.includes(value)) {
+				logger.warn(`Duplicate entry '${value}' provided. Skipping.`)
 			} else {
-				const name = getBaseFileName(value)
-				if ((entries as Record<string, string>)[name]) {
-					logger.warn(
-						`Duplicate entry name '${name}' derived from '${value}'. Overwriting previous entry.`,
-					)
-				}
-				;(entries as Record<string, string>)[name] = value
+				entries.push(value)
 			}
 
 			options.entry = entries

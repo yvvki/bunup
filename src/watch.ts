@@ -3,7 +3,6 @@ import path from 'node:path'
 import pc from 'picocolors'
 import { build } from './build'
 import { BunupWatchError, handleError, parseErrorMessage } from './errors'
-import { getProcessableEntries } from './helpers/entry'
 import { logger } from './logger'
 import { type BuildOptions, createBuildOptions } from './options'
 import { formatTime } from './utils'
@@ -16,19 +15,7 @@ export async function watch(
 
 	const options = createBuildOptions(partialOptions)
 
-	const dtsEntry =
-		typeof options.dts === 'object' && 'entry' in options.dts
-			? options.dts.entry
-			: undefined
-
-	const processableDtsEntries = dtsEntry ? getProcessableEntries(dtsEntry) : []
-
-	const processableEntries = getProcessableEntries(options.entry)
-
-	const uniqueEntries = new Set([
-		...processableDtsEntries.map(({ entry }) => entry),
-		...processableEntries.map(({ entry }) => entry),
-	])
+	const uniqueEntries = new Set(options.entry)
 
 	for (const entry of uniqueEntries) {
 		const entryPath = path.resolve(rootDir, entry)
