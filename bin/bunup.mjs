@@ -1,3 +1,3 @@
 #!/usr/bin/env bun
 
-import '../dist/cli.js'
+import '../dist/cli/index.js'
