@@ -19,7 +19,6 @@
 			"import": "./dist/cli/index.js"
 		}
 	},
-	"main": "./dist/index.cjs",
 	"license": "MIT",
 	"author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
 	"maintainers": [
