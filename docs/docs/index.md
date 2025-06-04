@@ -104,6 +104,7 @@ export default defineConfig([
 		entry: ['src/index.ts'],
 		format: ['esm', 'iife'],
 		target: 'browser',
+		outDir: "browser",
 	},
 ]);
 ```
