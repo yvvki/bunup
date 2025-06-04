@@ -16,7 +16,8 @@
 		"./server": {
 			"types": "./dist/server/index.d.mts",
 			"import": "./dist/server/index.mjs"
-		}
+		},
+		"./package.json": "./package.json"
 	},
 	"main": "./dist/index.js",
 	"dependencies": {

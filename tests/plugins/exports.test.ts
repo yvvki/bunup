@@ -398,4 +398,154 @@ describe('exports plugin', () => {
 			),
 		).toBe(true)
 	})
+
+	it('should overwrite existing exports field in package.json', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+				exports: {
+					'.': {
+						import: './old-path.mjs',
+						require: './old-path.js',
+						types: './old-path.d.ts',
+					},
+					'./utils': './old-utils-path.js',
+				},
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts'],
+			format: ['esm', 'cjs'],
+			dts: true,
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data).toBeDefined()
+		expect(result.packageJson.data.exports).toBeDefined()
+
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['.'].import).toContain(
+			'.output/index.mjs',
+		)
+		expect(result.packageJson.data.exports['.'].require).toContain(
+			'.output/index.js',
+		)
+		expect(result.packageJson.data.exports['.'].types).toContain(
+			'.output/index.d',
+		)
+
+		expect(result.packageJson.data.exports['./utils']).toBeUndefined()
+	})
+
+	it('should respect and merge extraExports option', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+				exports: {
+					'.': {
+						import: './old-path.mjs',
+						require: './old-path.js',
+						types: './old-path.d.ts',
+					},
+					'./utils': './old-utils-path.js',
+				},
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts'],
+			format: ['esm', 'cjs'],
+			dts: true,
+			plugins: [
+				exports({
+					extraExports: {
+						'./extra': './extra-path.js',
+						'.': {
+							browser: './browser-path.js',
+						},
+					},
+				}),
+			],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data).toBeDefined()
+		expect(result.packageJson.data.exports).toBeDefined()
+
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['.'].import).toContain(
+			'.output/index.mjs',
+		)
+		expect(result.packageJson.data.exports['.'].require).toContain(
+			'.output/index.js',
+		)
+		expect(result.packageJson.data.exports['.'].types).toContain(
+			'.output/index.d',
+		)
+
+		expect(result.packageJson.data.exports['.'].browser).toBe(
+			'./browser-path.js',
+		)
+
+		expect(result.packageJson.data.exports['./extra']).toBe('./extra-path.js')
+
+		expect(result.packageJson.data.exports['./utils']).toBeUndefined()
+	})
+
+	it('should handle extraExports with complex nested fields', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts'],
+			format: ['esm'],
+			plugins: [
+				exports({
+					extraExports: {
+						'./features': {
+							import: {
+								node: './node-features.mjs',
+								default: './features.mjs',
+							} as unknown as string,
+							require: './features.cjs',
+						},
+						'.': {
+							worker: './worker.js',
+						},
+					},
+				}),
+			],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data).toBeDefined()
+		expect(result.packageJson.data.exports).toBeDefined()
+
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['.'].import).toContain(
+			'.output/index.mjs',
+		)
+
+		expect(result.packageJson.data.exports['.'].worker).toBe('./worker.js')
+
+		expect(result.packageJson.data.exports['./features']).toBeDefined()
+		expect(result.packageJson.data.exports['./features'].import).toEqual({
+			node: './node-features.mjs',
+			default: './features.mjs',
+		})
+		expect(result.packageJson.data.exports['./features'].require).toBe(
+			'./features.cjs',
+		)
+	})
 })

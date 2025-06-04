@@ -8,15 +8,22 @@ type ExportField = 'require' | 'import' | 'types'
 type EntryPoint = 'main' | 'module' | 'types'
 type ExportsField = Record<string, Record<ExportField, string>>
 
+interface ExportsPluginOptions {
+	/**
+	 * Additional export fields to preserve alongside generated exports
+	 */
+	extraExports?: Record<string, string | Record<string, string>>
+}
+
 /**
  * A plugin that generates the exports field in the package.json file automatically.
  */
-export function exports(): BunupPlugin {
+export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 	return {
 		type: 'bunup',
 		name: 'exports',
 		hooks: {
-			onBuildDone: async ({ output, options, meta }) => {
+			onBuildDone: async ({ output, options: buildOptions, meta }) => {
 				if (!meta.packageJson.path || !meta.packageJson.data) {
 					return
 				}
@@ -27,14 +34,40 @@ export function exports(): BunupPlugin {
 					)
 
 					const files = Array.isArray(meta.packageJson.data.files)
-						? [...new Set([...meta.packageJson.data.files, options.outDir])]
-						: [options.outDir]
+						? [
+								...new Set([
+									...meta.packageJson.data.files,
+									buildOptions.outDir,
+								]),
+							]
+						: [buildOptions.outDir]
 
-					const existingExports = meta.packageJson.data.exports || {}
-					const mergedExports: ExportsField = { ...existingExports }
+					// Start with generated exports instead of existing ones
+					const mergedExports: Record<string, string | Record<string, string>> =
+						{ ...exportsField }
 
-					for (const [key, value] of Object.entries(exportsField)) {
-						mergedExports[key] = value
+					// Add extra exports if provided
+					if (options.extraExports) {
+						for (const [key, value] of Object.entries(options.extraExports)) {
+							if (typeof value === 'string') {
+								// Simple string export
+								mergedExports[key] = value
+							} else {
+								// Complex export conditions - merge with existing generated exports for the same key
+								const existingExport = mergedExports[key]
+								if (
+									typeof existingExport === 'object' &&
+									existingExport !== null
+								) {
+									mergedExports[key] = {
+										...existingExport,
+										...value,
+									}
+								} else {
+									mergedExports[key] = value
+								}
+							}
+						}
 					}
 
 					const newPackageJson: Record<string, unknown> = {
@@ -48,6 +81,7 @@ export function exports(): BunupPlugin {
 						exports: mergedExports,
 					}
 
+					// Preserve other fields from original package.json
 					for (const key in meta.packageJson.data) {
 						if (
 							Object.prototype.hasOwnProperty.call(
