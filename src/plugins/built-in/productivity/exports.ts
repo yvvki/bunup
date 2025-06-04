@@ -82,7 +82,9 @@ function generateExportsFields(files: BuildOutputFile[]): {
 	const exportsField: ExportsField = {}
 	const entryPoints: Partial<Record<EntryPoint, string>> = {}
 
-	for (const file of filterJsDtsFiles(files)) {
+	const filteredFiles = filterFiles(files)
+
+	for (const file of filteredFiles) {
 		const exportType = formatToExportField(file.format, file.dts)
 		const relativePath = `./${cleanPath(file.relativePathToRootDir)}`
 
@@ -103,12 +105,16 @@ function generateExportsFields(files: BuildOutputFile[]): {
 	return { exportsField, entryPoints }
 }
 
-function filterJsDtsFiles(files: BuildOutputFile[]): BuildOutputFile[] {
-	return files.filter((file) => JS_DTS_RE.test(file.fullPath))
+function filterFiles(files: BuildOutputFile[]): BuildOutputFile[] {
+	return files.filter(
+		(file) => JS_DTS_RE.test(file.fullPath) && file.kind === 'entry-point',
+	)
 }
 
 function getExportKey(relativePathToOutputDir: string): string {
-	const pathSegments = relativePathToOutputDir.split('/')
+	const pathSegments = cleanPath(
+		removeExtension(relativePathToOutputDir),
+	).split('/')
 
 	// index.ts -> .
 	// client/index.ts -> ./client
@@ -119,7 +125,7 @@ function getExportKey(relativePathToOutputDir: string): string {
 		return '.'
 	}
 
-	return `./${removeExtension(pathSegments.filter((p) => !p.startsWith('index')).join('/'))}`
+	return `./${pathSegments.filter((p) => !p.startsWith('index')).join('/')}`
 }
 
 function exportFieldToEntryPoint(exportField: ExportField): EntryPoint {

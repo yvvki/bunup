@@ -25,6 +25,7 @@ import {
 import type { BunPlugin } from './types'
 import {
 	cleanOutDir,
+	cleanPath,
 	ensureArray,
 	getFilesFromGlobs,
 	getShortFilePath,
@@ -108,6 +109,7 @@ export async function build(
 								relativePathToOutputDir: result.outputPath,
 								dts: true,
 								format: buildConfig.format,
+								kind: result.kind,
 							})
 						}
 					}
@@ -165,6 +167,7 @@ export async function build(
 				),
 				dts: false,
 				format: fmt,
+				kind: file.kind,
 			})
 		}
 	})
@@ -182,12 +185,12 @@ export async function build(
 }
 
 function getRelativePathToRootDir(filePath: string, rootDir: string) {
-	return filePath.replace(`${rootDir}/`, '')
+	return cleanPath(filePath).replace(`${cleanPath(rootDir)}/`, '')
 }
 
 function getRelativePathToOutputDir(
 	relativePathToRootDir: string,
 	outDir: string,
 ) {
-	return relativePathToRootDir.replace(`${outDir}/`, '')
+	return cleanPath(relativePathToRootDir).replace(`${cleanPath(outDir)}/`, '')
 }

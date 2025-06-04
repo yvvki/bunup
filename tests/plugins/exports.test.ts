@@ -106,7 +106,7 @@ describe('exports plugin', () => {
 			'.output/index.mjs',
 		)
 		expect(result.packageJson.data.exports['.'].types).toContain(
-			'.output/index.d.mts',
+			'.output/index.d',
 		)
 		expect(result.packageJson.data.types).toContain('.output/index.d.mts')
 	})
@@ -138,7 +138,7 @@ describe('exports plugin', () => {
 			'.output/index.mjs',
 		)
 		expect(result.packageJson.data.exports['.'].types).toContain(
-			'.output/index.d.mts',
+			'.output/index.d',
 		)
 
 		expect(result.packageJson.data.exports['./utils']).toBeDefined()
@@ -146,7 +146,7 @@ describe('exports plugin', () => {
 			'.output/utils.mjs',
 		)
 		expect(result.packageJson.data.exports['./utils'].types).toContain(
-			'.output/utils.d.mts',
+			'.output/utils.d',
 		)
 	})
 
@@ -186,7 +186,7 @@ describe('exports plugin', () => {
 				name: 'test-package',
 				version: '1.0.0',
 			}),
-			'src/index.ts': 'export * from "./components/button";',
+			'src/index.ts': 'export const hello: string = "world";',
 			'src/components/button.ts': 'export const Button = () => "button";',
 			'src/utils/format.ts':
 				'export const format = (str: string): string => str.trim();',
@@ -215,7 +215,7 @@ describe('exports plugin', () => {
 			'.output/index.js',
 		)
 		expect(result.packageJson.data.exports['.'].types).toContain(
-			'.output/index.d.ts',
+			'.output/index.d',
 		)
 
 		expect(result.packageJson.data.exports['./components/button']).toBeDefined()
@@ -227,7 +227,7 @@ describe('exports plugin', () => {
 		).toContain('.output/components/button.js')
 		expect(
 			result.packageJson.data.exports['./components/button'].types,
-		).toContain('.output/components/button.d.ts')
+		).toContain('.output/components/button.d')
 
 		expect(result.packageJson.data.exports['./utils/format']).toBeDefined()
 		expect(result.packageJson.data.exports['./utils/format'].import).toContain(
@@ -237,7 +237,7 @@ describe('exports plugin', () => {
 			'.output/utils/format.js',
 		)
 		expect(result.packageJson.data.exports['./utils/format'].types).toContain(
-			'.output/utils/format.d.ts',
+			'.output/utils/format.d',
 		)
 	})
 
@@ -247,11 +247,10 @@ describe('exports plugin', () => {
 				name: 'test-package',
 				version: '1.0.0',
 			}),
-			'src/index.ts': 'export * from "./components/ui";',
-			'src/components/ui/index.ts': 'export * from "./button";',
-			'src/components/ui/button.ts': 'export const Button = () => "button";',
-			'src/utils/formatting/text.ts':
-				'export const formatText = (text: string): string => text.trim();',
+			'src/index.ts': 'export const hello: string = "world";',
+			'src/components/ui/index.ts': 'export const hello: string = "world";',
+			'src/components/ui/button.ts': 'export const hello: string = "world";',
+			'src/utils/formatting/text.ts': 'export const hello: string = "world";',
 		})
 
 		const result = await runBuild({
@@ -362,6 +361,41 @@ describe('exports plugin', () => {
 		expect(result.success).toBe(true)
 		expect(result.packageJson.data).toBeDefined()
 		expect(result.packageJson.data.types).toBeDefined()
-		expect(result.packageJson.data.types).toContain('.output/index.d.mts')
+		expect(result.packageJson.data.types).toContain('.output/index.d')
+	})
+
+	it('should not add exports field for non-entry-point files', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/shared-utils.ts': 'export const utils = "utils";',
+			'src/index.ts':
+				'import { utils } from "./shared-utils"; export const main: ReturnType<typeof utils> = "main";',
+			'src/math.ts':
+				'import { utils } from "./shared-utils"; export const math: ReturnType<typeof utils> = "math";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'src/math.ts'],
+			format: ['esm'],
+			plugins: [exports()],
+			splitting: true,
+			dts: true,
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data).toBeDefined()
+		expect(result.packageJson.data.exports).toBeDefined()
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['.'].import).toContain(
+			'.output/index.mjs',
+		)
+		expect(
+			!Object.keys(result.packageJson.data.exports).some((key) =>
+				key.includes('chunk'),
+			),
+		).toBe(true)
 	})
 })
