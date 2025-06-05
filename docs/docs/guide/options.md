@@ -141,13 +141,13 @@ export default defineConfig([
 		entry: ['src/index.ts'],
 		format: ['cjs'],
 		target: 'node',
+		// ... other options
 	},
 	{
 		name: 'browser-build',
 		entry: ['src/index.ts'],
 		format: ['esm', 'iife'],
-		target: 'browser',
-		outDir: "dist/browser",
+		// ... other options
 	},
 ]);
 ```
@@ -211,6 +211,10 @@ export default defineConfig({
 ::: info
 Both `external` and `noExternal` support exact strings and regular expressions.
 :::
+
+## Tree Shaking
+
+Bunup tree-shakes your code by default. No configuration is needed.
 
 ## Code Splitting
 

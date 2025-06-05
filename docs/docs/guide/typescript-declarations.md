@@ -48,7 +48,7 @@ export default defineConfig({
 });
 ```
 
-## Using Glob Patterns
+### Using Glob Patterns
 
 Bunup supports glob patterns for both main entries and declaration file entries:
 

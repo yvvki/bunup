@@ -74,6 +74,8 @@ export async function build(
 		...filterBunupBunPlugins(options.plugins).map((p) => p.plugin),
 	]
 
+	let hasBuiltAnyFormat = false
+
 	if (options.dts) {
 		const { resolve, entry, splitting } =
 			typeof options.dts === 'object' ? options.dts : {}
@@ -96,17 +98,14 @@ export async function build(
 				entry: entrypoints,
 				cwd: rootDir,
 				splitting,
-				onDeclarationsGenerated({ results, buildConfig }) {
-					for (const result of results) {
-						logger.progress('DTS', `${options.outDir}/${result.outputPath}`, {
+				silent: () => !hasBuiltAnyFormat,
+				onDeclarationsGenerated({ result, buildConfig }) {
+					for (const file of result.files) {
+						logger.progress('DTS', `${options.outDir}/${file.outputPath}`, {
 							identifier: options.name,
 						})
 
-						const fullPath = path.join(
-							rootDir,
-							options.outDir,
-							result.outputPath,
-						)
+						const fullPath = path.join(rootDir, options.outDir, file.outputPath)
 
 						if (buildConfig.format) {
 							buildOutput.files.push({
@@ -115,10 +114,10 @@ export async function build(
 									fullPath,
 									rootDir,
 								),
-								relativePathToOutputDir: result.outputPath,
+								relativePathToOutputDir: file.outputPath,
 								dts: true,
 								format: buildConfig.format,
-								kind: result.kind,
+								kind: file.kind,
 							})
 						}
 					}
@@ -159,6 +158,8 @@ export async function build(
 			plugins,
 			throw: false,
 		})
+
+		hasBuiltAnyFormat = true
 
 		for (const log of result.logs) {
 			if (log.level === 'error') {
