@@ -1,4 +1,5 @@
 import path from 'node:path'
+import type { BunPlugin } from 'bun'
 import { dts } from 'bun-dts'
 import { BunupBuildError, BunupDTSBuildError } from './errors'
 import { loadPackageJson } from './loaders'
@@ -22,7 +23,6 @@ import {
 	runPluginBuildDoneHooks,
 	runPluginBuildStartHooks,
 } from './plugins/utils'
-import type { BunPlugin } from './types'
 import {
 	cleanOutDir,
 	cleanPath,
@@ -77,7 +77,7 @@ export async function build(
 	let hasBuiltAnyFormat = false
 
 	if (options.dts) {
-		const { resolve, entry, splitting } =
+		const { entry, ...dtsOptions } =
 			typeof options.dts === 'object' ? options.dts : {}
 
 		let entrypoints: string[] | undefined
@@ -93,11 +93,10 @@ export async function build(
 
 		plugins.push(
 			dts({
-				resolve,
+				...dtsOptions,
 				preferredTsConfigPath: options.preferredTsconfigPath,
 				entry: entrypoints,
 				cwd: rootDir,
-				splitting,
 				silent: () => !hasBuiltAnyFormat,
 				onDeclarationsGenerated({ result, buildConfig }) {
 					for (const file of result.files) {

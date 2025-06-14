@@ -2,26 +2,23 @@
 	"name": "tests",
 	"private": true,
 	"files": ["dist"],
-	"types": "./dist/index.d.ts",
+	"types": "./dist/index.d.mts",
 	"module": "./dist/index.mjs",
-	"main": "./dist/index.js",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js"
+			"types": "./dist/index.d.mts",
+			"import": "./dist/index.mjs"
 		},
 		"./client": {
-			"types": "./dist/client/index.d.ts",
-			"import": "./dist/client/index.mjs",
-			"require": "./dist/client/index.js"
+			"types": "./dist/client/index.d.mts",
+			"import": "./dist/client/index.mjs"
 		},
 		"./server": {
-			"types": "./dist/server/index.d.ts",
-			"import": "./dist/server/index.mjs",
-			"require": "./dist/server/index.js"
+			"types": "./dist/server/index.d.mts",
+			"import": "./dist/server/index.mjs"
 		}
 	},
+	"main": "./dist/index.js",
 	"dependencies": {
 		"chalk": "^5.4.1",
 		"lodash": "^4.17.21",

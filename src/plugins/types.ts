@@ -1,6 +1,7 @@
+import type { BunPlugin } from 'bun'
 import type { PackageJson } from '../loaders'
 import type { BuildOptions, Format } from '../options'
-import type { BunPlugin, MaybePromise } from '../types'
+import type { MaybePromise } from '../types'
 
 /**
  * Represents a Bun plugin that can be used with Bunup

@@ -1,53 +1,26 @@
+import type { BuildConfig } from 'bun'
+import type { DtsPluginOptions } from 'bun-dts'
 import { report } from './plugins/built-in'
 import { useClient } from './plugins/internal/use-client'
 import type { Plugin } from './plugins/types'
-import type { BunBuildOptions, MaybePromise, WithRequired } from './types'
+import type { MaybePromise, WithRequired } from './types'
 import { getDefaultJsOutputExtension } from './utils'
 
-type Loader = NonNullable<BunBuildOptions['loader']>[string]
+type Loader = NonNullable<BuildConfig['loader']>[string]
 
-type Define = BunBuildOptions['define']
+type Define = BuildConfig['define']
 
-type Sourcemap = BunBuildOptions['sourcemap']
+type Sourcemap = BuildConfig['sourcemap']
 
-export type Format = Exclude<BunBuildOptions['format'], undefined>
+export type Format = Exclude<BuildConfig['format'], undefined>
 
-type Target = BunBuildOptions['target']
+type Target = BuildConfig['target']
 
 type External = (string | RegExp)[]
 
-type Env = BunBuildOptions['env'] | Record<string, string>
-
-type DtsResolve = boolean | (string | RegExp)[]
+type Env = BuildConfig['env'] | Record<string, string>
 
 type Naming = string | { entry?: string; chunk?: string; asset?: string }
-
-type DtsOptions = {
-	/**
-	 * Entry point files for TypeScript declaration file generation
-	 *
-	 * If not specified, the main entry points will be used for declaration file generation.
-	 *
-	 * @see https://bunup.dev/docs/guide/typescript-declarations#custom-entry-points
-	 * @see https://bunup.dev/docs/guide/typescript-declarations#named-entries
-	 */
-	entry?: string | string[]
-	/**
-	 * Resolve external types used in dts files from node_modules
-	 */
-	resolve?: DtsResolve
-	/**
-	 * Whether to split declaration files when multiple entrypoints import the same files,
-	 * modules, or share types. When enabled, shared types will be extracted to separate
-	 * .d.ts files, and other declaration files will import these shared files.
-	 *
-	 * This helps reduce bundle size by preventing duplication of type definitions
-	 * across multiple entrypoints.
-	 *
-	 * This option is enabled by default if splitting is enabled in the Bun build config or format is esm.
-	 */
-	splitting?: boolean
-}
 
 export interface BuildOptions {
 	/**
@@ -144,7 +117,9 @@ export interface BuildOptions {
 	 * When set to true, generates declaration files for all entry points
 	 * Can also be configured with DtsOptions for more control
 	 */
-	dts?: boolean | DtsOptions
+	dts?:
+		| boolean
+		| Pick<DtsPluginOptions, 'entry' | 'resolve' | 'splitting' | 'minify'>
 
 	/**
 	 * Path to a preferred tsconfig.json file to use for declaration generation
@@ -409,13 +384,13 @@ export function getResolvedBytecode(
 
 export function getResolvedSourcemap(
 	sourcemap: boolean | string | undefined,
-): BunBuildOptions['sourcemap'] {
+): BuildConfig['sourcemap'] {
 	if (sourcemap === true) {
 		return 'inline'
 	}
 
 	return typeof sourcemap === 'string'
-		? (sourcemap as BunBuildOptions['sourcemap'])
+		? (sourcemap as BuildConfig['sourcemap'])
 		: undefined
 }
 

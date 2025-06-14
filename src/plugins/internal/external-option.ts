@@ -1,6 +1,6 @@
+import type { BunPlugin } from 'bun'
 import { isExternal } from '../../helpers/external'
 import type { BuildOptions } from '../../options'
-import type { BunPlugin } from '../../types'
 
 export function externalOptionPlugin(
 	options: BuildOptions,

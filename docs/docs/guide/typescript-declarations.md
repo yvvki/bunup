@@ -170,6 +170,54 @@ Splitting is enabled by default if:
 - Code splitting is enabled
 :::
 
+## Minification
+
+You can minify the generated declaration files to reduce their size:
+
+### Enable all minification strategies
+
+```ts
+export default defineConfig({
+  dts: {
+    minify: true,
+  },
+});
+```
+
+### Fine-grained control over minification
+
+```ts
+export default defineConfig({
+  dts: {
+    minify: {
+      jsDoc: true,
+      whitespace: true,
+      identifiers: true
+    }
+  }
+});
+```
+
+| Option | Description |
+| ------ | ----------- |
+| `jsDoc` | Remove JSDoc comments |
+| `whitespace` | Remove unnecessary whitespace |
+| `identifiers` | Shorten internal type names while preserving public API names |
+
+### Recommended for production
+
+```ts
+export default defineConfig({
+  dts: {
+    minify: {
+      identifiers: true,
+    },
+  },
+});
+```
+
+If you are publishing your package to npm, you can minify only the identifiers to reduce the size of the declaration file. When you minify whitespace, the JSDoc comments become ineffective, and removing JSDoc comments would degrade the developer experience since TypeScript packages typically have JSDoc comments to describe the API.
+
 ## TypeScript Configuration
 
 You can specify a custom tsconfig file for declaration generation:
