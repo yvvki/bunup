@@ -74,7 +74,7 @@ describe('Utils', () => {
 			expect(getDefaultDtsExtention('cjs', 'commonjs')).toBe('.d.ts')
 		})
 		it('returns .d.ts for iife format', () => {
-			expect(getDefaultDtsExtention('iife', undefined)).toBe('.d.ts')
+			expect(getDefaultDtsExtention('iife', undefined)).toBe('.global.d.ts')
 		})
 	})
 

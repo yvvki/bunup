@@ -144,7 +144,7 @@ describe('Format Types and Output Extensions', () => {
 			expect(result.success).toBe(true)
 			expect(
 				validateBuildFiles(result, {
-					expectedFiles: ['index.global.js', 'index.d.ts'],
+					expectedFiles: ['index.global.js', 'index.global.d.ts'],
 				}),
 			).toBe(true)
 		})
@@ -164,7 +164,7 @@ describe('Format Types and Output Extensions', () => {
 			expect(result.success).toBe(true)
 			expect(
 				validateBuildFiles(result, {
-					expectedFiles: ['index.global.js', 'index.d.ts'],
+					expectedFiles: ['index.global.js', 'index.global.d.ts'],
 				}),
 			).toBe(true)
 		})
@@ -213,6 +213,7 @@ describe('Format Types and Output Extensions', () => {
 						'index.cjs',
 						'index.d.cts',
 						'index.global.js',
+						'index.global.d.ts',
 					],
 				}),
 			).toBe(true)
