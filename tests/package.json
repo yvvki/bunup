@@ -2,14 +2,14 @@
 	"name": "tests",
 	"private": true,
 	"files": ["dist"],
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.mts",
 	"exports": {
-		".": {
-			"import": "./dist/index.mjs",
-			"types": "./dist/index.d.mts"
+		"./constants": {
+			"import": "./dist/constants.mjs",
+			"types": "./dist/constants.d.mts"
 		}
 	},
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
 	"main": "./dist/index.global.js",
 	"dependencies": {
 		"chalk": "^5.4.1",

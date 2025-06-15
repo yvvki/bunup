@@ -79,7 +79,13 @@ export class Logger {
 		} = options
 
 		const icon = this.getIcon(type, tick)
-		const styledMessage = muted ? pc.dim(message) : message
+		const styledMessage = muted
+			? pc.dim(message)
+			: type === 'error'
+				? pc.red(message)
+				: type === 'warn'
+					? pc.yellow(message)
+					: message
 		const identifierPart = this.formatIdentifier(identifier)
 
 		return `${icon} ${styledMessage}${identifierPart}`
