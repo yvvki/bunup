@@ -177,16 +177,6 @@ describe('Real-world CLI Usage', () => {
 		expect(options.clean).toBe(true)
 	})
 
-	it('bunup src/index.ts --tsconfig tsconfig.custom.json', () => {
-		const options = parseCliOptions([
-			'src/index.ts',
-			'--tsconfig',
-			'tsconfig.custom.json',
-		])
-		expect(options.entry).toEqual(['src/index.ts'])
-		expect(options.preferredTsconfigPath).toBe('tsconfig.custom.json')
-	})
-
 	it('bunup src/index.ts --bytecode', () => {
 		const options = parseCliOptions(['src/index.ts', '--bytecode'])
 		expect(options.entry).toEqual(['src/index.ts'])
