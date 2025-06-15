@@ -6,52 +6,19 @@ import { logger } from '../logger'
 import type { BuildOptions } from '../options'
 
 export type CliOptions = BuildOptions & {
-	/**
-	 * Path to a specific configuration file to use instead of the default bunup.config.ts.
-	 *
-	 * @example
-	 * bunup src/index.ts --config=./bunup.config.ts
-	 */
 	config: string
-	/**
-	 * Command to execute after a successful build.
-	 * This command will be run when the build process completes without errors.
-	 *
-	 * @example
-	 * bunup src/index.ts --onSuccess="echo 'Build successful'"
-	 */
 	onSuccess?: string
-	/**
-	 * Filter specific packages to build in a workspace.
-	 * This option is only relevant when using bunup workspaces.
-	 *
-	 * @example
-	 * bunup --filter core,utils
-	 */
 	filter?: string[]
-	/**
-	 * Create a new project with bunup.
-	 *
-	 * @example
-	 * bunup --new
-	 */
 	new?: boolean
-	/**
-	 * Initialize bunup in an existing project.
-	 *
-	 * @example
-	 * bunup --init
-	 */
 	init?: boolean
 }
 
 type OptionHandler = (
 	value: string | boolean,
 	options: Partial<CliOptions>,
-	subPath?: string,
 ) => void
 
-interface OptionConfig {
+interface OptionDefinition {
 	flags: string[]
 	handler: OptionHandler
 	description: string
@@ -66,121 +33,95 @@ interface OptionConfig {
 		| 'utility'
 }
 
-function booleanHandler(optionName: keyof CliOptions): OptionHandler {
-	return (value, options) => {
-		options[optionName] = (value === true || value === 'true') as any
-	}
-}
+const createHandlers = () => ({
+	boolean:
+		(key: keyof CliOptions): OptionHandler =>
+		(value, options) => {
+			options[key] = (value === true || value === 'true') as any
+		},
 
-function stringHandler(optionName: keyof CliOptions): OptionHandler {
-	return (value, options) => {
-		if (typeof value === 'string') {
-			options[optionName] = value as any
-		} else {
-			throw new BunupCLIError(`Option --${optionName} requires a string value`)
-		}
-	}
-}
+	string:
+		(key: keyof CliOptions): OptionHandler =>
+		(value, options) => {
+			if (typeof value !== 'string') {
+				throw new BunupCLIError(`Option --${key} requires a string value`)
+			}
+			options[key] = value as any
+		},
 
-function arrayHandler(optionName: keyof CliOptions): OptionHandler {
-	return (value, options) => {
-		if (typeof value === 'string') {
-			options[optionName] = value.split(',') as any
-		} else {
-			throw new BunupCLIError(`Option --${optionName} requires a string value`)
-		}
-	}
-}
+	array:
+		(key: keyof CliOptions): OptionHandler =>
+		(value, options) => {
+			if (typeof value !== 'string') {
+				throw new BunupCLIError(`Option --${key} requires a string value`)
+			}
+			options[key] = value.split(',') as any
+		},
 
-function booleanOrStringHandler(optionName: keyof CliOptions): OptionHandler {
-	return (value, options) => {
-		if (typeof value === 'boolean') {
-			options[optionName] = value as any
-		} else if (typeof value === 'string') {
-			if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
-				options[optionName] = (value.toLowerCase() === 'true') as any
+	stringOrBoolean:
+		(key: keyof CliOptions): OptionHandler =>
+		(value, options) => {
+			if (typeof value === 'boolean') {
+				options[key] = value as any
+			} else if (typeof value === 'string') {
+				const lowerValue = value.toLowerCase()
+				if (lowerValue === 'true' || lowerValue === 'false') {
+					options[key] = (lowerValue === 'true') as any
+				} else {
+					options[key] = value as any
+				}
 			} else {
-				options[optionName] = value as any
+				throw new BunupCLIError(
+					`Option --${key} requires a boolean or string value`,
+				)
+			}
+		},
+
+	entry: (value: string | boolean, options: Partial<CliOptions>) => {
+		if (typeof value !== 'string') {
+			throw new BunupCLIError('Entry requires a string value')
+		}
+		const entries = Array.isArray(options.entry) ? [...options.entry] : []
+		if (entries.includes(value)) {
+			logger.warn(`Duplicate entry '${value}' provided. Skipping.`)
+		} else {
+			entries.push(value)
+		}
+		options.entry = entries
+	},
+
+	resolveDts: (value: string | boolean, options: Partial<CliOptions>) => {
+		if (!options.dts) options.dts = {}
+		if (typeof options.dts === 'boolean') options.dts = {}
+
+		if (typeof value === 'string') {
+			if (value === 'true' || value === 'false') {
+				;(options.dts as any).resolve = value === 'true'
+			} else {
+				;(options.dts as any).resolve = value.split(',')
 			}
 		} else {
-			throw new BunupCLIError(
-				`Option --${optionName} requires a boolean or string value`,
-			)
+			;(options.dts as any).resolve = true
 		}
-	}
-}
+	},
 
-function showHelp(): void {
-	console.log()
-	console.log(pc.cyan(pc.bold('bunup')))
-	console.log()
-	console.log('⚡️ A blazing-fast build tool for your libraries built with Bun')
-	console.log()
+	showHelp: () => {
+		displayHelp()
+		process.exit(0)
+	},
 
-	console.log(pc.cyan('Usage:'))
-	console.log('  bunup [entry...] [options]')
-	console.log('  bunup --init')
-	console.log('  bunup --new')
-	console.log()
+	showVersion: () => {
+		console.log(version)
+		process.exit(0)
+	},
+})
 
-	const categories = {
-		build: 'Build Options',
-		output: 'Output Options',
-		development: 'Development Options',
-		minification: 'Minification Options',
-		workspace: 'Workspace Options',
-		utility: 'Utility Options',
-	}
+const handlers = createHandlers()
 
-	for (const [categoryKey, categoryName] of Object.entries(categories)) {
-		const categoryOptions = Object.entries(optionConfigs).filter(
-			([_, config]) => config.category === categoryKey,
-		)
-
-		if (categoryOptions.length === 0) continue
-
-		console.log(pc.cyan(`${categoryName}:`))
-
-		for (const [_, config] of categoryOptions) {
-			const flags = config.flags
-				.map((flag) => (flag.length === 1 ? `-${flag}` : `--${flag}`))
-				.join(', ')
-
-			const flagsDisplay = pc.green(flags)
-			const typeDisplay = pc.dim(`<${config.type}>`)
-			const defaultDisplay = config.default
-				? pc.yellow(`(default: ${config.default})`)
-				: ''
-
-			console.log(`  ${flagsDisplay} ${typeDisplay}`)
-			console.log(`    ${pc.dim(config.description)} ${defaultDisplay}`)
-			console.log()
-		}
-	}
-
-	console.log(pc.cyan('Examples:'))
-	console.log('  bunup src/**/*.ts')
-	console.log('  bunup src/index.ts src/cli.ts --format esm,cjs')
-	console.log('  bunup src/index.ts --watch --dts')
-
-	console.log()
-
-	console.log(pc.dim('For more information:'))
-	console.log(`  ${pc.cyan(pc.underline(BUNUP_DOCS_URL))}`)
-	console.log()
-
-	process.exit(0)
-}
-
-function showVersion(): void {
-	console.log(version)
-	process.exit(0)
-}
-
-const optionConfigs: Record<string, OptionConfig> = {
+const OPTION_DEFINITIONS: Record<string, OptionDefinition> = {
 	name: {
 		flags: ['n', 'name'],
-		handler: stringHandler('name'),
+		handler: handlers.string('name'),
 		description:
 			'Name of the build configuration for logging and identification',
 		type: 'string',
@@ -188,7 +129,7 @@ const optionConfigs: Record<string, OptionConfig> = {
 	},
 	format: {
 		flags: ['f', 'format'],
-		handler: arrayHandler('format'),
+		handler: handlers.array('format'),
 		description: 'Output formats for the bundle (esm, cjs, iife)',
 		type: 'array',
 		default: 'cjs',
@@ -196,7 +137,7 @@ const optionConfigs: Record<string, OptionConfig> = {
 	},
 	outDir: {
 		flags: ['o', 'out-dir'],
-		handler: stringHandler('outDir'),
+		handler: handlers.string('outDir'),
 		description: 'Output directory for the bundled files',
 		type: 'string',
 		default: 'dist',
@@ -204,49 +145,49 @@ const optionConfigs: Record<string, OptionConfig> = {
 	},
 	minify: {
 		flags: ['m', 'minify'],
-		handler: booleanHandler('minify'),
+		handler: handlers.boolean('minify'),
 		description: 'Enable all minification options',
 		type: 'boolean',
 		category: 'minification',
 	},
 	watch: {
 		flags: ['w', 'watch'],
-		handler: booleanHandler('watch'),
+		handler: handlers.boolean('watch'),
 		description: 'Watch for file changes and rebuild automatically',
 		type: 'boolean',
 		category: 'development',
 	},
 	dts: {
 		flags: ['d', 'dts'],
-		handler: booleanHandler('dts'),
+		handler: handlers.boolean('dts'),
 		description: 'Generate TypeScript declaration files (.d.ts)',
 		type: 'boolean',
 		category: 'development',
 	},
 	banner: {
 		flags: ['bn', 'banner'],
-		handler: stringHandler('banner'),
+		handler: handlers.string('banner'),
 		description: 'A banner to be added to the final bundle',
 		type: 'string',
 		category: 'output',
 	},
 	footer: {
 		flags: ['ft', 'footer'],
-		handler: stringHandler('footer'),
+		handler: handlers.string('footer'),
 		description: 'A footer to be added to the final bundle',
 		type: 'string',
 		category: 'output',
 	},
 	external: {
 		flags: ['e', 'external'],
-		handler: arrayHandler('external'),
+		handler: handlers.array('external'),
 		description: 'External packages that should not be bundled',
 		type: 'array',
 		category: 'build',
 	},
 	sourcemap: {
 		flags: ['sm', 'sourcemap'],
-		handler: booleanOrStringHandler('sourcemap'),
+		handler: handlers.stringOrBoolean('sourcemap'),
 		description:
 			'Type of sourcemap to generate (none, linked, external, inline)',
 		type: 'string|boolean',
@@ -255,7 +196,7 @@ const optionConfigs: Record<string, OptionConfig> = {
 	},
 	target: {
 		flags: ['t', 'target'],
-		handler: stringHandler('target'),
+		handler: handlers.string('target'),
 		description: 'The target environment for the bundle',
 		type: 'string',
 		default: 'node',
@@ -263,28 +204,28 @@ const optionConfigs: Record<string, OptionConfig> = {
 	},
 	minifyWhitespace: {
 		flags: ['mw', 'minify-whitespace'],
-		handler: booleanHandler('minifyWhitespace'),
+		handler: handlers.boolean('minifyWhitespace'),
 		description: 'Minify whitespace in the output',
 		type: 'boolean',
 		category: 'minification',
 	},
 	minifyIdentifiers: {
 		flags: ['mi', 'minify-identifiers'],
-		handler: booleanHandler('minifyIdentifiers'),
+		handler: handlers.boolean('minifyIdentifiers'),
 		description: 'Minify identifiers in the output',
 		type: 'boolean',
 		category: 'minification',
 	},
 	minifySyntax: {
 		flags: ['ms', 'minify-syntax'],
-		handler: booleanHandler('minifySyntax'),
+		handler: handlers.boolean('minifySyntax'),
 		description: 'Minify syntax in the output',
 		type: 'boolean',
 		category: 'minification',
 	},
 	clean: {
 		flags: ['c', 'clean'],
-		handler: booleanHandler('clean'),
+		handler: handlers.boolean('clean'),
 		description: 'Clean the output directory before building',
 		type: 'boolean',
 		default: 'true',
@@ -292,21 +233,21 @@ const optionConfigs: Record<string, OptionConfig> = {
 	},
 	splitting: {
 		flags: ['s', 'splitting'],
-		handler: booleanHandler('splitting'),
+		handler: handlers.boolean('splitting'),
 		description: 'Enable code splitting',
 		type: 'boolean',
 		category: 'build',
 	},
 	noExternal: {
 		flags: ['ne', 'no-external'],
-		handler: arrayHandler('noExternal'),
+		handler: handlers.array('noExternal'),
 		description: 'Packages that should be bundled even if they are in external',
 		type: 'array',
 		category: 'build',
 	},
 	preferredTsconfigPath: {
 		flags: ['preferred-tsconfig-path'],
-		handler: stringHandler('preferredTsconfigPath'),
+		handler: handlers.string('preferredTsconfigPath'),
 		description:
 			'Path to a preferred tsconfig.json file for declaration generation',
 		type: 'string',
@@ -314,7 +255,7 @@ const optionConfigs: Record<string, OptionConfig> = {
 	},
 	bytecode: {
 		flags: ['bc', 'bytecode'],
-		handler: booleanHandler('bytecode'),
+		handler: handlers.boolean('bytecode'),
 		description: 'Generate bytecode for the output (CJS only)',
 		type: 'boolean',
 		default: 'false',
@@ -322,7 +263,7 @@ const optionConfigs: Record<string, OptionConfig> = {
 	},
 	silent: {
 		flags: ['silent'],
-		handler: booleanHandler('silent'),
+		handler: handlers.boolean('silent'),
 		description: 'Disable logging during the build process',
 		type: 'boolean',
 		default: 'false',
@@ -330,21 +271,21 @@ const optionConfigs: Record<string, OptionConfig> = {
 	},
 	config: {
 		flags: ['config'],
-		handler: stringHandler('config'),
+		handler: handlers.string('config'),
 		description: 'Path to a specific configuration file to use',
 		type: 'string',
 		category: 'utility',
 	},
 	publicPath: {
 		flags: ['pp', 'public-path'],
-		handler: stringHandler('publicPath'),
+		handler: handlers.string('publicPath'),
 		description: 'Prefix to be added to specific import paths in bundled code',
 		type: 'string',
 		category: 'output',
 	},
 	env: {
 		flags: ['env'],
-		handler: stringHandler('env'),
+		handler: handlers.string('env'),
 		description:
 			'Controls how environment variables are handled during bundling',
 		type: 'string',
@@ -352,150 +293,182 @@ const optionConfigs: Record<string, OptionConfig> = {
 	},
 	onSuccess: {
 		flags: ['onSuccess'],
-		handler: stringHandler('onSuccess'),
+		handler: handlers.string('onSuccess'),
 		description: 'Command to execute after a successful build',
 		type: 'string',
 		category: 'development',
 	},
 	filter: {
 		flags: ['filter'],
-		handler: arrayHandler('filter'),
+		handler: handlers.array('filter'),
 		description: 'Filter specific packages to build in a workspace',
 		type: 'array',
 		category: 'workspace',
 	},
 	new: {
 		flags: ['new'],
-		handler: booleanHandler('new'),
+		handler: handlers.boolean('new'),
 		description: 'Create a new project with bunup',
 		type: 'boolean',
 		category: 'utility',
 	},
 	init: {
 		flags: ['init'],
-		handler: booleanHandler('init'),
+		handler: handlers.boolean('init'),
 		description: 'Initialize bunup in an existing project',
 		type: 'boolean',
 		category: 'utility',
 	},
 	entry: {
 		flags: ['entry'],
-		handler: (
-			value: string | boolean,
-			options: Partial<CliOptions>,
-			subPath?: string,
-		) => {
-			if (typeof value !== 'string') {
-				throw new BunupCLIError(
-					`Entry${subPath ? ` --entry.${subPath}` : ''} requires a string value`,
-				)
-			}
-			const entries = Array.isArray(options.entry) ? [...options.entry] : []
-			if (subPath) {
-				logger.warn(
-					`Subpath '${subPath}' provided via --entry.${subPath}, but object entry format is not supported. Adding entry as string.`,
-				)
-			}
-			if (entries.includes(value)) {
-				logger.warn(`Duplicate entry '${value}' provided. Skipping.`)
-			} else {
-				entries.push(value)
-			}
-			options.entry = entries
-		},
+		handler: handlers.entry,
 		description: 'Entry point files for the build',
 		type: 'string',
 		category: 'build',
 	},
 	resolveDts: {
 		flags: ['rd', 'resolve-dts'],
-		handler: (value: string | boolean, options: Partial<CliOptions>) => {
-			if (!options.dts) options.dts = {}
-			if (typeof options.dts === 'boolean') options.dts = {}
-			if (typeof value === 'string') {
-				if (value === 'true' || value === 'false') {
-					;(options.dts as any).resolve = value === 'true'
-				} else {
-					;(options.dts as any).resolve = value.split(',')
-				}
-			} else {
-				;(options.dts as any).resolve = true
-			}
-		},
+		handler: handlers.resolveDts,
 		description: 'Configure DTS resolution options',
 		type: 'string|boolean',
 		category: 'development',
 	},
 	help: {
 		flags: ['h', 'help'],
-		handler: () => showHelp(),
+		handler: handlers.showHelp,
 		description: 'Show this help message',
 		type: 'boolean',
 		category: 'utility',
 	},
 	version: {
 		flags: ['v', 'version'],
-		handler: () => showVersion(),
+		handler: handlers.showVersion,
 		description: 'Show version number',
 		type: 'boolean',
 		category: 'utility',
 	},
 }
 
-const flagToHandler: Record<string, OptionHandler> = {}
-for (const config of Object.values(optionConfigs)) {
-	for (const flag of config.flags) {
-		flagToHandler[flag] = config.handler
-	}
-}
+const createFlagLookupMap = (): Record<string, OptionHandler> => {
+	const lookup: Record<string, OptionHandler> = {}
 
-export function parseCliOptions(argv: string[]): Partial<CliOptions> {
-	const options: Partial<CliOptions> = {}
-	for (let i = 0; i < argv.length; i++) {
-		const arg = argv[i]
-		if (arg.startsWith('--')) {
-			let key: string
-			let value: string | boolean
-			if (arg.includes('=')) {
-				const [keyPart, valuePart] = arg.slice(2).split('=', 2)
-				key = keyPart
-				value = valuePart
-			} else {
-				key = arg.slice(2)
-				const nextArg = argv[i + 1]
-				value = nextArg && !nextArg.startsWith('-') ? nextArg : true
-				if (typeof value === 'string') i++
-			}
-			if (key.includes('.')) {
-				const [mainOption, subPath] = key.split('.', 2)
-				const handler = flagToHandler[mainOption]
-				if (handler) {
-					handler(value, options, subPath)
-				} else {
-					throw new BunupCLIError(`Unknown option: --${key}`)
-				}
-			} else {
-				const handler = flagToHandler[key]
-				if (handler) {
-					handler(value, options)
-				} else {
-					throw new BunupCLIError(`Unknown option: --${key}`)
-				}
-			}
-		} else if (arg.startsWith('-')) {
-			const key = arg.slice(1)
-			const nextArg = argv[i + 1]
-			const value = nextArg && !nextArg.startsWith('-') ? nextArg : true
-			if (typeof value === 'string') i++
-			const handler = flagToHandler[key]
-			if (handler) {
-				handler(value, options)
-			} else {
-				throw new BunupCLIError(`Unknown option: -${key}`)
-			}
-		} else {
-			optionConfigs.entry.handler(arg, options, undefined)
+	for (const definition of Object.values(OPTION_DEFINITIONS)) {
+		for (const flag of definition.flags) {
+			lookup[flag] = definition.handler
 		}
 	}
+
+	return lookup
+}
+
+const flagToHandler = createFlagLookupMap()
+
+const displayHelp = (): void => {
+	const categoryLabels = {
+		build: 'Build Options',
+		output: 'Output Options',
+		development: 'Development Options',
+		minification: 'Minification Options',
+		workspace: 'Workspace Options',
+		utility: 'Utility Options',
+	}
+
+	console.log()
+	console.log(pc.cyan(pc.bold('bunup')))
+	console.log()
+	console.log('⚡️ A blazing-fast build tool for your libraries built with Bun')
+	console.log()
+	console.log(pc.cyan('Usage:'))
+	console.log('  bunup [entry...] [options]')
+	console.log('  bunup --init')
+	console.log('  bunup --new')
+	console.log()
+
+	for (const [categoryKey, categoryName] of Object.entries(categoryLabels)) {
+		const categoryOptions = Object.values(OPTION_DEFINITIONS).filter(
+			(option) => option.category === categoryKey,
+		)
+
+		if (categoryOptions.length === 0) return
+
+		console.log(pc.cyan(`${categoryName}:`))
+
+		for (const option of categoryOptions) {
+			const flags = option.flags
+				.map((flag) => (flag.length === 1 ? `-${flag}` : `--${flag}`))
+				.join(', ')
+
+			const flagsDisplay = pc.green(flags)
+			const typeDisplay = pc.dim(`<${option.type}>`)
+			const defaultDisplay = option.default
+				? pc.yellow(`(default: ${option.default})`)
+				: ''
+
+			console.log(`  ${flagsDisplay} ${typeDisplay}`)
+			console.log(`    ${pc.dim(option.description)} ${defaultDisplay}`)
+			console.log()
+		}
+	}
+
+	console.log(pc.cyan('Examples:'))
+	console.log('  bunup src/**/*.ts')
+	console.log('  bunup src/index.ts src/cli.ts --format esm,cjs')
+	console.log('  bunup src/index.ts --watch --dts')
+	console.log()
+	console.log(pc.dim('For more information:'))
+	console.log(`  ${pc.cyan(pc.underline(BUNUP_DOCS_URL))}`)
+	console.log()
+}
+
+const parseArgument = (arg: string, nextArg?: string) => {
+	if (arg.startsWith('--')) {
+		if (arg.includes('=')) {
+			const [key, value] = arg.slice(2).split('=', 2)
+			return { key, value, skipNext: false }
+		} else {
+			const key = arg.slice(2)
+			const value = nextArg && !nextArg.startsWith('-') ? nextArg : true
+			return { key, value, skipNext: typeof value === 'string' }
+		}
+	} else if (arg.startsWith('-')) {
+		const key = arg.slice(1)
+		const value = nextArg && !nextArg.startsWith('-') ? nextArg : true
+		return { key, value, skipNext: typeof value === 'string' }
+	}
+
+	return null
+}
+
+export const parseCliOptions = (argv: string[]): Partial<CliOptions> => {
+	const options: Partial<CliOptions> = {}
+
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i]
+		const nextArg = argv[i + 1]
+
+		if (arg.startsWith('-')) {
+			const parsed = parseArgument(arg, nextArg)
+
+			if (!parsed) {
+				throw new BunupCLIError(`Invalid argument: ${arg}`)
+			}
+
+			const { key, value, skipNext } = parsed
+			const handler = flagToHandler[key]
+
+			if (!handler) {
+				throw new BunupCLIError(`Unknown option: ${arg}`)
+			}
+
+			handler(value, options)
+
+			if (skipNext) {
+				i++
+			}
+		} else {
+			OPTION_DEFINITIONS.entry.handler(arg, options)
+		}
+	}
+
 	return options
 }

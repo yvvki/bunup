@@ -10,10 +10,6 @@ describe('CLI Parsing', () => {
 		const options = parseCliOptions(['--entry', 'src/index.ts'])
 		expect(options.entry).toEqual(['src/index.ts'])
 	})
-	it('parses --entry.name', () => {
-		const options = parseCliOptions(['--entry.main', 'src/index.ts'])
-		expect(options.entry).toEqual(['src/index.ts'])
-	})
 	it('parses format', () => {
 		const options = parseCliOptions(['--format', 'esm,cjs'])
 		expect(options.format).toEqual(['esm', 'cjs'])
@@ -42,10 +38,6 @@ describe('CLI Parsing', () => {
 	it('handles short flags', () => {
 		const options = parseCliOptions(['-f', 'esm'])
 		expect(options.format).toEqual(['esm'])
-	})
-	it('parses nested entry points', () => {
-		const options = parseCliOptions(['--entry.nested/utils', 'src/utils.ts'])
-		expect(options.entry).toEqual(['src/utils.ts'])
 	})
 })
 
@@ -92,16 +84,6 @@ describe('Real-world CLI Usage', () => {
 		expect(options.outDir).toBe('dist')
 		expect(options.format).toEqual(['esm'])
 		expect(options.minify).toBe(true)
-	})
-
-	it('bunup --entry.main src/main.ts --entry.utils src/utils.ts', () => {
-		const options = parseCliOptions([
-			'--entry.main',
-			'src/main.ts',
-			'--entry.utils',
-			'src/utils.ts',
-		])
-		expect(options.entry).toEqual(['src/main.ts', 'src/utils.ts'])
 	})
 
 	it('bunup src/index.ts --watch', () => {
@@ -239,9 +221,8 @@ describe('Real-world CLI Usage', () => {
 		expect(options.watch).toBe(true)
 	})
 
-	it('bunup --entry.lib src/lib.ts -f esm --minify --external react,react-dom -o dist --dts --resolve-dts', () => {
+	it('bunup src/lib.ts -f esm --minify --external react,react-dom -o dist --dts --resolve-dts', () => {
 		const options = parseCliOptions([
-			'--entry.lib',
 			'src/lib.ts',
 			'-f',
 			'esm',
@@ -275,9 +256,7 @@ describe('Real-world CLI Usage', () => {
 
 	it('bunup with multiple entries and complex options', () => {
 		const options = parseCliOptions([
-			'--entry.main',
 			'src/main.ts',
-			'--entry.types',
 			'src/types.ts',
 			'--format',
 			'esm,cjs',

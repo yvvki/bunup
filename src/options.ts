@@ -66,30 +66,6 @@ export interface BuildOptions {
 	splitting?: boolean
 
 	/**
-	 * Customizes the generated file names
-	 * Defaults to './[dir]/[name].[ext]'
-	 *
-	 * Supports the following tokens:
-	 * - [name] - The name of the entrypoint file, without the extension
-	 * - [ext] - The extension of the generated bundle
-	 * - [hash] - A hash of the bundle contents
-	 * - [dir] - The relative path from the project root to the parent directory of the source file
-	 *
-	 * Can be a string template or an object with separate templates for entry points, chunks, and assets
-	 *
-	 * @example
-	 * naming: "[dir]/[name]-[hash].[ext]"
-	 *
-	 * @example
-	 * naming: {
-	 *   entry: "[dir]/[name].[ext]",
-	 *   chunk: "[name]-[hash].[ext]",
-	 *   asset: "[name]-[hash].[ext]"
-	 * }
-	 */
-	naming?: Naming
-
-	/**
 	 * Whether to minify whitespace in the output
 	 * Removes unnecessary whitespace to reduce file size
 	 */
@@ -421,26 +397,13 @@ export function getResolvedSplitting(
 const DEFAULT_ENTRY_NAMING = '[dir]/[name].[ext]'
 
 export function getResolvedNaming(
-	naming: Naming | undefined,
 	fmt: Format,
 	packageType: string | undefined,
 ): Naming {
-	const resolvedNaming =
-		typeof naming === 'object'
-			? { entry: DEFAULT_ENTRY_NAMING, ...naming }
-			: (naming ?? DEFAULT_ENTRY_NAMING)
-
 	const replaceExt = (pattern: string): string =>
 		pattern.replace('.[ext]', getDefaultOutputExtension(fmt, packageType))
 
-	if (typeof resolvedNaming === 'string') {
-		return replaceExt(resolvedNaming)
-	}
-
-	return {
-		...resolvedNaming,
-		entry: replaceExt(resolvedNaming.entry),
-	}
+	return replaceExt(DEFAULT_ENTRY_NAMING)
 }
 
 export function getResolvedEnv(

@@ -91,7 +91,7 @@ export async function build(
 		const result = await Bun.build({
 			entrypoints: entrypoints.map((file) => `${rootDir}/${file}`),
 			format: fmt,
-			naming: getResolvedNaming(options.naming, fmt, packageType),
+			naming: getResolvedNaming(fmt, packageType),
 			splitting: getResolvedSplitting(options.splitting, fmt),
 			bytecode: getResolvedBytecode(options.bytecode, fmt),
 			define: getResolvedDefine(options.define, options.env),
