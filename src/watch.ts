@@ -47,7 +47,7 @@ export async function watch(
 			const start = performance.now()
 			await build(options, rootDir)
 			if (!initial) {
-				logger.cli(
+				logger.success(
 					`📦 Rebuild finished in ${pc.green(formatTime(performance.now() - start))}`,
 				)
 			}
@@ -60,7 +60,7 @@ export async function watch(
 
 	watcher.on('change', (filePath) => {
 		const changedFile = path.relative(rootDir, filePath)
-		logger.cli(`File changed: ${changedFile}`, {
+		logger.info(`File changed: ${changedFile}`, {
 			muted: true,
 			once: changedFile,
 		})

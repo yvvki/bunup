@@ -61,7 +61,7 @@ const KNOWN_ERRORS: KnownErrorSolution[] = [
 		pattern: /Could not resolve: "bun"/i,
 		errorType: 'BUILD ERROR',
 		logSolution: () => {
-			logger.error(
+			logger.info(
 				pc.white("You're trying to build a project that uses Bun. ") +
 					pc.white('Please set the target option to ') +
 					pc.cyan('`bun`') +

@@ -95,8 +95,6 @@ export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 						meta.packageJson.path,
 						JSON.stringify(newPackageJson, null, 2),
 					)
-
-					logger.cli('Updated package.json with exports')
 				} catch {
 					logger.error('Failed to update package.json')
 				}

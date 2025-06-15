@@ -1,6 +1,7 @@
 import path from 'node:path'
 import type { BunPlugin } from 'bun'
 import { generateDts, logIsolatedDeclarationErrors } from 'bun-dts'
+import pc from 'picocolors'
 import { BunupBuildError } from './errors'
 import { loadPackageJson } from './loaders'
 import { logger, setSilent } from './logger'
@@ -57,7 +58,7 @@ export async function build(
 	const packageJson = await loadPackageJson(rootDir)
 
 	if (packageJson.data && packageJson.path) {
-		logger.cli(`Using ${getShortFilePath(packageJson.path, 2)}`, {
+		logger.info(`Using ${getShortFilePath(packageJson.path, 2)}`, {
 			muted: true,
 			identifier: options.name,
 			once: `${packageJson.path}:${options.name}`,
@@ -104,8 +105,8 @@ export async function build(
 			footer: options.footer,
 			publicPath: options.publicPath,
 			env: getResolvedEnv(options.env),
-			plugins,
 			throw: false,
+			plugins,
 		})
 
 		for (const log of result.logs) {
@@ -118,18 +119,19 @@ export async function build(
 
 		for (const file of result.outputs) {
 			const relativePathToRootDir = getRelativePathToRootDir(file.path, rootDir)
+			const relativePathToOutputDir = getRelativePathToOutputDir(
+				relativePathToRootDir,
+				options.outDir,
+			)
 			if (file.kind === 'entry-point') {
-				logger.progress(fmt.toUpperCase(), relativePathToRootDir, {
+				logger.success(`${pc.dim(options.outDir)}/${relativePathToOutputDir}`, {
 					identifier: options.name,
 				})
 			}
 			buildOutput.files.push({
 				fullPath: file.path,
 				relativePathToRootDir,
-				relativePathToOutputDir: getRelativePathToOutputDir(
-					relativePathToRootDir,
-					options.outDir,
-				),
+				relativePathToOutputDir,
 				dts: false,
 				format: fmt,
 				kind: file.kind,
@@ -166,7 +168,7 @@ export async function build(
 					`${options.outDir}/${relativePathToOutputDir}`,
 				)
 
-				logger.progress('DTS', relativePathToRootDir, {
+				logger.success(`${pc.dim(options.outDir)}/${relativePathToOutputDir}`, {
 					identifier: options.name,
 				})
 

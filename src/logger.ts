@@ -1,12 +1,18 @@
 import pc from 'picocolors'
 
-type FormatType = 'ESM' | 'CJS' | 'IIFE' | 'DTS' | string
-
 interface LogOptions {
 	muted?: boolean
 	verticalSpace?: boolean
 	identifier?: string
 	once?: string
+	tick?: boolean
+}
+
+type LogLevel = 'info' | 'warn' | 'error'
+
+interface FormatMessageOptions extends LogOptions {
+	message: string
+	type?: LogLevel
 }
 
 let silent = false
@@ -15,42 +21,9 @@ export function setSilent(value: boolean | undefined): void {
 	silent = value ?? false
 }
 
-class Logger {
+export class Logger {
 	private static instance: Logger
-	private loggedOnceMessages = new Set<string>()
-
-	public readonly MAX_LABEL_LENGTH = 3
-
-	private cliColor = pc.blue
-	private mutedColor = pc.dim
-	private infoColor = pc.cyan
-	private warnColor = pc.yellow
-	private errorColor = pc.red
-	private defaultColor = pc.white
-
-	private progressFgColorMap: Record<string, (text: string) => string> = {
-		ESM: pc.yellow,
-		CJS: pc.green,
-		IIFE: pc.magenta,
-		DTS: pc.blue,
-	}
-
-	private progressIdentifierBgColorMap: Record<
-		string,
-		(text: string) => string
-	> = {
-		ESM: pc.bgYellow,
-		CJS: pc.bgGreen,
-		IIFE: pc.bgMagenta,
-		DTS: pc.bgBlue,
-	}
-
-	public labels = {
-		cli: 'CLI',
-		info: 'INFO',
-		warn: 'WARN',
-		error: 'ERROR',
-	}
+	private readonly loggedOnceMessages = new Set<string>()
 
 	private constructor() {}
 
@@ -66,135 +39,112 @@ class Logger {
 	}
 
 	private shouldLog(options?: LogOptions): boolean {
-		if (!options?.once) return true
-		if (this.loggedOnceMessages.has(options.once)) return false
+		if (!options?.once) {
+			return true
+		}
+
+		if (this.loggedOnceMessages.has(options.once)) {
+			return false
+		}
+
 		this.loggedOnceMessages.add(options.once)
 		return true
 	}
 
-	public formatMessage({
-		fgColor,
-		bgColor,
-		label,
-		message,
-		identifier,
-		muted,
-	}: {
-		fgColor: (text: string) => string
-		bgColor: (text: string) => string
-		label: string
-		message: string
-		identifier?: string
-		muted?: boolean
-	}): string {
-		const padding = ' '.repeat(
-			Math.max(0, this.MAX_LABEL_LENGTH - label.length),
-		)
-		const formattedMessage = muted ? this.mutedColor(message) : message
-		const identifierPart = identifier
-			? `   ${bgColor(pc.black(` ${identifier} `))}`
-			: ''
-		return `${fgColor(label)} ${padding}${formattedMessage}${identifierPart}`
+	private getIcon(type: LogLevel, tick?: boolean): string {
+		if (tick) {
+			return pc.green('✓')
+		}
+
+		const iconMap: Record<LogLevel, string> = {
+			info: pc.blue('i'),
+			warn: pc.yellow('!'),
+			error: pc.red('✕'),
+		}
+
+		return iconMap[type]
 	}
 
-	public output(
+	private formatIdentifier(identifier?: string): string {
+		return identifier ? `   ${pc.bgBlue(pc.black(` ${identifier} `))}` : ''
+	}
+
+	public formatMessage(options: FormatMessageOptions): string {
+		const {
+			message,
+			identifier,
+			muted = false,
+			tick = false,
+			type = 'info',
+		} = options
+
+		const icon = this.getIcon(type, tick)
+		const styledMessage = muted ? pc.dim(message) : message
+		const identifierPart = this.formatIdentifier(identifier)
+
+		return `${icon} ${styledMessage}${identifierPart}`
+	}
+
+	private output(
 		message: string,
 		options: LogOptions = {},
 		logFn: (...args: any[]) => void = console.log,
 	): void {
-		if (silent || !this.shouldLog(options)) return
-		if (options.verticalSpace) logFn('')
-		logFn(message)
-		if (options.verticalSpace) logFn('')
-	}
+		if (silent || !this.shouldLog(options)) {
+			return
+		}
 
-	public cli(message: string, options: LogOptions = {}): void {
-		const formattedMessage = this.formatMessage({
-			fgColor: this.cliColor,
-			bgColor: pc.bgBlue,
-			label: this.labels.cli,
-			message,
-			identifier: options.identifier,
-			muted: options.muted,
-		})
-		this.output(formattedMessage, options)
+		if (options.verticalSpace) {
+			logFn('')
+		}
+
+		logFn(message)
+
+		if (options.verticalSpace) {
+			logFn('')
+		}
 	}
 
 	public info(message: string, options: LogOptions = {}): void {
 		const formattedMessage = this.formatMessage({
-			fgColor: this.infoColor,
-			bgColor: pc.bgCyan,
-			label: this.labels.info,
+			...options,
 			message,
-			identifier: options.identifier,
-			muted: options.muted,
+			type: 'info',
 		})
 		this.output(formattedMessage, options)
 	}
 
 	public warn(message: string, options: LogOptions = {}): void {
 		const formattedMessage = this.formatMessage({
-			fgColor: this.warnColor,
-			bgColor: pc.bgYellow,
-			label: this.labels.warn,
+			...options,
 			message,
-			identifier: options.identifier,
-			muted: options.muted,
+			type: 'warn',
 		})
-		this.output(formattedMessage, options, console.warn)
+		this.output(formattedMessage, options)
 	}
 
 	public error(message: string, options: LogOptions = {}): void {
 		const formattedMessage = this.formatMessage({
-			fgColor: this.errorColor,
-			bgColor: pc.bgRed,
-			label: this.labels.error,
+			...options,
 			message,
-			identifier: options.identifier,
-			muted: options.muted,
+			type: 'error',
 		})
-		this.output(formattedMessage, options, console.error)
+		this.output(formattedMessage, options)
+	}
+
+	public success(message: string, options: LogOptions = {}): void {
+		const formattedMessage = this.formatMessage({
+			...options,
+			message,
+			tick: true,
+		})
+		this.output(formattedMessage, options)
 	}
 
 	public space(): void {
-		if (silent) return
-		console.log('')
-	}
-
-	private getProgressFgColor(label: string): (text: string) => string {
-		for (const [key, colorFn] of Object.entries(this.progressFgColorMap)) {
-			if (label.includes(key)) return colorFn
+		if (!silent) {
+			console.log('')
 		}
-		return this.defaultColor
-	}
-
-	private getProgressBgColor(label: string): (text: string) => string {
-		for (const [key, colorFn] of Object.entries(
-			this.progressIdentifierBgColorMap,
-		)) {
-			if (label.includes(key)) return colorFn
-		}
-		return pc.bgWhite
-	}
-
-	public progress(
-		label: FormatType,
-		message: string,
-		options: LogOptions = {},
-	): void {
-		const fgColor = this.getProgressFgColor(label)
-		const bgColor = this.getProgressBgColor(label)
-
-		const formattedMessage = this.formatMessage({
-			fgColor,
-			bgColor,
-			label,
-			message,
-			identifier: options.identifier,
-			muted: options.muted,
-		})
-
-		this.output(formattedMessage, options)
 	}
 }
 

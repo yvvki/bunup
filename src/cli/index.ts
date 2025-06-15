@@ -47,19 +47,19 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 		? [{ rootDir: cwd, options: cliOptions }]
 		: await processLoadedConfigs(config, cwd, cliOptions.filter)
 
-	logger.cli(`Using bunup v${version} and bun v${Bun.version}`, {
+	logger.info(`Using bunup v${version} and bun v${Bun.version}`, {
 		muted: true,
 	})
 
 	if (filepath) {
-		logger.cli(`Using ${getShortFilePath(filepath, 2)}`, {
+		logger.info(`Using ${getShortFilePath(filepath, 2)}`, {
 			muted: true,
 		})
 	}
 
 	const startTime = performance.now()
 
-	logger.cli('Build started')
+	logger.info('Build started')
 
 	await Promise.all(
 		configsToProcess.flatMap(({ options, rootDir }) => {
@@ -82,14 +82,14 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 	const buildTimeMs = performance.now() - startTime
 	const timeDisplay = formatTime(buildTimeMs)
 
-	logger.cli(`⚡️ Build completed in ${pc.green(timeDisplay)}`)
+	logger.success(`Build completed in ${pc.green(timeDisplay)}`)
 
 	if (cliOptions.watch) {
-		logger.cli('👀 Watching for file changes')
+		logger.info('👀 Watching for file changes')
 	}
 
 	if (cliOptions.onSuccess) {
-		logger.cli(`Running command: ${cliOptions.onSuccess}`, {
+		logger.info(`Running command: ${cliOptions.onSuccess}`, {
 			muted: true,
 		})
 

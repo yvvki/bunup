@@ -33,7 +33,7 @@ export function getDefaultDtsExtention(
 		case 'cjs':
 			return isModulePackage(packageType) ? '.d.cts' : '.d.ts'
 		case 'iife':
-			return '.d.ts'
+			return '.global.d.ts'
 	}
 }
 
