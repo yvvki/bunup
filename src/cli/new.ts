@@ -16,6 +16,7 @@ import { pathExistsSync } from '../utils'
 import { displayBunupGradientArt } from './utils'
 
 type Template = {
+	type: 'typescript' | 'react'
 	defaultName: string
 	name: string
 	dir: string
@@ -32,12 +33,14 @@ const MONOREPO_PACKAGES_DIR = 'packages'
 
 const TEMPLATES: Template[] = [
 	{
+		type: 'typescript',
 		defaultName: 'my-ts-lib',
 		name: 'Typescript Library',
 		dir: 'ts-lib',
 		monorepoDir: 'ts-lib-monorepo',
 	},
 	{
+		type: 'react',
 		defaultName: 'my-react-lib',
 		name: 'React Library',
 		dir: 'react-lib',
@@ -114,7 +117,7 @@ export async function newProject(): Promise<void> {
 
 	await tasks([
 		{
-			title: 'Creating project',
+			title: 'Downloading template',
 			task: async () => {
 				const templatePath = useMonorepo ? template.monorepoDir : template.dir
 				await downloadTemplate(
@@ -167,17 +170,17 @@ export async function newProject(): Promise<void> {
 	])
 
 	outro(`
-		${pc.green('✨ Project scaffolded successfully! ✨')} 
-	    
-		${pc.bold('Ready to launch your awesome new project?')}
-		
-		${pc.cyan('cd')} ${projectName}
-		${pc.cyan('bun install')}
-		${pc.cyan('bun run dev')}
-		
-		${pc.dim('Learn more:')} ${pc.underline('https://bunup.dev/docs')}
-		
-		${pc.yellow('Happy coding!')} 🚀
+   ${pc.green('✨ Project scaffolded successfully! ✨')}
+
+   ${pc.bold('Ready to launch your awesome new project?')}
+
+   ${pc.cyan('cd')} ${projectName}
+   ${pc.cyan('bun install')}
+   ${pc.cyan('bun run dev')}${pc.dim(' (watch mode for development)')}${template.type === 'react' ? `\n   ${pc.cyan('bun run dev:test')} ${pc.dim('(preview components in a test Next.js app)')} ` : ''}
+
+   ${pc.dim('Learn more:')} ${pc.underline('https://bunup.dev/docs')}
+
+   ${pc.yellow('Happy coding!')} 🚀
 		`)
 }
 

@@ -480,14 +480,14 @@ function showSuccessOutro(isWorkspace: boolean): void {
 		: ''
 
 	outro(`
-  ${pc.green('✨ Bunup initialized successfully! ✨')}
+   ${pc.green('✨ Bunup initialized successfully! ✨')}
+
+   ${buildCommand}
+   ${devCommand}${isWorkspace ? `\n   ${filterCommand}` : ''}
   
-  ${buildCommand}
-  ${devCommand}${isWorkspace ? `\n  ${filterCommand}` : ''}
+   ${pc.dim('Learn more:')} ${pc.underline('https://bunup.dev/docs')}
   
-  ${pc.dim('Learn more:')} ${pc.underline('https://bunup.dev/docs/')}
-  
-  ${pc.yellow('Happy building!')} 🚀
+   ${pc.yellow('Happy building!')} 🚀
   `)
 }
 
