@@ -174,49 +174,44 @@ Splitting is enabled by default if:
 
 You can minify the generated declaration files to reduce their size:
 
-### Enable all minification strategies
-
-```ts
+```typescript
 export default defineConfig({
-  dts: {
-    minify: true,
-  },
+	dts: {
+		minify: true,
+	},
 });
 ```
 
-### Fine-grained control over minification
+When enabled, minification will preserve public (exported) API names while minifying internal type names to reduce file size. This is particularly useful for large declaration files or multiple medium to large declaration files, which can reduce your bundle size significantly.
+
+### Example
+
+**Original:**
 
 ```ts
-export default defineConfig({
-  dts: {
-    minify: {
-      jsDoc: true,
-      whitespace: true,
-      identifiers: true
-    }
-  }
-});
+type DeepPartial<T> = { [P in keyof T]? : DeepPartial<T[P]> };
+interface Response<T> {
+	data: T;
+	error?: string;
+	meta?: Record<string, unknown>;
+}
+declare function fetchData<T>(url: string, options?: RequestInit): Promise<Response<T>>;
+export { fetchData, Response, DeepPartial };
 ```
 
-| Option | Description |
-| ------ | ----------- |
-| `jsDoc` | Remove JSDoc comments |
-| `whitespace` | Remove unnecessary whitespace |
-| `identifiers` | Shorten internal type names while preserving public API names |
-
-### Recommended for production
+**Minified:**
 
 ```ts
-export default defineConfig({
-  dts: {
-    minify: {
-      identifiers: true,
-    },
-  },
-});
+type e<T> = { [P in keyof T]? : e<T[P]> };
+interface t<T> {
+	data: T;
+	error?: string;
+	meta?: Record<string, unknown>;
+}
+declare function r<T>(url: string, options?: RequestInit): Promise<t<T>>;
+export { r as fetchData, t as Response, e as DeepPartial };
 ```
 
-If you are publishing your package to npm, you can minify only the identifiers to reduce the size of the declaration file. When you minify whitespace, the JSDoc comments become ineffective, and removing JSDoc comments would degrade the developer experience since TypeScript packages typically have JSDoc comments to describe the API.
 
 ## TypeScript Configuration
 
