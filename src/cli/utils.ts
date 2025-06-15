@@ -15,7 +15,7 @@ export function displayBunupGradientArt(): void {
 
 	logger.space()
 	for (const line of lines) {
-		logger.output(pc.cyan(line))
+		console.log(pc.cyan(line))
 	}
 	logger.space()
 }
