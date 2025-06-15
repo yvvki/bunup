@@ -10,6 +10,7 @@ import {
 	createBuildOptions,
 	getResolvedBytecode,
 	getResolvedDefine,
+	getResolvedDtsSplitting,
 	getResolvedEnv,
 	getResolvedMinify,
 	getResolvedNaming,
@@ -142,12 +143,13 @@ export async function build(
 	await Promise.all(buildPromises)
 
 	if (options.dts) {
-		const { entry, ...dtsOptions } =
+		const { entry, splitting, ...dtsOptions } =
 			typeof options.dts === 'object' ? options.dts : {}
 
 		const dtsResult = await generateDts(ensureArray(entry ?? entrypoints), {
 			cwd: rootDir,
 			preferredTsConfigPath: options.preferredTsconfigPath,
+			splitting: getResolvedDtsSplitting(splitting),
 			...dtsOptions,
 		})
 

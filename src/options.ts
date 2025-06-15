@@ -394,6 +394,12 @@ export function getResolvedSplitting(
 	return splitting === undefined ? format === 'esm' : splitting
 }
 
+export function getResolvedDtsSplitting(
+	splitting: boolean | undefined,
+): boolean {
+	return splitting ?? true
+}
+
 const DEFAULT_ENTRY_NAMING = '[dir]/[name].[ext]'
 
 export function getResolvedNaming(
