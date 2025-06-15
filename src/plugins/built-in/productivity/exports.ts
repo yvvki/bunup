@@ -43,18 +43,14 @@ export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 							]
 						: [buildOptions.outDir]
 
-					// Start with generated exports instead of existing ones
 					const mergedExports: Record<string, string | Record<string, string>> =
 						{ ...exportsField }
 
-					// Add extra exports if provided
 					if (options.extraExports) {
 						for (const [key, value] of Object.entries(options.extraExports)) {
 							if (typeof value === 'string') {
-								// Simple string export
 								mergedExports[key] = value
 							} else {
-								// Complex export conditions - merge with existing generated exports for the same key
 								const existingExport = mergedExports[key]
 								if (
 									typeof existingExport === 'object' &&
@@ -82,7 +78,6 @@ export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 						exports: mergedExports,
 					}
 
-					// Preserve other fields from original package.json
 					for (const key in meta.packageJson.data) {
 						if (
 							Object.prototype.hasOwnProperty.call(

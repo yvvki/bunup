@@ -8,14 +8,6 @@
 		".": {
 			"import": "./dist/index.mjs",
 			"types": "./dist/index.d.mts"
-		},
-		"./client": {
-			"import": "./dist/client/index.mjs",
-			"types": "./dist/client/index.d.mts"
-		},
-		"./server": {
-			"import": "./dist/server/index.mjs",
-			"types": "./dist/server/index.d.mts"
 		}
 	},
 	"main": "./dist/index.js",
