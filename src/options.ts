@@ -4,7 +4,7 @@ import { report } from './plugins/built-in'
 import { useClient } from './plugins/internal/use-client'
 import type { Plugin } from './plugins/types'
 import type { MaybePromise, WithRequired } from './types'
-import { getDefaultJsOutputExtension } from './utils'
+import { getDefaultOutputExtension } from './utils'
 
 type Loader = NonNullable<BuildConfig['loader']>[string]
 
@@ -431,7 +431,7 @@ export function getResolvedNaming(
 			: (naming ?? DEFAULT_ENTRY_NAMING)
 
 	const replaceExt = (pattern: string): string =>
-		pattern.replace('.[ext]', getDefaultJsOutputExtension(fmt, packageType))
+		pattern.replace('.[ext]', getDefaultOutputExtension(fmt, packageType))
 
 	if (typeof resolvedNaming === 'string') {
 		return replaceExt(resolvedNaming)

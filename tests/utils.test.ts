@@ -11,12 +11,12 @@ import {
 	ensureArray,
 	formatFileSize,
 	formatTime,
-	getDefaultJsOutputExtension,
+	getDefaultDtsExtention,
+	getDefaultOutputExtension,
 	getPackageDeps,
 	getShortFilePath,
 	isDirectoryPath,
 	isModulePackage,
-	removeExtension,
 } from '../src/utils'
 
 describe('Utils', () => {
@@ -47,16 +47,34 @@ describe('Utils', () => {
 
 	describe('getDefaultJsOutputExtension', () => {
 		it('returns .mjs for esm format', () => {
-			expect(getDefaultJsOutputExtension('esm', undefined)).toBe('.mjs')
+			expect(getDefaultOutputExtension('esm', undefined)).toBe('.mjs')
 		})
 		it('returns .cjs for cjs format with module type', () => {
-			expect(getDefaultJsOutputExtension('cjs', 'module')).toBe('.cjs')
+			expect(getDefaultOutputExtension('cjs', 'module')).toBe('.cjs')
 		})
 		it('returns .js for cjs format with commonjs type', () => {
-			expect(getDefaultJsOutputExtension('cjs', 'commonjs')).toBe('.js')
+			expect(getDefaultOutputExtension('cjs', 'commonjs')).toBe('.js')
 		})
 		it('returns .global.js for iife format', () => {
-			expect(getDefaultJsOutputExtension('iife', undefined)).toBe('.global.js')
+			expect(getDefaultOutputExtension('iife', undefined)).toBe('.global.js')
+		})
+	})
+
+	describe('getDefaultDtsExtention', () => {
+		it('returns .d.mts for esm format without module type', () => {
+			expect(getDefaultDtsExtention('esm', undefined)).toBe('.d.mts')
+		})
+		it('returns .d.ts for esm format with module type', () => {
+			expect(getDefaultDtsExtention('esm', 'module')).toBe('.d.ts')
+		})
+		it('returns .d.cts for cjs format with module type', () => {
+			expect(getDefaultDtsExtention('cjs', 'module')).toBe('.d.cts')
+		})
+		it('returns .d.ts for cjs format with commonjs type', () => {
+			expect(getDefaultDtsExtention('cjs', 'commonjs')).toBe('.d.ts')
+		})
+		it('returns .d.ts for iife format', () => {
+			expect(getDefaultDtsExtention('iife', undefined)).toBe('.d.ts')
 		})
 	})
 
@@ -224,20 +242,6 @@ describe('Utils', () => {
 				'process.env.NODE_ENV': '"development"',
 				'import.meta.env.NODE_ENV': '"production"',
 			})
-		})
-	})
-
-	describe('removeExtension', () => {
-		it('removes file extension', () => {
-			expect(cleanPath(removeExtension('path/to/file.js'))).toBe('path/to/file')
-		})
-		it('handles paths with no extension', () => {
-			expect(cleanPath(removeExtension('path/to/file'))).toBe('path/to/file')
-		})
-		it('handles paths with multiple dots', () => {
-			expect(cleanPath(removeExtension('path/to/file.min.js'))).toBe(
-				'path/to/file',
-			)
 		})
 	})
 

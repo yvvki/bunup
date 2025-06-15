@@ -1,7 +1,8 @@
+import path from 'node:path'
 import { JS_DTS_RE } from '../../../constants/re'
 import { logger } from '../../../logger'
 import type { Format } from '../../../options'
-import { cleanPath, removeExtension } from '../../../utils'
+import { cleanPath } from '../../../utils'
 import type { BuildOutputFile, BunupPlugin } from '../../types'
 
 type ExportField = 'require' | 'import' | 'types'
@@ -172,4 +173,19 @@ function exportFieldToEntryPoint(exportField: ExportField): EntryPoint {
 
 function formatToExportField(format: Format, dts: boolean): ExportField {
 	return dts ? 'types' : format === 'esm' ? 'import' : 'require'
+}
+
+function removeExtension(filePath: string): string {
+	const basename = path.basename(filePath)
+	const firstDotIndex = basename.indexOf('.')
+	if (firstDotIndex === -1) {
+		return filePath
+	}
+
+	const nameWithoutExtensions = basename.slice(0, firstDotIndex)
+	const directory = path.dirname(filePath)
+
+	return directory === '.'
+		? nameWithoutExtensions
+		: path.join(directory, nameWithoutExtensions)
 }

@@ -9,7 +9,7 @@ export function ensureArray<T>(value: T | T[]): T[] {
 	return Array.isArray(value) ? value : [value]
 }
 
-export function getDefaultJsOutputExtension(
+export function getDefaultOutputExtension(
 	format: Format,
 	packageType: string | undefined,
 ): string {
@@ -23,19 +23,18 @@ export function getDefaultJsOutputExtension(
 	}
 }
 
-export function removeExtension(filePath: string): string {
-	const basename = path.basename(filePath)
-	const firstDotIndex = basename.indexOf('.')
-	if (firstDotIndex === -1) {
-		return filePath
+export function getDefaultDtsExtention(
+	format: Format,
+	packageType: string | undefined,
+): string {
+	switch (format) {
+		case 'esm':
+			return isModulePackage(packageType) ? '.d.ts' : '.d.mts'
+		case 'cjs':
+			return isModulePackage(packageType) ? '.d.cts' : '.d.ts'
+		case 'iife':
+			return '.d.ts'
 	}
-
-	const nameWithoutExtensions = basename.slice(0, firstDotIndex)
-	const directory = path.dirname(filePath)
-
-	return directory === '.'
-		? nameWithoutExtensions
-		: path.join(directory, nameWithoutExtensions)
 }
 
 export function isModulePackage(packageType: string | undefined): boolean {

@@ -2,20 +2,20 @@
 	"name": "tests",
 	"private": true,
 	"files": ["dist"],
-	"types": "./dist/index.d.mts",
 	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.mts",
-			"import": "./dist/index.mjs"
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.mts"
 		},
 		"./client": {
-			"types": "./dist/client/index.d.mts",
-			"import": "./dist/client/index.mjs"
+			"import": "./dist/client/index.mjs",
+			"types": "./dist/client/index.d.mts"
 		},
 		"./server": {
-			"types": "./dist/server/index.d.mts",
-			"import": "./dist/server/index.mjs"
+			"import": "./dist/server/index.mjs",
+			"types": "./dist/server/index.d.mts"
 		}
 	},
 	"main": "./dist/index.js",

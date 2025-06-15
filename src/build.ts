@@ -1,7 +1,7 @@
 import path from 'node:path'
 import type { BunPlugin } from 'bun'
-import { dts } from 'bun-dts'
-import { BunupBuildError, BunupDTSBuildError } from './errors'
+import { generateDts, logIsolatedDeclarationErrors } from 'bun-dts'
+import { BunupBuildError } from './errors'
 import { loadPackageJson } from './loaders'
 import { logger, setSilent } from './logger'
 import {
@@ -27,6 +27,7 @@ import {
 	cleanOutDir,
 	cleanPath,
 	ensureArray,
+	getDefaultDtsExtention,
 	getFilesFromGlobs,
 	getShortFilePath,
 } from './utils'
@@ -74,57 +75,6 @@ export async function build(
 		...filterBunupBunPlugins(options.plugins).map((p) => p.plugin),
 	]
 
-	let hasBuiltAnyFormat = false
-
-	if (options.dts) {
-		const { entry, ...dtsOptions } =
-			typeof options.dts === 'object' ? options.dts : {}
-
-		let entrypoints: string[] | undefined
-		if (entry) {
-			entrypoints = await getFilesFromGlobs(ensureArray(entry), rootDir)
-		}
-
-		if (Array.isArray(entrypoints) && !entrypoints.length) {
-			throw new BunupDTSBuildError(
-				'The dts entrypoints you provided do not exist. Please make sure the entrypoints point to valid files.',
-			)
-		}
-
-		plugins.push(
-			dts({
-				...dtsOptions,
-				preferredTsConfigPath: options.preferredTsconfigPath,
-				entry: entrypoints,
-				cwd: rootDir,
-				silent: () => !hasBuiltAnyFormat,
-				onDeclarationsGenerated({ result, buildConfig }) {
-					for (const file of result.files) {
-						logger.progress('DTS', `${options.outDir}/${file.outputPath}`, {
-							identifier: options.name,
-						})
-
-						const fullPath = path.join(rootDir, options.outDir, file.outputPath)
-
-						if (buildConfig.format) {
-							buildOutput.files.push({
-								fullPath,
-								relativePathToRootDir: getRelativePathToRootDir(
-									fullPath,
-									rootDir,
-								),
-								relativePathToOutputDir: file.outputPath,
-								dts: true,
-								format: buildConfig.format,
-								kind: file.kind,
-							})
-						}
-					}
-				},
-			}),
-		)
-	}
-
 	const entrypoints = await getFilesFromGlobs(
 		ensureArray(options.entry),
 		rootDir,
@@ -158,8 +108,6 @@ export async function build(
 			throw: false,
 		})
 
-		hasBuiltAnyFormat = true
-
 		for (const log of result.logs) {
 			if (log.level === 'error') {
 				throw new BunupBuildError(log.message)
@@ -190,6 +138,53 @@ export async function build(
 	})
 
 	await Promise.all(buildPromises)
+
+	if (options.dts) {
+		const { entry, ...dtsOptions } =
+			typeof options.dts === 'object' ? options.dts : {}
+
+		const dtsResult = await generateDts(ensureArray(entry ?? entrypoints), {
+			cwd: rootDir,
+			preferredTsConfigPath: options.preferredTsconfigPath,
+			...dtsOptions,
+		})
+
+		if (dtsResult.errors.length) {
+			logIsolatedDeclarationErrors(dtsResult.errors, {
+				shouldExit: true,
+			})
+		}
+
+		for (const fmt of options.format) {
+			for (const file of dtsResult.files) {
+				const dtsExtension = getDefaultDtsExtention(fmt, packageType)
+
+				const relativePathToOutputDir = cleanPath(
+					`${file.pathInfo.outputPathWithoutExtension}${dtsExtension}`,
+				)
+				const relativePathToRootDir = cleanPath(
+					`${options.outDir}/${relativePathToOutputDir}`,
+				)
+
+				logger.progress('DTS', relativePathToRootDir, {
+					identifier: options.name,
+				})
+
+				const fullPath = path.join(rootDir, relativePathToRootDir)
+
+				await Bun.write(fullPath, file.dts)
+
+				buildOutput.files.push({
+					fullPath,
+					relativePathToRootDir,
+					relativePathToOutputDir,
+					dts: true,
+					format: fmt,
+					kind: file.kind,
+				})
+			}
+		}
+	}
 
 	await runPluginBuildDoneHooks(bunupPlugins, options, buildOutput, {
 		packageJson,
