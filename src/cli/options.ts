@@ -158,6 +158,11 @@ function showHelp(): void {
 		}
 	}
 
+	console.log(pc.cyan('Examples:'))
+	console.log('  bunup src/**/*.ts')
+	console.log('  bunup src/index.ts src/cli.ts --format esm,cjs')
+	console.log('  bunup src/index.ts --watch --dts')
+
 	console.log()
 
 	console.log(pc.dim('For more information:'))
@@ -300,7 +305,7 @@ const optionConfigs: Record<string, OptionConfig> = {
 		category: 'build',
 	},
 	preferredTsconfigPath: {
-		flags: ['tsconfig', 'preferred-tsconfig-path'],
+		flags: ['preferred-tsconfig-path'],
 		handler: stringHandler('preferredTsconfigPath'),
 		description:
 			'Path to a preferred tsconfig.json file for declaration generation',
