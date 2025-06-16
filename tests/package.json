@@ -12,8 +12,7 @@
 		"./client": {
 			"import": "./dist/client/index.mjs",
 			"types": "./dist/client/index.d.mts"
-		},
-		"./package.json": "package.json"
+		}
 	},
 	"dependencies": {
 		"chalk": "^5.4.1",
