@@ -357,7 +357,7 @@ export function createBuildOptions(
 
 	return {
 		...options,
-		plugins: [useClient(), linter(), report()],
+		plugins: [useClient(), linter(), report(), ...(options.plugins ?? [])],
 	}
 }
 
