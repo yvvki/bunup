@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { basename } from 'node:path'
-import { isDirectoryPath } from '../utils'
-import type { BunupPlugin } from './types'
+import { isDirectoryPath } from '../../utils'
+import type { BunupPlugin } from '../types'
 
 /**
  * A plugin that copies files and directories to the output directory.

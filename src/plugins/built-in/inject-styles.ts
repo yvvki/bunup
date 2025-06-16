@@ -1,9 +1,9 @@
 import path from 'node:path'
-import { CSS_RE } from '../constants/re'
-import { logger } from '../logger'
-import type { MaybePromise } from '../types'
-import type { Plugin } from './types'
-import { getPackageForPlugin } from './utils'
+import { CSS_RE } from '../../constants/re'
+import { logger } from '../../logger'
+import type { MaybePromise } from '../../types'
+import type { Plugin } from '../types'
+import { getPackageForPlugin } from '../utils'
 
 type InjectStylesPluginOptions = Pick<
 	import('lightningcss').TransformOptions<import('lightningcss').CustomAtRules>,
