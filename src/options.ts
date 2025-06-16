@@ -6,19 +6,31 @@ import type { Plugin } from './plugins/types'
 import type { MaybePromise, WithRequired } from './types'
 import { getDefaultOutputExtension } from './utils'
 
-type Loader = NonNullable<BuildConfig['loader']>[string]
+type Loader =
+	| 'js'
+	| 'jsx'
+	| 'ts'
+	| 'tsx'
+	| 'json'
+	| 'toml'
+	| 'file'
+	| 'napi'
+	| 'wasm'
+	| 'text'
+	| 'css'
+	| 'html'
 
-type Define = BuildConfig['define']
+type Define = Record<string, string>
 
-type Sourcemap = BuildConfig['sourcemap']
+type Sourcemap = 'none' | 'linked' | 'inline' | 'external' | 'linked' | boolean
 
-export type Format = Exclude<BuildConfig['format'], undefined>
+export type Format = 'esm' | 'cjs' | 'iife'
 
-type Target = BuildConfig['target']
+type Target = 'bun' | 'node' | 'browser'
 
 type External = (string | RegExp)[]
 
-type Env = BuildConfig['env'] | Record<string, string>
+type Env = 'inline' | 'disable' | `${string}*` | Record<string, string>
 
 type Naming = string | { entry?: string; chunk?: string; asset?: string }
 
@@ -122,9 +134,17 @@ export interface BuildOptions {
 	noExternal?: External
 
 	/**
-	 * The target environment for the bundle
+	 * The target environment for the bundle.
 	 * Can be 'browser', 'bun', 'node', etc.
-	 * Defaults to 'node' if not specified
+	 * Defaults to 'node' if not specified.
+	 *
+	 * Bun target is for generating bundles that are intended to be run by the Bun runtime. In many cases,
+	 * it isn't necessary to bundle server-side code; you can directly execute the source code
+	 * without modification. However, bundling your server code can reduce startup times and
+	 * improve running performance.
+	 *
+	 * All bundles generated with `target: "bun"` are marked with a special `// @bun` pragma, which
+	 * indicates to the Bun runtime that there's no need to re-transpile the file before execution.
 	 */
 	target?: Target
 
@@ -210,7 +230,7 @@ export interface BuildOptions {
 	 *   ".txt": "file",
 	 * }
 	 */
-	loader?: Record<string, Loader>
+	loader?: { [k in string]: Loader }
 	/**
 	 * Generate bytecode for the output. This can dramatically improve cold start times, but will make the final output larger and slightly increase memory usage.
 	 *
@@ -272,6 +292,16 @@ export interface BuildOptions {
 	 * env: { API_URL: "https://api.example.com", DEBUG: "false" }
 	 */
 	env?: Env
+	/**
+	 * Ignore dead code elimination/tree-shaking annotations such as @__PURE__ and package.json
+	 * "sideEffects" fields. This should only be used as a temporary workaround for incorrect
+	 * annotations in libraries.
+	 */
+	ignoreDCEAnnotations?: boolean
+	/**
+	 * Force emitting @__PURE__ annotations even if minify.whitespace is true.
+	 */
+	emitDCEAnnotations?: boolean
 	/**
 	 * Plugins to extend the build process functionality
 	 *

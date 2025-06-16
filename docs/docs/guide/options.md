@@ -536,9 +536,11 @@ Available targets:
 
 - `node` (default): Optimized for Node.js
 - `browser`: Optimized for browsers
-- `bun`: Optimized for the Bun runtime
+- `bun`: For generating bundles that are intended to be run by the Bun runtime.
 
 If a file contains a Bun shebang (`#!/usr/bin/env bun`), the `bun` target will be used automatically for that file.
+
+When targeting `bun`, bundles are marked with a special `// @bun` pragma that tells the Bun runtime not to re-transpile the file before execution. While bundling isn't always necessary for server-side code, it can improve startup times and runtime performance.
 
 ## Output Directory
 

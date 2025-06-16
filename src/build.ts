@@ -106,6 +106,8 @@ export async function build(
 			footer: options.footer,
 			publicPath: options.publicPath,
 			env: getResolvedEnv(options.env),
+			ignoreDCEAnnotations: options.ignoreDCEAnnotations,
+			emitDCEAnnotations: options.emitDCEAnnotations,
 			throw: false,
 			plugins,
 		})
