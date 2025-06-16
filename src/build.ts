@@ -172,9 +172,14 @@ export async function build(
 					`${options.outDir}/${relativePathToOutputDir}`,
 				)
 
-				logger.success(`${pc.dim(options.outDir)}/${relativePathToOutputDir}`, {
-					identifier: options.name,
-				})
+				if (file.kind === 'entry-point') {
+					logger.success(
+						`${pc.dim(options.outDir)}/${relativePathToOutputDir}`,
+						{
+							identifier: options.name,
+						},
+					)
+				}
 
 				const fullPath = path.join(rootDir, relativePathToRootDir)
 
