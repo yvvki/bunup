@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'bun:test'
-import { exports } from '../../src/plugins/built-in/productivity/exports'
+import { exports } from '../../src/plugins'
+import type { BuildOutputFile } from '../../src/plugins/types'
 import { cleanProjectDir, createProject, runBuild } from '../utils'
 
 describe('exports plugin', () => {
@@ -464,12 +465,12 @@ describe('exports plugin', () => {
 			dts: true,
 			plugins: [
 				exports({
-					extraExports: {
+					customExports: () => ({
 						'./extra': './extra-path.js',
 						'.': {
 							browser: './browser-path.js',
 						},
-					},
+					}),
 				}),
 			],
 		})
@@ -507,26 +508,34 @@ describe('exports plugin', () => {
 			'src/index.ts': 'export const hello: string = "world";',
 		})
 
+		let outputFiles: BuildOutputFile[] = []
+
 		const result = await runBuild({
 			entry: ['src/index.ts'],
 			format: ['esm'],
 			plugins: [
 				exports({
-					extraExports: {
-						'./features': {
-							import: {
-								node: './node-features.mjs',
-								default: './features.mjs',
-							} as unknown as string,
-							require: './features.cjs',
-						},
-						'.': {
-							worker: './worker.js',
-						},
+					customExports: (ctx) => {
+						outputFiles = ctx.output.files
+
+						return {
+							'./features': {
+								import: {
+									node: './node-features.mjs',
+									default: './features.mjs',
+								} as unknown as string,
+								require: './features.cjs',
+							},
+							'.': {
+								worker: './worker.js',
+							},
+						}
 					},
 				}),
 			],
 		})
+
+		expect(outputFiles).toHaveLength(1)
 
 		expect(result.success).toBe(true)
 		expect(result.packageJson.data).toBeDefined()

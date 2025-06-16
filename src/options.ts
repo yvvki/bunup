@@ -1,6 +1,6 @@
 import type { BuildConfig } from 'bun'
 import type { DtsPluginOptions } from 'bun-dts'
-import { report } from './plugins/built-in'
+import { report } from './plugins'
 import { useClient } from './plugins/internal/use-client'
 import type { Plugin } from './plugins/types'
 import type { MaybePromise, WithRequired } from './types'

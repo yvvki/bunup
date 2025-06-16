@@ -51,12 +51,10 @@ export default defineConfig({
 			{
 				text: 'Plugins',
 				items: [
-					{
-						text: 'Productivity',
-						link: '/docs/plugins/productivity',
-					},
-					{ text: 'Node', link: '/docs/plugins/node' },
-					{ text: 'CSS', link: '/docs/plugins/css' },
+					{ text: 'Shims', link: '/docs/plugins/shims' },
+					{ text: 'Exports', link: '/docs/plugins/exports' },
+					{ text: 'Copy', link: '/docs/plugins/copy' },
+					{ text: 'Inject Styles', link: '/docs/plugins/inject-styles' },
 				],
 			},
 			{

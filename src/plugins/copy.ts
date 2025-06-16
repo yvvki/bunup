@@ -1,14 +1,14 @@
 import { join } from 'node:path'
 import { basename } from 'node:path'
-import { isDirectoryPath } from '../../../utils'
-import type { BunupPlugin } from '../../types'
+import { isDirectoryPath } from '../utils'
+import type { BunupPlugin } from './types'
 
 /**
  * A plugin that copies files and directories to the output directory.
  *
  * @param patterns - Array of glob patterns to match files for copying
  * @param outPath - Optional output path. If not provided, uses the build output directory
- * @see https://bunup.dev/docs/plugins/productivity#copy
+ * @see https://bunup.dev/docs/plugins/copy
  */
 export function copy(patterns: string[], outPath?: string): BunupPlugin {
 	return {

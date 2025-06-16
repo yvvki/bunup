@@ -1,9 +1,9 @@
 import path from 'node:path'
-import { JS_DTS_RE } from '../../../constants/re'
-import { logger } from '../../../logger'
-import type { Format } from '../../../options'
-import { cleanPath } from '../../../utils'
-import type { BuildOutputFile, BunupPlugin } from '../../types'
+import { JS_DTS_RE } from '../constants/re'
+import { logger } from '../logger'
+import type { Format } from '../options'
+import { cleanPath } from '../utils'
+import type { BuildContext, BuildOutputFile, BunupPlugin } from './types'
 
 type ExportField = 'require' | 'import' | 'types'
 type EntryPoint = 'main' | 'module' | 'types'
@@ -11,20 +11,38 @@ type ExportsField = Record<string, Record<ExportField, string>>
 
 interface ExportsPluginOptions {
 	/**
-	 * Additional export fields to preserve alongside generated exports
+	 * Additional export fields to preserve alongside automatically generated exports
+	 *
+	 * @example
+	 * ```ts
+	 * {
+	 * 	customExports: (ctx) => {
+	 * 		const { output, options, meta } = ctx
+	 * 		return {
+	 * 			'./package.json': "package.json",
+	 * 		}
+	 * 	},
+	 * }
+	 * ```
 	 */
-	extraExports?: Record<string, string | Record<string, string>>
+	customExports?: (
+		ctx: BuildContext,
+	) => Record<string, string | Record<string, string>> | undefined
 }
 
 /**
  * A plugin that generates the exports field in the package.json file automatically.
+ *
+ * @see https://bunup.dev/docs/plugins/exports
  */
 export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 	return {
 		type: 'bunup',
 		name: 'exports',
 		hooks: {
-			onBuildDone: async ({ output, options: buildOptions, meta }) => {
+			onBuildDone: async (ctx) => {
+				const { output, options: buildOptions, meta } = ctx
+
 				if (!meta.packageJson.path || !meta.packageJson.data) {
 					return
 				}
@@ -46,8 +64,10 @@ export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 					const mergedExports: Record<string, string | Record<string, string>> =
 						{ ...exportsField }
 
-					if (options.extraExports) {
-						for (const [key, value] of Object.entries(options.extraExports)) {
+					if (options.customExports) {
+						for (const [key, value] of Object.entries(
+							options.customExports(ctx) ?? {},
+						)) {
 							if (typeof value === 'string') {
 								mergedExports[key] = value
 							} else {
@@ -67,6 +87,9 @@ export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 						}
 					}
 
+					const { main, module, types, ...restPackageJson } =
+						meta.packageJson.data
+
 					const newPackageJson: Record<string, unknown> = {
 						name: meta.packageJson.data.name,
 						description: meta.packageJson.data.description,
@@ -78,16 +101,13 @@ export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 						exports: mergedExports,
 					}
 
-					for (const key in meta.packageJson.data) {
+					for (const key in restPackageJson) {
 						if (
-							Object.prototype.hasOwnProperty.call(
-								meta.packageJson.data,
-								key,
-							) &&
+							Object.prototype.hasOwnProperty.call(restPackageJson, key) &&
 							!Object.prototype.hasOwnProperty.call(newPackageJson, key)
 						) {
 							newPackageJson[key] =
-								meta.packageJson.data[key as keyof typeof meta.packageJson.data]
+								restPackageJson[key as keyof typeof restPackageJson]
 						}
 					}
 
@@ -143,11 +163,6 @@ function getExportKey(relativePathToOutputDir: string): string {
 	const pathSegments = cleanPath(
 		removeExtension(relativePathToOutputDir),
 	).split('/')
-
-	// index.ts -> .
-	// client/index.ts -> ./client
-	// utils/index.ts -> ./utils
-	// components/ui/button.ts -> ./components/ui/button
 
 	if (pathSegments.length === 1 && pathSegments[0].startsWith('index')) {
 		return '.'

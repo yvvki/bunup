@@ -8,7 +8,7 @@ import {
 	validateBuildFiles,
 } from '../utils'
 
-describe('Bunup Plugins', () => {
+describe('Bunup Plugin', () => {
 	beforeEach(() => {
 		cleanProjectDir()
 	})

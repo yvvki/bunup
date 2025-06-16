@@ -1,16 +1,8 @@
-# CSS Plugins
-
-CSS plugins enable seamless integration of stylesheets into your JavaScript/TypeScript bundles.
-
-::: tip
-If you have suggestions or ideas for CSS plugins, please [open a new issue](https://github.com/arshad-yaseen/bunup/issues/new).
-:::
-
-## `injectStyles`
+# Inject Styles
 
 The `injectStyles` plugin transforms CSS files and automatically injects them into the document head at runtime. This is particularly useful when building component libraries where you want styles to be automatically applied when components are used.
 
-### Installation
+## Installation
 
 The `injectStyles` plugin uses LightningCSS under the hood. You'll need to install it as a dev dependency:
 
@@ -18,9 +10,9 @@ The `injectStyles` plugin uses LightningCSS under the hood. You'll need to insta
 bun add --dev lightningcss
 ```
 
-### Usage
+## Usage
 
-```ts
+```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
 import { injectStyles } from 'bunup/plugins';
 
@@ -33,7 +25,7 @@ export default defineConfig({
 
 With this configuration, any imported CSS files will be transformed and injected into the document head when your JavaScript code runs.
 
-### Options
+## Options
 
 The plugin leverages [Lightning CSS](https://lightningcss.dev/docs.html) for transformations and accepts most Lightning CSS transformation options including:
 

@@ -8,9 +8,13 @@
 		".": {
 			"import": "./dist/index.mjs",
 			"types": "./dist/index.d.mts"
-		}
+		},
+		"./client": {
+			"import": "./dist/client/index.mjs",
+			"types": "./dist/client/index.d.mts"
+		},
+		"./package.json": "package.json"
 	},
-	"main": "./dist/index.global.js",
 	"dependencies": {
 		"chalk": "^5.4.1",
 		"lodash": "^4.17.21",

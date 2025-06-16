@@ -1,8 +1,10 @@
-import { JS_TS_RE } from '../../../constants/re'
-import type { Plugin } from '../../types'
+import { JS_TS_RE } from '../constants/re'
+import type { Plugin } from './types'
 
 /**
  * A plugin that provides shims for Node.js globals and ESM/CJS interoperability.
+ *
+ * @see https://bunup.dev/docs/plugins/shims
  */
 export function shims(): Plugin {
 	return {

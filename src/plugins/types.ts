@@ -51,7 +51,7 @@ export type BuildOutput = {
 /**
  * Context provided to build hooks
  */
-type BuildContext = {
+export type BuildContext = {
 	/** The build options that were used */
 	options: BuildOptions
 	/** The output of the build */

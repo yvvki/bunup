@@ -1,18 +1,10 @@
-# Node Plugins
-
-Node plugins provide seamless integration with Node.js environments by handling Node-specific features and functionality automatically.
-
-::: tip
-If you have suggestions or ideas for Node plugins, please [open a new issue](https://github.com/arshad-yaseen/bunup/issues/new).
-:::
-
-## `shims`
+# Shims
 
 The Shims plugin provides compatibility layers for Node.js globals and ESM/CJS interoperability. It automatically adds appropriate shims when it detects usage of environment-specific features in your code.
 
-### Usage
+## Usage
 
-```ts
+```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
 import { shims } from 'bunup/plugins';
 

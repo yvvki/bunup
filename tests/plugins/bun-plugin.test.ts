@@ -7,7 +7,7 @@ import {
 	validateBuildFiles,
 } from '../utils'
 
-describe('Plugins', () => {
+describe('Bun Plugin', () => {
 	beforeEach(() => {
 		cleanProjectDir()
 	})
