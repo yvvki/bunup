@@ -1,5 +1,6 @@
 import type { BuildConfig } from 'bun'
 import type { DtsPluginOptions } from 'bun-dts'
+import { linter } from './plugins/internal/linter'
 import { report } from './plugins/internal/report'
 import { useClient } from './plugins/internal/use-client'
 import type { Plugin } from './plugins/types'
@@ -356,13 +357,7 @@ export function createBuildOptions(
 
 	return {
 		...options,
-		plugins: [
-			// filter out the report plugin, because it's enabled by default
-			// remove this once we remove the report plugin from the built-in plugins
-			...(options.plugins?.filter((p) => p.name !== 'report') ?? []),
-			useClient(),
-			report(),
-		],
+		plugins: [useClient(), linter(), report()],
 	}
 }
 
