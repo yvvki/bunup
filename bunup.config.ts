@@ -5,6 +5,7 @@ export default {
 	target: 'bun',
 	format: ['esm'],
 	entry: ['src/index.ts', 'src/plugins/index.ts', 'src/cli/index.ts'],
+	splitting: false,
 	dts: {
 		entry: ['src/index.ts', 'src/plugins/index.ts'],
 	},

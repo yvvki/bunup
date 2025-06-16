@@ -6,8 +6,6 @@ import type { BunupPlugin } from '../types'
 
 /**
  * A plugin that logs a report of the bundle size.
- *
- * @deprecated This plugin is enabled by default. Bundle size reports are automatically logged without needing to use this plugin.
  */
 export function report(): BunupPlugin {
 	return {

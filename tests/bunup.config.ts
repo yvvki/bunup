@@ -1,5 +1,5 @@
 import { defineConfig } from '../src'
-import { copy, exports } from '../src/plugins/built-in'
+import { exports } from '../src/plugins'
 
 export default defineConfig({
 	entry: ['fixtures/index.ts', 'fixtures/client/index.ts'],
