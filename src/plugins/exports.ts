@@ -9,6 +9,11 @@ type ExportField = 'require' | 'import' | 'types'
 type EntryPoint = 'main' | 'module' | 'types'
 type ExportsField = Record<string, Record<ExportField, string>>
 
+type CustomExports = Record<
+	string,
+	string | Record<string, string | Record<string, string>>
+>
+
 interface ExportsPluginOptions {
 	/**
 	 * Additional export fields to preserve alongside automatically generated exports
@@ -25,9 +30,7 @@ interface ExportsPluginOptions {
 	 * }
 	 * ```
 	 */
-	customExports?: (
-		ctx: BuildContext,
-	) => Record<string, string | Record<string, string>> | undefined
+	customExports?: (ctx: BuildContext) => CustomExports | undefined
 }
 
 /**
@@ -61,8 +64,7 @@ export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 							]
 						: [buildOptions.outDir]
 
-					const mergedExports: Record<string, string | Record<string, string>> =
-						{ ...exportsField }
+					const mergedExports: CustomExports = { ...exportsField }
 
 					if (options.customExports) {
 						for (const [key, value] of Object.entries(

@@ -523,7 +523,7 @@ describe('exports plugin', () => {
 								import: {
 									node: './node-features.mjs',
 									default: './features.mjs',
-								} as unknown as string,
+								},
 								require: './features.cjs',
 							},
 							'.': {
