@@ -13,7 +13,7 @@ const rules: LintRule[] = [
 			ctx.options.format.length === 1 &&
 			ctx.options.format[0] === 'esm',
 		message:
-			'You are using ESM format but your package.json does not have "type": "module". This may cause issues with module resolution.',
+			'You are using ESM format only but your package.json does not have "type": "module". This may cause issues with module resolution.',
 	},
 ]
 
