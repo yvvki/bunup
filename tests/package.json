@@ -1,7 +1,9 @@
 {
 	"name": "tests",
 	"private": true,
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.mts",
 	"exports": {

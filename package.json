@@ -3,7 +3,9 @@
 	"description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
 	"version": "0.8.44",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -34,7 +36,11 @@
 	},
 	"funding": "https://github.com/sponsors/arshad-yaseen",
 	"homepage": "https://bunup.dev",
-	"keywords": ["bun", "bunup", "bun-bundler"],
+	"keywords": [
+		"bun",
+		"bunup",
+		"bun-bundler"
+	],
 	"bin": {
 		"bunup": "dist/cli/index.js"
 	},
@@ -49,7 +55,7 @@
 		"tinyexec": "^1.0.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
+		"@biomejs/biome": "2.0.0",
 		"@types/bun": "^1.2.5",
 		"bumpp": "^10.1.0",
 		"husky": "^9.1.7",
@@ -89,5 +95,8 @@
 		"*": "bun run format:fix && git add .",
 		"src/**/*.(m|c)?(j|t)s": "bun run tsc"
 	},
-	"workspaces": ["docs", "tests"]
+	"workspaces": [
+		"docs",
+		"tests"
+	]
 }

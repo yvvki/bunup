@@ -1,5 +1,4 @@
-import { join } from 'node:path'
-import { basename } from 'node:path'
+import { basename, join } from 'node:path'
 import { isDirectoryPath } from '../../utils'
 import type { BunupPlugin } from '../types'
 

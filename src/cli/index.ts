@@ -1,18 +1,18 @@
 #!/usr/bin/env bun
-import { exec } from 'tinyexec'
-import { version } from '../../package.json'
-import { handleErrorAndExit } from '../errors'
-import { logger, setSilent } from '../logger'
-import type { BuildOptions } from '../options'
-import { type CliOptions, parseCliOptions } from './options'
 
 import { loadConfig } from 'coffi'
 import pc from 'picocolors'
+import { exec } from 'tinyexec'
+import { version } from '../../package.json'
 import { build } from '../build'
+import { handleErrorAndExit } from '../errors'
 import { type ProcessableConfig, processLoadedConfigs } from '../loaders'
+import { logger, setSilent } from '../logger'
+import type { BuildOptions } from '../options'
 import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from '../types'
 import { ensureArray, formatTime, getShortFilePath } from '../utils'
 import { watch } from '../watch'
+import { type CliOptions, parseCliOptions } from './options'
 
 export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>
 

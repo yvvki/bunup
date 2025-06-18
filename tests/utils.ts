@@ -1,11 +1,12 @@
 import {
 	existsSync,
-	readFileSync,
+	mkdirSync,
 	readdirSync,
+	readFileSync,
+	rmSync,
 	statSync,
 	writeFileSync,
 } from 'node:fs'
-import { mkdirSync, rmSync } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import { exec } from 'tinyexec'
 import { build } from '../src/build'
@@ -252,7 +253,7 @@ function getPackageJson(rootDir: string): PackageJson {
 			data: packageJson,
 			path: packageJsonPath,
 		}
-	} catch (error) {
+	} catch {
 		return {
 			data: null,
 			path: null,

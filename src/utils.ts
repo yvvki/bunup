@@ -108,7 +108,7 @@ export function pathExistsSync(filePath: string): boolean {
 	try {
 		fsSync.accessSync(filePath)
 		return true
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

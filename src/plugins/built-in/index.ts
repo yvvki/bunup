@@ -1,4 +1,4 @@
-export * from './shims'
-export * from './exports'
 export * from './copy'
+export * from './exports'
 export * from './inject-styles'
+export * from './shims'

@@ -1,6 +1,5 @@
 import pc from 'picocolors'
-import { type TableColumn, logTable } from '../../logger'
-import { logger } from '../../logger'
+import { logger, logTable, type TableColumn } from '../../logger'
 import { formatFileSize } from '../../utils'
 import type { BunupPlugin } from '../types'
 

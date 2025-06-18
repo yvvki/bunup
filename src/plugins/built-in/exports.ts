@@ -105,8 +105,8 @@ export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 
 					for (const key in restPackageJson) {
 						if (
-							Object.prototype.hasOwnProperty.call(restPackageJson, key) &&
-							!Object.prototype.hasOwnProperty.call(newPackageJson, key)
+							Object.hasOwn(restPackageJson, key) &&
+							!Object.hasOwn(newPackageJson, key)
 						) {
 							newPackageJson[key] =
 								restPackageJson[key as keyof typeof restPackageJson]
