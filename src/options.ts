@@ -340,7 +340,7 @@ export interface BuildOptions {
 }
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
-	entry: [],
+	entry: ['src/index.ts'],
 	format: ['cjs'],
 	outDir: 'dist',
 	target: 'node',
@@ -357,7 +357,7 @@ export function createBuildOptions(
 
 	return {
 		...options,
-		plugins: [useClient(), linter(), report(), ...(options.plugins ?? [])],
+		plugins: [...(options.plugins ?? []), useClient(), linter(), report()],
 	}
 }
 
