@@ -8,7 +8,7 @@ interface LogOptions {
 	tick?: boolean
 }
 
-type LogLevel = 'info' | 'warn' | 'error'
+export type LogLevel = 'info' | 'warn' | 'error' | 'recommended'
 
 interface FormatMessageOptions extends LogOptions {
 	message: string
@@ -60,6 +60,7 @@ export class Logger {
 			info: pc.blue('i'),
 			warn: pc.yellow('!'),
 			error: pc.red('✕'),
+			recommended: pc.magenta('◐'),
 		}
 
 		return iconMap[type]
@@ -147,6 +148,15 @@ export class Logger {
 		this.output(formattedMessage, options)
 	}
 
+	public recommended(message: string, options: LogOptions = {}): void {
+		const formattedMessage = this.formatMessage({
+			...options,
+			message,
+			type: 'recommended',
+		})
+		this.output(formattedMessage, options)
+	}
+
 	public space(): void {
 		if (!silent) {
 			console.log('')
@@ -213,5 +223,7 @@ export function logTable(
 		console.log(footerRow)
 	}
 }
+
+export const link = (url: string): string => pc.underline(pc.cyan(url))
 
 export const logger: Logger = Logger.getInstance()

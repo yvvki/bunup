@@ -1,5 +1,5 @@
 import pc from 'picocolors'
-import { logger } from './logger'
+import { link, logger } from './logger'
 
 class BunupError extends Error {
 	constructor(message?: string) {
@@ -112,7 +112,7 @@ export const handleError = (error: unknown, context?: string): void => {
 		console.error(
 			pc.dim(
 				pc.white('If you think this is a bug, please open an issue at: ') +
-					pc.cyan('https://github.com/arshad-yaseen/bunup/issues/new'),
+					link('https://github.com/arshad-yaseen/bunup/issues/new'),
 			),
 		)
 	}

@@ -12,6 +12,7 @@ import {
 import { downloadTemplate } from 'giget'
 import pc from 'picocolors'
 import { replaceInFile } from 'replace-in-file'
+import { link } from '../logger'
 import { pathExistsSync } from '../utils'
 import { displayBunupGradientArt } from './utils'
 
@@ -178,7 +179,7 @@ export async function newProject(): Promise<void> {
    ${pc.cyan('bun install')}
    ${pc.cyan('bun run dev')}${pc.dim(' (watch mode for development)')}${template.type === 'react' ? `\n   ${pc.cyan('bun run dev:test')} ${pc.dim('(preview components in a test Next.js app)')} ` : ''}
 
-   ${pc.dim('Learn more:')} ${pc.underline('https://bunup.dev/docs')}
+   ${pc.dim('Learn more:')} ${link('https://bunup.dev/docs')}
 
    ${pc.yellow('Happy coding!')} 🚀
 		`)

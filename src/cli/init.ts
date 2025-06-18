@@ -13,6 +13,7 @@ import {
 import pc from 'picocolors'
 import { exec } from 'tinyexec'
 import { loadPackageJson } from '../loaders'
+import { link } from '../logger'
 import { formatListWithAnd } from '../utils'
 import { displayBunupGradientArt } from './utils'
 
@@ -485,7 +486,7 @@ function showSuccessOutro(isWorkspace: boolean): void {
    ${buildCommand}
    ${devCommand}${isWorkspace ? `\n   ${filterCommand}` : ''}
   
-   ${pc.dim('Learn more:')} ${pc.underline('https://bunup.dev/docs')}
+   ${pc.dim('Learn more:')} ${link('https://bunup.dev/docs')}
   
    ${pc.yellow('Happy building!')} 🚀
   `)
