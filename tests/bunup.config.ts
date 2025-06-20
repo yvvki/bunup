@@ -1,9 +1,7 @@
 import { defineConfig } from '../src'
-import { exports } from '../src/plugins'
 
 export default defineConfig({
-	entry: ['fixtures/index.ts', 'fixtures/client/index.ts'],
-	format: ['esm'],
+	entry: ['fixtures/index.ts'],
+	format: ['esm', 'cjs'],
 	dts: true,
-	plugins: [exports()],
 })
