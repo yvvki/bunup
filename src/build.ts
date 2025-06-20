@@ -127,9 +127,12 @@ export async function build(
 				options.outDir,
 			)
 			if (file.kind === 'entry-point') {
-				logger.success(`${pc.dim(options.outDir)}/${relativePathToOutputDir}`, {
-					identifier: options.name,
-				})
+				logger.success(
+					`${pc.dim(`${options.outDir}/`)}${relativePathToOutputDir}`,
+					{
+						identifier: options.name,
+					},
+				)
 			}
 			buildOutput.files.push({
 				fullPath: file.path,
@@ -174,7 +177,7 @@ export async function build(
 
 				if (file.kind === 'entry-point') {
 					logger.success(
-						`${pc.dim(options.outDir)}/${relativePathToOutputDir}`,
+						`${pc.dim(`${options.outDir}/`)}${relativePathToOutputDir}`,
 						{
 							identifier: options.name,
 						},
