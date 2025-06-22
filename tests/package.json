@@ -5,15 +5,13 @@
 		"dist"
 	],
 	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.mts",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"import": "./dist/index.mjs",
-			"types": "./dist/index.d.mts"
-		},
-		"./client": {
-			"import": "./dist/client/index.mjs",
-			"types": "./dist/client/index.d.mts"
+			"require": "./dist/index.js",
+			"types": "./dist/index.d.ts"
 		}
 	},
 	"dependencies": {

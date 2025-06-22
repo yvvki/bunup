@@ -26,6 +26,12 @@ export type BuildMeta = {
 }
 
 export type BuildOutputFile = {
+	/**
+	 * The entry point for which this file was generated
+	 *
+	 * Undefined for non-entry point files (e.g., assets, sourcemaps, chunks)
+	 */
+	entrypoint: string | undefined
 	/** The kind of the file */
 	kind: 'entry-point' | 'chunk' | 'asset' | 'sourcemap' | 'bytecode'
 	/** Path to the generated file */

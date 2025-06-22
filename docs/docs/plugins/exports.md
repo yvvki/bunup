@@ -63,52 +63,59 @@ export default defineConfig({
 });
 ```
 
-## Working with Multiple Entry Points
+### `exclude`
 
-When your build configuration includes multiple entry points, the exports plugin will generate export fields for all of them. For example:
+The `exclude` option allows you to prevent specific entry points from being included in the exports field. You can provide either an array of glob patterns or exact entry point names, or a function that returns such an array.
 
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
 import { exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: ['src/index.ts', 'src/plugins.ts', 'src/cli.ts'],
+	entry: ['src/index.ts', 'src/cli.ts', 'src/plugins.ts'],
 	format: ['esm', 'cjs'],
-	plugins: [exports()],
+	plugins: [
+		exports({
+			exclude: ['src/cli.ts']
+		})
+	],
 });
 ```
 
-This will generate exports for `.`, `./plugins`, and `./cli` in your package.json.
-
-However, you might not want all entry points to be included in the exports field. For example, CLI entry points are typically not meant to be imported by other packages.
-
-To control which entry points get included in the exports field, you can split your configuration into multiple build configs and only apply the exports plugin to the configs containing entries you want to expose:
+You can also use glob patterns:
 
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
 import { exports } from 'bunup/plugins';
 
-// Shared options for all configs
-const sharedOptions = {
+export default defineConfig({
+	entry: ['src/index.ts', 'src/cli/*.ts', 'src/plugins.ts'],
 	format: ['esm', 'cjs'],
-	outDir: 'dist',
-	// other common options...
-};
-
-export default defineConfig([
-	// Config for public API entries - with exports plugin
-	{
-		...sharedOptions,
-		entry: ['src/index.ts', 'src/plugins.ts'],
-		plugins: [exports()],
-	},
-	// Config for CLI entry - without exports plugin
-	{
-		...sharedOptions,
-		entry: ['src/cli.ts'],
-		// No exports plugin here
-	},
-]);
+	plugins: [
+		exports({
+			exclude: ['src/cli/*']
+		})
+	],
+});
 ```
 
-With this approach, only the entry points in the first config (`index.ts` and `plugins.ts`) will be included in the exports field, while `cli.ts` will be built but not exposed through exports.
+For more dynamic control, you can use a function:
+
+```ts [bunup.config.ts]
+import { defineConfig } from 'bunup';
+import { exports } from 'bunup/plugins';
+
+export default defineConfig({
+	entry: ['src/index.ts', 'src/cli.ts', 'src/plugins.ts'],
+	format: ['esm', 'cjs'],
+	plugins: [
+		exports({
+			exclude: (ctx) => {
+				// Access build context information
+				const { options, output, meta } = ctx;
+				return ['src/cli.ts'];
+			}
+		})
+	],
+});
+```

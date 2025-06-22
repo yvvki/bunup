@@ -120,6 +120,8 @@ export async function build(
 			else if (log.level === 'info') logger.info(log.message)
 		}
 
+		let entrypointIndex = 0
+
 		for (const file of result.outputs) {
 			const relativePathToRootDir = getRelativePathToRootDir(file.path, rootDir)
 			const relativePathToOutputDir = getRelativePathToOutputDir(
@@ -141,7 +143,10 @@ export async function build(
 				dts: false,
 				format: fmt,
 				kind: file.kind,
+				entrypoint: entrypoints[entrypointIndex],
 			})
+
+			entrypointIndex++
 		}
 	})
 
@@ -195,6 +200,7 @@ export async function build(
 					dts: true,
 					format: fmt,
 					kind: file.kind,
+					entrypoint: file.entrypoint,
 				})
 			}
 		}

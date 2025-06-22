@@ -557,4 +557,141 @@ describe('exports plugin', () => {
 			'./features.cjs',
 		)
 	})
+
+	it('should exclude entries with string array exclude option', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const main = "main";',
+			'src/utils.ts': 'export const utils = "utils";',
+			'src/internal.ts': 'export const internal = "internal";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'src/utils.ts', 'src/internal.ts'],
+			format: ['esm'],
+			plugins: [
+				exports({
+					exclude: ['src/internal.ts'],
+				}),
+			],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data).toBeDefined()
+		expect(result.packageJson.data.exports).toBeDefined()
+
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['./utils']).toBeDefined()
+		expect(result.packageJson.data.exports['./internal']).toBeUndefined()
+	})
+
+	it('should exclude entries with function exclude option', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const main = "main";',
+			'src/utils.ts': 'export const utils = "utils";',
+			'src/internal.ts': 'export const internal = "internal";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'src/utils.ts', 'src/internal.ts'],
+			format: ['esm'],
+			plugins: [
+				exports({
+					exclude: () => ['src/internal.ts'],
+				}),
+			],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data).toBeDefined()
+		expect(result.packageJson.data.exports).toBeDefined()
+
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['./utils']).toBeDefined()
+		expect(result.packageJson.data.exports['./internal']).toBeUndefined()
+	})
+
+	it('should support glob patterns in exclude option', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const main = "main";',
+			'src/utils.ts': 'export const utils = "utils";',
+			'src/internal/helper1.ts': 'export const helper1 = "helper1";',
+			'src/internal/helper2.ts': 'export const helper2 = "helper2";',
+		})
+
+		const result = await runBuild({
+			entry: [
+				'src/index.ts',
+				'src/utils.ts',
+				'src/internal/helper1.ts',
+				'src/internal/helper2.ts',
+			],
+			format: ['esm'],
+			plugins: [
+				exports({
+					exclude: ['src/internal/**'],
+				}),
+			],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data).toBeDefined()
+		expect(result.packageJson.data.exports).toBeDefined()
+
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['./utils']).toBeDefined()
+		expect(
+			result.packageJson.data.exports['./internal/helper1'],
+		).toBeUndefined()
+		expect(
+			result.packageJson.data.exports['./internal/helper2'],
+		).toBeUndefined()
+	})
+
+	it('should access build context in exclude function', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const main = "main";',
+			'src/utils.ts': 'export const utils = "utils";',
+			'src/debug.ts': 'export const debug = "debug";',
+		})
+
+		let contextReceived = false
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'src/utils.ts', 'src/debug.ts'],
+			format: ['esm'],
+			plugins: [
+				exports({
+					exclude: (ctx) => {
+						contextReceived = Boolean(ctx?.options && ctx.output)
+						return ['src/debug.ts']
+					},
+				}),
+			],
+		})
+
+		expect(result.success).toBe(true)
+		expect(contextReceived).toBe(true)
+		expect(result.packageJson.data).toBeDefined()
+		expect(result.packageJson.data.exports).toBeDefined()
+
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['./utils']).toBeDefined()
+		expect(result.packageJson.data.exports['./debug']).toBeUndefined()
+	})
 })
