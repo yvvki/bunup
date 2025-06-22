@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'bun:test'
 import { exports } from '../../src/plugins'
 import type { BuildOutputFile } from '../../src/plugins/types'
+import { cleanPath } from '../../src/utils'
 import { cleanProjectDir, createProject, runBuild } from '../utils'
 
 describe('exports plugin', () => {
@@ -936,7 +937,7 @@ describe('exports plugin', () => {
 
 						return filesInBuild
 							.filter((file) => file.fullPath.includes('debug'))
-							.map((file) => file.entrypoint)
+							.map((file) => cleanPath(file.entrypoint))
 					},
 				}),
 			],
