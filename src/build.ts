@@ -143,10 +143,15 @@ export async function build(
 				dts: false,
 				format: fmt,
 				kind: file.kind,
-				entrypoint: entrypoints[entrypointIndex],
+				entrypoint:
+					file.kind === 'entry-point'
+						? entrypoints[entrypointIndex]
+						: undefined,
 			})
 
-			entrypointIndex++
+			if (file.kind === 'entry-point') {
+				entrypointIndex++
+			}
 		}
 	})
 

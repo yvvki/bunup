@@ -317,4 +317,376 @@ describe('Bunup Plugin', () => {
 			true,
 		)
 	})
+
+	it('should correctly set entrypoint for entry-point files in output', async () => {
+		createProject({ 'src/index.ts': 'export const x = 1;' })
+
+		let buildContext: BuildContext | undefined
+
+		const entrypointCheckPlugin: BunupPlugin = {
+			type: 'bunup',
+			name: 'entrypoint-check-plugin',
+			hooks: {
+				onBuildDone: mock((ctx: BuildContext) => {
+					buildContext = ctx
+				}),
+			},
+		}
+
+		await runBuild({
+			entry: 'src/index.ts',
+			format: ['esm'],
+			plugins: [entrypointCheckPlugin],
+		})
+
+		expect(buildContext).toBeDefined()
+
+		const entryPointFile = buildContext.output.files.find(
+			(file) =>
+				file.kind === 'entry-point' && file.fullPath.endsWith('index.mjs'),
+		)
+
+		expect(entryPointFile).toBeDefined()
+		expect(entryPointFile.entrypoint).toBe('src/index.ts')
+		expect(entryPointFile.format).toBe('esm')
+	})
+
+	it('should correctly handle multiple entrypoints in output files', async () => {
+		createProject({
+			'src/index.ts': 'export const x = 1;',
+			'src/other.ts': 'export const y = 2;',
+		})
+
+		let buildContext: BuildContext | undefined
+
+		const multiEntrypointPlugin: BunupPlugin = {
+			type: 'bunup',
+			name: 'multi-entrypoint-plugin',
+			hooks: {
+				onBuildDone: mock((ctx: BuildContext) => {
+					buildContext = ctx
+				}),
+			},
+		}
+
+		await runBuild({
+			entry: ['src/index.ts', 'src/other.ts'],
+			format: ['esm'],
+			plugins: [multiEntrypointPlugin],
+		})
+
+		expect(buildContext).toBeDefined()
+
+		const entryPointFiles = buildContext.output.files.filter(
+			(file) => file.kind === 'entry-point',
+		)
+
+		expect(entryPointFiles.length).toBe(2)
+
+		const indexFile = entryPointFiles.find((file) =>
+			file.fullPath.endsWith('index.mjs'),
+		)
+		const otherFile = entryPointFiles.find((file) =>
+			file.fullPath.endsWith('other.mjs'),
+		)
+
+		expect(indexFile).toBeDefined()
+		expect(otherFile).toBeDefined()
+		expect(indexFile.entrypoint).toBe('src/index.ts')
+		expect(otherFile.entrypoint).toBe('src/other.ts')
+	})
+
+	it('should generate chunk files with undefined entrypoints when code splitting is enabled', async () => {
+		createProject({
+			'src/shared.ts':
+				'export const shared: { value: number } = { value: 42 };',
+			'src/index.ts': 'export { shared } from "./shared";',
+			'src/other.ts': 'export { shared } from "./shared";',
+		})
+
+		let buildContext: BuildContext | undefined
+
+		const chunkCheckPlugin: BunupPlugin = {
+			type: 'bunup',
+			name: 'chunk-check-plugin',
+			hooks: {
+				onBuildDone: mock((ctx: BuildContext) => {
+					buildContext = ctx
+				}),
+			},
+		}
+
+		await runBuild({
+			entry: ['src/index.ts', 'src/other.ts'],
+			format: ['esm'],
+			splitting: true,
+			plugins: [chunkCheckPlugin],
+		})
+
+		expect(buildContext).toBeDefined()
+
+		const entryPointFiles = buildContext.output.files.filter(
+			(file) => file.kind === 'entry-point',
+		)
+		expect(entryPointFiles.length).toBe(2)
+
+		const indexFile = entryPointFiles.find((file) =>
+			file.fullPath.includes('index.mjs'),
+		)
+		const otherFile = entryPointFiles.find((file) =>
+			file.fullPath.includes('other.mjs'),
+		)
+
+		expect(indexFile).toBeDefined()
+		expect(otherFile).toBeDefined()
+		expect(indexFile.entrypoint).toBe('src/index.ts')
+		expect(otherFile.entrypoint).toBe('src/other.ts')
+
+		const chunkFiles = buildContext.output.files.filter(
+			(file) => file.kind === 'chunk',
+		)
+		expect(chunkFiles.length).toBeGreaterThan(0)
+		expect(chunkFiles.every((file) => file.entrypoint === undefined)).toBe(true)
+	})
+
+	it('should generate dts chunk files with undefined entrypoints when dts splitting is enabled', async () => {
+		createProject({
+			'src/shared.ts': 'export interface Shared { value: number }',
+			'src/index.ts': 'export { Shared } from "./shared";',
+			'src/other.ts': 'export { Shared } from "./shared";',
+		})
+
+		let buildContext: BuildContext | undefined
+
+		const dtsChunkPlugin: BunupPlugin = {
+			type: 'bunup',
+			name: 'dts-chunk-plugin',
+			hooks: {
+				onBuildDone: mock((ctx: BuildContext) => {
+					buildContext = ctx
+				}),
+			},
+		}
+
+		await runBuild({
+			entry: ['src/index.ts', 'src/other.ts'],
+			format: ['esm'],
+			splitting: true,
+			dts: {
+				splitting: true,
+			},
+			plugins: [dtsChunkPlugin],
+		})
+
+		expect(buildContext).toBeDefined()
+
+		const dtsFiles = buildContext.output.files.filter((file) => file.dts)
+		expect(dtsFiles.length).toBeGreaterThan(0)
+
+		const dtsEntryPoints = dtsFiles.filter(
+			(file) => file.kind === 'entry-point',
+		)
+		expect(dtsEntryPoints.length).toBe(2)
+
+		const indexDtsFile = dtsEntryPoints.find((file) =>
+			file.fullPath.includes('index.d.mts'),
+		)
+		const otherDtsFile = dtsEntryPoints.find((file) =>
+			file.fullPath.includes('other.d.mts'),
+		)
+
+		expect(indexDtsFile).toBeDefined()
+		expect(otherDtsFile).toBeDefined()
+		expect(indexDtsFile.entrypoint).toBe('src/index.ts')
+		expect(otherDtsFile.entrypoint).toBe('src/other.ts')
+
+		const dtsChunks = dtsFiles.filter((file) => file.kind === 'chunk')
+		expect(dtsChunks.length).toBeGreaterThan(0)
+		expect(dtsChunks.every((file) => file.entrypoint === undefined)).toBe(true)
+	})
+
+	it('should correctly map entrypoints in complex projects with multiple shared modules', async () => {
+		createProject({
+			'src/types.ts': `
+				export interface BaseConfig {
+					name: string;
+					version: string;
+				}
+				
+				export interface ExtendedConfig extends BaseConfig {
+					features: string[];
+				}
+			`,
+			'src/utils.ts': `
+				import { BaseConfig } from './types';
+				
+				export function formatConfig(config: BaseConfig): string {
+					return \`\${config.name}@\${config.version}\`;
+				}
+				
+				export const shared = {
+					value: 100,
+					multiply: (x: number) => x * shared.value
+				};
+			`,
+			'src/constants.ts': `
+				export const APP_VERSION = '1.0.0';
+				export const API_ENDPOINT = '/api/v1';
+			`,
+
+			'src/main.ts': `
+				import { formatConfig } from './utils';
+				import { ExtendedConfig } from './types';
+				import { APP_VERSION } from './constants';
+				
+				export function createMainConfig(): ExtendedConfig | undefined {
+					return {
+						name: 'main',
+						version: APP_VERSION,
+						features: ['core']
+					};
+				}
+				
+				export function printMainConfig(config: ExtendedConfig): string | undefined {
+					return formatConfig(config) + ' with ' + config.features.join(', ');
+				}
+			`,
+			'src/admin.ts': `
+				import { formatConfig, shared } from './utils';
+				import { ExtendedConfig } from './types';
+				import { APP_VERSION, API_ENDPOINT } from './constants';
+				
+				export function createAdminConfig(): ExtendedConfig {
+					return {
+						name: 'admin',
+						version: APP_VERSION,
+						features: ['admin-panel', 'users-management']
+					};
+				}
+				
+				export function getAdminValue(): number | undefined {
+					return shared.multiply(2);
+				}
+				
+				export const ADMIN_API: string = API_ENDPOINT + '/admin';
+			`,
+			'src/client.ts': `
+				import { BaseConfig } from './types';
+				import { API_ENDPOINT } from './constants';
+				
+				export function createClientConfig(): BaseConfig {
+					return {
+						name: 'client',
+						version: '1.0.0'
+					};
+				}
+				
+				export const CLIENT_API: string = API_ENDPOINT + '/client';
+			`,
+		})
+
+		let buildContext: BuildContext | undefined
+
+		const complexProjectPlugin: BunupPlugin = {
+			type: 'bunup',
+			name: 'complex-project-plugin',
+			hooks: {
+				onBuildDone: mock((ctx: BuildContext) => {
+					buildContext = ctx
+				}),
+			},
+		}
+
+		await runBuild({
+			entry: ['src/main.ts', 'src/admin.ts', 'src/client.ts'],
+			format: ['esm'],
+			splitting: true,
+			dts: {
+				splitting: true,
+			},
+			plugins: [complexProjectPlugin],
+		})
+
+		expect(buildContext).toBeDefined()
+
+		const entryPointFiles = buildContext.output.files.filter(
+			(file) => file.kind === 'entry-point' && !file.dts,
+		)
+		const chunkFiles = buildContext.output.files.filter(
+			(file) => file.kind === 'chunk' && !file.dts,
+		)
+		const dtsEntryPointFiles = buildContext.output.files.filter(
+			(file) => file.kind === 'entry-point' && file.dts,
+		)
+		const dtsChunkFiles = buildContext.output.files.filter(
+			(file) => file.kind === 'chunk' && file.dts,
+		)
+
+		expect(entryPointFiles.length).toBe(3)
+		expect(chunkFiles.length).toBeGreaterThan(0)
+		expect(dtsEntryPointFiles.length).toBe(3)
+		expect(dtsChunkFiles.length).toBeGreaterThan(0)
+
+		const mainFile = entryPointFiles.find((file) =>
+			file.fullPath.includes('main.mjs'),
+		)
+		const adminFile = entryPointFiles.find((file) =>
+			file.fullPath.includes('admin.mjs'),
+		)
+		const clientFile = entryPointFiles.find((file) =>
+			file.fullPath.includes('client.mjs'),
+		)
+
+		expect(mainFile).toBeDefined()
+		expect(adminFile).toBeDefined()
+		expect(clientFile).toBeDefined()
+
+		expect(mainFile.entrypoint).toBe('src/main.ts')
+		expect(adminFile.entrypoint).toBe('src/admin.ts')
+		expect(clientFile.entrypoint).toBe('src/client.ts')
+
+		expect(chunkFiles.every((file) => file.entrypoint === undefined)).toBe(true)
+
+		const mainDtsFile = dtsEntryPointFiles.find((file) =>
+			file.fullPath.includes('main.d.mts'),
+		)
+		const adminDtsFile = dtsEntryPointFiles.find((file) =>
+			file.fullPath.includes('admin.d.mts'),
+		)
+		const clientDtsFile = dtsEntryPointFiles.find((file) =>
+			file.fullPath.includes('client.d.mts'),
+		)
+
+		expect(mainDtsFile).toBeDefined()
+		expect(adminDtsFile).toBeDefined()
+		expect(clientDtsFile).toBeDefined()
+
+		expect(mainDtsFile.entrypoint).toBe('src/main.ts')
+		expect(adminDtsFile.entrypoint).toBe('src/admin.ts')
+		expect(clientDtsFile.entrypoint).toBe('src/client.ts')
+
+		expect(dtsChunkFiles.every((file) => file.entrypoint === undefined)).toBe(
+			true,
+		)
+
+		const sharedTypesChunk = dtsChunkFiles.find(
+			(file) =>
+				file.fullPath.includes('chunk') && file.fullPath.endsWith('.d.mts'),
+		)
+		expect(sharedTypesChunk).toBeDefined()
+		expect(sharedTypesChunk.entrypoint).toBeUndefined()
+
+		const allFiles = buildContext.output.files
+
+		expect(
+			allFiles.every((file) =>
+				file.dts
+					? file.fullPath.includes('.d.mts')
+					: file.fullPath.includes('.mjs') || file.fullPath.includes('chunk-'),
+			),
+		).toBe(true)
+
+		const expectedMinimumFiles = 6
+		expect(allFiles.length).toBeGreaterThanOrEqual(expectedMinimumFiles)
+	})
 })
