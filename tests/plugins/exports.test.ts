@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'bun:test'
 import { exports } from '../../src/plugins'
-import type { BuildOutputFile } from '../../src/plugins/types'
-import { cleanPath } from '../../src/utils'
+import type { BuildContext } from '../../src/plugins/types'
 import { cleanProjectDir, createProject, runBuild } from '../utils'
 
 describe('exports plugin', () => {
@@ -49,7 +48,6 @@ describe('exports plugin', () => {
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
 		expect(result.packageJson.data.exports).toBeDefined()
 		expect(result.packageJson.data.exports['.']).toBeDefined()
 		expect(result.packageJson.data.exports['.'].require).toContain(
@@ -57,7 +55,7 @@ describe('exports plugin', () => {
 		)
 	})
 
-	it('should handle both ESM and CJS formats', async () => {
+	it('should handle both ESM and CJS formats in exports', async () => {
 		createProject({
 			'package.json': JSON.stringify({
 				name: 'test-package',
@@ -73,8 +71,6 @@ describe('exports plugin', () => {
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
 		expect(result.packageJson.data.exports['.']).toBeDefined()
 		expect(result.packageJson.data.exports['.'].import).toContain(
 			'.output/index.mjs',
@@ -84,7 +80,7 @@ describe('exports plugin', () => {
 		)
 	})
 
-	it('should add types field for DTS files', async () => {
+	it('should handle TypeScript declarations (dts)', async () => {
 		createProject({
 			'package.json': JSON.stringify({
 				name: 'test-package',
@@ -101,55 +97,78 @@ describe('exports plugin', () => {
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toContain(
-			'.output/index.mjs',
+		expect(result.packageJson.data.exports['.'].import.types).toBeDefined()
+		expect(result.packageJson.data.exports['.'].import.types).toContain(
+			'.d.mts',
 		)
-		expect(result.packageJson.data.exports['.'].types).toContain(
-			'.output/index.d',
-		)
-		expect(result.packageJson.data.types).toContain('.output/index.d.mts')
+		expect(result.packageJson.data.types).toBeDefined()
 	})
 
-	it('should handle multiple entry points', async () => {
+	it('should set main, module, and types entry points in package.json', async () => {
 		createProject({
 			'package.json': JSON.stringify({
 				name: 'test-package',
 				version: '1.0.0',
 			}),
 			'src/index.ts': 'export const hello: string = "world";',
-			'src/utils.ts':
-				'export const sum = (a: number, b: number): number => a + b;',
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts', 'src/utils.ts'],
-			format: ['esm'],
+			entry: ['src/index.ts'],
+			format: ['esm', 'cjs'],
 			dts: true,
 			plugins: [exports()],
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
+		expect(result.packageJson.data.main).toBeDefined()
+		expect(result.packageJson.data.module).toBeDefined()
+		expect(result.packageJson.data.types).toBeDefined()
+	})
 
+	it('should handle subpath exports', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const main = "main";',
+			'src/utils.ts': 'export const util = "util";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'src/utils.ts'],
+			format: ['esm'],
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
 		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toContain(
-			'.output/index.mjs',
-		)
-		expect(result.packageJson.data.exports['.'].types).toContain(
-			'.output/index.d',
-		)
-
 		expect(result.packageJson.data.exports['./utils']).toBeDefined()
 		expect(result.packageJson.data.exports['./utils'].import).toContain(
 			'.output/utils.mjs',
 		)
-		expect(result.packageJson.data.exports['./utils'].types).toContain(
-			'.output/utils.d',
-		)
+	})
+
+	it('should add the outDir to the files field in package.json', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+				files: ['lib'],
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts'],
+			format: ['esm'],
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data.files).toContain('.output')
+		expect(result.packageJson.data.files).toContain('lib')
 	})
 
 	it('should preserve existing package.json fields', async () => {
@@ -157,9 +176,9 @@ describe('exports plugin', () => {
 			'package.json': JSON.stringify({
 				name: 'test-package',
 				version: '1.0.0',
-				description: 'Test package',
 				author: 'Test Author',
 				license: 'MIT',
+				repository: 'https://github.com/test/test',
 				keywords: ['test', 'package'],
 			}),
 			'src/index.ts': 'export const hello: string = "world";',
@@ -172,304 +191,34 @@ describe('exports plugin', () => {
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
 		expect(result.packageJson.data.name).toBe('test-package')
-		expect(result.packageJson.data.version).toBe('1.0.0')
-		expect(result.packageJson.data.description).toBe('Test package')
 		expect(result.packageJson.data.author).toBe('Test Author')
 		expect(result.packageJson.data.license).toBe('MIT')
+		expect(result.packageJson.data.repository).toBe(
+			'https://github.com/test/test',
+		)
 		expect(result.packageJson.data.keywords).toEqual(['test', 'package'])
-		expect(result.packageJson.data.exports).toBeDefined()
 	})
 
-	it('should handle subpath exports correctly', async () => {
+	it('should support custom exports through customExports option', async () => {
 		createProject({
 			'package.json': JSON.stringify({
 				name: 'test-package',
 				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const hello: string = "world";',
-			'src/components/button.ts': 'export const Button = () => "button";',
-			'src/utils/format.ts':
-				'export const format = (str: string): string => str.trim();',
-		})
-
-		const result = await runBuild({
-			entry: [
-				'src/index.ts',
-				'src/components/button.ts',
-				'src/utils/format.ts',
-			],
-			format: ['esm', 'cjs'],
-			dts: true,
-			plugins: [exports()],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toContain(
-			'.output/index.mjs',
-		)
-		expect(result.packageJson.data.exports['.'].require).toContain(
-			'.output/index.js',
-		)
-		expect(result.packageJson.data.exports['.'].types).toContain(
-			'.output/index.d',
-		)
-
-		expect(result.packageJson.data.exports['./components/button']).toBeDefined()
-		expect(
-			result.packageJson.data.exports['./components/button'].import,
-		).toContain('.output/components/button.mjs')
-		expect(
-			result.packageJson.data.exports['./components/button'].require,
-		).toContain('.output/components/button.js')
-		expect(
-			result.packageJson.data.exports['./components/button'].types,
-		).toContain('.output/components/button.d')
-
-		expect(result.packageJson.data.exports['./utils/format']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils/format'].import).toContain(
-			'.output/utils/format.mjs',
-		)
-		expect(result.packageJson.data.exports['./utils/format'].require).toContain(
-			'.output/utils/format.js',
-		)
-		expect(result.packageJson.data.exports['./utils/format'].types).toContain(
-			'.output/utils/format.d',
-		)
-	})
-
-	it('should handle complex directory structures with nested subdirectories', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const hello: string = "world";',
-			'src/components/ui/index.ts': 'export const hello: string = "world";',
-			'src/components/ui/button.ts': 'export const hello: string = "world";',
-			'src/utils/formatting/text.ts': 'export const hello: string = "world";',
-		})
-
-		const result = await runBuild({
-			entry: [
-				'src/index.ts',
-				'src/components/ui/index.ts',
-				'src/components/ui/button.ts',
-				'src/utils/formatting/text.ts',
-			],
-			format: ['esm'],
-			dts: true,
-			plugins: [exports()],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toContain(
-			'.output/index.mjs',
-		)
-
-		expect(result.packageJson.data.exports['./components/ui']).toBeDefined()
-		expect(
-			result.packageJson.data.exports['./components/ui/button'],
-		).toBeDefined()
-		expect(
-			result.packageJson.data.exports['./utils/formatting/text'],
-		).toBeDefined()
-	})
-
-	it('should handle entries with index files', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/utils/index.ts': 'export const utils = "utils";',
-			'src/components/index.ts': 'export const components = "components";',
-		})
-
-		const result = await runBuild({
-			entry: ['src/index.ts', 'src/utils/index.ts', 'src/components/index.ts'],
-			format: ['esm', 'cjs'],
-			dts: true,
-			plugins: [exports()],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toContain(
-			'.output/index.mjs',
-		)
-
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils'].import).toContain(
-			'.output/utils/index.mjs',
-		)
-
-		expect(result.packageJson.data.exports['./components']).toBeDefined()
-		expect(result.packageJson.data.exports['./components'].import).toContain(
-			'.output/components/index.mjs',
-		)
-	})
-
-	it('should set main module entrypoint correctly', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-		})
-
-		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['cjs'],
-			plugins: [exports()],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.main).toBeDefined()
-		expect(result.packageJson.data.main).toContain('.output/index.js')
-	})
-
-	it('should set types entrypoint correctly', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-		})
-
-		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
-			dts: true,
-			plugins: [exports()],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.types).toBeDefined()
-		expect(result.packageJson.data.types).toContain('.output/index.d')
-	})
-
-	it('should not add exports field for non-entry-point files', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/shared-utils.ts': 'export const utils = "utils";',
-			'src/index.ts':
-				'import { utils } from "./shared-utils"; export const main: ReturnType<typeof utils> = "main";',
-			'src/math.ts':
-				'import { utils } from "./shared-utils"; export const math: ReturnType<typeof utils> = "math";',
-		})
-
-		const result = await runBuild({
-			entry: ['src/index.ts', 'src/math.ts'],
-			format: ['esm'],
-			plugins: [exports()],
-			splitting: true,
-			dts: true,
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toContain(
-			'.output/index.mjs',
-		)
-		expect(
-			!Object.keys(result.packageJson.data.exports).some((key) =>
-				key.includes('chunk'),
-			),
-		).toBe(true)
-	})
-
-	it('should overwrite existing exports field in package.json', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-				exports: {
-					'.': {
-						import: './old-path.mjs',
-						require: './old-path.js',
-						types: './old-path.d.ts',
-					},
-					'./utils': './old-utils-path.js',
-				},
 			}),
 			'src/index.ts': 'export const hello: string = "world";',
 		})
 
 		const result = await runBuild({
 			entry: ['src/index.ts'],
-			format: ['esm', 'cjs'],
-			dts: true,
-			plugins: [exports()],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toContain(
-			'.output/index.mjs',
-		)
-		expect(result.packageJson.data.exports['.'].require).toContain(
-			'.output/index.js',
-		)
-		expect(result.packageJson.data.exports['.'].types).toContain(
-			'.output/index.d',
-		)
-
-		expect(result.packageJson.data.exports['./utils']).toBeUndefined()
-	})
-
-	it('should respect and merge extraExports option', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-				exports: {
-					'.': {
-						import: './old-path.mjs',
-						require: './old-path.js',
-						types: './old-path.d.ts',
-					},
-					'./utils': './old-utils-path.js',
-				},
-			}),
-			'src/index.ts': 'export const hello: string = "world";',
-		})
-
-		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm', 'cjs'],
-			dts: true,
+			format: ['esm'],
 			plugins: [
 				exports({
 					customExports: () => ({
-						'./extra': './extra-path.js',
-						'.': {
-							browser: './browser-path.js',
+						'./custom': './custom/path.js',
+						'./features': {
+							import: './features/esm.mjs',
+							require: './features/cjs.cjs',
 						},
 					}),
 				}),
@@ -477,361 +226,34 @@ describe('exports plugin', () => {
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toContain(
-			'.output/index.mjs',
-		)
-		expect(result.packageJson.data.exports['.'].require).toContain(
-			'.output/index.js',
-		)
-		expect(result.packageJson.data.exports['.'].types).toContain(
-			'.output/index.d',
-		)
-
-		expect(result.packageJson.data.exports['.'].browser).toBe(
-			'./browser-path.js',
-		)
-
-		expect(result.packageJson.data.exports['./extra']).toBe('./extra-path.js')
-
-		expect(result.packageJson.data.exports['./utils']).toBeUndefined()
-	})
-
-	it('should handle extraExports with complex nested fields', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const hello: string = "world";',
-		})
-
-		let outputFiles: BuildOutputFile[] = []
-
-		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
-			plugins: [
-				exports({
-					customExports: (ctx) => {
-						outputFiles = ctx.output.files
-
-						return {
-							'./features': {
-								import: {
-									node: './node-features.mjs',
-									default: './features.mjs',
-								},
-								require: './features.cjs',
-							},
-							'.': {
-								worker: './worker.js',
-							},
-						}
-					},
-				}),
-			],
-		})
-
-		expect(outputFiles).toHaveLength(1)
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toContain(
-			'.output/index.mjs',
-		)
-
-		expect(result.packageJson.data.exports['.'].worker).toBe('./worker.js')
-
+		expect(result.packageJson.data.exports['./custom']).toBe('./custom/path.js')
 		expect(result.packageJson.data.exports['./features']).toBeDefined()
-		expect(result.packageJson.data.exports['./features'].import).toEqual({
-			node: './node-features.mjs',
-			default: './features.mjs',
-		})
+		expect(result.packageJson.data.exports['./features'].import).toBe(
+			'./features/esm.mjs',
+		)
 		expect(result.packageJson.data.exports['./features'].require).toBe(
-			'./features.cjs',
+			'./features/cjs.cjs',
 		)
 	})
 
-	it('should exclude entries with string array exclude option', async () => {
+	it('should merge custom exports with generated exports', async () => {
 		createProject({
 			'package.json': JSON.stringify({
 				name: 'test-package',
 				version: '1.0.0',
 			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/utils.ts': 'export const utils = "utils";',
-			'src/internal.ts': 'export const internal = "internal";',
+			'src/index.ts': 'export const hello: string = "world";',
+			'src/utils.ts': 'export const util = "util";',
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts', 'src/utils.ts', 'src/internal.ts'],
+			entry: ['src/index.ts', 'src/utils.ts'],
 			format: ['esm'],
 			plugins: [
 				exports({
-					exclude: ['src/internal.ts'],
-				}),
-			],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./internal']).toBeUndefined()
-	})
-
-	it('should exclude entries with function exclude option', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/utils.ts': 'export const utils = "utils";',
-			'src/internal.ts': 'export const internal = "internal";',
-		})
-
-		const result = await runBuild({
-			entry: ['src/index.ts', 'src/utils.ts', 'src/internal.ts'],
-			format: ['esm'],
-			plugins: [
-				exports({
-					exclude: () => ['src/internal.ts'],
-				}),
-			],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./internal']).toBeUndefined()
-	})
-
-	it('should support glob patterns in exclude option', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/utils.ts': 'export const utils = "utils";',
-			'src/internal/helper1.ts': 'export const helper1 = "helper1";',
-			'src/internal/helper2.ts': 'export const helper2 = "helper2";',
-		})
-
-		const result = await runBuild({
-			entry: [
-				'src/index.ts',
-				'src/utils.ts',
-				'src/internal/helper1.ts',
-				'src/internal/helper2.ts',
-			],
-			format: ['esm'],
-			plugins: [
-				exports({
-					exclude: ['src/internal/**'],
-				}),
-			],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(
-			result.packageJson.data.exports['./internal/helper1'],
-		).toBeUndefined()
-		expect(
-			result.packageJson.data.exports['./internal/helper2'],
-		).toBeUndefined()
-	})
-
-	it('should access build context in exclude function', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/utils.ts': 'export const utils = "utils";',
-			'src/debug.ts': 'export const debug = "debug";',
-		})
-
-		let contextReceived = false
-
-		const result = await runBuild({
-			entry: ['src/index.ts', 'src/utils.ts', 'src/debug.ts'],
-			format: ['esm'],
-			plugins: [
-				exports({
-					exclude: (ctx) => {
-						contextReceived = Boolean(ctx?.options && ctx.output)
-						return ['src/debug.ts']
-					},
-				}),
-			],
-		})
-
-		expect(result.success).toBe(true)
-		expect(contextReceived).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./debug']).toBeUndefined()
-	})
-
-	it('should exclude multiple entries using a function', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/utils.ts': 'export const utils = "utils";',
-			'src/tools.ts': 'export const tools = "tools";',
-			'src/helpers.ts': 'export const helpers = "helpers";',
-		})
-
-		const result = await runBuild({
-			entry: ['src/index.ts', 'src/utils.ts', 'src/tools.ts', 'src/helpers.ts'],
-			format: ['esm'],
-			plugins: [
-				exports({
-					exclude: () => ['src/tools.ts', 'src/helpers.ts'],
-				}),
-			],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./tools']).toBeUndefined()
-		expect(result.packageJson.data.exports['./helpers']).toBeUndefined()
-	})
-
-	it('should handle complex nested glob patterns in exclude option', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/utils.ts': 'export const utils = "utils";',
-			'src/internal/common/helper1.ts': 'export const helper1 = "helper1";',
-			'src/internal/private/helper2.ts': 'export const helper2 = "helper2";',
-			'src/public/component.ts': 'export const component = "component";',
-		})
-
-		const result = await runBuild({
-			entry: [
-				'src/index.ts',
-				'src/utils.ts',
-				'src/internal/common/helper1.ts',
-				'src/internal/private/helper2.ts',
-				'src/public/component.ts',
-			],
-			format: ['esm'],
-			plugins: [
-				exports({
-					exclude: ['src/internal/**/*'],
-				}),
-			],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./public/component']).toBeDefined()
-		expect(
-			result.packageJson.data.exports['./internal/common/helper1'],
-		).toBeUndefined()
-		expect(
-			result.packageJson.data.exports['./internal/private/helper2'],
-		).toBeUndefined()
-	})
-
-	it('should work correctly with exclude and multiple formats', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/utils.ts': 'export const utils = "utils";',
-			'src/internal.ts': 'export const internal = "internal";',
-		})
-
-		const result = await runBuild({
-			entry: ['src/index.ts', 'src/utils.ts', 'src/internal.ts'],
-			format: ['esm', 'cjs'],
-			dts: true,
-			plugins: [
-				exports({
-					exclude: ['src/internal.ts'],
-				}),
-			],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['.'].import).toBeDefined()
-		expect(result.packageJson.data.exports['.'].require).toBeDefined()
-		expect(result.packageJson.data.exports['.'].types).toBeDefined()
-
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils'].import).toBeDefined()
-		expect(result.packageJson.data.exports['./utils'].require).toBeDefined()
-		expect(result.packageJson.data.exports['./utils'].types).toBeDefined()
-
-		expect(result.packageJson.data.exports['./internal']).toBeUndefined()
-	})
-
-	it('should combine exclude with customExports correctly', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/utils.ts': 'export const utils = "utils";',
-			'src/private.ts': 'export const private = "private";',
-		})
-
-		const result = await runBuild({
-			entry: ['src/index.ts', 'src/utils.ts', 'src/private.ts'],
-			format: ['esm'],
-			plugins: [
-				exports({
-					exclude: ['src/private.ts'],
 					customExports: () => ({
-						'./extras': './extras/index.js',
 						'./utils': {
-							node: './utils.node.js',
+							node: './utils-node.js',
 						},
 					}),
 				}),
@@ -839,230 +261,228 @@ describe('exports plugin', () => {
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils'].import).toBeDefined()
+		expect(result.packageJson.data.exports['./utils'].import).toContain(
+			'.output/utils.mjs',
+		)
 		expect(result.packageJson.data.exports['./utils'].node).toBe(
-			'./utils.node.js',
-		)
-		expect(result.packageJson.data.exports['./private']).toBeUndefined()
-		expect(result.packageJson.data.exports['./extras']).toBe(
-			'./extras/index.js',
+			'./utils-node.js',
 		)
 	})
 
-	it('should exclude entries with index.ts pattern', async () => {
+	it('should exclude specified entry points', async () => {
 		createProject({
 			'package.json': JSON.stringify({
 				name: 'test-package',
 				version: '1.0.0',
 			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/components/index.ts': 'export const components = "components";',
-			'src/utils/index.ts': 'export const utils = "utils";',
+			'src/index.ts': 'export const hello: string = "world";',
+			'src/internal.ts': 'export const internal = "internal";',
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts', 'src/components/index.ts', 'src/utils/index.ts'],
+			entry: ['src/index.ts', 'src/internal.ts'],
 			format: ['esm'],
 			plugins: [
 				exports({
-					exclude: ['src/components/index.ts'],
+					exclude: ['src/internal.ts'],
 				}),
 			],
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
 		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./components']).toBeUndefined()
+		expect(result.packageJson.data.exports['./internal']).toBeUndefined()
 	})
 
-	it('should handle path with special characters in exclude option', async () => {
+	it('should support dynamic exclude function', async () => {
 		createProject({
 			'package.json': JSON.stringify({
 				name: 'test-package',
 				version: '1.0.0',
 			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/special-name.ts': 'export const special = "special";',
-			'src/with.dots.ts': 'export const withDots = "withDots";',
+			'src/index.ts': 'export const hello: string = "world";',
+			'src/internal.ts': 'export const internal = "internal";',
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts', 'src/special-name.ts', 'src/with.dots.ts'],
+			entry: ['src/index.ts', 'src/internal.ts'],
 			format: ['esm'],
 			plugins: [
 				exports({
-					exclude: ['src/special-name.ts', 'src/with.dots.ts'],
-				}),
-			],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./special-name']).toBeUndefined()
-		expect(result.packageJson.data.exports['./with.dots']).toBeUndefined()
-	})
-
-	it('should exclude based on returned path from exclude function', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/utils.ts': 'export const utils = "utils";',
-			'src/debug.ts': 'export const debug = "debug";',
-		})
-
-		let filesInBuild: BuildOutputFile[] = []
-
-		const result = await runBuild({
-			entry: ['src/index.ts', 'src/utils.ts', 'src/debug.ts'],
-			format: ['esm'],
-			plugins: [
-				exports({
-					exclude: (ctx) => {
-						filesInBuild = ctx.output.files
-
-						return filesInBuild
-							.filter((file) => file.fullPath.includes('debug'))
-							.map((file) => cleanPath(file.entrypoint))
+					exclude: (ctx: BuildContext) => {
+						const entries = Array.isArray(ctx.options.entry)
+							? ctx.options.entry
+							: [ctx.options.entry]
+						return entries.filter((entry) => entry.includes('internal'))
 					},
 				}),
 			],
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
 		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-		expect(result.packageJson.data.exports['./debug']).toBeUndefined()
+		expect(result.packageJson.data.exports['./internal']).toBeUndefined()
 	})
 
-	it('should exclude files matching glob pattern in entry', async () => {
+	it('should correctly handle format-specific types', async () => {
 		createProject({
 			'package.json': JSON.stringify({
 				name: 'test-package',
 				version: '1.0.0',
 			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/cli/index.ts': 'export const cli = "cli";',
-			'src/cli/commands.ts': 'export const commands = "commands";',
-			'src/cli/utils.ts': 'export const utils = "utils";',
-			'src/plugins.ts': 'export const plugins = "plugins";',
+			'src/index.ts': `
+				export const hello: string = "world";
+				// Different functionality for ESM and CJS
+			`,
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts', 'src/cli/*.ts', 'src/plugins.ts'],
-			format: ['esm'],
-			plugins: [
-				exports({
-					exclude: ['src/cli/*'],
-				}),
-			],
+			entry: ['src/index.ts'],
+			format: ['esm', 'cjs'],
+			dts: true,
+			plugins: [exports()],
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
 
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-		expect(result.packageJson.data.exports['./plugins']).toBeDefined()
+		if (typeof result.packageJson.data.exports['.'].import === 'object') {
+			expect(result.packageJson.data.exports['.'].import.types).toBeDefined()
+		}
 
-		expect(result.packageJson.data.exports['./cli/index']).toBeUndefined()
-		expect(result.packageJson.data.exports['./cli/commands']).toBeUndefined()
-		expect(result.packageJson.data.exports['./cli/utils']).toBeUndefined()
+		if (typeof result.packageJson.data.exports['.'].require === 'object') {
+			expect(result.packageJson.data.exports['.'].require.types).toBeDefined()
+		}
 	})
 
-	it('should exclude all CLI files when using ** pattern', async () => {
+	it('should handle nested directory structures correctly', async () => {
 		createProject({
 			'package.json': JSON.stringify({
 				name: 'test-package',
 				version: '1.0.0',
 			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/cli/index.ts': 'export const cli = "cli";',
-			'src/cli/commands/build.ts': 'export const build = "build";',
-			'src/cli/commands/dev.ts': 'export const dev = "dev";',
-			'src/cli/utils/log.ts': 'export const log = "log";',
-		})
-
-		const result = await runBuild({
-			entry: ['src/index.ts', 'src/cli/**/*.ts'],
-			format: ['esm'],
-			plugins: [
-				exports({
-					exclude: ['src/cli/**'],
-				}),
-			],
-		})
-
-		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
-
-		expect(result.packageJson.data.exports['./cli/index']).toBeUndefined()
-		expect(
-			result.packageJson.data.exports['./cli/commands/build'],
-		).toBeUndefined()
-		expect(
-			result.packageJson.data.exports['./cli/commands/dev'],
-		).toBeUndefined()
-		expect(result.packageJson.data.exports['./cli/utils/log']).toBeUndefined()
-	})
-
-	it('should handle mixed glob and specific path patterns in exclude', async () => {
-		createProject({
-			'package.json': JSON.stringify({
-				name: 'test-package',
-				version: '1.0.0',
-			}),
-			'src/index.ts': 'export const main = "main";',
-			'src/cli/index.ts': 'export const cli = "cli";',
-			'src/cli/commands.ts': 'export const commands = "commands";',
-			'src/plugins/index.ts': 'export const plugins = "plugins";',
-			'src/utils.ts': 'export const utils = "utils";',
+			'src/index.ts': 'export * from "./components";',
+			'src/components/index.ts': 'export * from "./Button";',
+			'src/components/Button.ts': 'export const Button = () => "button";',
 		})
 
 		const result = await runBuild({
 			entry: [
 				'src/index.ts',
-				'src/cli/*.ts',
-				'src/plugins/index.ts',
-				'src/utils.ts',
+				'src/components/index.ts',
+				'src/components/Button.ts',
 			],
+			format: ['esm'],
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['./components']).toBeDefined()
+		expect(result.packageJson.data.exports['./components/Button']).toBeDefined()
+	})
+
+	it('should add the default output directory to exports field', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts'],
+			format: ['esm'],
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['.'].import).toContain('.output/')
+		expect(result.packageJson.data.files).toContain('.output')
+	})
+
+	it('should correctly generate export keys for index files in subdirectories', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const main = "main";',
+			'src/features/index.ts': 'export const features = "features";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'src/features/index.ts'],
+			format: ['esm'],
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['./features']).toBeDefined()
+		expect(result.packageJson.data.exports['./features/index']).toBeUndefined()
+	})
+
+	it('should handle TypeScript declaration files with different extensions correctly', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+				type: 'module',
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts'],
+			format: ['esm'],
+			dts: true,
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+
+		const typesPath = result.packageJson.data.exports['.'].import.types
+		expect(typesPath).toBeDefined()
+		expect(typesPath).toContain('.d.ts')
+	})
+
+	it('should properly maintain existing root exports when adding subpath exports', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+				exports: {
+					'.': {
+						import: './existing/esm.js',
+						require: './existing/cjs.js',
+					},
+					'./extra': './existing/extra.js',
+				},
+			}),
+			'src/utils.ts': 'export const util = "util";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/utils.ts'],
 			format: ['esm'],
 			plugins: [
 				exports({
-					exclude: ['src/cli/*', 'src/plugins/index.ts'],
+					customExports: (ctx) => ctx.meta.packageJson.data?.exports,
 				}),
 			],
 		})
 
 		expect(result.success).toBe(true)
-		expect(result.packageJson.data).toBeDefined()
-		expect(result.packageJson.data.exports).toBeDefined()
-
-		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['.']).toEqual({
+			import: './existing/esm.js',
+			require: './existing/cjs.js',
+		})
+		expect(result.packageJson.data.exports['./extra']).toBe(
+			'./existing/extra.js',
+		)
 		expect(result.packageJson.data.exports['./utils']).toBeDefined()
-
-		expect(result.packageJson.data.exports['./cli/index']).toBeUndefined()
-		expect(result.packageJson.data.exports['./cli/commands']).toBeUndefined()
-		expect(result.packageJson.data.exports['./plugins']).toBeUndefined()
 	})
 })

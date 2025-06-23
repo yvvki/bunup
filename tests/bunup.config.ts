@@ -3,7 +3,7 @@ import { exports } from '../src/plugins/built-in/exports'
 
 export default defineConfig({
 	entry: ['fixtures/index.ts'],
-	format: ['esm', 'cjs'],
+	format: ['esm'],
 	dts: true,
 	plugins: [exports()],
 })

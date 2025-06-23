@@ -1,13 +1,13 @@
 import path from 'node:path'
 import { JS_DTS_RE } from '../../constants/re'
 import { logger } from '../../logger'
-import type { Format } from '../../options'
 import { cleanPath } from '../../utils'
 import type { BuildContext, BuildOutputFile, BunupPlugin } from '../types'
 
 type ExportField = 'require' | 'import' | 'types'
 type EntryPoint = 'main' | 'module' | 'types'
-type ExportsField = Record<string, Record<ExportField, string>>
+type ExportValue = string | { types: string; default: string }
+type ExportsField = Record<string, Partial<Record<ExportField, ExportValue>>>
 
 type CustomExports = Record<
 	string,
@@ -21,18 +21,6 @@ interface ExportsPluginOptions {
 	 * Additional export fields to preserve alongside automatically generated exports
 	 *
 	 * @see https://bunup.dev/docs/plugins/exports#customexports
-	 *
-	 * @example
-	 * ```ts
-	 * {
-	 * 	customExports: (ctx) => {
-	 * 		const { output, options, meta } = ctx
-	 * 		return {
-	 * 			'./package.json': "package.json",
-	 * 		}
-	 * 	},
-	 * }
-	 * ```
 	 */
 	customExports?: (ctx: BuildContext) => CustomExports | undefined
 	/**
@@ -41,6 +29,11 @@ interface ExportsPluginOptions {
 	 * @see https://bunup.dev/docs/plugins/exports#exclude
 	 */
 	exclude?: Exclude
+}
+
+interface FileEntry {
+	dts: BuildOutputFile | undefined
+	source: BuildOutputFile | undefined
 }
 
 /**
@@ -112,28 +105,166 @@ function generateExportsFields(
 	exportsField: ExportsField
 	entryPoints: Partial<Record<EntryPoint, string>>
 } {
-	const exportsField: ExportsField = {}
-	const entryPoints: Partial<Record<EntryPoint, string>> = {}
-
 	const filteredFiles = filterFiles(files, exclude, ctx)
+	const { filesByExportKey, allDtsFiles } = groupFilesByExportKey(filteredFiles)
+	const exportsField = createExportEntries(filesByExportKey)
+	const entryPoints = extractEntryPoints(exportsField, allDtsFiles)
 
-	for (const file of filteredFiles) {
-		const exportType = formatToExportField(file.format, file.dts)
-		const relativePath = `./${cleanPath(file.relativePathToRootDir)}`
+	return { exportsField, entryPoints }
+}
+
+function groupFilesByExportKey(files: BuildOutputFile[]) {
+	const filesByExportKey = new Map<string, Map<string, FileEntry>>()
+	const allDtsFiles = new Map<string, BuildOutputFile[]>()
+
+	for (const file of files) {
 		const exportKey = getExportKey(cleanPath(file.relativePathToOutputDir))
+		const format = file.format === 'esm' ? 'import' : 'require'
 
-		exportsField[exportKey] = {
-			...exportsField[exportKey],
-			[exportType]: relativePath,
+		if (!filesByExportKey.has(exportKey)) {
+			filesByExportKey.set(exportKey, new Map())
+			allDtsFiles.set(exportKey, [])
+		}
+
+		const formatMap = filesByExportKey.get(exportKey)
+		const dtsFiles = allDtsFiles.get(exportKey)
+
+		if (formatMap && dtsFiles) {
+			if (!formatMap.has(format)) {
+				formatMap.set(format, { dts: undefined, source: undefined })
+			}
+
+			const fileEntry = formatMap.get(format)
+			if (fileEntry) {
+				if (file.dts) {
+					fileEntry.dts = file
+					dtsFiles.push(file)
+				} else {
+					fileEntry.source = file
+				}
+			}
 		}
 	}
 
-	for (const field of Object.keys(exportsField['.'] ?? {})) {
-		const entryPoint = exportFieldToEntryPoint(field as ExportField)
-		entryPoints[entryPoint] = exportsField['.'][field as ExportField]
+	return { filesByExportKey, allDtsFiles }
+}
+
+function createExportEntries(
+	filesByExportKey: Map<string, Map<string, FileEntry>>,
+): ExportsField {
+	const exportsField: ExportsField = {}
+
+	for (const [exportKey, formatMap] of filesByExportKey.entries()) {
+		exportsField[exportKey] = {}
+
+		let hasFormatSpecificTypes = false
+		let primaryTypesPath: string | undefined
+
+		for (const [format, files] of formatMap.entries()) {
+			const formatKey = format as ExportField
+
+			if (files.dts && files.source) {
+				exportsField[exportKey][formatKey] = {
+					types: `./${cleanPath(files.dts.relativePathToRootDir)}`,
+					default: `./${cleanPath(files.source.relativePathToRootDir)}`,
+				}
+				hasFormatSpecificTypes = true
+
+				if (!primaryTypesPath) {
+					primaryTypesPath = `./${cleanPath(files.dts.relativePathToRootDir)}`
+				}
+			} else if (files.source) {
+				exportsField[exportKey][formatKey] =
+					`./${cleanPath(files.source.relativePathToRootDir)}`
+
+				if (files.dts) {
+					primaryTypesPath = `./${cleanPath(files.dts.relativePathToRootDir)}`
+				}
+			} else if (files.dts) {
+				primaryTypesPath = `./${cleanPath(files.dts.relativePathToRootDir)}`
+			}
+		}
+
+		if (!hasFormatSpecificTypes && primaryTypesPath) {
+			exportsField[exportKey].types = primaryTypesPath
+		}
 	}
 
-	return { exportsField, entryPoints }
+	return exportsField
+}
+
+function extractEntryPoints(
+	exportsField: ExportsField,
+	allDtsFiles: Map<string, BuildOutputFile[]>,
+): Partial<Record<EntryPoint, string>> {
+	const entryPoints: Partial<Record<EntryPoint, string>> = {}
+	const dotExport = exportsField['.']
+
+	if (!dotExport) {
+		return entryPoints
+	}
+
+	// Extract entry points from the "." export
+	for (const [field, value] of Object.entries(dotExport)) {
+		if (field === 'types') continue
+
+		const entryPoint = exportFieldToEntryPoint(field as ExportField)
+
+		if (typeof value === 'string') {
+			entryPoints[entryPoint] = value
+		} else if (value && typeof value === 'object' && 'default' in value) {
+			entryPoints[entryPoint] = value.default
+		}
+	}
+
+	// Handle root types field
+	const dotEntryDtsFiles = allDtsFiles.get('.')
+	if (dotEntryDtsFiles?.length) {
+		const standardDts = findStandardDtsFile(dotEntryDtsFiles)
+
+		if (standardDts) {
+			entryPoints.types = `./${cleanPath(standardDts.relativePathToRootDir)}`
+		} else {
+			entryPoints.types = extractTypesFromExport(dotExport)
+		}
+	}
+
+	return entryPoints
+}
+
+function findStandardDtsFile(
+	dtsFiles: BuildOutputFile[],
+): BuildOutputFile | undefined {
+	return dtsFiles.find(
+		(file) =>
+			file.relativePathToRootDir.endsWith('.d.ts') &&
+			!file.relativePathToRootDir.endsWith('.d.mts') &&
+			!file.relativePathToRootDir.endsWith('.d.cts'),
+	)
+}
+
+function extractTypesFromExport(
+	dotExport: Partial<Record<ExportField, ExportValue>>,
+): string | undefined {
+	const typesValue = dotExport.types
+	if (typeof typesValue === 'string') {
+		return typesValue
+	}
+
+	if (typesValue && typeof typesValue === 'object' && 'types' in typesValue) {
+		return typesValue.types
+	}
+
+	const importValue = dotExport.import
+	if (
+		importValue &&
+		typeof importValue === 'object' &&
+		'types' in importValue
+	) {
+		return (importValue as Record<string, unknown>).types as string
+	}
+
+	return undefined
 }
 
 function createUpdatedFilesArray(
@@ -158,7 +289,10 @@ function mergeCustomExportsWithGenerated(
 		return mergedExports
 	}
 
-	const customExports = customExportsProvider(ctx) ?? {}
+	const customExports = customExportsProvider(ctx)
+	if (!customExports) {
+		return mergedExports
+	}
 
 	for (const [key, value] of Object.entries(customExports)) {
 		if (typeof value === 'string') {
@@ -166,10 +300,7 @@ function mergeCustomExportsWithGenerated(
 		} else {
 			const existingExport = mergedExports[key]
 			if (typeof existingExport === 'object' && existingExport !== null) {
-				mergedExports[key] = {
-					...existingExport,
-					...value,
-				}
+				mergedExports[key] = { ...existingExport, ...value }
 			} else {
 				mergedExports[key] = value
 			}
@@ -203,7 +334,7 @@ function createUpdatedPackageJson(
 			Object.hasOwn(restPackageJson, key) &&
 			!Object.hasOwn(newPackageJson, key)
 		) {
-			newPackageJson[key] = restPackageJson[key as keyof typeof restPackageJson]
+			newPackageJson[key] = restPackageJson[key]
 		}
 	}
 
@@ -220,6 +351,7 @@ function filterFiles(
 			JS_DTS_RE.test(file.fullPath) &&
 			file.kind === 'entry-point' &&
 			file.entrypoint &&
+			(file.format === 'esm' || file.format === 'cjs') &&
 			!isExcluded(file.entrypoint, exclude, ctx),
 	)
 }
@@ -229,22 +361,13 @@ function isExcluded(
 	exclude: Exclude | undefined,
 	ctx: BuildContext,
 ): boolean {
-	if (!exclude) {
-		return false
-	}
+	if (!exclude) return false
 
-	if (typeof exclude === 'function') {
-		const excluded = exclude(ctx)
-		if (excluded) {
-			return excluded.some((pattern) => new Bun.Glob(pattern).match(entrypoint))
-		}
-	}
-
-	if (Array.isArray(exclude)) {
-		return exclude.some((pattern) => new Bun.Glob(pattern).match(entrypoint))
-	}
-
-	return false
+	const patterns = typeof exclude === 'function' ? exclude(ctx) : exclude
+	return (
+		patterns?.some((pattern) => new Bun.Glob(pattern).match(entrypoint)) ??
+		false
+	)
 }
 
 function getExportKey(relativePathToOutputDir: string): string {
@@ -276,13 +399,12 @@ function removeExtension(filePath: string): string {
 }
 
 function exportFieldToEntryPoint(exportField: ExportField): EntryPoint {
-	return exportField === 'types'
-		? 'types'
-		: exportField === 'require'
-			? 'main'
-			: 'module'
-}
-
-function formatToExportField(format: Format, dts: boolean): ExportField {
-	return dts ? 'types' : format === 'esm' ? 'import' : 'require'
+	switch (exportField) {
+		case 'types':
+			return 'types'
+		case 'require':
+			return 'main'
+		default:
+			return 'module'
+	}
 }
