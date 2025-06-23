@@ -145,7 +145,7 @@ export async function build(
 				kind: file.kind,
 				entrypoint:
 					file.kind === 'entry-point'
-						? entrypoints[entrypointIndex]
+						? cleanPath(entrypoints[entrypointIndex])
 						: undefined,
 			})
 
@@ -205,7 +205,7 @@ export async function build(
 					dts: true,
 					format: fmt,
 					kind: file.kind,
-					entrypoint: file.entrypoint,
+					entrypoint: file.entrypoint ? cleanPath(file.entrypoint) : undefined,
 				})
 			}
 		}
