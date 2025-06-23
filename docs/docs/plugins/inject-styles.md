@@ -27,7 +27,7 @@ With this configuration, any imported CSS files will be transformed and injected
 
 ## Options
 
-The plugin leverages [Lightning CSS](https://lightningcss.dev/docs.html) for transformations and accepts most Lightning CSS transformation options including:
+The plugin leverages Lightning CSS for transformations and accepts most Lightning CSS transformation options including:
 
 - `minify`: Controls whether the CSS should be minified
 - `targets`: Specifies browser targets for CSS feature compatibility

@@ -8,5 +8,9 @@ export default {
 	dts: {
 		entry: ['src/index.ts', 'src/plugins.ts'],
 	},
-	plugins: [exports()],
+	plugins: [
+		exports({
+			exclude: ['src/cli/index.ts'],
+		}),
+	],
 }

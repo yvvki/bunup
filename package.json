@@ -16,9 +16,6 @@
 		"./plugins": {
 			"import": "./dist/plugins.js",
 			"types": "./dist/plugins.d.ts"
-		},
-		"./cli": {
-			"import": "./dist/cli/index.js"
 		}
 	},
 	"license": "MIT",
