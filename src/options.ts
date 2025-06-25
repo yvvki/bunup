@@ -1,5 +1,5 @@
 import type { BuildConfig } from 'bun'
-import type { DtsPluginOptions } from 'bun-dts'
+import type { GenerateDtsOptions } from 'typeroll'
 import { linter } from './plugins/internal/linter'
 import { report } from './plugins/internal/report'
 import { useClient } from './plugins/internal/use-client'
@@ -108,7 +108,9 @@ export interface BuildOptions {
 	 */
 	dts?:
 		| boolean
-		| Pick<DtsPluginOptions, 'entry' | 'resolve' | 'splitting' | 'minify'>
+		| (Pick<GenerateDtsOptions, 'resolve' | 'splitting' | 'minify'> & {
+				entry?: string | string[]
+		  })
 
 	/**
 	 * Path to a preferred tsconfig.json file to use for declaration generation
