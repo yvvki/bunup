@@ -3,7 +3,7 @@
 Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts` depending on your output format) for your library, making it fully type-safe for consumers.
 
 ::: info
-Currently, Bunup uses [typeroll](https://github.com/arshad-yaseen/typeroll) for TypeScript declarations generation and bundling until Bun's native bundler supports declaration generation.
+Bunup uses [typeroll](https://github.com/arshad-yaseen/typeroll) for super fast TypeScript declarations generation and bundling.
 :::
 
 ::: tip
