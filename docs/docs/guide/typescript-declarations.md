@@ -202,14 +202,10 @@ export { fetchData, Response, DeepPartial };
 **Minified:**
 
 ```ts
-type e<T> = { [P in keyof T]? : e<T[P]> };
-interface t<T> {
-	data: T;
-	error?: string;
-	meta?: Record<string, unknown>;
-}
-declare function r<T>(url: string, options?: RequestInit): Promise<t<T>>;
-export { r as fetchData, t as Response, e as DeepPartial };
+type e<T>={[P in keyof T]?:e<T[P]>};
+interface t<T>{data:T;error?:string;meta?:Record<string,unknown>;}
+declare function r<T>(url:string,options?:RequestInit):Promise<t<T>>;
+export{r as fetchData,t as Response,e as DeepPartial};
 ```
 
 
