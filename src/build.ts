@@ -1,7 +1,7 @@
 import path from 'node:path'
 import type { BunPlugin } from 'bun'
 import pc from 'picocolors'
-import { generateDts, logIsolatedDeclarationErrors } from 'typeroll'
+import { generateDts, logErrors } from 'typeroll'
 import { BunupBuildError } from './errors'
 import { loadPackageJson } from './loaders'
 import { logger, setSilent } from './logger'
@@ -169,7 +169,7 @@ export async function build(
 		})
 
 		if (dtsResult.errors.length) {
-			logIsolatedDeclarationErrors(dtsResult.errors, {
+			logErrors(dtsResult.errors, {
 				shouldExit: true,
 			})
 		}
