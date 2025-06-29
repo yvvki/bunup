@@ -35,7 +35,7 @@ export async function generateDts(
 	const tsconfig = await loadTsConfig(cwd, preferredTsConfigPath)
 
 	const tempOutDir = path.resolve(
-		path.join(cwd, `.typeroll-${generateRandomString()}`),
+		path.join(cwd, `.bunup-dts-${generateRandomString()}`),
 	)
 
 	const nonAbsoluteEntrypoints = entrypoints.filter(
