@@ -1,5 +1,5 @@
 import type { BuildConfig } from 'bun'
-import type { GenerateDtsOptions } from 'typeroll'
+import type { GenerateDtsOptions } from './dts'
 import { linter } from './plugins/internal/linter'
 import { report } from './plugins/internal/report'
 import { useClient } from './plugins/internal/use-client'
