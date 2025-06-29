@@ -13,6 +13,7 @@ import { exports } from 'bunup/plugins';
 export default defineConfig({
 	entry: ['src/index.ts'],
 	format: ['esm', 'cjs'],
+	dts: true,
 	plugins: [exports()],
 });
 ```
@@ -21,22 +22,27 @@ When using the exports plugin, your package.json will be automatically updated w
 
 ```json [package.json]
 {
-  "name": "my-package",
-  "version": "1.0.0",
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
-    }
-  }
+	"name": "my-package",
+	"version": "1.0.0",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"module": "./dist/index.js",
+	"main": "./dist/index.cjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
+		}
+	}
 }
 ```
 
