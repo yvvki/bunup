@@ -5,6 +5,7 @@ import { isolatedDeclaration } from 'oxc-transform'
 import { resolveTsImportPath } from 'ts-import-resolver'
 
 import { loadTsConfig } from '../loaders'
+import { logger } from '../logger'
 import {
 	cleanPath,
 	deleteExtension,
@@ -157,11 +158,7 @@ export async function generateDts(
 		for (const output of outputs) {
 			const bundledFakeJsPath = output.path
 			const bundledFakeJsContent = await Bun.file(bundledFakeJsPath).text()
-
-			const dtsContent = isolatedDeclaration(
-				'treeshake.d.ts',
-				await fakeJsToDts(bundledFakeJsContent),
-			)
+			const dtsContent = await fakeJsToDts(bundledFakeJsContent)
 
 			const entrypoint =
 				output.kind === 'entry-point'
@@ -183,12 +180,25 @@ export async function generateDts(
 				),
 			)
 
+			let dtsContentToWrite = dtsContent
+
+			const treeshakedDts = isolatedDeclaration('treeshake.d.ts', dtsContent)
+
+			if (treeshakedDts.errors.length) {
+				logger.error(
+					`DTS treeshaking failed for ${entrypoint || outputPath}:\n`,
+				)
+				console.log(treeshakedDts.errors)
+			} else {
+				dtsContentToWrite = treeshakedDts.code
+			}
+
 			bundledFiles.push({
 				kind: output.kind === 'entry-point' ? 'entry-point' : 'chunk',
 				entrypoint,
 				chunkFileName,
 				outputPath,
-				dts: dtsContent.code,
+				dts: dtsContentToWrite,
 				pathInfo: {
 					outputPathWithoutExtension: deleteExtension(outputPath),
 					ext: getExtension(outputPath),
