@@ -99,7 +99,7 @@ describe('CLI Only Options', () => {
 		const result = await runCli('src/index.ts --dts')
 
 		expect(result.stdout).toContain(
-			' Function must have an explicit return type annotation.',
+			' Function requires an explicit return type, e.g., `function foo(): string { ... }`.',
 		)
 	})
 })
