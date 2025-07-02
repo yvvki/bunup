@@ -11,7 +11,7 @@
         "picocolors": "^1.1.1",
         "replace-in-file": "^8.3.0",
         "tinyexec": "^1.0.1",
-        "typeroll": "^0.6.9",
+        "typeroll": "^0.6.10",
       },
       "devDependencies": {
         "@babel/types": "^7.27.7",
@@ -1014,7 +1014,7 @@
 
     "type-fest": ["type-fest@2.19.0", "", {}, "sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA=="],
 
-    "typeroll": ["typeroll@0.6.9", "", { "dependencies": { "@babel/parser": "^7.27.5", "@babel/types": "^7.27.3", "coffi": "^0.1.31", "oxc-resolver": "^8.0.0", "oxc-transform": "^0.67.0", "picocolors": "^1.1.1", "std-env": "^3.9.0", "ts-import-resolver": "^0.1.22" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-auy5m7bMngLfc3CAbySifsAVS2aLuUUjI3Ze1QITaQawesd9z+p8Gj9ISmhmiY+Y4ZfCG8H3a3CYuqSSxXM14Q=="],
+    "typeroll": ["typeroll@0.6.10", "", { "dependencies": { "@babel/parser": "^7.27.5", "@babel/types": "^7.27.3", "coffi": "^0.1.31", "oxc-resolver": "^8.0.0", "oxc-transform": "^0.67.0", "picocolors": "^1.1.1", "std-env": "^3.9.0", "ts-import-resolver": "^0.1.22" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-jMI3jMR0An69+ABWmUlyUocEFDM3fs5u29xuUa+h0sQs86JYSQDFrWtCXslRlAtLvN3qfICGcshcvtW9apsMgA=="],
 
     "typescript": ["typescript@5.8.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ=="],
 
