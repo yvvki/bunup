@@ -1,3 +1,1 @@
-export function fn(a, b): string {
-	return a + b
-}
+export const [, b] = [1, 2]

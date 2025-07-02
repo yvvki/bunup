@@ -1,8 +1,12 @@
 import path from 'node:path'
 import type { BunPlugin } from 'bun'
 import pc from 'picocolors'
-import { generateDts, logIsolatedDeclarationErrors } from './dts'
-import { BunupBuildError } from './errors'
+import { generateDts } from './dts'
+import {
+	BunupBuildError,
+	BunupDTSBuildError,
+	parseErrorMessage,
+} from './errors'
 import { loadPackageJson } from './loaders'
 import { logger, setSilent } from './logger'
 import {
@@ -158,54 +162,58 @@ export async function build(
 	await Promise.all(buildPromises)
 
 	if (options.dts) {
-		const { entry, splitting, ...dtsOptions } =
-			typeof options.dts === 'object' ? options.dts : {}
+		try {
+			const { entry, splitting, ...dtsOptions } =
+				typeof options.dts === 'object' ? options.dts : {}
 
-		const dtsResult = await generateDts(ensureArray(entry ?? entrypoints), {
-			cwd: rootDir,
-			preferredTsConfigPath: options.preferredTsconfigPath,
-			splitting: getResolvedDtsSplitting(splitting),
-			...dtsOptions,
-		})
+			const dtsResult = await generateDts(ensureArray(entry ?? entrypoints), {
+				cwd: rootDir,
+				preferredTsConfigPath: options.preferredTsconfigPath,
+				splitting: getResolvedDtsSplitting(splitting),
+				...dtsOptions,
+			})
 
-		if (dtsResult.errors.length) {
-			logIsolatedDeclarationErrors(dtsResult.errors)
-		}
+			for (const fmt of options.format) {
+				for (const file of dtsResult.files) {
+					const dtsExtension = getDefaultDtsExtention(fmt, packageType)
 
-		for (const fmt of options.format) {
-			for (const file of dtsResult.files) {
-				const dtsExtension = getDefaultDtsExtention(fmt, packageType)
-
-				const relativePathToOutputDir = cleanPath(
-					`${file.pathInfo.outputPathWithoutExtension}${dtsExtension}`,
-				)
-				const relativePathToRootDir = cleanPath(
-					`${options.outDir}/${relativePathToOutputDir}`,
-				)
-
-				if (file.kind === 'entry-point') {
-					logger.success(
-						`${pc.dim(`${options.outDir}/`)}${relativePathToOutputDir}`,
-						{
-							identifier: options.name,
-						},
+					const relativePathToOutputDir = cleanPath(
+						`${file.pathInfo.outputPathWithoutExtension}${dtsExtension}`,
 					)
+					const relativePathToRootDir = cleanPath(
+						`${options.outDir}/${relativePathToOutputDir}`,
+					)
+
+					if (file.kind === 'entry-point') {
+						logger.success(
+							`${pc.dim(`${options.outDir}/`)}${relativePathToOutputDir}`,
+							{
+								identifier: options.name,
+							},
+						)
+					}
+
+					const fullPath = path.join(rootDir, relativePathToRootDir)
+
+					await Bun.write(fullPath, file.dts)
+
+					buildOutput.files.push({
+						fullPath,
+						relativePathToRootDir,
+						relativePathToOutputDir,
+						dts: true,
+						format: fmt,
+						kind: file.kind,
+						entrypoint: file.entrypoint
+							? cleanPath(file.entrypoint)
+							: undefined,
+					})
 				}
-
-				const fullPath = path.join(rootDir, relativePathToRootDir)
-
-				await Bun.write(fullPath, file.dts)
-
-				buildOutput.files.push({
-					fullPath,
-					relativePathToRootDir,
-					relativePathToOutputDir,
-					dts: true,
-					format: fmt,
-					kind: file.kind,
-					entrypoint: file.entrypoint ? cleanPath(file.entrypoint) : undefined,
-				})
 			}
+		} catch (error) {
+			throw new BunupDTSBuildError(parseErrorMessage(error))
+		} finally {
+			logger.space()
 		}
 	}
 

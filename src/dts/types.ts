@@ -37,5 +37,4 @@ export type GenerateDtsResultFile = {
 
 export type GenerateDtsResult = {
 	files: GenerateDtsResultFile[]
-	errors: IsolatedDeclarationError[]
 }

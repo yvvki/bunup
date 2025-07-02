@@ -3,6 +3,7 @@ import path from 'node:path'
 import type { BunPlugin } from 'bun'
 import { isolatedDeclaration } from 'oxc-transform'
 import { resolveTsImportPath } from 'ts-import-resolver'
+
 import { loadTsConfig } from '../loaders'
 import {
 	cleanPath,
@@ -15,7 +16,7 @@ import {
 	replaceExtension,
 } from '../utils'
 import { dtsToFakeJs, fakeJsToDts } from './fake-js'
-import { handleBunBuildLogs } from './logger'
+import { logIsolatedDeclarationErrors } from './logger'
 import { NODE_MODULES_RE } from './re'
 import { createResolver } from './resolver'
 import type {
@@ -133,12 +134,18 @@ export async function generateDts(
 		target: 'node',
 		splitting: options.splitting,
 		plugins: [fakeJsPlugin],
-		throw: false,
 		packages: 'external',
 		minify: options.minify,
+		throw: false,
 	})
 
-	handleBunBuildLogs(result.logs)
+	if (collectedErrors.length) {
+		logIsolatedDeclarationErrors(collectedErrors)
+	}
+
+	if (!result.success) {
+		throw new Error(`DTS bundling failed: ${result.logs}`)
+	}
 
 	try {
 		const outputs = result.outputs.filter(
@@ -191,13 +198,6 @@ export async function generateDts(
 
 		return {
 			files: bundledFiles,
-			errors: collectedErrors,
-		}
-	} catch (error) {
-		console.error(error)
-		return {
-			files: [],
-			errors: collectedErrors,
 		}
 	} finally {
 		await fs.rm(tempOutDir, { recursive: true, force: true })

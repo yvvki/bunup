@@ -1,6 +1,6 @@
 import type { Severity } from 'oxc-transform'
 import pc from 'picocolors'
-import { logger } from '../logger'
+
 import { getShortFilePath, isDev } from '../utils'
 import type { IsolatedDeclarationError } from './types'
 
@@ -86,7 +86,7 @@ function logSingle({ error, file, content }: IsolatedDeclarationError): void {
 	const formattedMessage = `${color(prefix)} ${shortPath}${position}: ${errorCode} ${errorMessage}`
 
 	const codeFrame = label
-		? generateCodeFrame(content, label.start, label.end)
+		? generateOxcCodeFrame(content, label.start, label.end)
 		: error.codeframe || ''
 
 	const helpMessage = error.helpMessage
@@ -115,7 +115,7 @@ function calculatePosition(sourceText: string, labelStart: number): string {
 	return ` (${lineNumber}:${columnStart})`
 }
 
-function generateCodeFrame(
+export function generateOxcCodeFrame(
 	sourceText: string,
 	start: number,
 	end: number,
@@ -135,24 +135,4 @@ function generateCodeFrame(
 		' '.repeat(startCol) + pc.dim(pc.blue('⎯'.repeat(underlineLength)))
 
 	return `${lineContent}\n${arrowLine}`
-}
-
-export function handleBunBuildLogs(
-	logs: Array<BuildMessage | ResolveMessage>,
-): void {
-	for (const { level, message, position } of logs) {
-		const location = position?.file ? ` in ${position.file}` : ''
-
-		switch (level) {
-			case 'error':
-				logger.error(`${message}${location}`)
-				throw new Error('Failed to generate declaration file')
-			case 'warning':
-				logger.warn(message)
-				break
-			case 'info':
-				logger.info(message)
-				break
-		}
-	}
 }
