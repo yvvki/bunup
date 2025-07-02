@@ -2,11 +2,9 @@
 
 Bunup is the ⚡️ **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
 
-## What Can It Bundle?
+## Overview
 
-Bunup supports bundling for multiple environments — including **Node.js**, **browsers**, and a special **Bun** target. The **bun** target is specifically optimized for libraries intended to run on Bun.
-
-It can bundle JavaScript and TypeScript files (including JSX and TSX), JSON files, TOML files, text files, and a variety of other assets.
+**Bunup** brings instant builds by design — not as a side effect. By combining Bun's native speed with TypeScript's isolated declarations, cold starts are fast, rebuilds are even faster, and watching monorepos feels effortless. Say goodbye to slow bundling — this is **future, instant packaging for JS/TS libraries**.
 
 ## Quick Start
 

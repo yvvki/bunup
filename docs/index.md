@@ -60,7 +60,7 @@ import WithinHero from "/components/WithinHero.vue";
         <td>tsdown</td>
         <td>esm, cjs</td>
         <td>20.76ms</td>
-        <td>46.32ms</td>
+        <td>58.29ms</td>
       </tr>
       <tr>
         <td>unbuild</td>
@@ -82,7 +82,7 @@ import WithinHero from "/components/WithinHero.vue";
       </tr>
     </tbody>
   </table>
-  <div class="benchmark-note">Benchmark of build time via CLI for an average-sized project</div>
+  <div class="benchmark-note">Visit <a class="benchmark-note-link" href="https://gugustinette.github.io/bundler-benchmark/">here</a> for the full benchmark</div>
 </div>
 </WithinHero>
 
@@ -112,5 +112,12 @@ import WithinHero from "/components/WithinHero.vue";
   text-align: right;
   margin-top: 0.5rem;
   font-style: italic;
+}
+.benchmark-note-link {
+  color: var(--vp-c-brand);
+  text-decoration: none;
+}
+.benchmark-note-link:hover {
+  text-decoration: underline;
 }
 </style>

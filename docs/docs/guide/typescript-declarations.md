@@ -4,6 +4,21 @@ Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, o
 
 Built from the ground up, Bunup includes its own high-performance TypeScript declaration bundler. It's designed for maximum speed while offering advanced features like splitting and minification, producing minimal and clean declaration files.
 
+## Prerequisites
+
+Enable `isolatedDeclarations` in your tsconfig:
+
+```json [tsconfig.json] 4
+{
+	"compilerOptions": {
+		"declaration": true,
+		"isolatedDeclarations": true
+	}
+}
+```
+
+By enabling `isolatedDeclarations`, you're not just turning on a feature—you're unlocking the future of TypeScript packaging! This modern approach enforces strict discipline in your type exports, ensuring that only well-defined, explicit types make it into your public API. The result? Bulletproof type safety, lightning-fast declarations, and crystal-clear interfaces that your users will love. It's like having a TypeScript guardian angel watching over your library's public surface!
+
 ## Basic
 
 To generate declarations for all entry points:
