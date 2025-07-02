@@ -1,7 +1,7 @@
 import path from 'node:path'
 import type { BunPlugin } from 'bun'
 import pc from 'picocolors'
-import { generateDts } from './dts'
+import { generateDts, logIsolatedDeclarationErrors } from 'typeroll'
 import {
 	BunupBuildError,
 	BunupDTSBuildError,
@@ -88,7 +88,7 @@ export async function build(
 
 	if (!entrypoints.length) {
 		throw new BunupBuildError(
-			'The entrypoints you provided do not exist. Please make sure the entrypoints point to valid files.',
+			`One or more of the entrypoints you provided do not exist. Please check that each entrypoint points to a valid file.`,
 		)
 	}
 
@@ -172,6 +172,10 @@ export async function build(
 				splitting: getResolvedDtsSplitting(splitting),
 				...dtsOptions,
 			})
+
+			if (dtsResult.errors.length) {
+				logIsolatedDeclarationErrors(dtsResult.errors)
+			}
 
 			for (const fmt of options.format) {
 				for (const file of dtsResult.files) {

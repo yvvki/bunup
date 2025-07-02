@@ -10,8 +10,6 @@ import {
 import { basename, dirname, join } from 'node:path'
 import { exec } from 'tinyexec'
 import { build } from '../src/build'
-import { generateDts } from '../src/dts'
-import type { GenerateDtsOptions } from '../src/dts/types'
 import type { PackageJson } from '../src/loaders'
 import type { BuildOptions } from '../src/options'
 import { OUTPUT_DIR, PROJECT_DIR } from './constants'
@@ -261,16 +259,4 @@ function getPackageJson(rootDir: string): PackageJson {
 			path: null,
 		}
 	}
-}
-
-export async function runGenerateDts(
-	entry: string[],
-	options: GenerateDtsOptions = {},
-) {
-	const { files } = await generateDts(entry, {
-		...options,
-		cwd: PROJECT_DIR,
-	})
-
-	return files
 }

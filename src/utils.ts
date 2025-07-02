@@ -2,7 +2,7 @@ import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import path, { normalize } from 'node:path'
 import { isCI, isDevelopment } from 'std-env'
-import { EXTENSION_REGEX, TS_RE } from './constants/re'
+import { TS_RE } from './constants/re'
 import { BunupBuildError } from './errors'
 import type { Format } from './options'
 
@@ -36,12 +36,6 @@ export function getDefaultDtsExtention(
 		case 'iife':
 			return '.global.d.ts'
 	}
-}
-
-export function getDeclarationExtensionFromJsExtension(ext: string): string {
-	if (ext === '.mjs') return '.d.mts'
-	if (ext === '.cjs') return '.d.cts'
-	return '.d.ts'
 }
 
 export function isModulePackage(packageType: string | undefined): boolean {
@@ -174,28 +168,4 @@ export function isNullOrUndefined(value: unknown): value is null | undefined {
 export function isTypeScriptFile(path: string | null): boolean {
 	if (!path) return false
 	return TS_RE.test(path)
-}
-
-export function getExtension(filename: string): string {
-	const match = filename.match(EXTENSION_REGEX)
-	if (!match) return ''
-
-	const ext = match[0]
-	return ext
-}
-
-export function replaceExtension(filename: string, newExt: string): string {
-	if (EXTENSION_REGEX.test(filename)) {
-		return filename.replace(EXTENSION_REGEX, newExt)
-	}
-
-	return filename + newExt
-}
-
-export function deleteExtension(filename: string): string {
-	return filename.replace(EXTENSION_REGEX, '')
-}
-
-export function returnPathIfExists(path: string): string | null {
-	return pathExistsSync(path) ? path : null
 }
