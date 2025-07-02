@@ -2,10 +2,6 @@
 
 Bunup is the ⚡️ **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
 
-::: tip 💖
-**Bunup is the bundler in your bun ecosystem.**
-:::
-
 ## What Can It Bundle?
 
 Bunup supports bundling for multiple environments — including **Node.js**, **browsers**, and a special **Bun** target. The **bun** target is specifically optimized for libraries intended to run on Bun.

@@ -1,23 +1,8 @@
 # TypeScript Declarations
 
-Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts` depending on your output format) for your library, making it fully type-safe for consumers.
+Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library based on your output format, ensuring full type safety for consumers.
 
-::: tip
-Before you begin, Optional but recommended, you can enable `"isolatedDeclarations": true` in your `tsconfig.json`.
-Bunup uses TypeScript's [isolatedDeclarations](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations) feature, which is specially designed for library authors to generate fast, accurate, and robust type definitions.
-This setting encourages you to provide explicit type annotations as you write code.
-The result? Cleaner, safer, and more reliable type declarations for your library.
-
-```json [tsconfig.json] 4
-{
-	"compilerOptions": {
-		"declaration": true,
-		"isolatedDeclarations": true
-	}
-}
-```
-
-:::
+Built from the ground up, Bunup includes its own high-performance TypeScript declaration bundler. It's designed for maximum speed while offering advanced features like splitting and minification, producing minimal and clean declaration files.
 
 ## Basic
 
@@ -72,97 +57,18 @@ You can use:
 
 Declaration splitting optimizes TypeScript `.d.ts` files when multiple entry points share types. Instead of duplicating shared types across declaration files, Bunup extracts them into shared chunk files that are imported where needed.
 
-### Example
-
-::: code-group
-
-```ts [src/types.ts]
-export interface User {
-  id: string;
-  name: string;
-}
 ```
-
-```ts [src/index.ts]
-import { User } from './types';
-
-export function getUser(id: string): User {
-  return { id, name: 'John' };
-}
-```
-
-```ts [src/api.ts]
-import { User } from './types';
-
-export function createUser(name: string): User {
-  return { id: crypto.randomUUID(), name };
-}
-```
-
-:::
-
-**Without splitting (duplicated types):**
-
-::: code-group
-
-```ts [dist/index.d.ts]
-interface User {
-  id: string;
-  name: string;
-}
-
-declare function getUser(id: string): User;
-
-export { getUser };
-```
-
-```ts [dist/api.d.ts]
-interface User {
-  id: string;
-  name: string;
-}
-
-declare function createUser(name: string): User;
-
-export { createUser };
-```
-
-:::
-
-**With splitting (shared types extracted):**
-
-::: code-group
-
-```ts [dist/index.d.ts]
-import { User } from './chunk-abc123.js';
-
-declare function getUser(id: string): User;
-
-export { getUser };
-```
-
-```ts [dist/api.d.ts]
-import { User } from './chunk-abc123.js';
-
-declare function createUser(name: string): User;
-
-export { createUser };
-```
-
-```ts [dist/chunk-abc123.d.ts]
-interface User {
-  id: string;
-  name: string;
-}
-
-export { User };
+dist/
+├── index.d.ts         # ~15KB, imports from chunk
+├── cli.d.ts           # ~10KB, imports from chunk
+└── chunk-abc123.d.ts  # ~30KB, shared types
 ```
 
 The result is clean declarations with no duplicates, improved readability, and reduced bundle size.
 
 ::: info
 Splitting is enabled by default if:
-- Using ESM (`format: ['esm']`)
+- Using ESM format
 - Code splitting is enabled
 :::
 

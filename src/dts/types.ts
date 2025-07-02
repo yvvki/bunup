@@ -1,4 +1,10 @@
-import type { IsolatedDeclarationError } from './logger'
+import type { OxcError } from 'oxc-transform'
+
+export type IsolatedDeclarationError = {
+	error: OxcError
+	file: string
+	content: string
+}
 
 export type Resolve = boolean | (string | RegExp)[]
 

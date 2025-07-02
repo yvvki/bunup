@@ -15,7 +15,6 @@ import {
 	replaceExtension,
 } from '../utils'
 import { dtsToFakeJs, fakeJsToDts } from './fake-js'
-import type { IsolatedDeclarationError } from './logger'
 import { handleBunBuildLogs } from './logger'
 import { NODE_MODULES_RE } from './re'
 import { createResolver } from './resolver'
@@ -23,6 +22,7 @@ import type {
 	GenerateDtsOptions,
 	GenerateDtsResult,
 	GenerateDtsResultFile,
+	IsolatedDeclarationError,
 } from './types'
 
 export async function generateDts(
