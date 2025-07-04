@@ -169,7 +169,7 @@ export async function build(
 			const dtsResult = await generateDts(ensureArray(entry ?? entrypoints), {
 				cwd: rootDir,
 				preferredTsConfigPath: options.preferredTsconfigPath,
-				splitting: getResolvedDtsSplitting(splitting),
+				splitting: getResolvedDtsSplitting(options.splitting, splitting),
 				...dtsOptions,
 			})
 

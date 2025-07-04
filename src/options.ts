@@ -422,9 +422,10 @@ export function getResolvedSplitting(
 }
 
 export function getResolvedDtsSplitting(
-	splitting: boolean | undefined,
+	buildSplitting: boolean | undefined,
+	dtsSplitting: boolean | undefined,
 ): boolean {
-	return splitting ?? true
+	return dtsSplitting ?? buildSplitting ?? true
 }
 
 const DEFAULT_ENTRY_NAMING = '[dir]/[name].[ext]'
