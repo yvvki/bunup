@@ -17,7 +17,7 @@ Enable `isolatedDeclarations` in your tsconfig:
 }
 ```
 
-Enabling `isolatedDeclarations` enforces strict discipline in your type exports—only well-defined, explicit types reach your public API. You get bulletproof type safety, fast declarations, and clear interfaces your users will love. It’s like a TypeScript guardian angel for your library’s public surface!
+Bunup leverages TypeScript’s new modern [isolatedDeclarations](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations) feature to generate declaration files. This approach enforces strict discipline in your type exports—only well-defined, explicit types reach your public API. You get bulletproof type safety, fast declarations, and clear interfaces your users will love. It’s like a TypeScript guardian angel for your library’s public surface!
 
 ## Basic
 
