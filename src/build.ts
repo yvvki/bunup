@@ -216,8 +216,6 @@ export async function build(
 			}
 		} catch (error) {
 			throw new BunupDTSBuildError(parseErrorMessage(error))
-		} finally {
-			logger.space()
 		}
 	}
 
