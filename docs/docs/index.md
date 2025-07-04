@@ -4,7 +4,7 @@ Bunup is the ⚡️ **blazing-fast build tool** for TypeScript and JavaScript li
 
 ## Overview
 
-**Bunup** brings instant builds by design — not as a side effect. By combining Bun's native speed with TypeScript's isolated declarations, cold starts are fast, rebuilds are even faster, and watching monorepos feels effortless. Say goodbye to slow bundling — this is **future, instant packaging for JS/TS libraries**.
+**Bunup** delivers instant builds by design. With Bun's native speed and TypeScript's isolated declarations, cold starts and rebuilds are lightning fast—even in monorepos. Say goodbye to slow bundling—this is the future of instant JS/TS packaging.
 
 ## Quick Start
 
