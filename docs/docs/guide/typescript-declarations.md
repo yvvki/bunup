@@ -17,7 +17,7 @@ Enable `isolatedDeclarations` in your tsconfig:
 }
 ```
 
-By enabling `isolatedDeclarations`, you're not just turning on a feature—you're unlocking the future of TypeScript packaging! This modern approach enforces strict discipline in your type exports, ensuring that only well-defined, explicit types make it into your public API. The result? Bulletproof type safety, lightning-fast declarations, and crystal-clear interfaces that your users will love. It's like having a TypeScript guardian angel watching over your library's public surface!
+Enabling `isolatedDeclarations` enforces strict discipline in your type exports—only well-defined, explicit types reach your public API. You get bulletproof type safety, fast declarations, and clear interfaces your users will love. It’s like a TypeScript guardian angel for your library’s public surface!
 
 ## Basic
 
