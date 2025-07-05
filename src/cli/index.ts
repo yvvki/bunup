@@ -85,7 +85,10 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 	logger.success(`Build completed in ${pc.green(timeDisplay)}`)
 
 	if (cliOptions.watch) {
-		logger.info('Watching for file changes...')
+		logger.info('Watching for file changes...', {
+			icon: '👀',
+			verticalSpace: true,
+		})
 	}
 
 	if (cliOptions.onSuccess) {

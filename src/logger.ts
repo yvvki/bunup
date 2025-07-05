@@ -6,6 +6,7 @@ interface LogOptions {
 	identifier?: string
 	once?: string
 	tick?: boolean
+	icon?: string
 }
 
 export type LogLevel = 'info' | 'warn' | 'error' | 'recommended'
@@ -79,7 +80,7 @@ export class Logger {
 			type = 'info',
 		} = options
 
-		const icon = this.getIcon(type, tick)
+		const icon = options.icon ?? this.getIcon(type, tick)
 		const styledMessage = muted
 			? pc.dim(message)
 			: type === 'error'

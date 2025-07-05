@@ -48,7 +48,10 @@ export async function watch(
 			await build(options, rootDir)
 			if (!initial) {
 				logger.success(
-					`📦 Rebuild finished in ${pc.green(formatTime(performance.now() - start))}`,
+					`Rebuild finished in ${pc.green(formatTime(performance.now() - start))}`,
+					{
+						icon: '📦',
+					},
 				)
 			}
 		} catch (error) {
@@ -58,12 +61,7 @@ export async function watch(
 		}
 	}
 
-	watcher.on('change', (filePath) => {
-		const changedFile = path.relative(rootDir, filePath)
-		logger.info(`File changed: ${changedFile}`, {
-			muted: true,
-			once: changedFile,
-		})
+	watcher.on('change', () => {
 		triggerRebuild()
 	})
 

@@ -1,1 +1,1 @@
-export type Hello = string
+export const hello = 'hello'
