@@ -38,7 +38,7 @@ After completing the setup, here's how to use your project:
 ### TypeScript Library Commands
 
 ```sh
-bun run dev        # Start development mode with hot reloading
+bun run dev        # Start development mode with automatic rebuilds
 bun run test       # Run test suite
 bun run lint       # Check code style and find problems
 bun run lint:fix   # Fix linting issues automatically

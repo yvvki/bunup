@@ -72,6 +72,16 @@ You can use:
 
 Declaration splitting optimizes TypeScript `.d.ts` files when multiple entry points share types. Instead of duplicating shared types across declaration files, Bunup extracts them into shared chunk files that are imported where needed.
 
+**Without splitting:**
+
+```
+dist/
+├── index.d.ts         # ~45KB
+└── cli.d.ts           # ~40KB
+```
+
+**With splitting:**
+
 ```
 dist/
 ├── index.d.ts         # ~15KB, imports from chunk
