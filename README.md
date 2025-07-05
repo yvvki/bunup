@@ -14,9 +14,9 @@
 
 Bunup is the **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for flawless developer experience and speed, **powered by Bun**. 
 
-It's the fastest library bundler out there - [see benchmarks](https://gugustinette.github.io/bundler-benchmark/).
+![Bunup benchmarks](/benchmarks.png)
 
-![bunup-demo](/assets/demo.gif)
+*The benchmark above shows build times for a project with 1,000 files, functions, and types, with TypeScript declaration generation enabled. For detailed benchmarks, visit [here](https://gugustinette.github.io/bundler-benchmark/)*
 
 </div>
 <!-- markdownlint-restore -->
