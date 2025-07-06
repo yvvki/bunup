@@ -81,9 +81,7 @@ dist/
 The result is clean declarations with no duplicates, improved readability, and reduced bundle size.
 
 ::: info
-Splitting is enabled by default if:
-- Using ESM format
-- Code splitting is enabled
+Declaration splitting is enabled by default if code splitting is enabled.
 :::
 
 ## Minification

@@ -48,6 +48,12 @@ bunx bunup src/index.ts
 
 That's it! This creates bundled output in the `dist` directory with ESM and CJS formats, plus TypeScript declaration files (`.d.ts`) since the entry point is a TypeScript file.
 
+Or, if you want to output only ESM format, you can do:
+
+```sh
+bunx bunup src/index.ts --format esm
+```
+
 ### Using with package.json
 
 First, install bunup as a dev dependency:
