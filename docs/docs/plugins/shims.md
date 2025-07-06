@@ -10,7 +10,7 @@ import { shims } from 'bunup/plugins';
 
 export default defineConfig({
 	entry: ['src/index.ts'],
-	format: ['esm', 'cjs'],
+	format: ['esm'],
 	plugins: [shims()],
 });
 ```

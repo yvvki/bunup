@@ -40,7 +40,6 @@ export default defineWorkspace([
     config: {
       entry: ["src/index.ts"],
       format: ["esm", "cjs"],
-      dts: true,
     },
   },
   {
@@ -49,7 +48,6 @@ export default defineWorkspace([
     config: {
       entry: ["src/index.ts"],
       format: ["esm"],
-      dts: true,
     },
   },
 ]);

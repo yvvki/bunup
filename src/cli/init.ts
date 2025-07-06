@@ -22,7 +22,6 @@ interface WorkspacePackage {
 	root: string
 	entryFiles: string[]
 	outputFormats: string[]
-	shouldGenerateDts: boolean
 }
 
 export async function init(): Promise<void> {
@@ -76,14 +75,12 @@ async function initializeWorkspace(packageJsonPath: string): Promise<void> {
 async function initializeSinglePackage(packageJsonPath: string): Promise<void> {
 	const entryFiles = await collectEntryFiles()
 	const outputFormats = await selectOutputFormats()
-	const shouldGenerateDts = await promptForTypeScriptDeclarations(entryFiles)
 	const configMethod = await selectConfigurationMethod()
 
 	await generateConfiguration(
 		configMethod,
 		entryFiles,
 		outputFormats,
-		shouldGenerateDts,
 		packageJsonPath,
 	)
 
@@ -91,7 +88,6 @@ async function initializeSinglePackage(packageJsonPath: string): Promise<void> {
 		packageJsonPath,
 		entryFiles,
 		outputFormats,
-		shouldGenerateDts,
 		configMethod,
 	)
 }
@@ -131,14 +127,12 @@ async function collectWorkspacePackages(): Promise<WorkspacePackage[]> {
 			packageName,
 		)
 		const outputFormats = await selectOutputFormats()
-		const shouldGenerateDts = await promptForTypeScriptDeclarations(entryFiles)
 
 		packages.push({
 			name: packageName,
 			root: packageRoot,
 			entryFiles,
 			outputFormats,
-			shouldGenerateDts,
 		})
 
 		const shouldAddMore = await confirm({
@@ -236,21 +230,6 @@ async function selectOutputFormats(): Promise<string[]> {
 	})) as string[]
 }
 
-async function promptForTypeScriptDeclarations(
-	entryFiles: string[],
-): Promise<boolean> {
-	const hasTypeScriptFiles = entryFiles.some(
-		(file) => file.endsWith('.ts') || file.endsWith('.tsx'),
-	)
-
-	if (!hasTypeScriptFiles) return false
-
-	return (await confirm({
-		message: 'Generate TypeScript declarations?',
-		initialValue: true,
-	})) as boolean
-}
-
 async function selectWorkspaceConfigurationMethod(): Promise<string> {
 	return (await select({
 		message: 'How would you like to configure your workspace?',
@@ -291,7 +270,6 @@ async function generateConfiguration(
 	configMethod: string,
 	entryFiles: string[],
 	outputFormats: string[],
-	shouldGenerateDts: boolean,
 	packageJsonPath: string,
 ): Promise<void> {
 	if (configMethod === 'none') {
@@ -304,18 +282,14 @@ async function generateConfiguration(
 	if (configMethod === 'ts' || configMethod === 'js') {
 		await Bun.write(
 			`bunup.config.${configMethod}`,
-			createConfigFileContent(entryFiles, outputFormats, shouldGenerateDts),
+			createConfigFileContent(entryFiles, outputFormats),
 		)
 	} else if (configMethod === 'json') {
 		const { data: packageJsonConfig } = await loadPackageJson()
 
 		const updatedConfig = {
 			...packageJsonConfig,
-			bunup: createPackageJsonConfig(
-				entryFiles,
-				outputFormats,
-				shouldGenerateDts,
-			),
+			bunup: createPackageJsonConfig(entryFiles, outputFormats),
 		}
 		await Bun.write(packageJsonPath, JSON.stringify(updatedConfig, null, 2))
 	}
@@ -356,18 +330,12 @@ async function handleBuildScripts(
 	packageJsonPath: string,
 	entryFiles: string[],
 	outputFormats: string[],
-	shouldGenerateDts: boolean,
 	configMethod: string,
 ): Promise<void> {
 	const { data: packageJsonConfig } = await loadPackageJson()
 
 	const existingScripts = packageJsonConfig?.scripts ?? {}
-	const newScripts = createBuildScripts(
-		entryFiles,
-		outputFormats,
-		shouldGenerateDts,
-		configMethod,
-	)
+	const newScripts = createBuildScripts(entryFiles, outputFormats, configMethod)
 
 	const conflictingScripts = Object.keys(newScripts).filter(
 		(script) => existingScripts[script],
@@ -403,7 +371,7 @@ function createWorkspaceConfigFileContent(
     root: '${pkg.root}',
     config: {
       entry: [${pkg.entryFiles.map((file) => `'${file}'`).join(', ')}],
-      format: [${pkg.outputFormats.map((format) => `'${format}'`).join(', ')}],${pkg.shouldGenerateDts ? '\n      dts: true,' : ''}
+      format: [${pkg.outputFormats.map((format) => `'${format}'`).join(', ')}],
     },
   }`
 		})
@@ -420,13 +388,12 @@ ${packagesConfig}
 function createConfigFileContent(
 	entryFiles: string[],
 	outputFormats: string[],
-	shouldGenerateDts: boolean,
 ): string {
 	return `import { defineConfig } from 'bunup'
 
 export default defineConfig({
 	entry: [${entryFiles.map((file) => `'${file}'`).join(', ')}],
-	format: [${outputFormats.map((format) => `'${format}'`).join(', ')}],${shouldGenerateDts ? '\n\tdts: true,' : ''}
+	format: [${outputFormats.map((format) => `'${format}'`).join(', ')}],
 })
 `
 }
@@ -434,12 +401,10 @@ export default defineConfig({
 function createPackageJsonConfig(
 	entryFiles: string[],
 	outputFormats: string[],
-	shouldGenerateDts: boolean,
 ): Record<string, any> {
 	return {
 		entry: entryFiles,
 		format: outputFormats,
-		...(shouldGenerateDts && { dts: true }),
 	}
 }
 
@@ -453,12 +418,11 @@ function createWorkspaceBuildScripts(): Record<string, string> {
 function createBuildScripts(
 	entryFiles: string[],
 	outputFormats: string[],
-	shouldGenerateDts: boolean,
 	configMethod: string,
 ): Record<string, string> {
 	const cliOptions =
 		configMethod === 'none'
-			? ` ${entryFiles.join(' ')} --format ${outputFormats.join(',')}${shouldGenerateDts ? ' --dts' : ''}`
+			? ` ${entryFiles.join(' ')} --format ${outputFormats.join(',')}`
 			: ''
 
 	return {

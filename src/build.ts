@@ -36,6 +36,7 @@ import {
 	getDefaultDtsExtention,
 	getFilesFromGlobs,
 	getShortFilePath,
+	isTypeScriptFile,
 } from './utils'
 
 export async function build(
@@ -161,7 +162,7 @@ export async function build(
 
 	await Promise.all(buildPromises)
 
-	if (options.dts) {
+	if (options.dts ?? entrypoints.some(isTypeScriptFile)) {
 		try {
 			const { entry, splitting, ...dtsOptions } =
 				typeof options.dts === 'object' ? options.dts : {}

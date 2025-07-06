@@ -169,3 +169,7 @@ export function isTypeScriptFile(path: string | null): boolean {
 	if (!path) return false
 	return TS_RE.test(path)
 }
+
+export function filterTypeScriptEntryPoints(entryPoints: string[]): string[] {
+	return entryPoints.filter(isTypeScriptFile)
+}

@@ -1,10 +1,10 @@
 # Introduction
 
-Bunup is the ⚡️ **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
+Bunup is the ⚡️ **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
 
 ## Performance
 
-**Bunup** delivers instant builds by design. With Bun's native speed and TypeScript's [isolated declarations](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations), cold starts and rebuilds are lightning fast—even in monorepos. Say goodbye to slow bundling—this is the future of instant JS/TS packaging.
+**Bunup** delivers instant builds by design. With Bun's native speed and TypeScript's [isolated declarations](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations), cold starts and rebuilds are lightning fast—even in monorepos. Say goodbye to slow bundling—this is the future of instant packaging.
 
 ![Bunup benchmarks](/benchmarks.png)
 
@@ -28,7 +28,7 @@ bunx bunup@latest --init
 
 ## Getting Started
 
-Get started with Bunup in seconds - install, configure, and build your TypeScript/JavaScript projects with minimal setup.
+Get started with Bunup in seconds - install, configure, and build your TypeScript projects with minimal setup.
 
 ### Basic Usage
 
@@ -46,7 +46,7 @@ Bundle it with bunup:
 bunx bunup src/index.ts
 ```
 
-This will create a bundled output in the `dist` directory with CommonJS format (the default).
+That's it! This creates bundled output in the `dist` directory with ESM and CJS formats. If your project is a TypeScript project, it also generates declaration files (`.d.ts`) automatically.
 
 ### Using with package.json
 
@@ -62,7 +62,7 @@ Add a build script to your `package.json`:
 {
 	"name": "my-package",
 	"scripts": {
-		"build": "bunup src/index.ts --format esm,cjs --dts"
+		"build": "bunup src/index.ts"
 	}
 }
 ```
@@ -75,15 +75,16 @@ bun run build
 
 ## Configuration
 
-Create a `bunup.config.ts` file for more control:
+Create a `bunup.config.ts` file for more advanced usage like including plugins:
 
 ```typescript [bunup.config.ts]
 import { defineConfig } from 'bunup';
+import { copy, exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: ['src/index.ts'],
-	format: ['esm', 'cjs'],
-	dts: true,
+	entry: ['src/index.ts', 'src/cli.ts'],
+	target: 'bun',
+	plugins: [copy(['assets/**/*']), exports()],
 });
 ```
 
@@ -116,9 +117,8 @@ You can also include your bunup configuration directly in your `package.json` fi
 	"name": "my-package",
 	"version": "1.0.0",
 	"bunup": {
-		"entry": ["src/index.ts"],
-		"format": ["esm", "cjs"],
-		"dts": true
+		"entry": ["src/index.ts", "src/cli.ts"],
+		"target": "bun",
 	}
 }
 ```

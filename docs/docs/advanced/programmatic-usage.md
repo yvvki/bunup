@@ -13,9 +13,6 @@ import { build } from 'bunup';
 
 await build({
   entry: ['src/index.ts'],
-  outDir: 'dist',
-  format: ['esm', 'cjs'],
-  dts: true
 });
 ```
 
@@ -30,12 +27,27 @@ import { build, type BuildOptions } from 'bunup';
 
 const options: BuildOptions = {
   entry: ['src/index.ts'],
-  outDir: 'dist',
-  format: ['esm', 'cjs'],
-  dts: true
+  format: ['esm'],
 };
 
 await build(options);
 ```
 
 The full type definition can be found in the [bunup source code](https://github.com/arshad-yaseen/bunup/blob/main/src/options.ts#L37).
+
+## Using Plugins
+
+Plugins can be used programmatically the same way they are used in the configuration file:
+
+```typescript
+import { build } from 'bunup';
+import { injectStyles } from 'bunup/plugins';
+
+await build({
+  entry: ['src/index.ts'],
+  plugins: [injectStyles({
+    minify: true,
+    targets: { chrome: 95 }
+  })]
+});
+```

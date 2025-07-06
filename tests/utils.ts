@@ -82,6 +82,7 @@ export async function runBuild(
 		const buildOptions = {
 			outDir: '.output',
 			silent: true,
+			dts: false,
 			...options,
 		}
 

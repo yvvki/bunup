@@ -244,7 +244,7 @@ bunup src/index.ts --splitting=false
 ```typescript
 export default defineConfig({
 	entry: ['src/index.ts'],
-	format: ['esm', 'cjs'],
+	format: ['esm'],
 	// Enable for all formats
 	splitting: true,
 

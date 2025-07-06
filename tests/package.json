@@ -36,7 +36,7 @@
 		"zx-extra": "^4.0.5"
 	},
 	"scripts": {
-		"build": "bun run ../src/cli/index.ts",
+		"build": "bun run ../src/cli/index.ts fixtures/index.ts",
 		"dev": "bun run ../src/cli/index.ts --watch",
 		"new": "bun run ../src/cli/index.ts --new",
 		"init": "bun run ../src/cli/index.ts --init"

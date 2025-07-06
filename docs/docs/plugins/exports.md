@@ -12,8 +12,6 @@ import { exports } from 'bunup/plugins';
 
 export default defineConfig({
 	entry: ['src/index.ts'],
-	format: ['esm', 'cjs'],
-	dts: true,
 	plugins: [exports()],
 });
 ```
@@ -58,7 +56,6 @@ import { exports } from 'bunup/plugins';
 
 export default defineConfig({
 	entry: ['src/index.ts'],
-	format: ['esm', 'cjs'],
 	plugins: [
 		exports({
 			customExports: (ctx) => ({
@@ -79,7 +76,6 @@ import { exports } from 'bunup/plugins';
 
 export default defineConfig({
 	entry: ['src/index.ts', 'src/cli.ts', 'src/plugins.ts'],
-	format: ['esm', 'cjs'],
 	plugins: [
 		exports({
 			exclude: ['src/cli.ts']
@@ -96,7 +92,6 @@ import { exports } from 'bunup/plugins';
 
 export default defineConfig({
 	entry: ['src/index.ts', 'src/cli/*.ts', 'src/plugins.ts'],
-	format: ['esm', 'cjs'],
 	plugins: [
 		exports({
 			exclude: ['src/cli/*']
@@ -113,7 +108,6 @@ import { exports } from 'bunup/plugins';
 
 export default defineConfig({
 	entry: ['src/index.ts', 'src/cli.ts', 'src/plugins.ts'],
-	format: ['esm', 'cjs'],
 	plugins: [
 		exports({
 			exclude: (ctx) => {

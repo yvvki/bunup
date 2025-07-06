@@ -343,7 +343,7 @@ export interface BuildOptions {
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
 	entry: ['src/index.ts'],
-	format: ['cjs'],
+	format: ['esm', 'cjs'],
 	outDir: 'dist',
 	target: 'node',
 	clean: true,
