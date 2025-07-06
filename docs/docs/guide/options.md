@@ -10,15 +10,19 @@ Bunup supports multiple ways to define entry points. Entry points are the source
 
 The simplest way to define an entry point is to provide a single file path:
 
-```sh
-# CLI
-bunup src/index.ts
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
       entry: 'src/index.ts',
 });
 ```
+
+:::
 
 This will generate an output file named after the input file (e.g., `dist/index.js`).
 
@@ -26,18 +30,23 @@ This will generate an output file named after the input file (e.g., `dist/index.
 
 You can specify multiple entry points in several ways:
 
-```sh
-# CLI (method 1)
+::: code-group
+
+```sh [CLI - method 1]
 bunup src/index.ts src/cli.ts
+```
 
-# CLI (method 2)
+```sh [CLI - method 2]
 bunup --entry src/index.ts --entry src/cli.ts
+```
 
-# Configuration file
+```ts [bunup.config.ts]
 export default defineConfig({
       entry: ['src/index.ts', 'src/cli.ts'],
 });
 ```
+
+:::
 
 This will generate output files named after each input file (e.g., `dist/index.js` and `dist/cli.js`).
 
@@ -45,11 +54,13 @@ This will generate output files named after each input file (e.g., `dist/index.j
 
 You can use glob patterns to include multiple files that match a pattern:
 
-```sh
-# CLI
-bunup 'src/**/*.ts' '!src/**/*.test.ts'
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup 'src/**/*.ts' '!src/**/*.test.ts'
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
       entry: [
             'src/**/*.ts',
@@ -58,6 +69,8 @@ export default defineConfig({
       ],
 });
 ```
+
+:::
 
 Glob pattern features:
 - Use patterns like `**/*.ts` to match files recursively
@@ -76,17 +89,17 @@ You can specify one or more formats:
 
 ### Using the CLI
 
-```sh
-# Single format
-bunup src/index.ts --format esm
+::: code-group
 
-# Multiple formats (comma-separated, no spaces)
+```sh [CLI - single format]
+bunup src/index.ts --format esm
+```
+
+```sh [CLI - multiple formats]
 bunup src/index.ts --format esm,cjs,iife
 ```
 
-### Using a Configuration File
-
-```typescript
+```ts [bunup.config.ts]
 export default defineConfig({
 	entry: ['src/index.ts'],
 	// Single format
@@ -96,6 +109,8 @@ export default defineConfig({
 	// format: ['esm', 'cjs', 'iife'],
 });
 ```
+
+:::
 
 ### Output File Extensions
 
@@ -121,16 +136,20 @@ The file extensions are determined automatically based on the format and your pa
 
 You can give your build configurations names for better logging:
 
-```sh
-# CLI
-bunup src/index.ts --name my-library
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts --name my-library
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
     name: 'my-library',
     entry: ['src/index.ts'],
 });
 ```
+
+:::
 
 This is especially useful when you have multiple configurations:
 
@@ -170,22 +189,24 @@ You can explicitly mark any package as external, even if it's not listed in `dep
 
 #### Using the CLI
 
-```sh
-# Mark a single package as external
-bunup src/index.ts --external lodash
+::: code-group
 
-# Mark multiple packages (comma-separated, no spaces)
+```sh [CLI - single package]
+bunup src/index.ts --external lodash
+```
+
+```sh [CLI - multiple packages]
 bunup src/index.ts --external lodash,react,react-dom
 ```
 
-#### Using a Configuration File
-
-```typescript
+```ts [bunup.config.ts]
 export default defineConfig({
 	entry: ['src/index.ts'],
 	external: ['lodash', 'react', '@some/package'],
 });
 ```
+
+:::
 
 ### Forcing External Packages to Be Bundled
 
@@ -193,20 +214,22 @@ Sometimes, you may want to include specific modules in your bundle, even if they
 
 #### Using the CLI
 
-```sh
+::: code-group
+
+```sh [CLI]
 # Mark lodash as external, but include lodash/merge in the bundle
 bunup src/index.ts --external lodash --no-external lodash/merge
 ```
 
-#### Using a Configuration File
-
-```typescript
+```ts [bunup.config.ts]
 export default defineConfig({
 	entry: ['src/index.ts'],
 	external: ['lodash'],
 	noExternal: ['lodash/merge'], // This will be bundled
 });
 ```
+
+:::
 
 ::: info
 Both `external` and `noExternal` support exact strings and regular expressions.
@@ -231,7 +254,9 @@ You can explicitly enable or disable code splitting:
 
 #### Using the CLI
 
-```sh
+::: code-group
+
+```sh [CLI]
 # Enable code splitting
 bunup src/index.ts --splitting
 
@@ -239,9 +264,7 @@ bunup src/index.ts --splitting
 bunup src/index.ts --splitting=false
 ```
 
-#### Using a Configuration File
-
-```typescript
+```ts [bunup.config.ts]
 export default defineConfig({
 	entry: ['src/index.ts'],
 	format: ['esm'],
@@ -253,6 +276,8 @@ export default defineConfig({
 });
 ```
 
+:::
+
 ## Minification
 
 Bunup provides several minification options to reduce the size of your output files.
@@ -261,16 +286,20 @@ Bunup provides several minification options to reduce the size of your output fi
 
 To enable all minification options:
 
-```sh
-# CLI
-bunup src/index.ts --minify
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts --minify
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
     entry: ['src/index.ts'],
     minify: true,
 });
 ```
+
+:::
 
 ### Granular Minification Control
 
@@ -278,17 +307,19 @@ You can configure individual minification options:
 
 #### Using the CLI
 
-```sh
+::: code-group
+
+```sh [CLI - single option]
 # Minify whitespace only
 bunup src/index.ts --minify-whitespace
+```
 
+```sh [CLI - multiple options]
 # Minify whitespace and syntax, but not identifiers
 bunup src/index.ts --minify-whitespace --minify-syntax
 ```
 
-#### Using a Configuration File
-
-```typescript
+```ts [bunup.config.ts]
 export default defineConfig({
 	entry: ['src/index.ts'],
 	// Configure individual options
@@ -298,23 +329,29 @@ export default defineConfig({
 });
 ```
 
+:::
+
 The `minify` option is a shorthand that enables all three specific options. If you set individual options, they take precedence over the `minify` setting.
 
 ## Bytecode
 
 Bunup can generate bytecode for your JavaScript/TypeScript entrypoints, which can significantly improve startup times for large applications.
 
-```sh
-# CLI
-bunup src/index.ts --bytecode --target bun
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts --bytecode --target bun
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
     entry: ['src/index.ts'],
     bytecode: true,
-    target: 'bun',  # Bytecode compilation requires "bun" target
+    target: 'bun',  // Bytecode compilation requires "bun" target
 });
 ```
+
+:::
 
 For more information, see the [Bun documentation on bytecode](https://bun.sh/docs/bundler#bytecode) and [Bun's blog post on bytecode compilation](https://bun.sh/blog/bun-v1.1.30#compile-to-bytecode-for-2x-faster-startup-time).
 
@@ -322,20 +359,27 @@ For more information, see the [Bun documentation on bytecode](https://bun.sh/doc
 
 Bunup can generate source maps for your bundled code:
 
-```sh
-# CLI
-bunup src/index.ts --sourcemap linked
-# Or just use --sourcemap for inline source maps
-bunup src/index.ts --sourcemap
+::: code-group
 
-# Configuration file
+```sh [CLI - linked]
+bunup src/index.ts --sourcemap linked
+```
+
+```sh [CLI - inline]
+# Use --sourcemap for inline source maps
+bunup src/index.ts --sourcemap
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
     entry: ['src/index.ts'],
     sourcemap: 'linked'
-    # Can also use boolean
-    # sourcemap: true // equivalent to 'inline'
+    // Can also use boolean
+    // sourcemap: true // equivalent to 'inline'
 });
 ```
+
+:::
 
 Available sourcemap values:
 
@@ -372,19 +416,23 @@ For more information on how define works, see the [Bun documentation on define](
 
 You can add custom text to the beginning and end of your bundle files:
 
-```sh
-# CLI
-bunup src/index.ts --banner 'use client' --footer '// built with love in SF'
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts --banner 'use client' --footer '// built with love in SF'
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
       entry: ['src/index.ts'],
-      # Add text to the beginning of bundle files
+      // Add text to the beginning of bundle files
       banner: '"use client";',
-      # Add text to the end of bundle files
+      // Add text to the end of bundle files
       footer: '// built with love in SF',
 });
 ```
+
+:::
 
 The `banner` option adds text to the beginning of the bundle, useful for directives like "use client" for React or license information.
 
@@ -429,16 +477,20 @@ For more information, see the [Bun documentation on loaders](https://bun.sh/docs
 
 You can specify a prefix to be added to specific import paths in your bundled code:
 
-```sh
-# CLI
-bunup src/index.ts --public-path https://cdn.example.com/
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts --public-path https://cdn.example.com/
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
       entry: ['src/index.ts'],
       publicPath: 'https://cdn.example.com/',
 });
 ```
+
+:::
 
 The `publicPath` option only affects certain types of imports in the final bundle:
 
@@ -471,6 +523,8 @@ For more information, see the [Bun documentation on publicPath](https://bun.sh/d
 
 Bunup provides flexible options for handling environment variables in your bundled code:
 
+::: code-group
+
 ```sh [CLI]
 # Inline all environment variables available at build time
 FOO=bar API_KEY=secret bunup src/index.ts --env inline
@@ -482,7 +536,7 @@ bunup src/index.ts --env disable
 PUBLIC_URL=https://example.com bunup src/index.ts --env PUBLIC_*
 ```
 
-```typescript
+```ts [bunup.config.ts]
 export default defineConfig({
 	entry: ['src/index.ts'],
 
@@ -504,6 +558,8 @@ export default defineConfig({
 });
 ```
 
+:::
+
 ### How it Works
 
 The `env` option controls how `process.env.*` and `import.meta.env.*` expressions are replaced at build time:
@@ -521,16 +577,20 @@ For more information, see the [Bun documentation on environment variables](https
 
 Bunup allows you to specify the target environment for your bundle:
 
-```sh
-# CLI
-bunup src/index.ts --target browser
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts --target browser
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
     entry: ['src/index.ts'],
     target: 'browser',
 });
 ```
+
+:::
 
 Available targets:
 
@@ -546,16 +606,20 @@ When targeting `bun`, bundles are marked with a special `// @bun` pragma that te
 
 You can specify where Bunup should output the bundled files:
 
-```sh
-# CLI
-bunup src/index.ts --out-dir build
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts --out-dir build
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
     entry: ['src/index.ts'],
     outDir: 'build',
 });
 ```
+
+:::
 
 The default output directory is `dist`.
 
@@ -563,16 +627,20 @@ The default output directory is `dist`.
 
 By default, Bunup cleans the output directory before each build. You can disable this behavior:
 
-```sh
-# CLI
-bunup src/index.ts --clean=false
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts --clean=false
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
     entry: ['src/index.ts'],
     clean: false,
 });
 ```
+
+:::
 
 ## Post-build Operations
 

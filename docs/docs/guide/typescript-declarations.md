@@ -129,37 +129,46 @@ export{r as fetchData,t as Response,e as DeepPartial};
 
 You can specify a custom tsconfig file for declaration generation:
 
-```sh
-# CLI
-bunup src/index.ts --dts --preferred-tsconfig-path ./tsconfig.build.json
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts --dts --preferred-tsconfig-path ./tsconfig.build.json
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
   entry: ["src/index.ts"],
   preferredTsconfigPath: "./tsconfig.build.json",
 });
 ```
 
+:::
+
 ## Resolving External Types
 
 When generating declaration files, you might need to include type references from external dependencies. Bunup can automatically resolve these external types:
 
-```sh
-# CLI
+::: code-group
+
+```sh [CLI - all packages]
 bunup src/index.ts --dts --resolve-dts
+```
 
-# CLI (Or specify packages to resolve)
+```sh [CLI - specific packages]
 bunup src/index.ts --dts --resolve-dts=react,lodash
+```
 
-# Configuration file
+```ts [bunup.config.ts]
 export default defineConfig({
       entry: ['src/index.ts'],
       dts: {
-            # Enable resolving all external types
+            // Enable resolving all external types
             resolve: true,
       },
 });
 ```
+
+:::
 
 The `resolve` option helps when your TypeScript code imports types from external packages. Bunup will look for type definitions in `node_modules` and include them in your declaration files.
 
@@ -179,15 +188,19 @@ export default defineConfig({
 
 While Bunup automatically generates declaration files for TypeScript entries, you can disable this feature if needed:
 
-```sh
-# CLI
-bunup src/index.ts --dts=false
+::: code-group
 
-# Configuration file
+```sh [CLI]
+bunup src/index.ts --dts=false
+```
+
+```ts [bunup.config.ts]
 export default defineConfig({
   entry: ["src/index.ts"],
   dts: false,
 });
 ```
+
+:::
 
 This can be useful when you want to handle declaration generation yourself or when you're working on a project that doesn't need declaration files.
