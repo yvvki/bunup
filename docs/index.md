@@ -75,16 +75,17 @@ bun run build
 
 ## Configuration
 
-Create a `bunup.config.ts` file for more advanced usage like including plugins:
+Create a `bunup.config.ts` file for more advanced usage like including plugins, hooks, and advanced options that aren't available via CLI.
+
+For example, you can add the [exports](/docs/plugins/exports) plugin to automatically sync your package.json exports on each build - no more manual export management!
 
 ```typescript [bunup.config.ts]
 import { defineConfig } from 'bunup';
-import { copy, exports } from 'bunup/plugins';
+import { exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: ['src/index.ts', 'src/cli.ts'],
-	target: 'bun',
-	plugins: [copy(['assets/**/*']), exports()],
+	entry: ['src/index.ts'],
+	plugins: [exports()],
 });
 ```
 
