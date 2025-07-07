@@ -8,7 +8,7 @@ import {
 	parseErrorMessage,
 } from './errors'
 import { loadPackageJson } from './loaders'
-import { logger, setSilent } from './logger'
+import { logger, setSilent, silent } from './logger'
 import {
 	type BuildOptions,
 	createBuildOptions,
@@ -174,7 +174,7 @@ export async function build(
 				...dtsOptions,
 			})
 
-			if (dtsResult.errors.length) {
+			if (dtsResult.errors.length && !silent) {
 				logIsolatedDeclarationErrors(dtsResult.errors)
 			}
 

@@ -16,7 +16,7 @@ interface FormatMessageOptions extends LogOptions {
 	type?: LogLevel
 }
 
-let silent = false
+export let silent = false
 
 export function setSilent(value: boolean | undefined): void {
 	silent = value ?? false
