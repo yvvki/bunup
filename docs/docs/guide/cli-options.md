@@ -28,7 +28,6 @@ bunup [...entries] [options]
 | `--public-path <url>`              | `-pp`       | Prefix to be appended to import paths in bundled code                                              | -                |
 | `--name <name>`                    | `-n`        | Name for this build configuration                                                                  | -                |
 | `--resolve-dts <value>`            | `-rd`       | Resolve external types for declaration files (can be boolean flag or comma-separated package list) | `false`          |
-| `--dts-only`                       |             | Generate only TypeScript declaration files without JavaScript output                               | `false`          |
 | `--preferred-tsconfig-path <path>` | `-tsconfig` | Path to preferred tsconfig file used for typescript declaration files generation                   | -                |
 | `--bytecode`                       | `-bc`       | Generate bytecode for JavaScript/TypeScript entrypoints to improve startup times                   | `false`          |
 | `--silent`                         |             | Disable logging during the build process                                                           | `false`          |

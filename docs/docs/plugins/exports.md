@@ -23,24 +23,24 @@ When using the exports plugin, your package.json will be automatically updated w
 	"name": "my-package",
 	"version": "1.0.0",
 	"type": "module",
-	"files": [
-		"dist"
-	],
-	"module": "./dist/index.js",
-	"main": "./dist/index.cjs",
-	"types": "./dist/index.d.ts",
-	"exports": {
-		".": {
-			"import": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
-			},
-			"require": {
-				"types": "./dist/index.d.cts",
-				"default": "./dist/index.cjs"
-			}
-		}
-	}
+	"files": [ // [!code ++]
+		"dist" // [!code ++]
+	], // [!code ++]
+	"module": "./dist/index.js", // [!code ++]
+	"main": "./dist/index.cjs", // [!code ++]
+	"types": "./dist/index.d.ts", // [!code ++]
+	"exports": { // [!code ++]
+		".": { // [!code ++]
+			"import": { // [!code ++]
+				"types": "./dist/index.d.ts", // [!code ++]
+				"default": "./dist/index.js" // [!code ++]
+			}, // [!code ++]
+			"require": { // [!code ++]
+				"types": "./dist/index.d.cts", // [!code ++]
+				"default": "./dist/index.cjs" // [!code ++]
+			} // [!code ++]
+		} // [!code ++]
+	} // [!code ++]
 }
 ```
 
