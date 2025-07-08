@@ -12,6 +12,7 @@ import { logger, setSilent, silent } from './logger'
 import {
 	type BuildOptions,
 	createBuildOptions,
+	getDefaultChunkNaming,
 	getResolvedBytecode,
 	getResolvedDefine,
 	getResolvedDtsSplitting,
@@ -97,7 +98,7 @@ export async function build(
 		const result = await Bun.build({
 			entrypoints: entrypoints.map((file) => `${rootDir}/${file}`),
 			format: fmt,
-			naming: getResolvedNaming(fmt, packageType),
+			naming: getResolvedNaming(fmt, packageType, options.name),
 			splitting: getResolvedSplitting(options.splitting, fmt),
 			bytecode: getResolvedBytecode(options.bytecode, fmt),
 			define: getResolvedDefine(options.define, options.env),
@@ -171,6 +172,9 @@ export async function build(
 				cwd: rootDir,
 				preferredTsConfigPath: options.preferredTsconfigPath,
 				splitting: getResolvedDtsSplitting(options.splitting, splitting),
+				naming: {
+					chunk: getDefaultChunkNaming(options.name),
+				},
 				...dtsOptions,
 			})
 
@@ -180,8 +184,11 @@ export async function build(
 
 			for (const fmt of options.format) {
 				for (const file of dtsResult.files) {
-					const dtsExtension = getDefaultDtsExtention(fmt, packageType)
-
+					const dtsExtension = getDefaultDtsExtention(
+						fmt,
+						packageType,
+						file.kind,
+					)
 					const relativePathToOutputDir = cleanPath(
 						`${file.pathInfo.outputPathWithoutExtension}${dtsExtension}`,
 					)

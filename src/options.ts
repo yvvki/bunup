@@ -432,14 +432,22 @@ export function getResolvedDtsSplitting(
 
 const DEFAULT_ENTRY_NAMING = '[dir]/[name].[ext]'
 
+export function getDefaultChunkNaming(name: string | undefined) {
+	return `shared/${name ?? 'chunk'}-[hash].[ext]`
+}
+
 export function getResolvedNaming(
 	fmt: Format,
 	packageType: string | undefined,
+	name: string | undefined,
 ): Naming {
 	const replaceExt = (pattern: string): string =>
 		pattern.replace('.[ext]', getDefaultOutputExtension(fmt, packageType))
 
-	return replaceExt(DEFAULT_ENTRY_NAMING)
+	return {
+		entry: replaceExt(DEFAULT_ENTRY_NAMING),
+		chunk: replaceExt(getDefaultChunkNaming(name)),
+	}
 }
 
 export function getResolvedEnv(

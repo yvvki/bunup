@@ -1,1 +1,3 @@
-export const hello = 'hello'
+export function createFixture() {
+	return 'fixture'
+}

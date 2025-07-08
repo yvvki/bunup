@@ -646,6 +646,19 @@ describe('Bunup Plugin', () => {
 		expect(clientFile.entrypoint).toBe('src/client.ts')
 
 		expect(chunkFiles.every((file) => file.entrypoint === undefined)).toBe(true)
+		expect(
+			chunkFiles.every((file) =>
+				file.relativePathToOutputDir.startsWith('shared/'),
+			),
+		).toBe(true)
+		expect(dtsChunkFiles.every((file) => file.entrypoint === undefined)).toBe(
+			true,
+		)
+		expect(
+			dtsChunkFiles.every((file) =>
+				file.relativePathToOutputDir.startsWith('shared/'),
+			),
+		).toBe(true)
 
 		const mainDtsFile = dtsEntryPointFiles.find((file) =>
 			file.fullPath.includes('main.d.mts'),
@@ -665,13 +678,11 @@ describe('Bunup Plugin', () => {
 		expect(adminDtsFile.entrypoint).toBe('src/admin.ts')
 		expect(clientDtsFile.entrypoint).toBe('src/client.ts')
 
-		expect(dtsChunkFiles.every((file) => file.entrypoint === undefined)).toBe(
-			true,
-		)
-
 		const sharedTypesChunk = dtsChunkFiles.find(
 			(file) =>
-				file.fullPath.includes('chunk') && file.fullPath.endsWith('.d.mts'),
+				file.fullPath.includes('chunk') &&
+				file.fullPath.endsWith('.d.ts') &&
+				file.relativePathToOutputDir.startsWith('shared/'),
 		)
 		expect(sharedTypesChunk).toBeDefined()
 		expect(sharedTypesChunk.entrypoint).toBeUndefined()
@@ -681,8 +692,14 @@ describe('Bunup Plugin', () => {
 		expect(
 			allFiles.every((file) =>
 				file.dts
-					? file.fullPath.includes('.d.mts')
-					: file.fullPath.includes('.mjs') || file.fullPath.includes('chunk-'),
+					? file.kind === 'chunk'
+						? file.relativePathToOutputDir.startsWith('shared/') &&
+							file.fullPath.includes('.d.ts')
+						: file.fullPath.includes('.d.mts')
+					: file.kind === 'chunk'
+						? file.relativePathToOutputDir.startsWith('shared/') &&
+							file.fullPath.includes('chunk-')
+						: file.fullPath.includes('.mjs'),
 			),
 		).toBe(true)
 

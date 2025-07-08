@@ -27,7 +27,11 @@ export function getDefaultOutputExtension(
 export function getDefaultDtsExtention(
 	format: Format,
 	packageType: string | undefined,
+	kind: 'entry-point' | 'chunk',
 ): string {
+	// always use the .d.ts extension for dts chunk files to avoid duplicate files for each format.
+	if (kind === 'chunk') return '.d.ts'
+
 	switch (format) {
 		case 'esm':
 			return isModulePackage(packageType) ? '.d.ts' : '.d.mts'
