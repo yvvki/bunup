@@ -48,7 +48,7 @@ describe('CLI Only Options', () => {
 		expect(result.stdout).toContain('Running command:')
 		expect(result.stdout).toContain("echo 'success-message-test'")
 		expect(result.stdout).toContain('success-message-test')
-		const file = findFile(result, 'index', '.js')
+		const file = findFile(result, 'index', '.mjs')
 		expect(file).toBeTruthy()
 	})
 
