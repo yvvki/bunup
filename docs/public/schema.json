@@ -79,7 +79,7 @@
 						"type": "string",
 						"enum": ["esm", "cjs", "iife"]
 					},
-					"description": "Output formats for the bundle. Can include 'esm', 'cjs', and/or 'iife'. Defaults to ['cjs'] if not specified."
+					"description": "Output formats for the bundle. Can include 'esm', 'cjs', and/or 'iife'. Defaults to ['esm'] if not specified."
 				},
 				"minify": {
 					"type": "boolean",

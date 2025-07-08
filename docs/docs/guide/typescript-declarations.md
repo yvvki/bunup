@@ -130,7 +130,7 @@ You can specify a custom tsconfig file for declaration generation:
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --dts --preferred-tsconfig-path ./tsconfig.build.json
+bunup src/index.ts --preferred-tsconfig-path ./tsconfig.build.json
 ```
 
 ```ts [bunup.config.ts]
@@ -149,11 +149,11 @@ When generating declaration files, you might need to include type references fro
 ::: code-group
 
 ```sh [CLI - all packages]
-bunup src/index.ts --dts --resolve-dts
+bunup src/index.ts --resolve-dts
 ```
 
 ```sh [CLI - specific packages]
-bunup src/index.ts --dts --resolve-dts=react,lodash
+bunup src/index.ts --resolve-dts=react,lodash
 ```
 
 ```ts [bunup.config.ts]

@@ -62,7 +62,7 @@ export interface BuildOptions {
 	/**
 	 * Output formats for the bundle
 	 * Can include 'esm', 'cjs', and/or 'iife'
-	 * Defaults to ['cjs'] if not specified
+	 * Defaults to ['esm'] if not specified
 	 */
 	format: Format[]
 
@@ -343,7 +343,7 @@ export interface BuildOptions {
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
 	entry: ['src/index.ts'],
-	format: ['esm', 'cjs'],
+	format: ['esm'],
 	outDir: 'dist',
 	target: 'node',
 	clean: true,

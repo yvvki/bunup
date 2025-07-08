@@ -81,9 +81,9 @@ Glob pattern features:
 
 Bunup supports three output formats:
 
-- **esm**: ECMAScript modules
+- **esm**: ECMAScript modules (default)
 - **cjs**: CommonJS modules
-- **iife**: Immediately Invoked Function Expression
+- **iife**: Immediately Invoked Function Expression (for browser)
 
 You can specify one or more formats:
 

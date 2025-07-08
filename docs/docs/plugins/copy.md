@@ -10,7 +10,6 @@ import { copy } from 'bunup/plugins';
 
 export default defineConfig({
 	entry: ['src/index.ts'],
-	format: ['esm'],
 	plugins: [copy(['README.md', 'assets/**/*'])],
 });
 ```

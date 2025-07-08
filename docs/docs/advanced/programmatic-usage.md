@@ -27,7 +27,7 @@ import { build, type BuildOptions } from 'bunup';
 
 const options: BuildOptions = {
   entry: ['src/index.ts'],
-  format: ['esm'],
+  format: ['esm', 'cjs'],
 };
 
 await build(options);
