@@ -23,7 +23,7 @@ Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for 
 
 ## Key Features
 
-- ⚡ **Blazing Fast**: Lightning-quick builds and instant rebuilds powered by Bun.
+- ⚡ **Blazing Fast**: Lightning-quick builds and instant rebuilds.
 - 📝 **Best-in-Class TypeScript Declarations**: Clean, minimal and accurate `.d.ts` files generated automatically.
 - 📦 **ESM by Default**: Modern ESM output, with CJS and Bun support when needed.
 - 🪓 **Declaration Splitting**: Smaller, more readable TypeScript declaration bundles.
