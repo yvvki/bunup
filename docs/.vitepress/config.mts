@@ -55,6 +55,7 @@ export default defineConfig({
 					{ text: 'Exports', link: '/docs/plugins/exports' },
 					{ text: 'Copy', link: '/docs/plugins/copy' },
 					{ text: 'Inject Styles', link: '/docs/plugins/inject-styles' },
+					{ text: 'Unused', link: '/docs/plugins/unused' },
 				],
 			},
 			{
