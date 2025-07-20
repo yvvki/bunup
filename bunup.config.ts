@@ -1,4 +1,4 @@
-import { exports } from './src/plugins'
+import { exports, unused } from './src/plugins'
 
 export default {
 	outDir: 'dist',
@@ -12,5 +12,6 @@ export default {
 		exports({
 			exclude: ['src/cli/index.ts'],
 		}),
+		unused(),
 	],
 }
