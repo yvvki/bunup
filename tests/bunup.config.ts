@@ -1,10 +1,12 @@
 import { defineConfig } from '../src'
+import { unused } from '../src/plugins'
 
 export default defineConfig({
-	entry: ['fixtures/server/index.ts', 'fixtures/client/index.ts'],
+	entry: ['fixtures/index.ts'],
 	format: ['esm', 'cjs'],
 	splitting: true,
 	dts: {
 		splitting: true,
 	},
+	plugins: [unused()],
 })
