@@ -96,7 +96,7 @@ export default defineConfig({
 });
 ```
 
-When enabled, minification will preserve public (exported) API names while minifying internal type names to reduce file size. This is particularly useful for large declaration files or multiple medium to large declaration files, which can reduce your bundle size significantly.
+When enabled, minification preserves public (exported) API names while minifying internal type names and removes documentation comments. This significantly reduces file size when bundle size is a priority and JSDoc comments aren't essential.
 
 ### Example
 
@@ -116,10 +116,7 @@ export { fetchData, Response, DeepPartial };
 **Minified:**
 
 ```ts
-type e<T>={[P in keyof T]?:e<T[P]>};
-interface t<T>{data:T;error?:string;meta?:Record<string,unknown>;}
-declare function r<T>(url:string,options?:RequestInit):Promise<t<T>>;
-export{r as fetchData,t as Response,e as DeepPartial};
+type e<T>={[P in keyof T]?:e<T[P]>};interface t<T>{data:T;error?:string;meta?:Record<string,unknown>;}declare function n<T>(url:string,options?:RequestInit): Promise<t<T>>;export{n as fetchData,t as Response,e as DeepPartial};
 ```
 
 
