@@ -53,12 +53,12 @@
 		"picocolors": "^1.1.1",
 		"replace-in-file": "^8.3.0",
 		"tinyexec": "^1.0.1",
-		"typeroll": "^0.6.17"
+		"typeroll": "^0.6.20"
 	},
 	"devDependencies": {
 		"@babel/types": "^7.28.1",
 		"@biomejs/biome": "2.0.0",
-		"@types/bun": "^1.2.18",
+		"@types/bun": "^1.2.19",
 		"bumpp": "^10.2.0",
 		"husky": "^9.1.7",
 		"lightningcss": "^1.30.1",
