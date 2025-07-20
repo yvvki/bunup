@@ -34,7 +34,7 @@ Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for 
 
 ## 📚 Documentation
 
-To get started, visit the [documentation](https://bunup.dev/docs).
+To get started, visit the [documentation](https://bunup.dev).
 
 ## ❤️ Contributing
 
