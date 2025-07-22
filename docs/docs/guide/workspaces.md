@@ -53,6 +53,70 @@ export default defineWorkspace([
 ]);
 ```
 
+### Using Shared Options
+
+You can simplify configuration by using shared options:
+
+```typescript [bunup.config.ts]
+import { defineWorkspace } from "bunup";
+
+export default defineWorkspace(
+  [
+    {
+      name: "core",
+      root: "packages/core",
+      config: {
+        format: ["esm", "cjs"], // Overrides shared format
+      },
+    },
+    {
+      name: "utils",
+      root: "packages/utils",
+      config: {
+        // Uses shared entry and format
+      },
+    },
+  ],
+  {
+    // Shared configuration applied to all packages
+    entry: ["src/index.ts"],
+    format: ["esm"],
+    minify: true,
+    target: "node",
+  }
+);
+```
+
+When a package has multiple configurations, shared options will apply to all of them:
+
+```typescript [bunup.config.ts]
+export default defineWorkspace(
+  [
+    {
+      name: "web-package",
+      root: "packages/web",
+      config: [
+        {
+          name: "browser-esm",
+          format: ["esm"],
+          target: "browser",
+        },
+        {
+          name: "node-cjs",
+          format: ["cjs"],
+          target: "node",
+        },
+      ],
+    },
+  ],
+  {
+    // These shared options apply to BOTH browser-esm and node-cjs configs
+    entry: ["src/index.ts"],
+    minify: true,
+  }
+);
+```
+
 ## Multiple Build Configurations
 
 You can define multiple build configurations for a single package by using an array:
