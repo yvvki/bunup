@@ -324,11 +324,15 @@ function createUpdatedPackageJson(
 	const { main, module, types, ...restPackageJson } = originalData
 
 	const newPackageJson: Record<string, unknown> = {
-		name: originalData.name,
-		description: originalData.description,
-		version: originalData.version,
-		type: originalData.type,
-		private: originalData.private,
+		...Object.fromEntries(
+			Object.entries({
+				name: originalData.name,
+				description: originalData.description,
+				version: originalData.version,
+				type: originalData.type,
+				private: originalData.private,
+			}).filter(([_, value]) => value !== undefined),
+		),
 		files,
 		...entryPoints,
 		exports,

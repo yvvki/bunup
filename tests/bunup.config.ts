@@ -1,5 +1,5 @@
 import { defineConfig } from '../src'
-import { unused } from '../src/plugins'
+import { exports, unused } from '../src/plugins'
 
 export default defineConfig({
 	entry: ['fixtures/index.ts'],
@@ -8,5 +8,5 @@ export default defineConfig({
 	dts: {
 		splitting: true,
 	},
-	plugins: [unused()],
+	plugins: [unused(), exports()],
 })

@@ -67,6 +67,9 @@ export function report(): BunupPlugin {
 				}
 
 				logger.space()
+				if (options.name) {
+					console.log(pc.bgMagenta(pc.white(options.name)))
+				}
 				logTable(columns, data, footer)
 				logger.space()
 			},
