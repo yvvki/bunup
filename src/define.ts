@@ -11,12 +11,15 @@ export function defineWorkspace(
 	sharedOptions?: DefineConfigItem,
 ): DefineWorkspaceItem[] {
 	return options.map((item) => {
-		const config = Array.isArray(item.config)
-			? item.config.map((config) => ({
-					...sharedOptions,
-					...config,
-				}))
-			: { ...sharedOptions, ...item.config }
+		const config =
+			item.config && Array.isArray(item.config)
+				? item.config.map((config) => ({
+						...sharedOptions,
+						...config,
+					}))
+				: item.config
+					? { ...sharedOptions, ...item.config }
+					: sharedOptions
 		return { ...item, config }
 	})
 }

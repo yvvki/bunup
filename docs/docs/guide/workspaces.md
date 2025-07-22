@@ -72,9 +72,7 @@ export default defineWorkspace(
     {
       name: "utils",
       root: "packages/utils",
-      config: {
-        // Uses shared entry and format
-      },
+      // config is optional when using only shared options
     },
   ],
   {
@@ -110,7 +108,7 @@ export default defineWorkspace(
     },
   ],
   {
-    // These shared options apply to BOTH browser-esm and node-cjs configs
+    // These shared options apply to both browser-esm and node-cjs configs
     entry: ["src/index.ts"],
     minify: true,
   }

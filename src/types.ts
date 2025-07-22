@@ -17,5 +17,5 @@ export type DefineConfigItem = Omit<
 export type DefineWorkspaceItem = {
 	name: string
 	root: string
-	config: DefineConfigItem | DefineConfigItem[]
+	config?: DefineConfigItem | DefineConfigItem[]
 }
