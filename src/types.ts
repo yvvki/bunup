@@ -2,7 +2,8 @@ import type { BuildOptions } from './options'
 
 export type MaybePromise<T> = Promise<T> | T
 
-type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+export type WithOptional<T, K extends keyof T> = Omit<T, K> &
+	Partial<Pick<T, K>>
 
 export type WithRequired<T, K extends keyof T> = Omit<T, K> &
 	Required<Pick<T, K>>
@@ -17,5 +18,5 @@ export type DefineConfigItem = Omit<
 export type DefineWorkspaceItem = {
 	name: string
 	root: string
-	config?: DefineConfigItem | DefineConfigItem[]
+	config: DefineConfigItem | DefineConfigItem[]
 }

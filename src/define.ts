@@ -1,4 +1,9 @@
-import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from './types'
+import type {
+	Arrayable,
+	DefineConfigItem,
+	DefineWorkspaceItem,
+	WithOptional,
+} from './types'
 
 export function defineConfig(
 	options: Arrayable<DefineConfigItem>,
@@ -7,7 +12,7 @@ export function defineConfig(
 }
 
 export function defineWorkspace(
-	options: DefineWorkspaceItem[],
+	options: WithOptional<DefineWorkspaceItem, 'config'>[],
 	sharedOptions?: DefineConfigItem,
 ): DefineWorkspaceItem[] {
 	return options.map((item) => {
@@ -21,5 +26,5 @@ export function defineWorkspace(
 					? { ...sharedOptions, ...item.config }
 					: sharedOptions
 		return { ...item, config }
-	})
+	}) as DefineWorkspaceItem[]
 }
