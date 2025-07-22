@@ -67,7 +67,7 @@ export class Logger {
 	}
 
 	private formatIdentifier(identifier?: string): string {
-		return identifier ? `   ${pc.bgBlue(pc.black(` ${identifier} `))}` : ''
+		return identifier ? `   ${pc.bgBlueBright(` ${identifier} `)}` : ''
 	}
 
 	public formatMessage(options: FormatMessageOptions): string {

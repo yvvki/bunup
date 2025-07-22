@@ -68,7 +68,8 @@ export function report(): BunupPlugin {
 
 				logger.space()
 				if (options.name) {
-					logger.log(pc.bgMagenta(pc.white(options.name)))
+					logger.log(pc.bgMagentaBright(options.name))
+					logger.space()
 				}
 				logTable(columns, data, footer)
 				logger.space()
