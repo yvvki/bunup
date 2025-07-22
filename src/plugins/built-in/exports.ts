@@ -1,4 +1,5 @@
 import path from 'node:path'
+import equal from 'fast-deep-equal'
 import { JS_DTS_RE } from '../../constants/re'
 import { logger } from '../../logger'
 import { cleanPath } from '../../utils'
@@ -87,6 +88,10 @@ async function processPackageJsonExports(
 			mergedExports,
 			updatedFiles,
 		)
+
+		if (equal(newPackageJson, meta.packageJson.data)) {
+			return
+		}
 
 		await Bun.write(
 			meta.packageJson.path,
