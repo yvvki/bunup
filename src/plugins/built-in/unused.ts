@@ -1,4 +1,5 @@
 import pc from 'picocolors'
+import { logger } from '../../logger'
 import { formatListWithAnd } from '../../utils'
 import type { Plugin } from '../types'
 
@@ -101,10 +102,10 @@ export function unused(options: UnusedOptions = {}): Plugin {
 					].join(' ')
 
 					if (level === 'error') {
-						console.error(pc.red(message))
+						logger.log(pc.red(message))
 						process.exit(1)
 					} else {
-						console.log(message)
+						logger.log(message)
 					}
 				}
 			},
