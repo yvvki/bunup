@@ -53,7 +53,7 @@ export default defineWorkspace([
 ]);
 ```
 
-### Using Shared Options
+## Using Shared Options
 
 You can simplify configuration by using shared options:
 
