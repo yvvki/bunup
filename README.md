@@ -18,45 +18,6 @@ Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for 
 
 *The benchmark above shows build times for a project with 1,000 files with TypeScript declaration generation enabled. For detailed benchmarks, visit [here](https://gugustinette.github.io/bundler-benchmark/)*;
 
-<div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;">
-  <table>
-    <thead>
-      <tr>
-        <th>Tool</th>
-        <th>Build Time (s)</th>
-        <th>Relative Speed</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>bunup</td>
-        <td>0.37 s</td>
-        <td>baseline</td>
-      </tr>
-      <tr>
-        <td>tsdown</td>
-        <td>0.41 s</td>
-        <td>1.11× slower</td>
-      </tr>
-      <tr>
-        <td>rslib</td>
-        <td>1.41 s</td>
-        <td>3.81× slower</td>
-      </tr>
-      <tr>
-        <td>unbuild</td>
-        <td>3.19 s</td>
-        <td>8.62× slower</td>
-      </tr>
-      <tr>
-        <td>tsup</td>
-        <td>3.37 s</td>
-        <td>9.11× slower</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 </div>
 <!-- markdownlint-restore -->
 
