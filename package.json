@@ -79,9 +79,9 @@
 		}
 	},
 	"scripts": {
-		"build": "bunup",
+		"build": "bunx bunup@latest",
 		"build:docs": "bun run --cwd docs build",
-		"dev": "bunup --watch",
+		"dev": "bunx bunup@latest --watch",
 		"dev:docs": "bun run --cwd docs dev",
 		"format": "biome format .",
 		"format:fix": "biome format --write .",
