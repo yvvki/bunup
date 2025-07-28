@@ -2,22 +2,6 @@
 
 Bunup is the ⚡️ **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
 
-## Quick Start
-
-Quickly scaffold a new modern TypeScript or React library with Bunup in just 10 seconds.
-
-```sh
-bunx bunup@latest --new
-```
-
-See the [Scaffold with Bunup](./scaffold-with-bunup.md) page for more details.
-
-Or, initialize bunup in an existing project:
-
-```sh
-bunx bunup@latest --init
-```
-
 ## Performance
 
 **Bunup** delivers instant builds by design. With Bun's native speed and [Bunup's own high-performance dts bundler](https://github.com/bunup/typeroll), cold starts and rebuilds are lightning fast—even in monorepos. Say goodbye to slow bundling—this is the future of instant packaging.
@@ -25,7 +9,6 @@ bunx bunup@latest --init
 ![Bunup benchmarks](/benchmarks.png)
 
 *For detailed information on the benchmark, visit [here](https://gugustinette.github.io/bundler-benchmark/)*
-
 
 <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;" aria-hidden="false">
 <table>
@@ -66,6 +49,21 @@ bunx bunup@latest --init
 </table>
 </div>
 
+## Quick Start
+
+Quickly scaffold a new modern TypeScript or React library with Bunup in just 10 seconds.
+
+```sh
+bunx bunup@latest --new
+```
+
+See the [Scaffold with Bunup](./scaffold-with-bunup.md) page for more details.
+
+Or, initialize bunup in an existing project:
+
+```sh
+bunx bunup@latest --init
+```
 
 ## Getting Started
 
