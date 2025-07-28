@@ -1,6 +1,7 @@
-import { exports, unused } from './src/plugins'
+import { defineConfig } from 'bunup'
+import { exports, unused } from 'bunup/plugins'
 
-export default {
+export default defineConfig({
 	outDir: 'dist',
 	target: 'bun',
 	format: ['esm'],
@@ -15,4 +16,4 @@ export default {
 		}),
 		unused(),
 	],
-}
+})
