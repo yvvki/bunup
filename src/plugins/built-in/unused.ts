@@ -3,7 +3,7 @@ import { logger } from '../../logger'
 import { formatListWithAnd } from '../../utils'
 import type { Plugin } from '../types'
 
-export interface UnusedOptions {
+interface UnusedOptions {
 	/**
 	 * The level of reporting for unused dependencies
 	 * @default 'warn'
