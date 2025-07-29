@@ -2,6 +2,53 @@
 
 Bunup is the ⚡️ **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
 
+## Performance
+
+**Bunup** delivers instant builds by design. With Bun's native speed and [Bunup's own high-performance dts bundler](https://github.com/bunup/typeroll), cold starts and rebuilds are lightning fast, even in monorepos. Say goodbye to slow bundling and say hello to instant packaging.
+
+![Bunup benchmarks](/benchmarks.png)
+
+*Benchmark shows build times for a 1,000-file TypeScript project with declaration generation. [See detailed benchmarks](https://gugustinette.github.io/bundler-benchmark/)*
+
+<div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;" aria-hidden="false">
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Build Time (s)</th>
+<th>Relative Speed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bunup</td>
+<td>0.37 s</td>
+<td>baseline</td>
+</tr>
+<tr>
+<td>tsdown</td>
+<td>0.41 s</td>
+<td>1.11× slower</td>
+</tr>
+<tr>
+<td>rslib</td>
+<td>1.41 s</td>
+<td>3.81× slower</td>
+</tr>
+<tr>
+<td>unbuild</td>
+<td>3.19 s</td>
+<td>8.62× slower</td>
+</tr>
+<tr>
+<td>tsup</td>
+<td>3.37 s</td>
+<td>9.11× slower</td>
+</tr>
+</tbody>
+</table>
+</div>
+
 ## Quick Start
 
 Quickly scaffold a new modern TypeScript or React library with Bunup in just 10 seconds.
@@ -170,50 +217,3 @@ Then run:
 ```sh
 bun run dev
 ```
-
-## Performance
-
-**Bunup** delivers instant builds by design. With Bun's native speed and [Bunup's own high-performance dts bundler](https://github.com/bunup/typeroll), cold starts and rebuilds are lightning fast—even in monorepos. Say goodbye to slow bundling—this is the future of instant packaging.
-
-![Bunup benchmarks](/benchmarks.png)
-
-*The benchmark above shows build times for a project with 1,000 files with TypeScript declaration generation enabled. For detailed benchmarks, visit [here](https://gugustinette.github.io/bundler-benchmark/)*;
-
-<div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;" aria-hidden="false">
-<table>
-<thead>
-<tr>
-<th>Tool</th>
-<th>Build Time (s)</th>
-<th>Relative Speed</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>bunup</td>
-<td>0.37 s</td>
-<td>baseline</td>
-</tr>
-<tr>
-<td>tsdown</td>
-<td>0.41 s</td>
-<td>1.11× slower</td>
-</tr>
-<tr>
-<td>rslib</td>
-<td>1.41 s</td>
-<td>3.81× slower</td>
-</tr>
-<tr>
-<td>unbuild</td>
-<td>3.19 s</td>
-<td>8.62× slower</td>
-</tr>
-<tr>
-<td>tsup</td>
-<td>3.37 s</td>
-<td>9.11× slower</td>
-</tr>
-</tbody>
-</table>
-</div>
