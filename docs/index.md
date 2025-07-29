@@ -4,11 +4,7 @@ Bunup is the ⚡️ **blazing-fast build tool** for TypeScript libraries, design
 
 ## Performance
 
-**Bunup** delivers instant builds by design. With Bun's native speed and [Bunup's own high-performance dts bundler](https://github.com/bunup/typeroll), cold starts and rebuilds are lightning fast, even in monorepos. Say goodbye to slow bundling and say hello to instant packaging.
-
-![Bunup benchmarks](/benchmarks.png)
-
-*Benchmark shows build times for a 1,000-file TypeScript project with declaration generation. [See detailed benchmarks](https://gugustinette.github.io/bundler-benchmark/)*
+**Bunup** delivers instant builds by design. With Bun's native speed and [Bunup's own high-performance dts bundler](https://github.com/bunup/typeroll), cold starts and rebuilds are lightning fast, even in monorepos. Say goodbye to slow bundling and say hello to instant packaging. See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
 
 <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;" aria-hidden="false">
 <table>
