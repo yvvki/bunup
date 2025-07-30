@@ -61,6 +61,14 @@ You can use:
 
 Declaration splitting optimizes TypeScript `.d.ts` files when multiple entry points share types. Instead of duplicating shared types across declaration files, Bunup extracts them into shared chunk files that are imported where needed.
 
+```typescript
+export default defineConfig({
+	dts: {
+		splitting: true,
+	},
+});
+```
+
 **Without splitting:**
 
 ```
@@ -80,9 +88,10 @@ dist/
 
 The result is clean declarations with no duplicates, improved readability, and reduced bundle size.
 
+<!-- TODO: Uncomment this once Bun fixes the issue with splitting and declaration splitting can be enabled by default when build splitting is enabled
 ::: info
 Declaration splitting is enabled by default if code splitting is enabled.
-:::
+::: -->
 
 ## Minification
 

@@ -61,15 +61,29 @@ const KNOWN_ERRORS: KnownErrorSolution[] = [
 		pattern: /Could not resolve: "bun"/i,
 		errorType: 'BUILD ERROR',
 		logSolution: () => {
-			logger.info(
-				pc.white("You're trying to build a project that uses Bun. ") +
-					pc.white('Please set the target option to ') +
+			logger.log(
+				"You're trying to build a project that uses Bun. " +
+					'Please set the target option to ' +
 					pc.cyan('`bun`') +
-					pc.white('.\n') +
-					pc.white('Example: ') +
+					'.\n' +
+					'Example: ' +
 					pc.green('`bunup --target bun`') +
-					pc.white(' or in config: ') +
+					' or in config: ' +
 					pc.green("{ target: 'bun' }"),
+			)
+		},
+	},
+	{
+		pattern: /has already been exported. Exported identifiers must be unique./i,
+		errorType: 'DTS ERROR',
+		logSolution: () => {
+			logger.log(
+				'An error occurred while bundling dts files. This issue occurs when dts splitting is enabled due to a bug in the Bun bundler. Please ping the GitHub issue to help get it fixed faster: ' +
+					link('https://github.com/oven-sh/bun/issues/5344') +
+					'. To fix this issue for now, you can disable dts splitting by removing ' +
+					pc.gray('dts: { splitting: true }') +
+					' from your config.' +
+					' You can re-enable it once the issue is fixed.',
 			)
 		},
 	},

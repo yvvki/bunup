@@ -421,12 +421,12 @@ export function getResolvedSplitting(
 }
 
 export function getResolvedDtsSplitting(
-	buildSplitting: boolean | undefined,
+	_buildSplitting: boolean | undefined,
 	dtsSplitting: boolean | undefined,
 ): boolean {
-	// TODO: Enable splitting by default once Bun fixes the issue with splitting
+	// TODO: Enable splitting by default when build splitting is enabled once Bun fixes the issue with splitting
 	// Track upstream issue: https://github.com/oven-sh/bun/issues/5344
-	return dtsSplitting ?? buildSplitting ?? false
+	return !!dtsSplitting
 }
 
 const DEFAULT_ENTRY_NAMING = '[dir]/[name].[ext]'
