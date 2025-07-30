@@ -38,3 +38,5 @@ To get started, visit the [documentation](https://bunup.dev).
 For guidelines on contributing, please read the [contributing guide](../../CONTRIBUTING.md).
 
 We welcome contributions from the community to enhance Bunup's capabilities and make it even more powerful.
+
+![Sponsors](https://cdn.jsdelivr.net/gh/arshad-yaseen/static/sponsors.svg)
