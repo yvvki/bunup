@@ -14,10 +14,6 @@
 
 Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**. 
 
-![Bunup benchmarks](/assets/benchmarks.png)
-
-*Benchmark shows build times for a 1,000-file TypeScript project with declaration generation. [See detailed benchmarks](https://gugustinette.github.io/bundler-benchmark/)*
-
 </div>
 <!-- markdownlint-restore -->
 
