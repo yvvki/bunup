@@ -2,7 +2,7 @@
 
 import { loadConfig } from 'coffi'
 import pc from 'picocolors'
-import { exec } from 'tinyexec'
+
 import { version } from '../../package.json'
 import { build } from '../build'
 import { handleErrorAndExit } from '../errors'
@@ -91,16 +91,6 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 		})
 	}
 
-	if (cliOptions.onSuccess) {
-		logger.info(`Running command: ${cliOptions.onSuccess}`, {
-			muted: true,
-		})
-
-		await exec(cliOptions.onSuccess, [], {
-			nodeOptions: { shell: true, stdio: 'inherit' },
-		})
-	}
-
 	if (!cliOptions.watch) {
 		process.exit(process.exitCode ?? 0)
 	}
@@ -109,7 +99,6 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 function removeCliOnlyOptions(options: Partial<CliOptions>) {
 	return {
 		...options,
-		onSuccess: undefined,
 		config: undefined,
 		filter: undefined,
 		new: undefined,

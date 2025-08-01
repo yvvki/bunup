@@ -34,6 +34,39 @@ type Env = 'inline' | 'disable' | `${string}*` | Record<string, string>
 
 type Naming = string | { entry?: string; chunk?: string; asset?: string }
 
+export type OnSuccess =
+	| ((options: Partial<BuildOptions>) => MaybePromise<void> | (() => void))
+	| string
+	| {
+			/**
+			 * The shell command to execute after a successful build
+			 */
+			cmd: string
+			/**
+			 * Additional options for the command execution
+			 */
+			options?: {
+				/**
+				 * Working directory for the command
+				 */
+				cwd?: string
+				/**
+				 * Environment variables to pass to the command
+				 * @default process.env
+				 */
+				env?: Record<string, string | undefined>
+				/**
+				 * Maximum time in milliseconds the command is allowed to run
+				 */
+				timeout?: number
+				/**
+				 * Signal to use when killing the process
+				 * @default 'SIGTERM'
+				 */
+				killSignal?: NodeJS.Signals | number
+			}
+	  }
+
 export interface BuildOptions {
 	/**
 	 * Name of the build configuration
@@ -185,15 +218,27 @@ export interface BuildOptions {
 	 */
 	define?: Define
 	/**
-	 * A callback function that runs after the build process completes
-	 * This can be used for custom post-build operations like copying files,
-	 * running additional tools, or logging build information
+	 * A callback or command to run after a successful build.
 	 *
-	 * If watch mode is enabled, this callback runs after each rebuild
+	 * If a function is provided, it can optionally return a cleanup function
+	 * that will be called when the operation is cancelled.
 	 *
-	 * @param options The build options that were used
+	 * @example
+	 * onSuccess: (options) => {
+	 *   const server = startServer();
+	 *   return () => server.close();
+	 * }
+	 *
+	 * @example
+	 * onSuccess: "echo Build completed!"
+	 *
+	 * @example
+	 * onSuccess: {
+	 *   cmd: "bun run dist/server.js",
+	 *   options: { env: { ...process.env, FOO: "bar" } }
+	 * }
 	 */
-	onSuccess?: (options: Partial<BuildOptions>) => MaybePromise<void>
+	onSuccess?: OnSuccess
 	/**
 	 * A banner to be added to the final bundle, this can be a directive like "use client" for react or a comment block such as a license for the code.
 	 *

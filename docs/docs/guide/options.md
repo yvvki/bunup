@@ -644,41 +644,70 @@ export default defineConfig({
 
 ## Post-build Operations
 
-The `onSuccess` callback runs after the build process successfully completes. This is useful for performing custom post-build operations:
+The `onSuccess` option runs after the build process successfully completes. It supports three different formats:
+
+### Function Callback
+
+Execute custom JavaScript code after a successful build:
 
 ```typescript
 export default defineConfig({
 	entry: ['src/index.ts'],
 	onSuccess: (options) => {
-		console.log('Build completed successfully!');
-		// Perform post-build operations here
-		// The options parameter contains the build options that were used
+		console.log('Build completed!');
+		
+		const server = startDevServer();
+		
+		// Optional: return a cleanup function for watch mode
+		return () => server.close();
 	},
 });
 ```
 
-If you enable watch mode, the `onSuccess` callback will execute after each successful rebuild. If you want to perform post-build operations only when not in watch mode, you can check the `watch` property in the options:
+### Simple Command
+
+Execute a shell command as a string:
+
+::: code-group
+
+```sh [CLI]
+bunup src/index.ts --onSuccess "bun run ./scripts/server.ts"
+```
+
+```ts [bunup.config.ts]
+export default defineConfig({
+	entry: ['src/index.ts'],
+	onSuccess: 'bun run ./scripts/server.ts',
+});
+```
+
+:::
+
+### Advanced Command Options
+
+For more control over command execution:
 
 ```typescript
 export default defineConfig({
 	entry: ['src/index.ts'],
-	onSuccess: (options) => {
-		if (options.watch) return;
-
-		console.log('Build completed! Only running in non-watch mode');
-		// Perform operations that should only happen in regular builds
+	onSuccess: {
+		cmd: 'bun run ./scripts/server.ts',
+		options: {
+			cwd: './app',
+			env: { ...process.env, FOO: 'bar' },
+			timeout: 30000, // 30 seconds
+			killSignal: 'SIGKILL',
+		},
 	},
 });
 ```
 
-### Using CLI
-
-The `onSuccess` CLI option allows you to specify a shell command that will be executed after a successful build:
-
-```sh
-bunup src/index.ts --onSuccess "echo 'Build done!' && node scripts/post-build.js"
-```
+Available command options:
+- **cwd**: Working directory for the command
+- **env**: Environment variables (defaults to `process.env`)
+- **timeout**: Maximum execution time in milliseconds
+- **killSignal**: Signal used to terminate the process (defaults to `'SIGTERM'`)
 
 ::: info
-In watch mode, `onSuccess` runs after each rebuild.
+In watch mode, `onSuccess` runs after each successful rebuild.
 :::

@@ -12,17 +12,18 @@
         "picocolors": "^1.1.1",
         "replace-in-file": "^8.3.0",
         "tinyexec": "^1.0.1",
-        "typeroll": "^0.6.21",
+        "tree-kill": "^1.2.2",
+        "typeroll": "^0.6.22",
       },
       "devDependencies": {
         "@babel/types": "^7.28.2",
         "@biomejs/biome": "2.0.0",
         "@types/bun": "^1.2.19",
-        "bumpp": "^10.2.1",
+        "bumpp": "^10.2.2",
         "husky": "^9.1.7",
         "lightningcss": "^1.30.1",
         "lint-staged": "^15.5.2",
-        "typescript": "^5.8.3",
+        "typescript": "^5.9.2",
       },
       "peerDependencies": {
         "lightningcss": ">=1.17.0",
@@ -1038,6 +1039,8 @@
     "to-regex-range": ["to-regex-range@5.0.1", "", { "dependencies": { "is-number": "^7.0.0" } }, "sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ=="],
 
     "tokenx": ["tokenx@1.1.0", "", {}, "sha512-KCjtiC2niPwTSuz4ktM82Ki5bjqBwYpssiHDsGr5BpejN/B3ksacRvrsdoxljdMIh2nCX78alnDkeemBmYUmTA=="],
+
+    "tree-kill": ["tree-kill@1.2.2", "", { "bin": { "tree-kill": "cli.js" } }, "sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A=="],
 
     "trim-lines": ["trim-lines@3.0.1", "", {}, "sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg=="],
 

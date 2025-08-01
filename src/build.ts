@@ -7,6 +7,7 @@ import {
 	BunupDTSBuildError,
 	parseErrorMessage,
 } from './errors'
+import { executeOnSuccess } from './helpers/on-success'
 import { loadPackageJson } from './loaders'
 import { logger, setSilent, silent } from './logger'
 import {
@@ -40,10 +41,18 @@ import {
 	isTypeScriptFile,
 } from './utils'
 
+let ac: AbortController | null = null
+
 export async function build(
 	partialOptions: Partial<BuildOptions>,
 	rootDir: string = process.cwd(),
 ): Promise<void> {
+	if (ac) {
+		ac.abort()
+	}
+
+	ac = new AbortController()
+
 	const buildOutput: BuildOutput = {
 		files: [],
 	}
@@ -233,7 +242,7 @@ export async function build(
 	})
 
 	if (options.onSuccess) {
-		await options.onSuccess(options)
+		await executeOnSuccess(options.onSuccess, options, ac.signal)
 	}
 }
 

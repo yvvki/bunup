@@ -7,7 +7,6 @@ import type { BuildOptions } from '../options'
 
 export type CliOptions = BuildOptions & {
 	config: string
-	onSuccess?: string
 	filter?: string[]
 	new?: boolean
 	init?: boolean
@@ -291,13 +290,7 @@ const OPTION_DEFINITIONS: Record<string, OptionDefinition> = {
 		type: 'string',
 		category: 'build',
 	},
-	onSuccess: {
-		flags: ['onSuccess'],
-		handler: handlers.string('onSuccess'),
-		description: 'Command to execute after a successful build',
-		type: 'string',
-		category: 'development',
-	},
+
 	filter: {
 		flags: ['filter'],
 		handler: handlers.array('filter'),
@@ -332,6 +325,13 @@ const OPTION_DEFINITIONS: Record<string, OptionDefinition> = {
 		description: 'Configure DTS resolution options',
 		type: 'string|boolean',
 		category: 'development',
+	},
+	onSuccess: {
+		flags: ['onSuccess'],
+		handler: handlers.string('onSuccess'),
+		description: 'Command to run after the build process completes',
+		type: 'string',
+		category: 'utility',
 	},
 	help: {
 		flags: ['h', 'help'],
