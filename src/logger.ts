@@ -221,6 +221,12 @@ export function logTable(
 	}
 }
 
-export const link = (url: string): string => pc.underline(pc.cyan(url))
+export const link = (url: string, label?: string): string => {
+	if (!label) {
+		label = url
+	}
+
+	return `\u001b]8;;${url}\u0007${pc.underline(pc.cyan(label))}\u001b]8;;\u0007`
+}
 
 export const logger: Logger = Logger.getInstance()

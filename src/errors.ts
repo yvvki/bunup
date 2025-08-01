@@ -115,7 +115,7 @@ export const handleError = (error: unknown, context?: string): void => {
 	)
 
 	if (!knownError && errorType) {
-		console.error(`${pc.red(errorType)} ${contextPrefix}${errorMessage}`)
+		console.error(`\n${pc.red(errorType)} ${contextPrefix}${errorMessage}`)
 	}
 
 	if (knownError) {
@@ -123,11 +123,19 @@ export const handleError = (error: unknown, context?: string): void => {
 		knownError.logSolution(errorMessage)
 		console.log('\n')
 	} else {
+		const issueUrl = new URL(
+			'https://github.com/arshad-yaseen/bunup/issues/new',
+		)
+		issueUrl.searchParams.set('title', `[${errorType}] Error encountered`)
+		issueUrl.searchParams.set(
+			'body',
+			`## Error Details\n\n**Error Type:** ${errorType}\n**Error Message:** ${errorMessage}\n\n## Additional Context\n\n<!-- Please provide any additional context about what you were trying to do when the error occurred -->`,
+		)
+
 		console.error(
-			pc.dim(
-				pc.white('If you think this is a bug, please open an issue at: ') +
-					link('https://github.com/arshad-yaseen/bunup/issues/new'),
-			),
+			pc.white('\nIf you think this is a bug, please ') +
+				link(issueUrl.toString(), 'open an issue') +
+				' with details about this error\n',
 		)
 	}
 }
