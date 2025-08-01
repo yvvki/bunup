@@ -1,5 +1,6 @@
 import { exec } from 'tinyexec'
 import treeKill from 'tree-kill'
+import { logger } from '../logger'
 import type { BuildOptions, OnSuccess } from '../options'
 
 export async function executeOnSuccess(
@@ -21,6 +22,10 @@ export async function executeOnSuccess(
 			typeof onSuccess === 'object' && 'options' in onSuccess
 				? onSuccess.options
 				: {}
+
+		logger.info(`Running command: ${command}`, {
+			muted: true,
+		})
 
 		const proc = exec(command, [], {
 			timeout: spawnOptions?.timeout,
