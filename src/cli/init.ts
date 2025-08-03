@@ -450,7 +450,7 @@ function showSuccessOutro(isWorkspace: boolean): void {
    ${buildCommand}
    ${devCommand}${isWorkspace ? `\n   ${filterCommand}` : ''}
   
-   ${pc.dim('Learn more:')} ${link('https://bunup.dev/docs')}
+   ${pc.dim('Learn more:')} ${link('https://bunup.dev/')}
   
    ${pc.yellow('Happy building!')} 🚀
   `)
