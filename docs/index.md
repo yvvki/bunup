@@ -50,16 +50,10 @@ Bunup is the ⚡️ **blazing-fast build tool** for TypeScript libraries, design
 Quickly scaffold a new modern TypeScript or React library with Bunup in just 10 seconds.
 
 ```sh
-bunx bunup@latest --new
+bunx @bunup/create@latest
 ```
 
 See the [Scaffold with Bunup](./scaffold-with-bunup.md) page for more details.
-
-Or, initialize bunup in an existing project:
-
-```sh
-bunx bunup@latest --init
-```
 
 ## Getting Started
 
