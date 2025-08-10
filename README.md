@@ -23,8 +23,8 @@ Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for 
 - ⚡ **Blazing Fast**: Lightning-fast builds and instant rebuilds.
 - 📝 **Top-Notch TypeScript Declarations**: Clean, minimal, accurate `.d.ts` files generated automatically.
 - 📦 **ESM by Default**: Modern ESM output by default.
-- 🪓 **Declaration Splitting**: Splits shared types for smaller, cleaner declaration bundles.
-- 🔥 **Declaration Minification**: Aggressively minifies and shortens type names while preserving public API—like code bundling for TypeScript declarations.
+- 🪓 **[Declaration Splitting](https://bunup.dev/docs/guide/typescript-declarations#declaration-splitting)**: Splits shared types for smaller, cleaner declaration bundles.
+- 🔥 **[Declaration Minification](https://bunup.dev/docs/guide/typescript-declarations#minification)**: Aggressively minifies and shortens type names while preserving public API—like code bundling for TypeScript declarations.
 - 🔋 **Batteries Included**: Auto-generates package exports, detects unused dependencies and exports, and more.
 - 🚀 **Zero-Config Simplicity**: Preconfigured for productivity—just code and build.
 - 🏗️ **[Workspace](https://bunup.dev/docs/guide/workspaces) Ready**: Builds multiple packages from one config and command.
