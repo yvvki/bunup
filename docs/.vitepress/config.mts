@@ -3,7 +3,7 @@ import {
 	groupIconMdPlugin,
 	groupIconVitePlugin,
 } from 'vitepress-plugin-group-icons'
-import llmstxt from 'vitepress-plugin-llms'
+import llmstxt, { copyOrDownloadAsMarkdownButtons } from 'vitepress-plugin-llms'
 
 import { version } from '../../package.json'
 
@@ -131,6 +131,7 @@ export default defineConfig({
 		},
 		config(md) {
 			md.use(groupIconMdPlugin)
+			md.use(copyOrDownloadAsMarkdownButtons)
 		},
 	},
 	vite: {
