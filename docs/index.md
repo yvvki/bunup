@@ -53,7 +53,7 @@ Quickly scaffold a new modern TypeScript or React library with Bunup in just 10 
 bunx @bunup/create@latest
 ```
 
-See the [Scaffold with Bunup](./scaffold-with-bunup.md) page for more details.
+See the [Scaffold with Bunup](./docs/scaffold-with-bunup.md) page for more details.
 
 ## Getting Started
 
