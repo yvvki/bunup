@@ -41,10 +41,10 @@
     "tests": {
       "name": "tests",
       "dependencies": {
-        "chalk": "^5.4.1",
+        "chalk": "^5.5.0",
         "lodash": "^4.17.21",
-        "zx": "^8.5.3",
-        "zx-extra": "^4.0.5",
+        "zx": "^8.8.0",
+        "zx-extra": "^4.0.11",
       },
       "devDependencies": {
         "ora": "^8.2.0",
