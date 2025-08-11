@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'bun:test'
-import { addField } from '../src/loaders'
 import {
 	getResolvedBytecode,
 	getResolvedDefine,
@@ -16,26 +15,9 @@ import {
 	getPackageDeps,
 	getShortFilePath,
 	isDirectoryPath,
-	isModulePackage,
 } from '../src/utils'
 
 describe('Utils', () => {
-	describe('addField', () => {
-		it('adds field to a single object', () => {
-			const obj = { a: 1 }
-			const result = addField(obj, 'b', 2)
-			expect(result).toEqual({ a: 1, b: 2 })
-		})
-		it('adds field to an array of objects', () => {
-			const arr = [{ a: 1 }, { a: 2 }]
-			const result = addField(arr, 'b', 3)
-			expect(result).toEqual([
-				{ a: 1, b: 3 },
-				{ a: 2, b: 3 },
-			])
-		})
-	})
-
 	describe('ensureArray', () => {
 		it('wraps a single value in an array', () => {
 			expect(ensureArray('test')).toEqual(['test'])
@@ -62,31 +44,32 @@ describe('Utils', () => {
 
 	describe('getDefaultDtsExtention', () => {
 		it('returns .d.mts for esm format without module type', () => {
-			expect(getDefaultDtsExtention('esm', undefined)).toBe('.d.mts')
+			expect(getDefaultDtsExtention('esm', undefined, 'entry-point')).toBe(
+				'.d.mts',
+			)
 		})
 		it('returns .d.ts for esm format with module type', () => {
-			expect(getDefaultDtsExtention('esm', 'module')).toBe('.d.ts')
+			expect(getDefaultDtsExtention('esm', 'module', 'entry-point')).toBe(
+				'.d.ts',
+			)
 		})
 		it('returns .d.cts for cjs format with module type', () => {
-			expect(getDefaultDtsExtention('cjs', 'module')).toBe('.d.cts')
+			expect(getDefaultDtsExtention('cjs', 'module', 'entry-point')).toBe(
+				'.d.cts',
+			)
 		})
 		it('returns .d.ts for cjs format with commonjs type', () => {
-			expect(getDefaultDtsExtention('cjs', 'commonjs')).toBe('.d.ts')
+			expect(getDefaultDtsExtention('cjs', 'commonjs', 'entry-point')).toBe(
+				'.d.ts',
+			)
 		})
 		it('returns .d.ts for iife format', () => {
-			expect(getDefaultDtsExtention('iife', undefined)).toBe('.global.d.ts')
+			expect(getDefaultDtsExtention('iife', undefined, 'entry-point')).toBe(
+				'.global.d.ts',
+			)
 		})
-	})
-
-	describe('isModulePackage', () => {
-		it('returns true for module type', () => {
-			expect(isModulePackage('module')).toBe(true)
-		})
-		it('returns false for commonjs type', () => {
-			expect(isModulePackage('commonjs')).toBe(false)
-		})
-		it('returns false for undefined type', () => {
-			expect(isModulePackage(undefined)).toBe(false)
+		it('returns .d.ts for chunk files', () => {
+			expect(getDefaultDtsExtention('esm', undefined, 'chunk')).toBe('.d.ts')
 		})
 	})
 
