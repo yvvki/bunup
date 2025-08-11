@@ -13,7 +13,7 @@ export function defineConfig(
 
 export function defineWorkspace(
 	options: WithOptional<DefineWorkspaceItem, 'config'>[],
-	sharedOptions?: DefineConfigItem,
+	sharedOptions?: Partial<DefineConfigItem>,
 ): DefineWorkspaceItem[] {
 	return options.map((item) => {
 		const config =
