@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { type LoadConfigResult, loadConfig } from 'coffi'
+import { loadConfig } from 'coffi'
 import type { LoadedConfig } from './cli'
 import type { BuildOptions } from './options'
 import type { Arrayable, DefineWorkspaceItem } from './types'
@@ -33,7 +33,7 @@ export async function processLoadedConfigs(
 			]
 }
 
-export function addField<T extends Record<string, unknown>, F extends string>(
+function addField<T extends Record<string, unknown>, F extends string>(
 	objectOrArray: T | T[],
 	field: F,
 	value: unknown,
@@ -63,18 +63,4 @@ export async function loadPackageJson(
 		data: config,
 		path: filepath,
 	}
-}
-
-export async function loadTsConfig(
-	cwd: string,
-	preferredPath: string | undefined,
-): Promise<LoadConfigResult<Record<string, unknown>>> {
-	const config = await loadConfig<Record<string, unknown>>({
-		name: 'tsconfig',
-		extensions: ['.json'],
-		preferredPath,
-		cwd,
-	})
-
-	return config
 }

@@ -13,7 +13,6 @@
         "typeroll": "^0.6.22",
       },
       "devDependencies": {
-        "@babel/types": "^7.28.2",
         "@biomejs/biome": "2.0.0",
         "@types/bun": "^1.2.19",
         "bumpp": "^10.2.2",

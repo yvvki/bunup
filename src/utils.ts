@@ -1,7 +1,5 @@
-import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import path, { normalize } from 'node:path'
-import { isCI, isDevelopment } from 'std-env'
 import { TS_RE } from './constants/re'
 import { BunupBuildError } from './errors'
 import type { Format } from './options'
@@ -42,7 +40,7 @@ export function getDefaultDtsExtention(
 	}
 }
 
-export function isModulePackage(packageType: string | undefined): boolean {
+function isModulePackage(packageType: string | undefined): boolean {
 	return packageType === 'module'
 }
 
@@ -109,15 +107,6 @@ export function isDirectoryPath(filePath: string): boolean {
 	return path.extname(filePath) === ''
 }
 
-export function pathExistsSync(filePath: string): boolean {
-	try {
-		fsSync.accessSync(filePath)
-		return true
-	} catch {
-		return false
-	}
-}
-
 export function formatListWithAnd(arr: string[]): string {
 	return new Intl.ListFormat('en', {
 		style: 'long',
@@ -155,25 +144,7 @@ export async function getFilesFromGlobs(
 	return Array.from(includedFiles)
 }
 
-export function isDev(): boolean {
-	return isDevelopment || !isCI
-}
-
-export function generateRandomString(length = 10): string {
-	return Array.from({ length }, () =>
-		String.fromCharCode(97 + Math.floor(Math.random() * 26)),
-	).join('')
-}
-
-export function isNullOrUndefined(value: unknown): value is null | undefined {
-	return value === null || value === undefined
-}
-
 export function isTypeScriptFile(path: string | null): boolean {
 	if (!path) return false
 	return TS_RE.test(path)
-}
-
-export function filterTypeScriptEntryPoints(entryPoints: string[]): string[] {
-	return entryPoints.filter(isTypeScriptFile)
 }
