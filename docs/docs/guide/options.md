@@ -171,68 +171,66 @@ export default defineConfig([
 ]);
 ```
 
-## Customizing Dependency Bundling
+## External Dependencies
 
-By default, Bunup treats all packages listed in your `package.json` under `dependencies` and `peerDependencies` as **external**. This means:
+When you build a library with Bunup, you need to decide which packages should be included in your bundle and which should be left out. This section explains how to control this behavior.
 
-- `dependencies` will be installed automatically when your package is installed.
+### What Happens by Default
 
-- `peerDependencies` are expected to be installed by the end user.
+Bunup looks at your `package.json` file and automatically decides what to bundle:
 
-These external packages are **not included** in your final bundle.
+- **Packages in `dependencies`**: These are **not included** in your bundle. These will be installed automatically when your package is installed.
+- **Packages in `peerDependencies`**: These are also **not included**. Users of your library are expected to install these dependencies manually.
+- **Packages in `devDependencies`**: These **are included** if you actually use them in your code.
 
-However, any modules listed in `devDependencies` or others **will be bundled**.
+### Why This Matters
 
-### External Dependencies
+Imagine you're building a library that uses `lodash`:
 
-You can explicitly mark any package as external, even if it's not listed in `dependencies` or `peerDependencies`.
+- If you put `lodash` in `dependencies`, it won't be bundled with your library
+- `lodash` will be installed automatically when your package is installed
+- This keeps your library smaller and avoids version conflicts
 
-#### Using the CLI
+### Making Packages External
 
-::: code-group
-
-```sh [CLI - single package]
-bunup src/index.ts --external lodash
-```
-
-```sh [CLI - multiple packages]
-bunup src/index.ts --external lodash,react,react-dom
-```
-
-```ts [bunup.config.ts]
-export default defineConfig({
-	entry: ['src/index.ts'],
-	external: ['lodash', 'react', '@some/package'],
-});
-```
-
-:::
-
-### Forcing External Packages to Be Bundled
-
-Sometimes, you may want to include specific modules in your bundle, even if they're marked as external (e.g., part of `dependencies` or `peerDependencies`).
-
-#### Using the CLI
+If you want to make sure a package is not bundled (even if it's not in your `package.json`):
 
 ::: code-group
 
 ```sh [CLI]
-# Mark lodash as external, but include lodash/merge in the bundle
-bunup src/index.ts --external lodash --no-external lodash/merge
+bunup src/index.ts --external lodash
 ```
 
 ```ts [bunup.config.ts]
 export default defineConfig({
 	entry: ['src/index.ts'],
 	external: ['lodash'],
-	noExternal: ['lodash/merge'], // This will be bundled
+});
+```
+
+:::
+
+### Forcing Packages to Be Bundled
+
+If you want to include a package in your bundle (even if it's normally external):
+
+::: code-group
+
+```sh [CLI]
+bunup src/index.ts --no-external lodash
+```
+
+```ts [bunup.config.ts]
+export default defineConfig({
+	entry: ['src/index.ts'],
+	noExternal: ['lodash'],
 });
 ```
 
 :::
 
 ::: info
-Both `external` and `noExternal` support exact strings and regular expressions.
+Both `external` and `noExternal` support exact strings and regular expressions for flexible dependency management.
 :::
 
 ## Tree Shaking
