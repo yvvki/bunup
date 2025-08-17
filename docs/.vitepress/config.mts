@@ -138,7 +138,7 @@ export default defineConfig({
 		plugins: [
 			groupIconVitePlugin(),
 			llmstxt({
-				excludeIndexPage: true,
+				excludeIndexPage: false,
 			}),
 		],
 	},
