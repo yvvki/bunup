@@ -44,10 +44,6 @@ function isModulePackage(packageType: string | undefined): boolean {
 	return packageType === 'module'
 }
 
-export function formatTime(ms: number): string {
-	return ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${Math.round(ms)}ms`
-}
-
 export function getPackageDeps(
 	packageJson: Record<string, unknown> | null,
 ): string[] {

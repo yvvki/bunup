@@ -7,10 +7,10 @@ import { version } from '../../package.json'
 import { build } from '../build'
 import { handleErrorAndExit } from '../errors'
 import { type ProcessableConfig, processLoadedConfigs } from '../loaders'
-import { logger, setSilent } from '../logger'
+import { logger, logTime, setSilent } from '../logger'
 import type { BuildOptions } from '../options'
 import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from '../types'
-import { ensureArray, formatTime, getShortFilePath } from '../utils'
+import { ensureArray, getShortFilePath } from '../utils'
 import { watch } from '../watch'
 import { type CliOptions, parseCliOptions } from './options'
 
@@ -68,15 +68,11 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 	)
 
 	const buildTimeMs = performance.now() - startTime
-	const timeDisplay = formatTime(buildTimeMs)
 
-	logger.success(`Build completed in ${pc.green(timeDisplay)}`)
+	logger.success(`Build completed in ${pc.green(logTime(buildTimeMs))}`)
 
 	if (cliOptions.watch) {
-		logger.info('Watching for file changes...', {
-			icon: '👀',
-			verticalSpace: true,
-		})
+		logger.info(pc.dim('Watching for file changes...'))
 	}
 
 	if (!cliOptions.watch) {

@@ -31,6 +31,10 @@ export function unused(options: UnusedOptions = {}): Plugin {
 			onBuildDone: async (ctx) => {
 				const { options: buildOptions, output, meta } = ctx
 
+				if (buildOptions.watch) {
+					return
+				}
+
 				const transpiler = new Bun.Transpiler({
 					loader: 'js',
 				})

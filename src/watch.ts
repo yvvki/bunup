@@ -3,9 +3,9 @@ import path from 'node:path'
 import pc from 'picocolors'
 import { build } from './build'
 import { BunupWatchError, handleError, parseErrorMessage } from './errors'
-import { logger } from './logger'
+import { logTime } from './logger'
 import { type BuildOptions, createBuildOptions } from './options'
-import { formatTime } from './utils'
+import { getShortFilePath } from './utils'
 
 export async function watch(
 	partialOptions: Partial<BuildOptions>,
@@ -36,8 +36,9 @@ export async function watch(
 	})
 
 	let isRebuilding = false
+	let rebuildCount = 0
 
-	const triggerRebuild = async (initial = false) => {
+	const triggerRebuild = async (initial: boolean, changed?: string) => {
 		if (isRebuilding) {
 			return
 		}
@@ -45,15 +46,15 @@ export async function watch(
 		try {
 			await new Promise((resolve) => setTimeout(resolve, 20))
 			const start = performance.now()
-			await build(options, rootDir)
+			await build({ ...options, silent: !initial }, rootDir)
 			if (!initial) {
-				logger.success(
-					`Rebuild finished in ${pc.green(formatTime(performance.now() - start))}`,
-					{
-						icon: '📦',
-					},
+				console.clear()
+				console.log(
+					`${rebuildCount > 1 ? pc.magenta(`[x${rebuildCount}] `) : ''}${pc.green(`Rebuilt in ${logTime(performance.now() - start)}`)}: ${changed}`,
 				)
 			}
+
+			rebuildCount++
 		} catch (error) {
 			handleError(error)
 		} finally {
@@ -61,8 +62,8 @@ export async function watch(
 		}
 	}
 
-	watcher.on('change', () => {
-		triggerRebuild()
+	watcher.on('change', (path) => {
+		triggerRebuild(false, getShortFilePath(path))
 	})
 
 	watcher.on('error', (error) => {

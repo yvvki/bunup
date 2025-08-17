@@ -188,13 +188,13 @@ export function logTable(
 
 	const headerRow = columns
 		.map((col) => pad(col.header, widths[col.header], col.align))
-		.join(pc.gray(' | '))
-	console.log(pc.gray(headerRow))
+		.join(pc.dim(' | '))
+	console.log(pc.dim(headerRow))
 
 	const separator = columns
 		.map((col) => '-'.repeat(widths[col.header]))
 		.join(' | ')
-	console.log(pc.gray(separator))
+	console.log(pc.dim(separator))
 
 	for (const row of data) {
 		const rowStr = columns
@@ -203,11 +203,11 @@ export function logTable(
 				const padded = pad(value, widths[col.header], col.align)
 				return col.color ? col.color(padded) : padded
 			})
-			.join(pc.gray(' | '))
+			.join(pc.dim(' | '))
 		console.log(rowStr)
 	}
 
-	console.log(pc.gray(separator))
+	console.log(pc.dim(separator))
 
 	if (footer) {
 		const footerRow = columns
@@ -216,9 +216,15 @@ export function logTable(
 				const padded = pad(value, widths[col.header], col.align)
 				return padded
 			})
-			.join(pc.gray(' | '))
+			.join(pc.dim(' | '))
 		console.log(footerRow)
 	}
+}
+
+export function logTime(ms: number): string {
+	return ms >= 1000
+		? pc.green(`${(ms / 1000).toFixed(2)}s`)
+		: pc.green(`${Math.round(ms)}ms`)
 }
 
 export const link = (url: string, label?: string): string => {

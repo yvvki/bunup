@@ -81,7 +81,7 @@ const KNOWN_ERRORS: KnownErrorSolution[] = [
 				'An error occurred while bundling dts files. This issue occurs when dts splitting is enabled due to a bug in the Bun bundler. Please ping the GitHub issue to help get it fixed faster: ' +
 					link('https://github.com/oven-sh/bun/issues/5344') +
 					'. To fix this issue for now, you can disable dts splitting by removing ' +
-					pc.gray('dts: { splitting: true }') +
+					pc.dim('dts: { splitting: true }') +
 					' from your config.' +
 					' You can re-enable it once the issue is fixed.',
 			)
