@@ -9,7 +9,6 @@ import {
 	cleanPath,
 	ensureArray,
 	formatFileSize,
-	formatTime,
 	getDefaultDtsExtention,
 	getDefaultOutputExtension,
 	getPackageDeps,
@@ -70,15 +69,6 @@ describe('Utils', () => {
 		})
 		it('returns .d.ts for chunk files', () => {
 			expect(getDefaultDtsExtention('esm', undefined, 'chunk')).toBe('.d.ts')
-		})
-	})
-
-	describe('formatTime', () => {
-		it('formats time in milliseconds', () => {
-			expect(formatTime(500)).toBe('500ms')
-		})
-		it('formats time in seconds', () => {
-			expect(formatTime(1500)).toBe('1.50s')
 		})
 	})
 
