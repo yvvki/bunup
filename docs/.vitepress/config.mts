@@ -135,7 +135,12 @@ export default defineConfig({
 		},
 	},
 	vite: {
-		plugins: [groupIconVitePlugin(), llmstxt()],
+		plugins: [
+			groupIconVitePlugin(),
+			llmstxt({
+				excludeIndexPage: true,
+			}),
+		],
 	},
 	sitemap: {
 		hostname: 'https://bunup.dev',
