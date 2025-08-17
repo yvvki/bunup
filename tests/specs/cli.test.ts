@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'bun:test'
-import { cleanProjectDir, createProject, findFile, runCli } from './utils'
+import { cleanProjectDir, createProject, findFile, runCli } from '../utils'
 
 describe('CLI Only Options', () => {
 	beforeEach(() => {

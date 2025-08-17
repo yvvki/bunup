@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'bun:test'
-import { cleanProjectDir, createProject, findFile, runDtsBuild } from './utils'
+import { cleanProjectDir, createProject, findFile, runDtsBuild } from '../utils'
 
 describe('dts', () => {
 	beforeEach(() => {

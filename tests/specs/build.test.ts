@@ -4,7 +4,7 @@ import {
 	createProject,
 	runBuild,
 	validateBuildFiles,
-} from './utils'
+} from '../utils'
 
 describe('Build Process', () => {
 	beforeEach(() => {

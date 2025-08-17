@@ -4,7 +4,7 @@ import {
 	getResolvedDefine,
 	getResolvedMinify,
 	getResolvedSplitting,
-} from '../src/options'
+} from '../../src/options'
 import {
 	cleanPath,
 	ensureArray,
@@ -14,7 +14,7 @@ import {
 	getPackageDeps,
 	getShortFilePath,
 	isDirectoryPath,
-} from '../src/utils'
+} from '../../src/utils'
 
 describe('Utils', () => {
 	describe('ensureArray', () => {

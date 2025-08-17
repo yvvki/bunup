@@ -7,12 +7,15 @@ import {
 	statSync,
 	writeFileSync,
 } from 'node:fs'
-import { basename, dirname, join } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
 import { exec } from 'tinyexec'
 import { build } from '../src/build'
 import type { PackageJson } from '../src/loaders'
 import type { BuildOptions } from '../src/options'
-import { OUTPUT_DIR, PROJECT_DIR } from './constants'
+
+export const TEST_DIR: string = resolve(process.cwd(), 'tests')
+export const PROJECT_DIR: string = resolve(TEST_DIR, '.project')
+export const OUTPUT_DIR: string = resolve(TEST_DIR, PROJECT_DIR, '.output')
 
 export interface BuildResult {
 	success: boolean

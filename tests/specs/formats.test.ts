@@ -5,7 +5,7 @@ import {
 	findFile,
 	runBuild,
 	validateBuildFiles,
-} from './utils'
+} from '../utils'
 
 describe('Format Types and Output Extensions', () => {
 	beforeEach(() => {

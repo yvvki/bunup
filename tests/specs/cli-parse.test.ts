@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { parseCliOptions } from '../src/cli/options'
+import { parseCliOptions } from '../../src/cli/options'
 
 describe('CLI Parsing', () => {
 	it('parses positional entry', () => {

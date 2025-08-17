@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
-import type { BuildOptions } from '../../src/options'
-import type { BuildContext, BunupPlugin } from '../../src/plugins/types'
+import type { BuildOptions } from '../../../src/options'
+import type { BuildContext, BunupPlugin } from '../../../src/plugins/types'
 import {
 	cleanProjectDir,
 	createProject,
 	runBuild,
 	validateBuildFiles,
-} from '../utils'
+} from '../../utils'
 
 describe('Bunup Plugin', () => {
 	beforeEach(() => {

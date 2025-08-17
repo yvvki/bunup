@@ -1,8 +1,8 @@
 # Copy
 
-This plugin copies files and directories to the output directory after each build. It supports glob patterns for flexible file selection. If no destination is specified, files are copied to the build output directory.
+The copy plugin copies files and directories to your build output. It supports glob patterns and can copy to specific destinations or rename files.
 
-## Usage
+## Basic Usage
 
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
@@ -14,17 +14,35 @@ export default defineConfig({
 });
 ```
 
-**Basic copying:**
+## Examples
+
+**Copy multiple files to output directory:**
 ```ts
 copy(['README.md', 'assets/**/*'])
 ```
 
 **Copy and rename a file:**
 ```ts
-copy(['README.md'], 'dist/documentation.md')
+copy('README.md', 'dist/documentation.md')
 ```
 
-**Copy to a specific directory:**
+**Copy files to a specific folder:**
 ```ts
-copy(['assets/**/*'], 'dist/static')
+copy('assets/**/*', 'dist/static')
 ```
+
+**Copy with glob patterns:**
+```ts
+copy([
+	'*.md',           // All markdown files
+	'assets/**/*',    // All files in assets folder
+	'!*.tmp'         // Exclude temporary files
+])
+```
+
+## Parameters
+
+- **`pattern`** - String or array of strings with glob patterns
+- **`outPath`** - Optional destination path (file or folder)
+
+If no destination is specified, files are copied to your build output directory.
