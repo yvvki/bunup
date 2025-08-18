@@ -11,7 +11,6 @@ type InjectStylesPluginOptions = Pick<
 	| 'inputSourceMap'
 	| 'targets'
 	| 'nonStandard'
-	| 'minify'
 	| 'pseudoClasses'
 	| 'unusedSymbols'
 	| 'errorRecovery'
@@ -22,6 +21,10 @@ type InjectStylesPluginOptions = Pick<
 	| 'drafts'
 > & {
 	inject?: (css: string, filePath: string) => MaybePromise<string>
+	/** Whether to minify the CSS.
+	 * @default true
+	 */
+	minify?: boolean
 }
 
 /**
@@ -56,7 +59,7 @@ export function injectStyles(options?: InjectStylesPluginOptions): Plugin {
 							contents: `
                       export default function injectStyle(css) {
                         if (!css || typeof document === 'undefined') return
-                      
+
                         const head = document.head || document.getElementsByTagName('head')[0]
                         const style = document.createElement('style')
                         head.appendChild(style)
@@ -80,11 +83,7 @@ export function injectStyles(options?: InjectStylesPluginOptions): Plugin {
 						...transformOptions,
 						filename: path.basename(args.path),
 						code: Buffer.from(source),
-						minify:
-							transformOptions.minify ??
-							(build.config.minify === true ||
-								(typeof build.config.minify === 'object' &&
-									build.config.minify.whitespace)),
+						minify: transformOptions.minify ?? true,
 					})
 
 					for (const warning of warnings) {
