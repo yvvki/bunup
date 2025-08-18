@@ -13,7 +13,7 @@ Quickly scaffold modern TypeScript and React libraries in just 10 seconds with B
 You can create a new project by using:
 
 ```sh
-bunx @bunup/create@latest
+bunx @bunup/cli create
 ```
 
 After creating your project, run the following command to enable pre-commit hooks:
