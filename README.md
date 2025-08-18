@@ -7,13 +7,13 @@
   <!-- markdownlint-disable-next-line no-alt-text -->
 
 
-![Logo](https://raw.githubusercontent.com/arshad-yaseen/bunup/refs/heads/main/docs/public/logo.svg)
+![Logo](https://raw.githubusercontent.com/bunup/bunup/refs/heads/main/docs/public/logo.svg)
 
-![Bunup](https://raw.githubusercontent.com/arshad-yaseen/bunup/refs/heads/main/assets/bunup-title.svg)
+![Bunup](https://raw.githubusercontent.com/bunup/bunup/refs/heads/main/assets/bunup-title.svg)
 
 [![NPM Version](https://img.shields.io/npm/v/bunup?logo=npm&logoColor=212121&label=version&labelColor=ffc44e&color=212121)](https://npmjs.com/package/bunup) [![Built with Bun](https://img.shields.io/badge/Built_with-Bun-fbf0df?logo=bun&labelColor=212121)](https://bun.sh) [![sponsor](https://img.shields.io/badge/sponsor-EA4AAA?logo=githubsponsors&labelColor=FAFAFA)](https://github.com/sponsors/arshad-yaseen)
 
-Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**. 
+Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
 
 </div>
 <!-- markdownlint-restore -->
@@ -34,7 +34,7 @@ To get started, visit the [documentation](https://bunup.dev).
 
 ## ❤️ Contributing
 
-For guidelines on contributing, please read the [contributing guide](../../CONTRIBUTING.md).
+For guidelines on contributing, please read the [contributing guide](CONTRIBUTING.md).
 
 We welcome contributions from the community to enhance Bunup's capabilities and make it even more powerful.
 

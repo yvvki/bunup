@@ -33,7 +33,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/arshad-yaseen/bunup.git"
+		"url": "git+https://github.com/bunup/bunup.git"
 	},
 	"funding": "https://github.com/sponsors/arshad-yaseen",
 	"homepage": "https://bunup.dev",
@@ -85,7 +85,6 @@
 		"lint:fix": "biome check --write .",
 		"prepare": "husky",
 		"test": "bun test",
-		"test-build": "bun run --cwd tests build",
 		"tsc": "tsc --noEmit",
 		"publish:ci": "bun publish --access public --no-git-checks",
 		"release": "bumpp"

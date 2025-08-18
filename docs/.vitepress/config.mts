@@ -22,11 +22,11 @@ export default defineConfig({
 				items: [
 					{
 						text: 'Release Notes',
-						link: 'https://github.com/arshad-yaseen/bunup/releases',
+						link: 'https://github.com/bunup/bunup/releases',
 					},
 					{
 						text: 'Contributing',
-						link: 'https://github.com/arshad-yaseen/bunup/blob/main/CONTRIBUTING.md',
+						link: 'https://github.com/bunup/bunup/blob/main/CONTRIBUTING.md',
 					},
 				],
 			},
@@ -73,7 +73,7 @@ export default defineConfig({
 			},
 		],
 		editLink: {
-			pattern: 'https://github.com/arshad-yaseen/bunup/edit/main/docs/:path',
+			pattern: 'https://github.com/bunup/bunup/edit/main/docs/:path',
 			text: 'Suggest changes to this page',
 		},
 		search: {
@@ -85,7 +85,7 @@ export default defineConfig({
 		socialLinks: [
 			{
 				icon: 'github',
-				link: 'https://github.com/arshad-yaseen/bunup',
+				link: 'https://github.com/bunup/bunup',
 			},
 		],
 	},

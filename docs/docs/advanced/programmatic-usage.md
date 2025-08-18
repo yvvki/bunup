@@ -33,7 +33,7 @@ const options: BuildOptions = {
 await build(options);
 ```
 
-The full type definition can be found in the [bunup source code](https://github.com/arshad-yaseen/bunup/blob/main/src/options.ts#L37).
+The full type definition can be found in the [bunup source code](https://github.com/bunup/bunup/blob/main/src/options.ts#L70).
 
 ## Using Plugins
 

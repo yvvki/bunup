@@ -123,9 +123,7 @@ export const handleError = (error: unknown, context?: string): void => {
 		knownError.logSolution(errorMessage)
 		console.log('\n')
 	} else {
-		const issueUrl = new URL(
-			'https://github.com/arshad-yaseen/bunup/issues/new',
-		)
+		const issueUrl = new URL('https://github.com/bunup/bunup/issues/new')
 		issueUrl.searchParams.set('title', `[${errorType}] Error encountered`)
 		issueUrl.searchParams.set(
 			'body',
