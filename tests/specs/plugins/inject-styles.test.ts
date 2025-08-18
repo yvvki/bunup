@@ -33,8 +33,8 @@ describe('injectStyles plugin', () => {
 		expect(file?.content).toContain('function injectStyle(')
 		expect(file?.content).toContain('injectStyle(')
 		expect(file?.content).toContain('.container')
-		expect(file?.content).toContain('color: red')
-		expect(file?.content).toContain('padding: 20px')
+		expect(file?.content).toContain('color:red')
+		expect(file?.content).toContain('padding:20px')
 	})
 
 	it('should use custom inject function when provided', async () => {
@@ -104,9 +104,9 @@ describe('injectStyles plugin', () => {
 		const file = findFile(result, 'index', '.mjs')
 		expect(file).toBeDefined()
 		expect(file?.content).toContain('body')
-		expect(file?.content).toContain('margin: 0')
+		expect(file?.content).toContain('margin:0')
 		expect(file?.content).toContain('.card')
-		expect(file?.content).toContain('border-radius: 8px')
+		expect(file?.content).toContain('border-radius:8px')
 		expect(file?.content.match(/injectStyle\(/g)?.length).toBe(3)
 	})
 
@@ -121,18 +121,18 @@ describe('injectStyles plugin', () => {
                 :root {
                     --primary-color: #3498db;
                 }
-                
+
                 /* Media query */
                 @media (max-width: 768px) {
                     .container {
                         padding: 10px;
                     }
                 }
-                
+
                 /* Nested selectors */
                 .container {
                     color: var(--primary-color);
-                    
+
                     .title {
                         font-size: 24px;
                     }
@@ -151,7 +151,7 @@ describe('injectStyles plugin', () => {
 		expect(file).toBeDefined()
 		expect(file?.content).toContain('--primary-color')
 		expect(file?.content).toContain('@media')
-		expect(file?.content).toContain('width <= 768px')
+		expect(file?.content).toContain('width<=768px')
 		expect(file?.content).toContain('var(--primary-color)')
 	})
 })
