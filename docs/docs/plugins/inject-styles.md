@@ -1,10 +1,10 @@
 # Inject Styles
 
-The `injectStyles` plugin transforms CSS files and automatically injects them into the document head at runtime. This is particularly useful when building component libraries where you want styles to be automatically applied when components are used.
+The `injectStyles` plugin transforms CSS imports (like `import "./styles.css"`) into JavaScript code that automatically injects styles into the document head at runtime. This is particularly useful for component libraries where styles should be automatically applied without requiring users to manually include CSS files.
 
 ## Installation
 
-The `injectStyles` plugin uses LightningCSS under the hood. You'll need to install it as a dev dependency:
+The plugin uses LightningCSS under the hood. Install it as a dev dependency:
 
 ```bash
 bun add --dev lightningcss
@@ -22,13 +22,24 @@ export default defineConfig({
 });
 ```
 
-With this configuration, any imported CSS files will be transformed and injected into the document head when your JavaScript code runs.
+CSS imports in your code will be automatically processed:
+
+```ts [src/index.ts]
+// These CSS imports will be transformed into JavaScript code
+// that injects the styles into <head> at runtime
+import "./styles.css";
+import "./components/button.css";
+
+export { Button } from "./components/Button";
+```
+
+Instead of bundling separate CSS files, the styles will be embedded as JavaScript code that creates `<style>` tags in the document head.
 
 ## Options
 
-The plugin leverages Lightning CSS for transformations and passes the options directly to LightningCSS. Available options include:
+The plugin passes options directly to LightningCSS. Available options include:
 
 - `minify`: Controls whether the CSS should be minified (enabled by default if minify option is enabled in build config)
 - `targets`: Specifies browser targets for CSS feature compatibility
 
-For a complete list of transformation options, refer to the [Lightning CSS documentation](https://lightningcss.dev/docs.html).
+For a complete list of options, refer to the [Lightning CSS documentation](https://lightningcss.dev/docs.html).
