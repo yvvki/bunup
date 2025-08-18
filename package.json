@@ -93,6 +93,7 @@
 	},
 	"workspaces": [
 		"docs",
-		"tests"
+		"tests",
+		"examples/**"
 	]
 }
