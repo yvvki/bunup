@@ -41,7 +41,7 @@ After completing the setup, here's how to use your project:
 bun run dev        # Start development mode with automatic rebuilds
 bun run test       # Run test suite
 bun run lint       # Check code style and find problems
-bun run lint:fix   # Fix linting issues automatically
+bun run lint:fix   # Fix linting and formatting issues automatically
 bun run format:fix # Fix code formatting issues
 bun run tsc        # Type check TypeScript code
 bun run build      # Build production bundle
@@ -55,7 +55,7 @@ React libraries have a special development workflow optimized for component deve
 bun run dev        # Watch source files and rebuild library instantly
 bun run dev:test   # Start Next.js preview app at http://localhost:3000
 bun run lint       # Check code style and find problems
-bun run lint:fix   # Fix linting issues automatically
+bun run lint:fix   # Fix linting and formatting issues automatically
 bun run format:fix # Fix code formatting issues
 bun run tsc        # Type check TypeScript code
 bun run build      # Build production bundle
