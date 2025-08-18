@@ -89,7 +89,7 @@
 		"prepare": "simple-git-hooks"
 	},
 	"simple-git-hooks": {
-		"pre-commit": "bun run lint:fix"
+		"pre-commit": "bun run lint:fix && git add ."
 	},
 	"workspaces": [
 		"docs",
