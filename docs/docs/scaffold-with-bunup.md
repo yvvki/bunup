@@ -3,7 +3,7 @@
 Quickly scaffold modern TypeScript and React libraries in just 10 seconds with Bun. Powered by Bunup - the fastest bundler available ⚡️.
 
 - 🚀 **Instant Setup**: Scaffold, code, edit README, and publish with a single command - with nothing to rename or configure
-- 📦 **Modern**: ESM/CJS formats, TypeScript declarations, and optional monorepo support
+- 📦 **Modern**: ESM by default, TypeScript declarations, and optional monorepo support
 - 🛠️ **DX First**: Integrated Bun-powered testing, Biome linting and formatting that just works out of the box
 - 🚢 **Publishing**: One-command releases with automatic semantic versioning, GitHub tags, and detailed release notes
 - ⚡️ **Mind-Blowing Speed**: Build times so fast they feel instantaneous - a library building experience you've never experienced before
@@ -14,12 +14,6 @@ You can create a new project by using:
 
 ```sh
 bunx @bunup/cli create
-```
-
-After creating your project, run the following command to enable pre-commit hooks:
-
-```sh
-bun run prepare
 ```
 
 That's it! You can now start coding.
