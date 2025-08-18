@@ -57,9 +57,9 @@
 		"@biomejs/biome": "2.0.0",
 		"@types/bun": "^1.2.20",
 		"bumpp": "^10.2.2",
-		"husky": "^9.1.7",
 		"lightningcss": "^1.30.1",
 		"lint-staged": "^15.5.2",
+		"simple-git-hooks": "^2.13.1",
 		"typescript": "^5.9.2"
 	},
 	"peerDependencies": {
@@ -83,15 +83,17 @@
 		"format:fix": "biome format --write .",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
-		"prepare": "husky",
 		"test": "bun test",
 		"tsc": "tsc --noEmit",
 		"publish:ci": "bun publish --access public --no-git-checks",
-		"release": "bumpp"
+		"release": "bumpp -r --commit --push --tag",
+		"prepare": "simple-git-hooks"
 	},
 	"lint-staged": {
-		"*": "bun run format:fix && git add .",
-		"src/**/*.(m|c)?(j|t)s": "bun run tsc"
+		"*": "bun run lint:fix"
+	},
+	"simple-git-hooks": {
+		"pre-commit": "bun lint-staged"
 	},
 	"workspaces": [
 		"docs",

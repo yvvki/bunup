@@ -13,6 +13,7 @@
 			},
 			"correctness": {
 				"noUnusedVariables": {
+					"level": "error",
 					"options": {
 						"ignoreRestSiblings": true
 					}
