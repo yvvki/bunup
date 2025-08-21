@@ -49,8 +49,9 @@ export async function watch(
 			await build({ ...options, silent: !initial }, rootDir)
 			if (!initial) {
 				console.clear()
+				console.log('')
 				console.log(
-					`${rebuildCount > 1 ? pc.magenta(`[x${rebuildCount}] `) : ''}${pc.green(`Rebuilt in ${logTime(performance.now() - start)}`)}: ${changed}`,
+					`${rebuildCount > 1 ? pc.magenta(`[x${rebuildCount}] `) : ''}${pc.green(`Rebuilt in ${logTime(performance.now() - start)}`)}: ${changed}${options.name ? ` ${pc.bgBlueBright(` ${options.name} `)}` : ''} `,
 				)
 			}
 
