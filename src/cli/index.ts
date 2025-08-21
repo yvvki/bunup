@@ -6,15 +6,16 @@ import pc from 'picocolors'
 import { version } from '../../package.json'
 import { build } from '../build'
 import { handleErrorAndExit } from '../errors'
-import { type ProcessableConfig, processLoadedConfigs } from '../loaders'
+import {
+	type LoadedConfig,
+	type ProcessableConfig,
+	processLoadedConfigs,
+} from '../loaders'
 import { logger, logTime, setSilent } from '../logger'
 import type { BuildOptions } from '../options'
-import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from '../types'
 import { ensureArray, getShortFilePath } from '../utils'
 import { watch } from '../watch'
 import { type CliOptions, parseCliOptions } from './options'
-
-export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>
 
 async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 	const cliOptions = parseCliOptions(args)

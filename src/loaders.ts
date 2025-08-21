@@ -1,8 +1,9 @@
 import path from 'node:path'
 import { loadConfig } from 'coffi'
-import type { LoadedConfig } from './cli'
 import type { BuildOptions } from './options'
-import type { Arrayable, DefineWorkspaceItem } from './types'
+import type { Arrayable, DefineConfigItem, DefineWorkspaceItem } from './types'
+
+export type LoadedConfig = Arrayable<DefineConfigItem | DefineWorkspaceItem>
 
 export type ProcessableConfig = {
 	rootDir: string

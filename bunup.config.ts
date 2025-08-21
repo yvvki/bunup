@@ -6,7 +6,6 @@ export default {
 	format: ['esm'],
 	entry: ['src/index.ts', 'src/plugins.ts', 'src/cli/index.ts'],
 	dts: {
-		entry: ['src/index.ts', 'src/plugins.ts'],
 		splitting: true,
 	},
 	plugins: [
