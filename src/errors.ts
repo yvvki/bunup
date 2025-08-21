@@ -87,6 +87,24 @@ const KNOWN_ERRORS: KnownErrorSolution[] = [
 			)
 		},
 	},
+	{
+		pattern: /Multiple files share the same output path/i,
+		errorType: 'BUILD ERROR',
+		logSolution: () => {
+			logger.log(
+				pc.yellow('CSS Import Detected') +
+					"\n\nYou're importing CSS files in JavaScript. To bundle styles properly, use the " +
+					pc.green('injectStyles()') +
+					' plugin.\n\n' +
+					pc.dim(
+						'This plugin transforms CSS imports into JavaScript that automatically ',
+					) +
+					pc.dim('injects styles into the document head at runtime.\n\n') +
+					'Learn more: ' +
+					pc.blue('https://bunup.dev/docs/plugins/inject-styles'),
+			)
+		},
+	},
 ]
 
 export const handleError = (error: unknown, context?: string): void => {
