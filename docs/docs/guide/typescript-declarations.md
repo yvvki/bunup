@@ -2,7 +2,7 @@
 
 Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library based on your output format, ensuring full type safety for consumers.
 
-Built from the ground up, Bunup includes [its own](https://github.com/bunup/typeroll) high-performance TypeScript declaration bundler. It's designed for maximum speed while offering advanced features like splitting and minification, producing minimal and clean declaration files.
+Bunup includes [its own](https://github.com/bunup/typeroll) TypeScript declaration bundler. It's designed for maximum speed while offering advanced features like splitting and minification, producing minimal and clean declaration files.
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ Bunup leverages TypeScript's new modern [isolatedDeclarations](https://www.types
 
 ## Basic
 
-If your entry points are TypeScript files, Bunup will automatically generate declaration files for them.
+If your entry points are TypeScript files, Bunup will generate declaration files only when needed (i.e., when the entry point has exports). For entry points without exports, such as CLI entry, declaration files won't be generated.
 
 ## Custom Entry Points
 
