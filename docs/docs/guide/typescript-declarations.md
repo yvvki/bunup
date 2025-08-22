@@ -21,7 +21,7 @@ Bunup leverages TypeScript's new modern [isolatedDeclarations](https://www.types
 
 ## Basic
 
-If your entry points are TypeScript files, Bunup will generate declaration files only when needed (i.e., when the entry point has exports). For entry points without exports, such as CLI entry, declaration files won't be generated.
+Bunup automatically generates TypeScript declaration files for entry points that contain exports. CLI entries and other files without exports are skipped.
 
 ## Custom Entry Points
 
