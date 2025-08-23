@@ -5,7 +5,7 @@
       "name": "bunup",
       "dependencies": {
         "chokidar": "^4.0.3",
-        "coffi": "^0.1.33",
+        "coffi": "^0.1.35",
         "picocolors": "^1.1.1",
         "tinyexec": "^1.0.1",
         "tree-kill": "^1.2.2",
@@ -536,7 +536,7 @@
 
     "clone-response": ["clone-response@1.0.3", "", { "dependencies": { "mimic-response": "^1.0.0" } }, "sha512-ROoL94jJH2dUVML2Y/5PEDNaSHgeOdSDicUyS7izcF63G6sTc/FTjLub4b8Il9S8S0beOfYt0TaA5qvFK+w0wA=="],
 
-    "coffi": ["coffi@0.1.33", "", {}, "sha512-1i0gUuZLbkCmvpptibXKccfUl5OMaJDqb4fNmb2dFBzinRARuS9Af4vdPUVjXoms11/qMpbD7aKZaMrA9clBUw=="],
+    "coffi": ["coffi@0.1.35", "", {}, "sha512-Gx4lm5WZM5wK13FShJRox3Qf9xiu+cAoxGvL60jOgLnB7Gt7rAWkwxEqwsn5zlOml96I+8xbQFYay7bhZSCipA=="],
 
     "color-convert": ["color-convert@2.0.1", "", { "dependencies": { "color-name": "~1.1.4" } }, "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ=="],
 
