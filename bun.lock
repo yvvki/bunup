@@ -9,7 +9,7 @@
         "picocolors": "^1.1.1",
         "tinyexec": "^1.0.1",
         "tree-kill": "^1.2.2",
-        "typeroll": "^0.7.3",
+        "typeroll": "^0.7.4",
       },
       "devDependencies": {
         "@biomejs/biome": "2.2.0",
@@ -38,7 +38,7 @@
     },
     "examples/basic": {
       "name": "basic",
-      "version": "0.11.1",
+      "version": "0.11.3",
       "devDependencies": {
         "@types/bun": "^1.2.20",
         "bunup": "^0.8.72",
@@ -53,7 +53,7 @@
     },
     "examples/react": {
       "name": "react",
-      "version": "0.11.1",
+      "version": "0.11.3",
       "devDependencies": {
         "@types/bun": "^1.2.20",
         "@types/react": "^19.1.10",
@@ -1054,7 +1054,7 @@
 
     "type-fest": ["type-fest@2.19.0", "", {}, "sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA=="],
 
-    "typeroll": ["typeroll@0.7.3", "", { "dependencies": { "@babel/parser": "^7.28.0", "@babel/types": "^7.28.1", "coffi": "^0.1.31", "oxc-minify": "^0.77.2", "oxc-resolver": "^8.0.0", "oxc-transform": "^0.67.0", "picocolors": "^1.1.1", "std-env": "^3.9.0", "ts-import-resolver": "^0.1.23" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-SIAoUi0zH904oNudKvFS75n1e0rLsLbKICU8TZbm9XqHTIRPJ17f4nnRLnPtQCtDXl9tdSXBQRcHmRYdz9/q8A=="],
+    "typeroll": ["typeroll@0.7.4", "", { "dependencies": { "@babel/parser": "^7.28.0", "@babel/types": "^7.28.1", "coffi": "^0.1.31", "oxc-minify": "^0.77.2", "oxc-resolver": "^8.0.0", "oxc-transform": "^0.67.0", "picocolors": "^1.1.1", "std-env": "^3.9.0", "ts-import-resolver": "^0.1.23" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-znuqoOw9MPbWakhuDVlfioyBqyGArv2EFFc6/vNSsLanLmxAj3A4T6yE3mfr1CGYYskPkMc8VkA+9wnDDSZhsw=="],
 
     "typescript": ["typescript@5.9.2", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A=="],
 
