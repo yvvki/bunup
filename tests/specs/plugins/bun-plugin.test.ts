@@ -31,7 +31,7 @@ describe('Bun Plugin', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			banner: testMarker,
 			plugins: [{ type: 'bun', plugin: testPlugin }],
 		})

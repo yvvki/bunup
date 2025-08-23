@@ -12,7 +12,7 @@ The build function must be run in the Bun runtime.
 import { build } from 'bunup';
 
 await build({
-  entry: ['src/index.ts'],
+  entry: 'src/index.ts',
 });
 ```
 
@@ -26,7 +26,7 @@ For TypeScript users, the `BuildOptions` type is available:
 import { build, type BuildOptions } from 'bunup';
 
 const options: BuildOptions = {
-  entry: ['src/index.ts'],
+  entry: 'src/index.ts',
   format: ['esm', 'cjs'],
 };
 
@@ -44,7 +44,7 @@ import { build } from 'bunup';
 import { injectStyles } from 'bunup/plugins';
 
 await build({
-  entry: ['src/index.ts'],
+  entry: 'src/index.ts',
   plugins: [injectStyles({
     minify: true,
     targets: { chrome: 95 }

@@ -81,7 +81,7 @@ export interface BuildOptions {
 	 * - A string path to a file
 	 * - An array of file paths
 	 *
-	 * @see https://bunup.dev/docs/#entry-points
+	 * @see https://bunup.dev/docs/guide/options#entry-points
 	 */
 	entry: string | string[]
 
@@ -96,7 +96,7 @@ export interface BuildOptions {
 	 * Can include 'esm', 'cjs', and/or 'iife'
 	 * Defaults to ['esm'] if not specified
 	 */
-	format: Format[]
+	format: Format | Format[]
 
 	/**
 	 * Whether to enable all minification options
@@ -132,6 +132,15 @@ export interface BuildOptions {
 	 * Whether to watch for file changes and rebuild automatically
 	 */
 	watch?: boolean
+
+	/**
+	 * package.json `exports` conditions used when resolving imports
+	 *
+	 * Equivalent to `--conditions` in `bun build` or `bun run`.
+	 *
+	 * https://nodejs.org/api/packages.html#exports
+	 */
+	conditions?: string | string[]
 
 	/**
 	 * Whether to generate TypeScript declaration files (.d.ts)
@@ -301,7 +310,7 @@ export interface BuildOptions {
 	 *
 	 * Used for assets, external modules, and chunk files when splitting is enabled
 	 *
-	 * @see https://bunup.dev/docs#public-path for more information
+	 * @see https://bunup.dev/docs/guide/options#public-path for more information
 	 *
 	 * @example
 	 * publicPath: 'https://cdn.example.com/'
@@ -386,8 +395,8 @@ export interface BuildOptions {
 }
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
-	entry: ['src/index.ts'],
-	format: ['esm'],
+	entry: 'src/index.ts',
+	format: 'esm',
 	outDir: 'dist',
 	target: 'node',
 	clean: true,

@@ -31,7 +31,7 @@ describe('Config', () => {
 
 		const result = await runDtsBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			preferredTsconfigPath: 'tsconfig.build.json',
 		})
 

@@ -15,7 +15,7 @@ describe('Build Process', () => {
 	it('builds single entry', async () => {
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 		})
 		expect(
 			validateBuildFiles(result, {
@@ -28,7 +28,7 @@ describe('Build Process', () => {
 		createProject({ 'src/index.ts': '', 'src/utils.ts': '' })
 		const result = await runBuild({
 			entry: ['src/index.ts', 'src/utils.ts'],
-			format: ['esm'],
+			format: 'esm',
 		})
 		expect(
 			validateBuildFiles(result, {
@@ -52,7 +52,7 @@ describe('Build Process', () => {
 	it('generates DTS when enabled', async () => {
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			dts: true,
 		})
 		expect(
@@ -86,7 +86,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/component.tsx',
-			format: ['esm'],
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -108,7 +108,7 @@ export function Counter() {
 	it('respects minify options', async () => {
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			minify: true,
 		})
 		expect(result.files[0].size).toBeLessThan(50)
@@ -117,7 +117,7 @@ export function Counter() {
 	it('includes banner/footer', async () => {
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			banner: '// Banner',
 			footer: '// Footer',
 		})
@@ -130,7 +130,7 @@ export function Counter() {
 		createProject({ 'src/index.ts': `import 'chalk';` })
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			external: ['chalk'],
 		})
 		expect(result.files[0].content).toContain('chalk')
@@ -139,7 +139,7 @@ export function Counter() {
 	it('should clean the output directory before building when the clean option is true', async () => {
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -153,7 +153,7 @@ export function Counter() {
 
 		const result2 = await runBuild({
 			entry: 'src/index.ts',
-			format: ['cjs'],
+			format: 'cjs',
 			clean: true,
 		})
 
@@ -170,7 +170,7 @@ export function Counter() {
 	it('should not clean the output directory when the clean option is false', async () => {
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			clean: false,
 		})
 
@@ -185,7 +185,7 @@ export function Counter() {
 
 		const result2 = await runBuild({
 			entry: 'src/index.ts',
-			format: ['cjs'],
+			format: 'cjs',
 			clean: false,
 		})
 
@@ -280,7 +280,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -307,7 +307,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/index.tsx',
-			format: ['esm'],
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -327,7 +327,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -350,7 +350,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			noExternal: ['ora'],
 		})
 
@@ -381,7 +381,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			external: ['lodash'],
 		})
 
@@ -406,7 +406,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			onSuccess: (options) => {
 				callbackCalled = true
 				callbackOptions = options
@@ -450,7 +450,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			onSuccess: async () => {
 				await new Promise((resolve) => setTimeout(resolve, 1))
 				asyncOperationCompleted = true
@@ -468,7 +468,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			onSuccess: () => {
 				callbackCalled = true
 			},
@@ -491,7 +491,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			external: [/uvu-/],
 		})
 
@@ -519,7 +519,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			external: ['zx', 'zx-extra'],
 			noExternal: [/zx-/],
 		})
@@ -542,7 +542,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: ['src/index.ts', 'lib/index.ts', 'test/index.ts'],
-			format: ['esm'],
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -562,7 +562,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: ['src/types.ts', 'lib/types.ts', 'utils/types.ts'],
-			format: ['esm'],
+			format: 'esm',
 			dts: true,
 		})
 
@@ -594,7 +594,7 @@ export function Counter() {
 				'src/elements/button.ts',
 				'lib/ui/button.ts',
 			],
-			format: ['esm'],
+			format: 'esm',
 			dts: true,
 		})
 
@@ -628,7 +628,7 @@ export function Counter() {
 				'src/layouts/header/index.ts',
 				'src/ui/header/index.ts',
 			],
-			format: ['esm'],
+			format: 'esm',
 			dts: true,
 		})
 
@@ -659,7 +659,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: ['src/**/*.ts'],
-			format: ['esm'],
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -686,7 +686,7 @@ export function Counter() {
 
 		const result = await runBuild({
 			entry: ['src/**/*.ts', '!src/**/*.test.ts'],
-			format: ['esm'],
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -719,7 +719,7 @@ export function Counter() {
 				'!src/**/internal/**/*.ts',
 				'!tests/**/*.ts',
 			],
-			format: ['esm'],
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)

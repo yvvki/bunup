@@ -32,7 +32,7 @@ export default defineConfig({
 	entry: ['src/index.ts', 'src/cli.ts'],
 	dts: {
 		// Only generate declarations for index.ts
-		entry: ['src/index.ts'],
+		entry: 'src/index.ts',
 	},
 });
 ```
@@ -141,7 +141,7 @@ bunup src/index.ts --preferred-tsconfig-path ./tsconfig.build.json
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: "src/index.ts",
   preferredTsconfigPath: "./tsconfig.build.json",
 });
 ```
@@ -164,7 +164,7 @@ bunup src/index.ts --resolve-dts=react,lodash
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-      entry: ['src/index.ts'],
+      entry: 'src/index.ts',
       dts: {
             // Enable resolving all external types
             resolve: true,
@@ -180,7 +180,7 @@ You can also specify which packages to resolve types for:
 
 ```typescript
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	dts: {
 		// Only resolve types from these specific packages
 		resolve: ['react', 'lodash', /^@types\//],
@@ -200,7 +200,7 @@ bunup src/index.ts --dts=false
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: "src/index.ts",
   dts: false,
 });
 ```

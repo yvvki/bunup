@@ -21,8 +21,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -59,7 +59,7 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
+			entry: 'src/index.ts',
 			format: ['esm', 'cjs'],
 		})
 
@@ -115,8 +115,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -164,8 +164,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -200,8 +200,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -244,8 +244,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['cjs'],
+			entry: 'src/index.ts',
+			format: 'cjs',
 		})
 
 		expect(result.success).toBe(true)
@@ -289,8 +289,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['cjs'],
+			entry: 'src/index.ts',
+			format: 'cjs',
 		})
 
 		expect(result.success).toBe(true)
@@ -325,8 +325,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -388,8 +388,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -468,8 +468,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -530,8 +530,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -598,7 +598,7 @@ describe('dts', () => {
 
 		const result = await runDtsBuild({
 			entry: ['src/main.ts', 'src/cli.ts'],
-			format: ['esm'],
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -663,8 +663,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -738,8 +738,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -809,8 +809,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -854,8 +854,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -945,8 +945,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)
@@ -1037,8 +1037,8 @@ describe('dts', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 		})
 
 		expect(result.success).toBe(true)

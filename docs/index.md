@@ -119,7 +119,7 @@ import { defineConfig } from 'bunup';
 import { exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	plugins: [exports()],
 });
 ```
@@ -130,13 +130,13 @@ You can also export an array of configurations:
 export default defineConfig([
 	{
 		name: 'node',
-		entry: ['src/index.ts'],
-		format: ['cjs'],
+		entry: 'src/index.ts',
+		format: 'esm',
 		target: 'node',
 	},
 	{
 		name: 'browser',
-		entry: ['src/index.ts'],
+		entry: 'src/index.ts',
 		format: ['esm', 'iife'],
 		target: 'browser',
 		outDir: "dist/browser",

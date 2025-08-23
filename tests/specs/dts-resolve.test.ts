@@ -27,8 +27,8 @@ describe('dts-resolve', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			dts: {
 				resolve: true,
 			},
@@ -82,7 +82,7 @@ describe('dts-resolve', () => {
 
 		const result = await runDtsBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			dts: {
 				resolve: ['date-fns', 'uuid'],
 			},
@@ -139,8 +139,8 @@ describe('dts-resolve', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			dts: {
 				resolve: ['source-lib'],
 			},
@@ -197,8 +197,8 @@ describe('dts-resolve', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			dts: {
 				resolve: ['dep-lib'],
 			},
@@ -249,8 +249,8 @@ describe('dts-resolve', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			external: ['external-pkg', 'internal-pkg'],
 			dts: {
 				resolve: ['external-pkg'],
@@ -313,8 +313,8 @@ describe('dts-resolve', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			external: ['lib-c'],
 			dts: {
 				resolve: true,
@@ -370,8 +370,8 @@ describe('dts-resolve', () => {
 		})
 
 		const result = await runDtsBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			noExternal: ['included-lib'],
 			dts: {
 				resolve: ['included-lib'],

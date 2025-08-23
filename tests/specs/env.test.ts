@@ -17,7 +17,7 @@ describe('Environment Variables', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			env: {
 				TEST_VAR: 'overridden-value',
 				UNDEFINED_VAR: 'defined-in-config',
@@ -41,7 +41,7 @@ describe('Environment Variables', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			env: {
 				TEST_VAR: 'test-value',
 			},
@@ -64,7 +64,7 @@ describe('Environment Variables', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			env: {
 				STRING_VAR: 'string-value',
 				NUMBER_VAR: '123',
@@ -114,7 +114,7 @@ describe('Environment Variables', () => {
 
 		const result = await runBuild({
 			entry: ['src/index.ts', 'src/other.ts'],
-			format: ['esm'],
+			format: 'esm',
 			env: {
 				MULTI_ENTRY: 'multi-value',
 			},
@@ -138,7 +138,7 @@ describe('Environment Variables', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			env: {
 				DEFINED_ENV: 'env-value',
 				ENV_AND_DEFINE: 'env-override',

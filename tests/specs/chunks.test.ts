@@ -15,8 +15,8 @@ describe.skipIf(isCI())('chunk splitting', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			splitting: true,
 			loader: {
 				'.txt': 'file',

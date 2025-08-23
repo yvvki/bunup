@@ -101,9 +101,9 @@ bunup src/index.ts --format esm,cjs,iife
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	// Single format
-	format: ['esm'],
+	format: 'esm',
 
 	// Or multiple formats
 	// format: ['esm', 'cjs', 'iife'],
@@ -145,7 +145,7 @@ bunup src/index.ts --name my-library
 ```ts [bunup.config.ts]
 export default defineConfig({
     name: 'my-library',
-    entry: ['src/index.ts'],
+    entry: 'src/index.ts',
 });
 ```
 
@@ -157,14 +157,14 @@ This is especially useful when you have multiple configurations:
 export default defineConfig([
 	{
 		name: 'node-build',
-		entry: ['src/index.ts'],
-		format: ['cjs'],
+		entry: 'src/index.ts',
+		format: 'esm',
 		target: 'node',
 		// ... other options
 	},
 	{
 		name: 'browser-build',
-		entry: ['src/index.ts'],
+		entry: 'src/index.ts',
 		format: ['esm', 'iife'],
 		// ... other options
 	},
@@ -203,7 +203,7 @@ bunup src/index.ts --external lodash
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	external: ['lodash'],
 });
 ```
@@ -222,7 +222,7 @@ bunup src/index.ts --no-external lodash
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	noExternal: ['lodash'],
 });
 ```
@@ -264,8 +264,8 @@ bunup src/index.ts --splitting=false
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-	entry: ['src/index.ts'],
-	format: ['esm'],
+	entry: 'src/index.ts',
+	format: 'esm',
 	// Enable for all formats
 	splitting: true,
 
@@ -292,7 +292,7 @@ bunup src/index.ts --minify
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-    entry: ['src/index.ts'],
+    entry: 'src/index.ts',
     minify: true,
 });
 ```
@@ -319,7 +319,7 @@ bunup src/index.ts --minify-whitespace --minify-syntax
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	// Configure individual options
 	minifyWhitespace: true,
 	minifyIdentifiers: false,
@@ -343,7 +343,7 @@ bunup src/index.ts --bytecode --target bun
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-    entry: ['src/index.ts'],
+    entry: 'src/index.ts',
     bytecode: true,
     target: 'bun',  // Bytecode compilation requires "bun" target
 });
@@ -370,7 +370,7 @@ bunup src/index.ts --sourcemap
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-    entry: ['src/index.ts'],
+    entry: 'src/index.ts',
     sourcemap: 'linked'
     // Can also use boolean
     // sourcemap: true // equivalent to 'inline'
@@ -395,7 +395,7 @@ Bunup allows you to define global constants that will be replaced at build time.
 
 ```typescript
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	define: {
 		PACKAGE_VERSION: '"1.0.0"',
 		DEBUG: 'false',
@@ -422,7 +422,7 @@ bunup src/index.ts --banner 'use client' --footer '// built with love in SF'
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-      entry: ['src/index.ts'],
+      entry: 'src/index.ts',
       // Add text to the beginning of bundle files
       banner: '"use client";',
       // Add text to the end of bundle files
@@ -444,7 +444,7 @@ You can remove specific function calls from your bundle:
 
 ```typescript
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	drop: ['console', 'debugger', 'anyIdentifier.or.propertyAccess'],
 });
 ```
@@ -459,7 +459,7 @@ You can configure how different file types are loaded:
 
 ```typescript
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	loader: {
 		'.png': 'dataurl',
 		'.txt': 'file',
@@ -483,7 +483,7 @@ bunup src/index.ts --public-path https://cdn.example.com/
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-      entry: ['src/index.ts'],
+      entry: 'src/index.ts',
       publicPath: 'https://cdn.example.com/',
 });
 ```
@@ -536,7 +536,7 @@ PUBLIC_URL=https://example.com bunup src/index.ts --env PUBLIC_*
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 
 	// Inline all available environment variables at build time
 	env: 'inline',
@@ -583,7 +583,7 @@ bunup src/index.ts --target browser
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-    entry: ['src/index.ts'],
+    entry: 'src/index.ts',
     target: 'browser',
 });
 ```
@@ -612,7 +612,7 @@ bunup src/index.ts --out-dir build
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-    entry: ['src/index.ts'],
+    entry: 'src/index.ts',
     outDir: 'build',
 });
 ```
@@ -633,7 +633,7 @@ bunup src/index.ts --clean=false
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-    entry: ['src/index.ts'],
+    entry: 'src/index.ts',
     clean: false,
 });
 ```
@@ -650,12 +650,12 @@ Execute custom JavaScript code after a successful build:
 
 ```typescript
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	onSuccess: (options) => {
 		console.log('Build completed!');
-		
+
 		const server = startDevServer();
-		
+
 		// Optional: return a cleanup function for watch mode
 		return () => server.close();
 	},
@@ -674,7 +674,7 @@ bunup src/index.ts --onSuccess "bun run ./scripts/server.ts"
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	onSuccess: 'bun run ./scripts/server.ts',
 });
 ```
@@ -687,7 +687,7 @@ For more control over command execution:
 
 ```typescript
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	onSuccess: {
 		cmd: 'bun run ./scripts/server.ts',
 		options: {

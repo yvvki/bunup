@@ -17,7 +17,7 @@ describe('Format Types and Output Extensions', () => {
 		it('should generate .mjs for ESM format by default', async () => {
 			const result = await runBuild({
 				entry: 'src/index.ts',
-				format: ['esm'],
+				format: 'esm',
 			})
 
 			expect(result.success).toBe(true)
@@ -31,7 +31,7 @@ describe('Format Types and Output Extensions', () => {
 		it('should generate .js for CJS format by default', async () => {
 			const result = await runBuild({
 				entry: 'src/index.ts',
-				format: ['cjs'],
+				format: 'cjs',
 			})
 
 			expect(result.success).toBe(true)
@@ -80,7 +80,7 @@ describe('Format Types and Output Extensions', () => {
 
 			const result = await runBuild({
 				entry: 'src/index.ts',
-				format: ['esm'],
+				format: 'esm',
 			})
 
 			expect(result.success).toBe(true)
@@ -99,7 +99,7 @@ describe('Format Types and Output Extensions', () => {
 
 			const result = await runBuild({
 				entry: 'src/index.ts',
-				format: ['cjs'],
+				format: 'cjs',
 			})
 
 			expect(result.success).toBe(true)
@@ -298,14 +298,14 @@ describe('Complex Format Scenarios', () => {
 
 		const esmResult = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			dts: true,
 			banner: '// ESM Build',
 		})
 
 		const cjsResult = await runBuild({
 			entry: ['src/lib.ts'],
-			format: ['cjs'],
+			format: 'cjs',
 			dts: true,
 			banner: '// CJS Build',
 			clean: false,

@@ -133,7 +133,7 @@ describe('Utils', () => {
 				minify: true,
 				entry: [],
 				outDir: '',
-				format: ['cjs'],
+				format: 'cjs',
 			})
 			expect(result).toEqual({
 				whitespace: true,
@@ -150,7 +150,7 @@ describe('Utils', () => {
 				minifySyntax: false,
 				entry: [],
 				outDir: '',
-				format: ['cjs'],
+				format: 'cjs',
 			})
 			expect(result).toEqual({
 				whitespace: false,
@@ -163,7 +163,7 @@ describe('Utils', () => {
 			const result = getResolvedMinify({
 				entry: [],
 				outDir: '',
-				format: ['cjs'],
+				format: 'cjs',
 			})
 			expect(result).toEqual({
 				whitespace: false,

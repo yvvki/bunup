@@ -43,7 +43,7 @@ export type BuildOutputFile = {
 	/** Whether the file is a dts file */
 	dts: boolean
 	/** The format of the output file */
-	format: Format
+	format: Format | Format[]
 }
 
 /**

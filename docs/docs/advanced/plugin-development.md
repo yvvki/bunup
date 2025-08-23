@@ -43,7 +43,7 @@ import { defineConfig } from "bunup";
 import myBunPlugin from "./my-bun-plugin";
 
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: "src/index.ts",
   format: ["esm", "cjs"],
   plugins: [
     {
@@ -74,7 +74,7 @@ export function myBunupPlugin(): Plugin {
       onBuildStart: async (options) => {
         console.log("Starting build with options:", options);
       },
-      
+
       // Run after the build is completed
       onBuildDone: async ({ options, output }) => {
         console.log("Build completed with files:", output.files.length);
@@ -92,7 +92,7 @@ import { defineConfig } from "bunup";
 import { myBunupPlugin } from "./my-bunup-plugin";
 
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: "src/index.ts",
   format: ["esm", "cjs"],
   plugins: [
     myBunupPlugin()

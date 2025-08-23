@@ -103,7 +103,7 @@ export async function build(
 		)
 	}
 
-	const buildPromises = options.format.flatMap(async (fmt) => {
+	const buildPromises = ensureArray(options.format).flatMap(async (fmt) => {
 		const result = await Bun.build({
 			entrypoints: entrypoints.map((file) => `${rootDir}/${file}`),
 			format: fmt,
@@ -117,6 +117,7 @@ export async function build(
 			sourcemap: getResolvedSourcemap(options.sourcemap),
 			loader: options.loader,
 			drop: options.drop,
+			conditions: options.conditions,
 			banner: options.banner,
 			footer: options.footer,
 			publicPath: options.publicPath,
@@ -191,7 +192,7 @@ export async function build(
 				logIsolatedDeclarationErrors(dtsResult.errors)
 			}
 
-			for (const fmt of options.format) {
+			for (const fmt of ensureArray(options.format)) {
 				for (const file of dtsResult.files) {
 					const dtsExtension = getDefaultDtsExtention(
 						fmt,

@@ -16,7 +16,7 @@ describe('CLI Only Options', () => {
 			'custom-bunup.config.ts': `
                 export default {
                     entry: "src/index.ts",
-                    format: ["esm"],
+                    format: "esm",
                     banner: "// Hello, world!",
                 };
             `,

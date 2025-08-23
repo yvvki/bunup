@@ -9,7 +9,7 @@ import { defineConfig } from 'bunup';
 import { unused } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	plugins: [unused()],
 });
 ```

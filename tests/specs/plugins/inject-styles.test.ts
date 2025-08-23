@@ -22,8 +22,8 @@ describe('injectStyles plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [injectStyles()],
 		})
 
@@ -52,8 +52,8 @@ describe('injectStyles plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [
 				injectStyles({
 					inject: (css, filePath) => {
@@ -95,8 +95,8 @@ describe('injectStyles plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [injectStyles()],
 		})
 
@@ -141,8 +141,8 @@ describe('injectStyles plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [injectStyles()],
 		})
 

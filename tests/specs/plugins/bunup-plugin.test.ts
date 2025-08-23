@@ -28,7 +28,7 @@ describe('Bunup Plugin', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [testPlugin],
 		})
 
@@ -37,7 +37,7 @@ describe('Bunup Plugin', () => {
 		expect(onBuildStartMock).toHaveBeenCalledWith(
 			expect.objectContaining({
 				entry: 'src/index.ts',
-				format: ['esm'],
+				format: 'esm',
 			}),
 		)
 	})
@@ -57,7 +57,7 @@ describe('Bunup Plugin', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [testPlugin],
 		})
 
@@ -97,7 +97,7 @@ describe('Bunup Plugin', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [testPlugin],
 		})
 
@@ -138,7 +138,7 @@ describe('Bunup Plugin', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [firstPlugin, secondPlugin],
 		})
 
@@ -175,7 +175,7 @@ describe('Bunup Plugin', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [testPlugin],
 		})
 
@@ -214,7 +214,7 @@ describe('Bunup Plugin', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [bunupPlugin, bunPlugin],
 		})
 
@@ -240,7 +240,7 @@ describe('Bunup Plugin', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [testPlugin],
 		})
 
@@ -263,7 +263,7 @@ describe('Bunup Plugin', () => {
 
 		const { error } = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [errorPlugin],
 		})
 
@@ -288,7 +288,7 @@ describe('Bunup Plugin', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [outputAccessPlugin],
 		})
 
@@ -308,7 +308,7 @@ describe('Bunup Plugin', () => {
 
 		const result = await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [emptyPlugin],
 		})
 
@@ -335,7 +335,7 @@ describe('Bunup Plugin', () => {
 
 		await runBuild({
 			entry: 'src/index.ts',
-			format: ['esm'],
+			format: 'esm',
 			plugins: [entrypointCheckPlugin],
 		})
 
@@ -371,7 +371,7 @@ describe('Bunup Plugin', () => {
 
 		await runBuild({
 			entry: ['src/index.ts', 'src/other.ts'],
-			format: ['esm'],
+			format: 'esm',
 			plugins: [multiEntrypointPlugin],
 		})
 
@@ -418,7 +418,7 @@ describe('Bunup Plugin', () => {
 
 		await runBuild({
 			entry: ['src/index.ts', 'src/other.ts'],
-			format: ['esm'],
+			format: 'esm',
 			splitting: true,
 			plugins: [chunkCheckPlugin],
 		})
@@ -470,7 +470,7 @@ describe('Bunup Plugin', () => {
 
 		await runBuild({
 			entry: ['src/index.ts', 'src/other.ts'],
-			format: ['esm'],
+			format: 'esm',
 			splitting: true,
 			dts: {
 				splitting: true,
@@ -512,18 +512,18 @@ describe('Bunup Plugin', () => {
 					name: string;
 					version: string;
 				}
-				
+
 				export interface ExtendedConfig extends BaseConfig {
 					features: string[];
 				}
 			`,
 			'src/utils.ts': `
 				import { BaseConfig } from './types';
-				
+
 				export function formatConfig(config: BaseConfig): string {
 					return \`\${config.name}@\${config.version}\`;
 				}
-				
+
 				export const shared = {
 					value: 100,
 					multiply: (x: number) => x * shared.value
@@ -538,7 +538,7 @@ describe('Bunup Plugin', () => {
 				import { formatConfig } from './utils';
 				import { ExtendedConfig } from './types';
 				import { APP_VERSION } from './constants';
-				
+
 				export function createMainConfig(): ExtendedConfig | undefined {
 					return {
 						name: 'main',
@@ -546,7 +546,7 @@ describe('Bunup Plugin', () => {
 						features: ['core']
 					};
 				}
-				
+
 				export function printMainConfig(config: ExtendedConfig): string | undefined {
 					return formatConfig(config) + ' with ' + config.features.join(', ');
 				}
@@ -555,7 +555,7 @@ describe('Bunup Plugin', () => {
 				import { formatConfig, shared } from './utils';
 				import { ExtendedConfig } from './types';
 				import { APP_VERSION, API_ENDPOINT } from './constants';
-				
+
 				export function createAdminConfig(): ExtendedConfig {
 					return {
 						name: 'admin',
@@ -563,24 +563,24 @@ describe('Bunup Plugin', () => {
 						features: ['admin-panel', 'users-management']
 					};
 				}
-				
+
 				export function getAdminValue(): number | undefined {
 					return shared.multiply(2);
 				}
-				
+
 				export const ADMIN_API: string = API_ENDPOINT + '/admin';
 			`,
 			'src/client.ts': `
 				import { BaseConfig } from './types';
 				import { API_ENDPOINT } from './constants';
-				
+
 				export function createClientConfig(): BaseConfig {
 					return {
 						name: 'client',
 						version: '1.0.0'
 					};
 				}
-				
+
 				export const CLIENT_API: string = API_ENDPOINT + '/client';
 			`,
 		})
@@ -599,7 +599,7 @@ describe('Bunup Plugin', () => {
 
 		await runBuild({
 			entry: ['src/main.ts', 'src/admin.ts', 'src/client.ts'],
-			format: ['esm'],
+			format: 'esm',
 			splitting: true,
 			dts: {
 				splitting: true,

@@ -290,7 +290,6 @@ const OPTION_DEFINITIONS: Record<string, OptionDefinition> = {
 		type: 'string',
 		category: 'build',
 	},
-
 	filter: {
 		flags: ['filter'],
 		handler: handlers.array('filter'),

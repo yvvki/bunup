@@ -18,8 +18,8 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [exports()],
 		})
 
@@ -42,8 +42,8 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['cjs'],
+			entry: 'src/index.ts',
+			format: 'cjs',
 			plugins: [exports()],
 		})
 
@@ -65,7 +65,7 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
+			entry: 'src/index.ts',
 			format: ['esm', 'cjs'],
 			plugins: [exports()],
 		})
@@ -90,8 +90,8 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			dts: true,
 			plugins: [exports()],
 		})
@@ -114,7 +114,7 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
+			entry: 'src/index.ts',
 			format: ['esm', 'cjs'],
 			dts: true,
 			plugins: [exports()],
@@ -138,7 +138,7 @@ describe('exports plugin', () => {
 
 		const result = await runBuild({
 			entry: ['src/index.ts', 'src/utils.ts'],
-			format: ['esm'],
+			format: 'esm',
 			plugins: [exports()],
 		})
 
@@ -161,8 +161,8 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [exports()],
 		})
 
@@ -185,8 +185,8 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [exports()],
 		})
 
@@ -210,8 +210,8 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [
 				exports({
 					customExports: () => ({
@@ -248,7 +248,7 @@ describe('exports plugin', () => {
 
 		const result = await runBuild({
 			entry: ['src/index.ts', 'src/utils.ts'],
-			format: ['esm'],
+			format: 'esm',
 			plugins: [
 				exports({
 					customExports: () => ({
@@ -281,7 +281,7 @@ describe('exports plugin', () => {
 
 		const result = await runBuild({
 			entry: ['src/index.ts', 'src/internal.ts'],
-			format: ['esm'],
+			format: 'esm',
 			plugins: [
 				exports({
 					exclude: ['src/internal.ts'],
@@ -306,7 +306,7 @@ describe('exports plugin', () => {
 
 		const result = await runBuild({
 			entry: ['src/index.ts', 'src/internal.ts'],
-			format: ['esm'],
+			format: 'esm',
 			plugins: [
 				exports({
 					exclude: (ctx: BuildContext) => {
@@ -337,7 +337,7 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
+			entry: 'src/index.ts',
 			format: ['esm', 'cjs'],
 			dts: true,
 			plugins: [exports()],
@@ -371,7 +371,7 @@ describe('exports plugin', () => {
 				'src/components/index.ts',
 				'src/components/Button.ts',
 			],
-			format: ['esm'],
+			format: 'esm',
 			plugins: [exports()],
 		})
 
@@ -391,8 +391,8 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [exports()],
 		})
 
@@ -414,7 +414,7 @@ describe('exports plugin', () => {
 
 		const result = await runBuild({
 			entry: ['src/index.ts', 'src/features/index.ts'],
-			format: ['esm'],
+			format: 'esm',
 			plugins: [exports()],
 		})
 
@@ -435,8 +435,8 @@ describe('exports plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			dts: true,
 			plugins: [exports()],
 		})
@@ -467,7 +467,7 @@ describe('exports plugin', () => {
 
 		const result = await runBuild({
 			entry: ['src/utils.ts'],
-			format: ['esm'],
+			format: 'esm',
 			plugins: [
 				exports({
 					customExports: (ctx) => ctx.meta.packageJson.data?.exports,

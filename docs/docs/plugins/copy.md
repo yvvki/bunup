@@ -9,7 +9,7 @@ import { defineConfig } from 'bunup';
 import { copy } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	plugins: [copy(['README.md', 'assets/**/*'])],
 });
 ```

@@ -38,7 +38,7 @@ export default defineWorkspace([
     name: "core",
     root: "packages/core",
     config: {
-      entry: ["src/index.ts"],
+      entry: "src/index.ts",
       format: ["esm", "cjs"],
     },
   },
@@ -46,8 +46,8 @@ export default defineWorkspace([
     name: "utils",
     root: "packages/utils",
     config: {
-      entry: ["src/index.ts"],
-      format: ["esm"],
+      entry: "src/index.ts",
+      format: "esm",
     },
   },
 ]);
@@ -77,8 +77,8 @@ export default defineWorkspace(
   ],
   {
     // Shared configuration applied to all packages
-    entry: ["src/index.ts"],
-    format: ["esm"],
+    entry: "src/index.ts",
+    format: "esm",
     minify: true,
     target: "node",
   }
@@ -96,7 +96,7 @@ export default defineWorkspace(
       config: [
         {
           name: "browser-esm",
-          format: ["esm"],
+          format: "esm",
           target: "browser",
         },
         {
@@ -109,7 +109,7 @@ export default defineWorkspace(
   ],
   {
     // These shared options apply to both browser-esm and node-cjs configs
-    entry: ["src/index.ts"],
+    entry: "src/index.ts",
     minify: true,
   }
 );
@@ -129,13 +129,13 @@ export default defineWorkspace([
     config: [
       {
         name: "browser-esm",
-        entry: ["src/index.ts"],
-        format: ["esm"],
+        entry: "src/index.ts",
+        format: "esm",
         target: "browser",
       },
       {
         name: "node-cjs",
-        entry: ["src/index.ts"],
+        entry: "src/index.ts",
         format: ["cjs"],
         target: "node",
       },
@@ -170,7 +170,7 @@ For example, with this configuration:
   name: 'core',
   root: 'packages/core',
   config: {
-    entry: ['src/index.ts'],  // resolves to packages/core/src/index.ts
+    entry: 'src/index.ts',  // resolves to packages/core/src/index.ts
     outDir: 'dist',           // outputs to packages/core/dist/
   },
 }

@@ -4,7 +4,7 @@ export default {
 	outDir: 'dist',
 	name: 'bunup',
 	target: 'bun',
-	format: ['esm'],
+	format: 'esm',
 	entry: ['src/index.ts', 'src/plugins.ts', 'src/cli/index.ts'],
 	dts: {
 		splitting: true,

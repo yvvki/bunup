@@ -12,11 +12,11 @@ describe('shims plugin', () => {
 			'src/index.ts': `
                 console.log('dirname:', __dirname);
                 console.log('filename:', __filename);
-                
+
                 export function getFilePath() {
                     return __filename;
                 }
-                
+
                 export function getDirPath() {
                     return __dirname;
                 }
@@ -24,8 +24,8 @@ describe('shims plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [shims()],
 		})
 
@@ -44,7 +44,7 @@ describe('shims plugin', () => {
 		createProject({
 			'src/index.ts': `
                 console.log('import.meta.url:', import.meta.url);
-                
+
                 export function getMetaUrl() {
                     return import.meta.url;
                 }
@@ -52,8 +52,8 @@ describe('shims plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['cjs'],
+			entry: 'src/index.ts',
+			format: 'cjs',
 			plugins: [shims()],
 		})
 
@@ -74,7 +74,7 @@ describe('shims plugin', () => {
 		})
 
 		const result = await runBuild({
-			entry: ['src/index.ts'],
+			entry: 'src/index.ts',
 			format: ['esm', 'cjs'],
 			plugins: [shims()],
 		})
@@ -96,7 +96,7 @@ describe('shims plugin', () => {
 			'src/esm-file.ts': `
                 console.log('dirname:', __dirname);
                 // No __filename usage
-                
+
                 export function getDirPath() {
                     return __dirname;
                 }
@@ -104,7 +104,7 @@ describe('shims plugin', () => {
 			'src/cjs-file.ts': `
                 // Using import.meta.url only
                 console.log('import.meta.url:', import.meta.url);
-                
+
                 export function getMetaUrl() {
                     return import.meta.url;
                 }
@@ -140,7 +140,7 @@ describe('shims plugin', () => {
                 // Using both __dirname and import.meta.url
                 console.log('dirname:', __dirname);
                 console.log('import.meta.url:', import.meta.url);
-                
+
                 export function getPaths() {
                     return {
                         dir: __dirname,
@@ -151,8 +151,8 @@ describe('shims plugin', () => {
 		})
 
 		const esmResult = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['esm'],
+			entry: 'src/index.ts',
+			format: 'esm',
 			plugins: [shims()],
 		})
 
@@ -167,8 +167,8 @@ describe('shims plugin', () => {
 		expect(esmFile?.content).toContain('var __dirname2 = dirname(__filename2)')
 
 		const cjsResult = await runBuild({
-			entry: ['src/index.ts'],
-			format: ['cjs'],
+			entry: 'src/index.ts',
+			format: 'cjs',
 			plugins: [shims()],
 		})
 

@@ -1,6 +1,6 @@
 # Exports
 
-This plugin automatically generates and updates the `exports` field in your package.json file after each build. 
+This plugin automatically generates and updates the `exports` field in your package.json file after each build.
 
 Bunup handles mapping all entry points to their corresponding output files, including ESM/CJS formats and type declarations. The exports field stays perfectly in sync with your build configuration always - no manual updates needed when you make any change to config.
 
@@ -11,7 +11,7 @@ import { defineConfig } from 'bunup';
 import { exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	plugins: [exports()],
 });
 ```
@@ -55,7 +55,7 @@ import { defineConfig } from 'bunup';
 import { exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: ['src/index.ts'],
+	entry: 'src/index.ts',
 	plugins: [
 		exports({
 			customExports: (ctx) => ({
