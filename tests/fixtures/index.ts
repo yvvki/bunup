@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+import './styles.css'
 
 export * from 'chalk'
 
