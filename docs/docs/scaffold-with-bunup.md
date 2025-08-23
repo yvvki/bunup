@@ -53,7 +53,7 @@ React libraries have a special development workflow optimized for component deve
 
 ```sh
 bun run dev        # Watch source files and rebuild library instantly
-bun run dev:test   # Start Next.js preview app at http://localhost:3000
+bun run test:ui    # Start a Bun + React preview app at http://localhost:3000
 bun run lint       # Check code style and find problems
 bun run lint:fix   # Fix linting and formatting issues automatically
 bun run format:fix # Fix code formatting issues
@@ -66,7 +66,7 @@ bun run build      # Build production bundle
 For the ultimate development experience with React libraries:
 
 1. **Terminal 1**: Run `bun run dev` - Watches your source files and rebuilds the library instantly on any change
-2. **Terminal 2**: Run `bun run dev:test` - Starts a Next.js preview app at http://localhost:3000
+2. **Terminal 2**: Run `bun run test:ui` - Starts a Bun + React preview app at http://localhost:3000 to test components realtime.
 
 🔥 Instant reflection of changes in the live preview app
 
