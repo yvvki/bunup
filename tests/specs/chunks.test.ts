@@ -33,6 +33,39 @@ describe.skipIf(isCI())('chunk splitting', () => {
 		)
 	})
 
+	it('chunk imports should point to valid path', async () => {
+		createProject({
+			'src/a.ts': `
+				import { SharedType } from './shared-type'
+				export const a: SharedType = { value: 'a' }
+				import txt from './asset.txt'
+				export { txt }
+			`,
+			'src/b.ts': `
+				import { SharedType } from './shared-type'
+				export const b: SharedType = { value: 'b' }
+			`,
+			'src/shared-type.ts': `
+				export type SharedType = { value: string }
+			`,
+			'src/asset.txt': 'hello asset',
+		})
+
+		const result = await runBuild({
+			entry: ['src/a.ts', 'src/b.ts'],
+			format: ['esm', 'cjs'],
+			splitting: true,
+			dts: { splitting: true },
+			loader: {
+				'.txt': 'file',
+			},
+		})
+
+		expect(result.success).toBe(true)
+
+		expect(result.files[0].content.includes('./shared/')).toBe(true)
+	})
+
 	it('should place JS and DTS chunk files in the shared folder, and not place assets in shared', async () => {
 		createProject({
 			'src/a.ts': `

@@ -13,6 +13,7 @@ import { logger, setSilent, silent } from './logger'
 import {
 	type BuildOptions,
 	createBuildOptions,
+	getDefaultChunkNaming,
 	getResolvedBytecode,
 	getResolvedDefine,
 	getResolvedDtsSplitting,
@@ -116,6 +117,9 @@ export async function build(
 			sourcemap: getResolvedSourcemap(options.sourcemap),
 			loader: options.loader,
 			drop: options.drop,
+			naming: {
+				chunk: getDefaultChunkNaming(options.name),
+			},
 			conditions: options.conditions,
 			banner: options.banner,
 			footer: options.footer,
@@ -140,17 +144,14 @@ export async function build(
 		for (const file of result.outputs) {
 			const content = await file.text()
 
-			let pathRelativeToOutdir =
+			const pathRelativeToOutdir = cleanPath(
 				isJavascriptFile(file.path) && file.kind === 'entry-point'
 					? replaceExtension(
 							file.path,
 							getDefaultJsOutputExtension(fmt, packageType),
 						)
-					: file.path
-
-			if (file.kind === 'chunk') {
-				pathRelativeToOutdir = `shared/${pathRelativeToOutdir}`
-			}
+					: file.path,
+			)
 
 			const pathRelativeToRootDir = path.join(
 				options.outDir,
@@ -161,12 +162,9 @@ export async function build(
 
 			await Bun.write(fullPath, content)
 
-			logger.success(
-				`${pc.dim(`${options.outDir}/`)}${pathRelativeToOutdir.includes('./') ? pathRelativeToOutdir.replaceAll('./', '') : pathRelativeToOutdir}`,
-				{
-					identifier: options.name,
-				},
-			)
+			logger.success(`${pc.dim(`${options.outDir}/`)}${pathRelativeToOutdir}`, {
+				identifier: options.name,
+			})
 
 			if (!buildOutput.files.some((f) => f.fullPath === fullPath)) {
 				buildOutput.files.push({
@@ -200,6 +198,9 @@ export async function build(
 				cwd: rootDir,
 				preferredTsConfigPath: options.preferredTsconfigPath,
 				splitting: getResolvedDtsSplitting(options.splitting, splitting),
+				naming: {
+					chunk: getDefaultChunkNaming(options.name),
+				},
 				...dtsOptions,
 			})
 
@@ -215,7 +216,7 @@ export async function build(
 						file.kind,
 					)
 					const pathRelativeToOutdir = cleanPath(
-						`${file.kind === 'chunk' ? 'shared/' : ''}${file.pathInfo.outputPathWithoutExtension}${dtsExtension}`,
+						`${file.pathInfo.outputPathWithoutExtension}${dtsExtension}`,
 					)
 					const pathRelativeToRootDir = cleanPath(
 						`${options.outDir}/${pathRelativeToOutdir}`,

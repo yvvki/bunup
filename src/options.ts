@@ -463,6 +463,10 @@ export function getResolvedDefine(
 	}
 }
 
+export function getDefaultChunkNaming(name: string | undefined) {
+	return `shared/${name ?? 'chunk'}-[hash].[ext]`
+}
+
 // If splitting is undefined, it will be true if the format is esm
 export function getResolvedSplitting(
 	splitting: boolean | undefined,
