@@ -1,7 +1,7 @@
 {
 	"name": "bunup",
 	"description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
-	"version": "0.11.10",
+	"version": "0.11.9",
 	"type": "module",
 	"files": [
 		"dist"
@@ -84,7 +84,7 @@
 		"lint:fix": "biome check --write .",
 		"test": "bun test",
 		"tsc": "tsc --noEmit",
-		"publish:ci": "bun add -g npm@latest && bun publish",
+		"publish:ci": "npm i -g npm@latest && npm publish",
 		"release": "bumpp -r --commit --push --tag",
 		"prepare": "simple-git-hooks"
 	},
