@@ -30,6 +30,3 @@ jobs:
                     env:
                           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
                   - run: bun run publish:ci
-                    env:
-                          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-                          NPM_CONFIG_PROVENANCE: true
