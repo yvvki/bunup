@@ -7,8 +7,6 @@ import { getPackageForPlugin } from '../utils'
 
 type InjectStylesPluginOptions = Pick<
 	import('lightningcss').TransformOptions<import('lightningcss').CustomAtRules>,
-	| 'sourceMap'
-	| 'inputSourceMap'
 	| 'targets'
 	| 'nonStandard'
 	| 'pseudoClasses'
