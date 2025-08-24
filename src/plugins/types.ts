@@ -37,9 +37,9 @@ export type BuildOutputFile = {
 	/** Path to the generated file */
 	fullPath: string
 	/** Path to the generated file relative to the root directory */
-	relativePathToRootDir: string
+	pathRelativeToRootDir: string
 	/** Path to the generated file relative to the output directory */
-	relativePathToOutputDir: string
+	pathRelativeToOutdir: string
 	/** Whether the file is a dts file */
 	dts: boolean
 	/** The format of the output file */

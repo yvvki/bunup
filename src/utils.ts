@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path, { normalize } from 'node:path'
-import { TS_RE } from './constants/re'
+import { JS_RE, TS_RE } from './constants/re'
 import { BunupBuildError } from './errors'
 import type { Format } from './options'
 
@@ -8,7 +8,7 @@ export function ensureArray<T>(value: T | T[]): T[] {
 	return Array.isArray(value) ? value : [value]
 }
 
-export function getDefaultOutputExtension(
+export function getDefaultJsOutputExtension(
 	format: Format,
 	packageType: string | undefined,
 ): string {
@@ -22,7 +22,7 @@ export function getDefaultOutputExtension(
 	}
 }
 
-export function getDefaultDtsExtention(
+export function getDefaultDtsOutputExtention(
 	format: Format,
 	packageType: string | undefined,
 	kind: 'entry-point' | 'chunk',
@@ -143,4 +143,41 @@ export async function getFilesFromGlobs(
 export function isTypeScriptFile(path: string | null): boolean {
 	if (!path) return false
 	return TS_RE.test(path)
+}
+
+export function isJavascriptFile(path: string | null): boolean {
+	if (!path) return false
+	return JS_RE.test(path)
+}
+
+export function replaceExtension(
+	filePath: string,
+	newExtension: string,
+): string {
+	if (!filePath) {
+		return filePath
+	}
+
+	const normalizedExtension = newExtension.startsWith('.')
+		? newExtension
+		: `.${newExtension}`
+
+	const lastSlashIndex = Math.max(
+		filePath.lastIndexOf('/'),
+		filePath.lastIndexOf('\\'),
+	)
+
+	const directory =
+		lastSlashIndex >= 0 ? filePath.substring(0, lastSlashIndex + 1) : ''
+	const filename =
+		lastSlashIndex >= 0 ? filePath.substring(lastSlashIndex + 1) : filePath
+
+	const lastDotIndex = filename.lastIndexOf('.')
+
+	if (lastDotIndex === -1) {
+		return directory + filename + normalizedExtension
+	}
+
+	const nameWithoutExtension = filename.substring(0, lastDotIndex)
+	return directory + nameWithoutExtension + normalizedExtension
 }

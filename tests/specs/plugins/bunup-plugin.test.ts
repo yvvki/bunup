@@ -648,7 +648,7 @@ describe('Bunup Plugin', () => {
 		expect(chunkFiles.every((file) => file.entrypoint === undefined)).toBe(true)
 		expect(
 			chunkFiles.every((file) =>
-				file.relativePathToOutputDir.startsWith('shared/'),
+				file.pathRelativeToOutdir.startsWith('shared/'),
 			),
 		).toBe(true)
 		expect(dtsChunkFiles.every((file) => file.entrypoint === undefined)).toBe(
@@ -656,7 +656,7 @@ describe('Bunup Plugin', () => {
 		)
 		expect(
 			dtsChunkFiles.every((file) =>
-				file.relativePathToOutputDir.startsWith('shared/'),
+				file.pathRelativeToOutdir.startsWith('shared/'),
 			),
 		).toBe(true)
 
@@ -682,7 +682,7 @@ describe('Bunup Plugin', () => {
 			(file) =>
 				file.fullPath.includes('chunk') &&
 				file.fullPath.endsWith('.d.ts') &&
-				file.relativePathToOutputDir.startsWith('shared/'),
+				file.pathRelativeToOutdir.startsWith('shared/'),
 		)
 		expect(sharedTypesChunk).toBeDefined()
 		expect(sharedTypesChunk.entrypoint).toBeUndefined()
@@ -693,11 +693,11 @@ describe('Bunup Plugin', () => {
 			allFiles.every((file) =>
 				file.dts
 					? file.kind === 'chunk'
-						? file.relativePathToOutputDir.startsWith('shared/') &&
+						? file.pathRelativeToOutdir.startsWith('shared/') &&
 							file.fullPath.includes('.d.ts')
 						: file.fullPath.includes('.d.mts')
 					: file.kind === 'chunk'
-						? file.relativePathToOutputDir.startsWith('shared/') &&
+						? file.pathRelativeToOutdir.startsWith('shared/') &&
 							file.fullPath.includes('chunk-')
 						: file.fullPath.includes('.mjs'),
 			),

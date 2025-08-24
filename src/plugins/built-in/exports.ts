@@ -122,7 +122,7 @@ function groupFilesByExportKey(files: BuildOutputFile[]) {
 	const allDtsFiles = new Map<string, BuildOutputFile[]>()
 
 	for (const file of files) {
-		const exportKey = getExportKey(cleanPath(file.relativePathToOutputDir))
+		const exportKey = getExportKey(cleanPath(file.pathRelativeToOutdir))
 		const format = file.format === 'esm' ? 'import' : 'require'
 
 		if (!filesByExportKey.has(exportKey)) {
@@ -169,23 +169,23 @@ function createExportEntries(
 
 			if (files.dts && files.source) {
 				exportsField[exportKey][formatKey] = {
-					types: `./${cleanPath(files.dts.relativePathToRootDir)}`,
-					default: `./${cleanPath(files.source.relativePathToRootDir)}`,
+					types: `./${cleanPath(files.dts.pathRelativeToRootDir)}`,
+					default: `./${cleanPath(files.source.pathRelativeToRootDir)}`,
 				}
 				hasFormatSpecificTypes = true
 
 				if (!primaryTypesPath) {
-					primaryTypesPath = `./${cleanPath(files.dts.relativePathToRootDir)}`
+					primaryTypesPath = `./${cleanPath(files.dts.pathRelativeToRootDir)}`
 				}
 			} else if (files.source) {
 				exportsField[exportKey][formatKey] =
-					`./${cleanPath(files.source.relativePathToRootDir)}`
+					`./${cleanPath(files.source.pathRelativeToRootDir)}`
 
 				if (files.dts) {
-					primaryTypesPath = `./${cleanPath(files.dts.relativePathToRootDir)}`
+					primaryTypesPath = `./${cleanPath(files.dts.pathRelativeToRootDir)}`
 				}
 			} else if (files.dts) {
-				primaryTypesPath = `./${cleanPath(files.dts.relativePathToRootDir)}`
+				primaryTypesPath = `./${cleanPath(files.dts.pathRelativeToRootDir)}`
 			}
 		}
 
@@ -227,7 +227,7 @@ function extractEntryPoints(
 		const standardDts = findStandardDtsFile(dotEntryDtsFiles)
 
 		if (standardDts) {
-			entryPoints.types = `./${cleanPath(standardDts.relativePathToRootDir)}`
+			entryPoints.types = `./${cleanPath(standardDts.pathRelativeToRootDir)}`
 		} else {
 			entryPoints.types = extractTypesFromExport(dotExport)
 		}
@@ -241,9 +241,9 @@ function findStandardDtsFile(
 ): BuildOutputFile | undefined {
 	return dtsFiles.find(
 		(file) =>
-			file.relativePathToRootDir.endsWith('.d.ts') &&
-			!file.relativePathToRootDir.endsWith('.d.mts') &&
-			!file.relativePathToRootDir.endsWith('.d.cts'),
+			file.pathRelativeToRootDir.endsWith('.d.ts') &&
+			!file.pathRelativeToRootDir.endsWith('.d.mts') &&
+			!file.pathRelativeToRootDir.endsWith('.d.cts'),
 	)
 }
 
@@ -378,10 +378,10 @@ function isExcluded(
 	)
 }
 
-function getExportKey(relativePathToOutputDir: string): string {
-	const pathSegments = cleanPath(
-		removeExtension(relativePathToOutputDir),
-	).split('/')
+function getExportKey(pathRelativeToOutdir: string): string {
+	const pathSegments = cleanPath(removeExtension(pathRelativeToOutdir)).split(
+		'/',
+	)
 
 	if (pathSegments.length === 1 && pathSegments[0].startsWith('index')) {
 		return '.'

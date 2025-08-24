@@ -13,13 +13,11 @@ import { logger, setSilent, silent } from './logger'
 import {
 	type BuildOptions,
 	createBuildOptions,
-	getDefaultChunkNaming,
 	getResolvedBytecode,
 	getResolvedDefine,
 	getResolvedDtsSplitting,
 	getResolvedEnv,
 	getResolvedMinify,
-	getResolvedNaming,
 	getResolvedSourcemap,
 	getResolvedSplitting,
 } from './options'
@@ -35,10 +33,13 @@ import {
 	cleanOutDir,
 	cleanPath,
 	ensureArray,
-	getDefaultDtsExtention,
+	getDefaultDtsOutputExtention,
+	getDefaultJsOutputExtension,
 	getFilesFromGlobs,
 	getShortFilePath,
+	isJavascriptFile,
 	isTypeScriptFile,
+	replaceExtension,
 } from './utils'
 
 let ac: AbortController | null = null
@@ -107,12 +108,10 @@ export async function build(
 		const result = await Bun.build({
 			entrypoints: entrypoints.map((file) => `${rootDir}/${file}`),
 			format: fmt,
-			naming: getResolvedNaming(fmt, packageType, options.name),
 			splitting: getResolvedSplitting(options.splitting, fmt),
 			bytecode: getResolvedBytecode(options.bytecode, fmt),
 			define: getResolvedDefine(options.define, options.env),
 			minify: getResolvedMinify(options),
-			outdir: `${rootDir}/${options.outDir}`,
 			target: options.target,
 			sourcemap: getResolvedSourcemap(options.sourcemap),
 			loader: options.loader,
@@ -139,34 +138,53 @@ export async function build(
 		let entrypointIndex = 0
 
 		for (const file of result.outputs) {
-			const relativePathToRootDir = getRelativePathToRootDir(file.path, rootDir)
-			const relativePathToOutputDir = getRelativePathToOutputDir(
-				relativePathToRootDir,
-				options.outDir,
-			)
-			if (file.kind === 'entry-point') {
-				logger.success(
-					`${pc.dim(`${options.outDir}/`)}${relativePathToOutputDir}`,
-					{
-						identifier: options.name,
-					},
-				)
-			}
-			buildOutput.files.push({
-				fullPath: file.path,
-				relativePathToRootDir,
-				relativePathToOutputDir,
-				dts: false,
-				format: fmt,
-				kind: file.kind,
-				entrypoint:
-					file.kind === 'entry-point'
-						? cleanPath(entrypoints[entrypointIndex])
-						: undefined,
-			})
+			const content = await file.text()
 
-			if (file.kind === 'entry-point') {
-				entrypointIndex++
+			let pathRelativeToOutdir =
+				isJavascriptFile(file.path) && file.kind === 'entry-point'
+					? replaceExtension(
+							file.path,
+							getDefaultJsOutputExtension(fmt, packageType),
+						)
+					: file.path
+
+			if (file.kind === 'chunk') {
+				pathRelativeToOutdir = `shared/${pathRelativeToOutdir}`
+			}
+
+			const pathRelativeToRootDir = path.join(
+				options.outDir,
+				pathRelativeToOutdir,
+			)
+
+			const fullPath = path.resolve(rootDir, pathRelativeToRootDir)
+
+			await Bun.write(fullPath, content)
+
+			logger.success(
+				`${pc.dim(`${options.outDir}/`)}${pathRelativeToOutdir.includes('./') ? pathRelativeToOutdir.replaceAll('./', '') : pathRelativeToOutdir}`,
+				{
+					identifier: options.name,
+				},
+			)
+
+			if (!buildOutput.files.some((f) => f.fullPath === fullPath)) {
+				buildOutput.files.push({
+					fullPath,
+					pathRelativeToRootDir,
+					pathRelativeToOutdir,
+					dts: false,
+					format: fmt,
+					kind: file.kind,
+					entrypoint:
+						file.kind === 'entry-point'
+							? cleanPath(entrypoints[entrypointIndex])
+							: undefined,
+				})
+
+				if (file.kind === 'entry-point') {
+					entrypointIndex++
+				}
 			}
 		}
 	})
@@ -182,9 +200,6 @@ export async function build(
 				cwd: rootDir,
 				preferredTsConfigPath: options.preferredTsconfigPath,
 				splitting: getResolvedDtsSplitting(options.splitting, splitting),
-				naming: {
-					chunk: getDefaultChunkNaming(options.name),
-				},
 				...dtsOptions,
 			})
 
@@ -194,35 +209,35 @@ export async function build(
 
 			for (const fmt of ensureArray(options.format)) {
 				for (const file of dtsResult.files) {
-					const dtsExtension = getDefaultDtsExtention(
+					const dtsExtension = getDefaultDtsOutputExtention(
 						fmt,
 						packageType,
 						file.kind,
 					)
-					const relativePathToOutputDir = cleanPath(
-						`${file.pathInfo.outputPathWithoutExtension}${dtsExtension}`,
+					const pathRelativeToOutdir = cleanPath(
+						`${file.kind === 'chunk' ? 'shared/' : ''}${file.pathInfo.outputPathWithoutExtension}${dtsExtension}`,
 					)
-					const relativePathToRootDir = cleanPath(
-						`${options.outDir}/${relativePathToOutputDir}`,
+					const pathRelativeToRootDir = cleanPath(
+						`${options.outDir}/${pathRelativeToOutdir}`,
 					)
 
 					if (file.kind === 'entry-point') {
 						logger.success(
-							`${pc.dim(`${options.outDir}/`)}${relativePathToOutputDir}`,
+							`${pc.dim(`${options.outDir}/`)}${pathRelativeToOutdir}`,
 							{
 								identifier: options.name,
 							},
 						)
 					}
 
-					const fullPath = path.join(rootDir, relativePathToRootDir)
+					const fullPath = path.join(rootDir, pathRelativeToRootDir)
 
 					await Bun.write(fullPath, file.dts)
 
 					buildOutput.files.push({
 						fullPath,
-						relativePathToRootDir,
-						relativePathToOutputDir,
+						pathRelativeToRootDir,
+						pathRelativeToOutdir,
 						dts: true,
 						format: fmt,
 						kind: file.kind,
@@ -245,15 +260,4 @@ export async function build(
 	if (options.onSuccess) {
 		await executeOnSuccess(options.onSuccess, options, ac.signal)
 	}
-}
-
-function getRelativePathToRootDir(filePath: string, rootDir: string) {
-	return cleanPath(filePath).replace(`${cleanPath(rootDir)}/`, '')
-}
-
-function getRelativePathToOutputDir(
-	relativePathToRootDir: string,
-	outDir: string,
-) {
-	return cleanPath(relativePathToRootDir).replace(`${cleanPath(outDir)}/`, '')
 }

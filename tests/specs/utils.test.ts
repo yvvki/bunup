@@ -9,8 +9,8 @@ import {
 	cleanPath,
 	ensureArray,
 	formatFileSize,
-	getDefaultDtsExtention,
-	getDefaultOutputExtension,
+	getDefaultDtsOutputExtention,
+	getDefaultJsOutputExtension,
 	getPackageDeps,
 	getShortFilePath,
 	isDirectoryPath,
@@ -28,47 +28,49 @@ describe('Utils', () => {
 
 	describe('getDefaultJsOutputExtension', () => {
 		it('returns .mjs for esm format', () => {
-			expect(getDefaultOutputExtension('esm', undefined)).toBe('.mjs')
+			expect(getDefaultJsOutputExtension('esm', undefined)).toBe('.mjs')
 		})
 		it('returns .cjs for cjs format with module type', () => {
-			expect(getDefaultOutputExtension('cjs', 'module')).toBe('.cjs')
+			expect(getDefaultJsOutputExtension('cjs', 'module')).toBe('.cjs')
 		})
 		it('returns .js for cjs format with commonjs type', () => {
-			expect(getDefaultOutputExtension('cjs', 'commonjs')).toBe('.js')
+			expect(getDefaultJsOutputExtension('cjs', 'commonjs')).toBe('.js')
 		})
 		it('returns .global.js for iife format', () => {
-			expect(getDefaultOutputExtension('iife', undefined)).toBe('.global.js')
+			expect(getDefaultJsOutputExtension('iife', undefined)).toBe('.global.js')
 		})
 	})
 
-	describe('getDefaultDtsExtention', () => {
+	describe('getDefaultDtsOutputExtention', () => {
 		it('returns .d.mts for esm format without module type', () => {
-			expect(getDefaultDtsExtention('esm', undefined, 'entry-point')).toBe(
-				'.d.mts',
-			)
+			expect(
+				getDefaultDtsOutputExtention('esm', undefined, 'entry-point'),
+			).toBe('.d.mts')
 		})
 		it('returns .d.ts for esm format with module type', () => {
-			expect(getDefaultDtsExtention('esm', 'module', 'entry-point')).toBe(
+			expect(getDefaultDtsOutputExtention('esm', 'module', 'entry-point')).toBe(
 				'.d.ts',
 			)
 		})
 		it('returns .d.cts for cjs format with module type', () => {
-			expect(getDefaultDtsExtention('cjs', 'module', 'entry-point')).toBe(
+			expect(getDefaultDtsOutputExtention('cjs', 'module', 'entry-point')).toBe(
 				'.d.cts',
 			)
 		})
 		it('returns .d.ts for cjs format with commonjs type', () => {
-			expect(getDefaultDtsExtention('cjs', 'commonjs', 'entry-point')).toBe(
-				'.d.ts',
-			)
+			expect(
+				getDefaultDtsOutputExtention('cjs', 'commonjs', 'entry-point'),
+			).toBe('.d.ts')
 		})
 		it('returns .d.ts for iife format', () => {
-			expect(getDefaultDtsExtention('iife', undefined, 'entry-point')).toBe(
-				'.global.d.ts',
-			)
+			expect(
+				getDefaultDtsOutputExtention('iife', undefined, 'entry-point'),
+			).toBe('.global.d.ts')
 		})
 		it('returns .d.ts for chunk files', () => {
-			expect(getDefaultDtsExtention('esm', undefined, 'chunk')).toBe('.d.ts')
+			expect(getDefaultDtsOutputExtention('esm', undefined, 'chunk')).toBe(
+				'.d.ts',
+			)
 		})
 	})
 

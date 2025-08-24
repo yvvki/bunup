@@ -4,7 +4,6 @@ import { report } from './plugins/internal/report'
 import { useClient } from './plugins/internal/use-client'
 import type { Plugin } from './plugins/types'
 import type { MaybePromise, WithRequired } from './types'
-import { getDefaultOutputExtension } from './utils'
 
 type Loader =
 	| 'js'
@@ -31,8 +30,6 @@ type Target = 'bun' | 'node' | 'browser'
 type External = (string | RegExp)[]
 
 type Env = 'inline' | 'disable' | `${string}*` | Record<string, string>
-
-type Naming = string | { entry?: string; chunk?: string; asset?: string }
 
 export type OnSuccess =
 	| ((options: Partial<BuildOptions>) => MaybePromise<void> | (() => void))
@@ -481,26 +478,6 @@ export function getResolvedDtsSplitting(
 	// TODO: Enable splitting by default when build splitting is enabled once Bun fixes the issue with splitting
 	// Track upstream issue: https://github.com/oven-sh/bun/issues/5344
 	return !!dtsSplitting
-}
-
-const DEFAULT_ENTRY_NAMING = '[dir]/[name].[ext]'
-
-export function getDefaultChunkNaming(name: string | undefined) {
-	return `shared/${name ?? 'chunk'}-[hash].[ext]`
-}
-
-export function getResolvedNaming(
-	fmt: Format,
-	packageType: string | undefined,
-	name: string | undefined,
-): Naming {
-	const replaceExt = (pattern: string): string =>
-		pattern.replace('.[ext]', getDefaultOutputExtension(fmt, packageType))
-
-	return {
-		entry: replaceExt(DEFAULT_ENTRY_NAMING),
-		chunk: replaceExt(getDefaultChunkNaming(name)),
-	}
 }
 
 export function getResolvedEnv(

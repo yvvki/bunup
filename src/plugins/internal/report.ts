@@ -16,7 +16,7 @@ export function report(): BunupPlugin {
 
 				const files = await Promise.all(
 					output.files.map(async (file) => {
-						const name = file.relativePathToRootDir
+						const name = file.pathRelativeToRootDir
 						const size = Bun.file(file.fullPath).size
 						const gzipSize = Bun.gzipSync(
 							new Uint8Array(await Bun.file(file.fullPath).arrayBuffer()),
