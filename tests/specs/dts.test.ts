@@ -867,6 +867,34 @@ describe('dts', () => {
 		expect(dtsFile?.content).toContain('declare function Input')
 	})
 
+	it('should minify dts', async () => {
+		createProject({
+			'src/index.ts': `
+								export interface ButtonProps {
+                    label: string;
+                    onClick: () => void;
+                    className?: string;
+                }
+
+                export function Button(props: ButtonProps) {
+                    return null; // Mock component
+                }
+            `,
+		})
+
+		const result = await runDtsBuild({
+			entry: 'src/index.ts',
+			format: 'esm',
+			dts: {
+				minify: true,
+			},
+		})
+
+		expect(result.files[0].content).toMatchInlineSnapshot(
+			`"interface _{label:string;onClick:()=>void;className?:string;}declare function e(props:_): null;export{_ as ButtonProps,e as Button};"`,
+		)
+	})
+
 	it('should resolve index.ts files when importing directories', async () => {
 		createProject({
 			'src/index.ts': `
