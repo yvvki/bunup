@@ -119,3 +119,23 @@ export default defineConfig({
 	],
 });
 ```
+
+### `excludeCss`
+
+When you use CSS files and import them in your JavaScript files, Bun will bundle the CSS and include it in the build output. As a result, these CSS files will be automatically added to the exports field with appropriate export keys. 
+
+The `excludeCss` option allows you to prevent CSS files from being included in the exports field if you prefer to handle CSS distribution manually or don't want to expose CSS files as part of your package's public API.
+
+```ts [bunup.config.ts]
+import { defineConfig } from 'bunup';
+import { exports } from 'bunup/plugins';
+
+export default defineConfig({
+	entry: 'src/index.ts',
+	plugins: [
+		exports({
+			excludeCss: true
+		})
+	],
+});
+```
