@@ -2,22 +2,51 @@
 
 Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library based on your output format, ensuring full type safety for consumers.
 
-Bunup includes [its own](https://github.com/bunup/typeroll) TypeScript declaration bundler. It's designed for maximum speed while offering advanced features like splitting and minification, producing minimal and clean declaration files.
+## Isolated Declarations
 
-## Prerequisites
+Make your library lightning-fast and future-ready. TypeScript 5.5 introduced `isolatedDeclarations` to solve slow declaration file generation. With isolated declarations, Bunup generates your `.d.ts` files in parallel at blazing speed, reducing build times from seconds to milliseconds while ensuring compatibility with all modern bundlers.
 
-Enable `isolatedDeclarations` in your tsconfig:
+### Why This Matters
 
-```json [tsconfig.json] 4
-{
-	"compilerOptions": {
-		"declaration": true,
-		"isolatedDeclarations": true
-	}
+Traditional declaration generation required analyzing entire projects and complex cross-file type inference, creating build bottlenecks. TypeScript introduced `isolatedDeclarations` for parallel, super-fast generation that works reliably across the ecosystem - and this **will be the standard** for modern TypeScript libraries.
+
+### Benefits for Your Library
+
+Enable `isolatedDeclarations` and join the modern TypeScript ecosystem with:
+- **Dramatically faster builds**
+- **Universal compatibility** with cutting-edge tools and bundlers
+- **Future-proofing** - your codebase is ready for when this becomes the standard
+
+### How It Works
+
+Simplly add explicit return types to your public exports only. Internal code stays unchanged. Think of it as clearly labeling your library's public interface - which is a good practice that makes your API predictable for tools and developers.
+
+```typescript [src/index.ts]
+// Before: TypeScript infers
+export function createUser(name: string) {
+  return { id: generateId(), name };
+}
+
+// After: Clear public interface
+export function createUser(name: string): User {
+  return { id: generateId(), name };
 }
 ```
 
-Bunup leverages TypeScript's new modern [isolatedDeclarations](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations) feature (which is specially built for library authors) to generate declaration files quickly. This approach enforces discipline and hygiene in your type exports, ensuring only well-defined, explicit types reach your public API. It's like a TypeScript guardian angel for your library's public surface!
+### Enable It Now
+
+Add to your `tsconfig.json`:
+
+```json  [tsconfig.json] {4}
+{
+  "compilerOptions": {
+    "declaration": true,
+    "isolatedDeclarations": true
+  }
+}
+```
+
+TypeScript will guide you through adding any missing return types. Your library is now future-ready and will build significantly faster with perfect ecosystem compatibility.
 
 ## Basic
 
@@ -32,7 +61,7 @@ export default defineConfig({
 	entry: ['src/index.ts', 'src/cli.ts'],
 	dts: {
 		// Only generate declarations for index.ts
-		entry: 'src/index.ts',
+		entry: ['src/index.ts'],
 	},
 });
 ```

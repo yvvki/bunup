@@ -4,7 +4,7 @@ Bunup is the ⚡️ **blazing-fast build tool** for TypeScript libraries, design
 
 ## Performance
 
-**Bunup** delivers instant builds by design. With Bun's native speed and [Bunup's high-performance dts bundler](https://github.com/bunup/typeroll), builds and rebuilds are lightning fast, even in monorepos. See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
+**Bunup** delivers instant builds by design. With Bun's native speed, builds and rebuilds are extremely quick, even in monorepos. See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
 
 <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;" aria-hidden="false">
 <table>
@@ -61,6 +61,21 @@ Or, initialize bunup in an existing project:
 bunx @bunup/cli init
 ```
 
+## Prerequisites
+
+Enable `isolatedDeclarations` in your tsconfig:
+
+```json [tsconfig.json] {4}
+{
+  "compilerOptions": {
+    "declaration": true,
+    "isolatedDeclarations": true
+  }
+}
+```
+
+See [why here](/docs/guide/typescript-declarations#isolated-declarations)
+
 ## Getting Started
 
 Get started with Bunup in seconds - install, configure, and build your TypeScript projects with minimal setup.
@@ -110,7 +125,7 @@ bun run build
 
 ## Configuration
 
-Create a `bunup.config.ts` file for more advanced usage like including plugins, hooks, and advanced options that aren't available via CLI.
+Create a `bunup.config.ts` file for usage like including plugins, hooks, and advanced options that aren't available via CLI.
 
 For example, you can add the [exports](/docs/plugins/exports) plugin to automatically sync your package.json exports on each build - no more manual export management!
 
@@ -144,40 +159,6 @@ export default defineConfig([
 ]);
 ```
 
-### Package.json Configuration
-
-You can also include your bunup configuration directly in your `package.json` file using the `bunup` property:
-
-```json [package.json]
-{
-	"name": "my-package",
-	"version": "1.0.0",
-	"bunup": {
-		"entry": ["src/index.ts", "src/cli.ts"],
-		"target": "bun",
-	}
-}
-```
-
-This approach can be useful when you prefer keeping all project configuration in a single file.
-
-### JSON Schema
-
-Bunup provides a JSON schema at [https://bunup.dev/schema.json](https://bunup.dev/schema.json) for editor autocompletion and validation. You can enable autocomplete for the `bunup` field in your `package.json` by configuring VSCode:
-
-```json [.vscode/settings.json]
-{
-  "json.schemas": [
-    {
-      "fileMatch": ["package.json"],
-      "url": "https://bunup.dev/schema.json"
-    }
-  ]
-}
-```
-
-This provides autocompletion, validation, and documentation when editing the bunup configuration in your package.json file.
-
 ### Custom Configuration Path
 
 If you need to use a configuration file with a non-standard name or location, you can specify its path using the `--config` CLI option:
@@ -185,8 +166,6 @@ If you need to use a configuration file with a non-standard name or location, yo
 ```sh
 bunup --config ./configs/custom.bunup.config.ts
 ```
-
-This is particularly useful for projects with multiple build configurations or for separating build configs for different environments.
 
 ## Watch Mode
 
