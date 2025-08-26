@@ -485,4 +485,336 @@ describe('exports plugin', () => {
 		)
 		expect(result.packageJson.data.exports['./utils']).toBeDefined()
 	})
+
+	it('should exclude CLI files by default', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+			'src/cli.ts': 'console.log("CLI command");',
+			'src/cli/index.ts': 'console.log("CLI index");',
+			'cli.ts': 'console.log("Root CLI");',
+			'cli/index.ts': 'console.log("Root CLI index");',
+		})
+
+		const result = await runBuild({
+			entry: [
+				'src/index.ts',
+				'src/cli.ts',
+				'src/cli/index.ts',
+				'cli.ts',
+				'cli/index.ts',
+			],
+			format: 'esm',
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data.exports).toBeDefined()
+		expect(result.packageJson.data.exports['./src']).toBeDefined()
+		expect(result.packageJson.data.exports['./cli']).toBeUndefined()
+		expect(result.packageJson.data.exports['./src/cli']).toBeUndefined()
+	})
+
+	it('should merge user exclusions with default CLI exclusions', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+			'src/cli.ts': 'console.log("CLI command");',
+			'src/internal.ts': 'export const internal = "internal";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'src/cli.ts', 'src/internal.ts'],
+			format: 'esm',
+			plugins: [
+				exports({
+					exclude: ['src/internal.ts'],
+				}),
+			],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['./cli']).toBeUndefined()
+		expect(result.packageJson.data.exports['./internal']).toBeUndefined()
+	})
+
+	describe('CSS file handling', () => {
+		it('should include CSS files in exports by default', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': `
+					import './styles.css';
+					export const hello: string = "world";
+				`,
+				'src/styles.css': `
+					.hello {
+						color: blue;
+					}
+				`,
+			})
+
+			const result = await runBuild({
+				entry: 'src/index.ts',
+				format: 'esm',
+				plugins: [exports()],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['.']).toBeDefined()
+			expect(result.packageJson.data.exports['./styles.css']).toBeDefined()
+			expect(result.packageJson.data.exports['./styles.css']).toContain(
+				'.output/index.css',
+			)
+		})
+
+		it('should exclude CSS files when excludeCss is true', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': `
+					import './styles.css';
+					export const hello: string = "world";
+				`,
+				'src/styles.css': `
+					.hello {
+						color: blue;
+					}
+				`,
+			})
+
+			const result = await runBuild({
+				entry: 'src/index.ts',
+				format: 'esm',
+				plugins: [
+					exports({
+						excludeCss: true,
+					}),
+				],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['.']).toBeDefined()
+			expect(result.packageJson.data.exports['./styles.css']).toBeUndefined()
+		})
+
+		it('should handle index.css files with special export keys', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': `
+					import './index.css';
+					export const hello: string = "world";
+				`,
+				'src/index.css': `
+					.main {
+						color: red;
+					}
+				`,
+			})
+
+			const result = await runBuild({
+				entry: 'src/index.ts',
+				format: 'esm',
+				plugins: [exports()],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['.']).toBeDefined()
+			expect(result.packageJson.data.exports['./styles.css']).toBeDefined()
+			expect(result.packageJson.data.exports['./styles.css']).toContain(
+				'.output/index.css',
+			)
+		})
+
+		it('should handle nested CSS files correctly', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': `
+					export const hello: string = "world";
+				`,
+				'src/components/button.css': `
+					.button {
+						padding: 10px;
+					}
+				`,
+			})
+
+			const result = await runBuild({
+				entry: ['src/index.ts', 'src/components/button.css'],
+				format: 'esm',
+				plugins: [exports()],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['.']).toBeDefined()
+
+			expect(
+				result.packageJson.data.exports['./components/button.css'],
+			).toBeDefined()
+			expect(
+				result.packageJson.data.exports['./components/button.css'],
+			).toContain('.output/components/button.css')
+		})
+
+		it('should handle nested index.css files with parent directory names', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': `
+					export const hello: string = "world";
+				`,
+				'src/components/index.css': `
+					.components {
+						display: flex;
+					}
+				`,
+			})
+
+			const result = await runBuild({
+				entry: ['src/index.ts', 'src/components/index.css'],
+				format: 'esm',
+				plugins: [exports()],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['.']).toBeDefined()
+			expect(result.packageJson.data.exports['./components.css']).toBeDefined()
+			expect(result.packageJson.data.exports['./components.css']).toContain(
+				'.output/components/index.css',
+			)
+		})
+
+		it('should handle multiple CSS files in the same build', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': `
+					export const hello: string = "world";
+				`,
+				'src/global.css': `
+					* { margin: 0; }
+				`,
+				'src/components/button.css': `
+					.button { padding: 10px; }
+				`,
+				'src/utils/helpers.css': `
+					.helper { display: none; }
+				`,
+			})
+
+			const result = await runBuild({
+				entry: [
+					'src/index.ts',
+					'src/global.css',
+					'src/components/button.css',
+					'src/utils/helpers.css',
+				],
+				format: 'esm',
+				plugins: [exports()],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['.']).toBeDefined()
+			expect(result.packageJson.data.exports['./global.css']).toBeDefined()
+			expect(
+				result.packageJson.data.exports['./components/button.css'],
+			).toBeDefined()
+			expect(
+				result.packageJson.data.exports['./utils/helpers.css'],
+			).toBeDefined()
+		})
+
+		it('should not interfere with custom exports when including CSS', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': `
+					export const hello: string = "world";
+				`,
+				'src/styles.css': `
+					.hello { color: blue; }
+				`,
+			})
+
+			const result = await runBuild({
+				entry: ['src/index.ts', 'src/styles.css'],
+				format: 'esm',
+				plugins: [
+					exports({
+						customExports: () => ({
+							'./custom': './custom/path.js',
+						}),
+					}),
+				],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['.']).toBeDefined()
+			expect(result.packageJson.data.exports['./styles.css']).toBeDefined()
+			expect(result.packageJson.data.exports['./custom']).toBe(
+				'./custom/path.js',
+			)
+		})
+
+		it('should handle CSS imported from JS differently than CSS entry points', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': `
+					import './bundled.css';
+					export const hello: string = "world";
+				`,
+				'src/bundled.css': `
+					.bundled { color: red; }
+				`,
+				'src/standalone.css': `
+					.standalone { color: blue; }
+				`,
+			})
+
+			const result = await runBuild({
+				entry: ['src/index.ts', 'src/standalone.css'],
+				format: 'esm',
+				plugins: [exports()],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['.']).toBeDefined()
+
+			expect(result.packageJson.data.exports['./styles.css']).toBeDefined()
+			expect(result.packageJson.data.exports['./styles.css']).toContain(
+				'.output/index.css',
+			)
+
+			expect(result.packageJson.data.exports['./standalone.css']).toBeDefined()
+			expect(result.packageJson.data.exports['./standalone.css']).toContain(
+				'.output/standalone.css',
+			)
+		})
+	})
 })

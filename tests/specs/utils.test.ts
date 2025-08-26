@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'bun:test'
 import {
-	getResolvedBytecode,
 	getResolvedDefine,
 	getResolvedMinify,
 	getResolvedSplitting,
@@ -117,15 +116,6 @@ describe('Utils', () => {
 		})
 		it('handles paths with less than 3 parts', () => {
 			expect(getShortFilePath('a/b.ts')).toBe('a/b.ts')
-		})
-	})
-
-	describe('getResolvedBytecode', () => {
-		it('returns bytecode for cjs format', () => {
-			expect(getResolvedBytecode(true, 'cjs')).toBe(true)
-		})
-		it('returns undefined for non-cjs formats', () => {
-			expect(getResolvedBytecode(true, 'esm')).toBeUndefined()
 		})
 	})
 

@@ -389,18 +389,22 @@ function filterFiles(
 	)
 }
 
+const DEFAULT_CLI_EXCLUSIONS = [
+	'cli.ts',
+	'cli/index.ts',
+	'src/cli.ts',
+	'src/cli/index.ts',
+]
+
 function isExcluded(
 	entrypoint: string,
 	exclude: Exclude | undefined,
 	ctx: BuildContext,
 ): boolean {
-	if (!exclude) return false
+	const userPatterns = typeof exclude === 'function' ? exclude(ctx) : exclude
+	const allPatterns = [...DEFAULT_CLI_EXCLUSIONS, ...(userPatterns ?? [])]
 
-	const patterns = typeof exclude === 'function' ? exclude(ctx) : exclude
-	return (
-		patterns?.some((pattern) => new Bun.Glob(pattern).match(entrypoint)) ??
-		false
-	)
+	return allPatterns.some((pattern) => new Bun.Glob(pattern).match(entrypoint))
 }
 
 function getExportKey(pathRelativeToOutdir: string): string {

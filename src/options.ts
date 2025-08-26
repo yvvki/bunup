@@ -285,18 +285,6 @@ export interface BuildOptions {
 	 */
 	loader?: { [k in string]: Loader }
 	/**
-	 * Generate bytecode for the output. This can dramatically improve cold start times, but will make the final output larger and slightly increase memory usage.
-	 *
-	 * Bytecode is currently only supported for CommonJS (format: "cjs").
-	 *
-	 * Must be target: "bun"
-	 *
-	 * @see https://bun.sh/docs/bundler#bytecode
-	 *
-	 * @default false
-	 */
-	bytecode?: boolean
-	/**
 	 * Disable logging during the build process. When set to true, no logs will be printed to the console.
 	 *
 	 * @default false
@@ -426,13 +414,6 @@ export function getResolvedMinify(options: BuildOptions): {
 		identifiers: minifyIdentifiers ?? defaultValue,
 		syntax: minifySyntax ?? defaultValue,
 	}
-}
-
-export function getResolvedBytecode(
-	bytecode: boolean | undefined,
-	format: Format,
-): boolean | undefined {
-	return format === 'cjs' ? bytecode : undefined
 }
 
 export function getResolvedSourcemap(

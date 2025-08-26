@@ -252,14 +252,6 @@ const OPTION_DEFINITIONS: Record<string, OptionDefinition> = {
 		type: 'string',
 		category: 'development',
 	},
-	bytecode: {
-		flags: ['bc', 'bytecode'],
-		handler: handlers.boolean('bytecode'),
-		description: 'Generate bytecode for the output (CJS only)',
-		type: 'boolean',
-		default: 'false',
-		category: 'output',
-	},
 	silent: {
 		flags: ['silent'],
 		handler: handlers.boolean('silent'),

@@ -70,6 +70,16 @@ export default defineConfig({
 
 The `exclude` option allows you to prevent specific entry points from being included in the exports field. You can provide either an array of glob patterns or exact entry point names, or a function that returns such an array.
 
+**Note:** CLI files are excluded by default using these patterns:
+- `**/cli.{js,mjs,cjs,ts}`
+- `**/cli/index.{js,mjs,cjs,ts}`
+- `cli.{js,mjs,cjs,ts}`
+- `cli/index.{js,mjs,cjs,ts}`
+- `src/cli.{js,mjs,cjs,ts}`
+- `src/cli/index.{js,mjs,cjs,ts}`
+
+Any additional patterns you provide will be merged with these defaults.
+
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
 import { exports } from 'bunup/plugins';

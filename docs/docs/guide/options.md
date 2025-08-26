@@ -331,28 +331,6 @@ export default defineConfig({
 
 The `minify` option is a shorthand that enables all three specific options. If you set individual options, they take precedence over the `minify` setting.
 
-## Bytecode
-
-Bunup can generate bytecode for your JavaScript/TypeScript entrypoints, which can significantly improve startup times for large applications.
-
-::: code-group
-
-```sh [CLI]
-bunup src/index.ts --bytecode --target bun
-```
-
-```ts [bunup.config.ts]
-export default defineConfig({
-    entry: 'src/index.ts',
-    bytecode: true,
-    target: 'bun',  // Bytecode compilation requires "bun" target
-});
-```
-
-:::
-
-For more information, see the [Bun documentation on bytecode](https://bun.sh/docs/bundler#bytecode) and [Bun's blog post on bytecode compilation](https://bun.sh/blog/bun-v1.1.30#compile-to-bytecode-for-2x-faster-startup-time).
-
 ## Source Maps
 
 Bunup can generate source maps for your bundled code:

@@ -158,13 +158,6 @@ describe('Real-world CLI Usage', () => {
 		expect(options.splitting).toBe(true)
 		expect(options.clean).toBe(true)
 	})
-
-	it('bunup src/index.ts --bytecode', () => {
-		const options = parseCliOptions(['src/index.ts', '--bytecode'])
-		expect(options.entry).toEqual(['src/index.ts'])
-		expect(options.bytecode).toBe(true)
-	})
-
 	it('bunup src/index.ts --silent', () => {
 		const options = parseCliOptions(['src/index.ts', '--silent'])
 		expect(options.entry).toEqual(['src/index.ts'])
