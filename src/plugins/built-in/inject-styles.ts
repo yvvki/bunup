@@ -1,8 +1,8 @@
 import path from 'node:path'
+import type { BunPlugin } from 'bun'
 import { CSS_RE } from '../../constants/re'
 import { logger } from '../../logger'
 import type { MaybePromise } from '../../types'
-import type { Plugin } from '../types'
 import { getPackageForPlugin } from '../utils'
 
 type InjectStylesPluginOptions = Pick<
@@ -30,31 +30,28 @@ type InjectStylesPluginOptions = Pick<
  *
  * @see https://bunup.dev/docs/plugins/inject-styles
  */
-export function injectStyles(options?: InjectStylesPluginOptions): Plugin {
+export function injectStyles(options?: InjectStylesPluginOptions): BunPlugin {
 	const { inject, ...transformOptions } = options ?? {}
 
 	return {
-		type: 'bun',
-		name: 'inject-styles',
-		plugin: {
-			name: 'bunup:inject-styles',
-			async setup(build) {
-				const lightningcss = await getPackageForPlugin<
-					typeof import('lightningcss')
-				>('lightningcss', 'inject-styles')
+		name: 'bunup:inject-styles',
+		async setup(build) {
+			const lightningcss = await getPackageForPlugin<
+				typeof import('lightningcss')
+			>('lightningcss', 'inject-styles')
 
-				build.onResolve({ filter: /^__inject-style$/ }, () => {
+			build.onResolve({ filter: /^__inject-style$/ }, () => {
+				return {
+					path: '__inject-style',
+					namespace: '__inject-style',
+				}
+			})
+
+			build.onLoad(
+				{ filter: /^__inject-style$/, namespace: '__inject-style' },
+				() => {
 					return {
-						path: '__inject-style',
-						namespace: '__inject-style',
-					}
-				})
-
-				build.onLoad(
-					{ filter: /^__inject-style$/, namespace: '__inject-style' },
-					() => {
-						return {
-							contents: `
+						contents: `
                       export default function injectStyle(css) {
                         if (!css || typeof document === 'undefined') return
 
@@ -69,37 +66,36 @@ export function injectStyles(options?: InjectStylesPluginOptions): Plugin {
                         }
                       }
                       `,
-							loader: 'js',
-						}
-					},
-				)
-
-				build.onLoad({ filter: CSS_RE }, async (args) => {
-					const source = await Bun.file(args.path).text()
-
-					const { code, warnings } = lightningcss.transform({
-						...transformOptions,
-						filename: path.basename(args.path),
-						code: Buffer.from(source),
-						minify: transformOptions.minify ?? true,
-					})
-
-					for (const warning of warnings) {
-						logger.warn(warning.message)
-					}
-
-					const stringifiedCode = JSON.stringify(code.toString())
-
-					const js = inject
-						? await inject(stringifiedCode, args.path)
-						: `import injectStyle from '__inject-style';injectStyle(${stringifiedCode})`
-
-					return {
-						contents: js,
 						loader: 'js',
 					}
+				},
+			)
+
+			build.onLoad({ filter: CSS_RE }, async (args) => {
+				const source = await Bun.file(args.path).text()
+
+				const { code, warnings } = lightningcss.transform({
+					...transformOptions,
+					filename: path.basename(args.path),
+					code: Buffer.from(source),
+					minify: transformOptions.minify ?? true,
 				})
-			},
+
+				for (const warning of warnings) {
+					logger.warn(warning.message)
+				}
+
+				const stringifiedCode = JSON.stringify(code.toString())
+
+				const js = inject
+					? await inject(stringifiedCode, args.path)
+					: `import injectStyle from '__inject-style';injectStyle(${stringifiedCode})`
+
+				return {
+					contents: js,
+					loader: 'js',
+				}
+			})
 		},
 	}
 }

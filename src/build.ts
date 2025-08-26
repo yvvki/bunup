@@ -24,7 +24,7 @@ import {
 import { externalOptionPlugin } from './plugins/internal/external-option'
 import type { BuildOutput } from './plugins/types'
 import {
-	filterBunupBunPlugins,
+	filterBunPlugins,
 	filterBunupPlugins,
 	runPluginBuildDoneHooks,
 	runPluginBuildStartHooks,
@@ -90,7 +90,7 @@ export async function build(
 
 	const plugins: BunPlugin[] = [
 		externalOptionPlugin(options, packageJson.data),
-		...filterBunupBunPlugins(options.plugins).map((p) => p.plugin),
+		...filterBunPlugins(options.plugins),
 	]
 
 	const entrypoints = await getFilesFromGlobs(

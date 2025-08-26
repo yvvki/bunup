@@ -1,7 +1,7 @@
 import pc from 'picocolors'
 import { logger } from '../../logger'
 import { formatListWithAnd } from '../../utils'
-import type { Plugin } from '../types'
+import type { BunupPlugin } from '../types'
 
 interface UnusedOptions {
 	/**
@@ -21,7 +21,7 @@ interface UnusedOptions {
  *
  * @see https://bunup.dev/docs/plugins/unused
  */
-export function unused(options: UnusedOptions = {}): Plugin {
+export function unused(options: UnusedOptions = {}): BunupPlugin {
 	const { level = 'warn', ignore = [] } = options
 
 	return {

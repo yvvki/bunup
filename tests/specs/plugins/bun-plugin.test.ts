@@ -33,7 +33,7 @@ describe('Bun Plugin', () => {
 			entry: 'src/index.ts',
 			format: 'esm',
 			banner: testMarker,
-			plugins: [{ type: 'bun', plugin: testPlugin }],
+			plugins: [testPlugin],
 		})
 
 		expect(result.success).toBe(true)

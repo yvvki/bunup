@@ -1,26 +1,21 @@
+import type { BunPlugin } from 'bun'
 import pc from 'picocolors'
 import { BunupPluginError } from '../errors'
 import type { BuildOptions } from '../options'
-import type {
-	BuildMeta,
-	BuildOutput,
-	BunupBunPlugin,
-	BunupPlugin,
-	Plugin,
-} from './types'
+import type { BuildMeta, BuildOutput, BunupPlugin } from './types'
 
-export function filterBunupBunPlugins(
-	plugins: Plugin[] | undefined,
-): BunupBunPlugin[] {
+export function filterBunPlugins(
+	plugins: (BunPlugin | BunupPlugin)[] | undefined,
+): BunPlugin[] {
 	if (!plugins) return []
-	return plugins.filter((p): p is BunupBunPlugin => p.type === 'bun')
+	return plugins.filter((p): p is BunPlugin => 'setup' in p)
 }
 
 export function filterBunupPlugins(
-	plugins: Plugin[] | undefined,
+	plugins: (BunPlugin | BunupPlugin)[] | undefined,
 ): BunupPlugin[] {
 	if (!plugins) return []
-	return plugins.filter((p): p is BunupPlugin => p.type === 'bunup')
+	return plugins.filter((p): p is BunupPlugin => 'hooks' in p)
 }
 
 export async function runPluginBuildStartHooks(

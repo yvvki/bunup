@@ -1,8 +1,8 @@
-import type { BuildConfig } from 'bun'
+import type { BuildConfig, BunPlugin } from 'bun'
 import type { GenerateDtsOptions } from 'typeroll'
 import { report } from './plugins/internal/report'
 import { useClient } from './plugins/internal/use-client'
-import type { Plugin } from './plugins/types'
+import type { BunupPlugin } from './plugins/types'
 import type { MaybePromise, WithRequired } from './types'
 
 type Loader =
@@ -376,7 +376,7 @@ export interface BuildOptions {
 	 *   }
 	 * ]
 	 */
-	plugins?: Plugin[]
+	plugins?: (BunupPlugin | BunPlugin)[]
 }
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {

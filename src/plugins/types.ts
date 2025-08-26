@@ -1,19 +1,6 @@
-import type { BunPlugin } from 'bun'
 import type { PackageJson } from '../loaders'
 import type { BuildOptions, Format } from '../options'
 import type { MaybePromise } from '../types'
-
-/**
- * Represents a Bun plugin that can be used with Bunup
- */
-export type BunupBunPlugin = {
-	/** Identifies this as a native Bun plugin */
-	type: 'bun'
-	/** Optional name for the plugin */
-	name?: string
-	/** The actual Bun plugin implementation */
-	plugin: BunPlugin
-}
 
 /**
  * Represents the meta data of the build
@@ -34,7 +21,7 @@ export type BuildOutputFile = {
 	entrypoint: string | undefined
 	/** The kind of the file */
 	kind: 'entry-point' | 'chunk' | 'asset' | 'sourcemap' | 'bytecode'
-	/** Path to the generated file */
+	/** Absolute path to the generated file */
 	fullPath: string
 	/** Path to the generated file relative to the root directory */
 	pathRelativeToRootDir: string
@@ -43,7 +30,7 @@ export type BuildOutputFile = {
 	/** Whether the file is a dts file */
 	dts: boolean
 	/** The format of the output file */
-	format: Format | Format[]
+	format: Format
 }
 
 /**
@@ -94,8 +81,3 @@ export type BunupPlugin = {
 	/** The hooks implemented by this plugin */
 	hooks: BunupPluginHooks
 }
-
-/**
- * Union type representing all supported plugin types
- */
-export type Plugin = BunupBunPlugin | BunupPlugin
