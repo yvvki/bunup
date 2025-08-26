@@ -84,7 +84,6 @@
 		"lint:fix": "biome check --write .",
 		"test": "bun test",
 		"tsc": "tsc --noEmit",
-		"publish:ci": "npm i -g npm@latest && npm publish",
 		"release": "bumpp -r --commit --push --tag",
 		"prepare": "simple-git-hooks"
 	},
