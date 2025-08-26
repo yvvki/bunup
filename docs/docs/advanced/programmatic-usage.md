@@ -35,6 +35,22 @@ await build(options);
 
 The full type definition can be found in the [bunup source code](https://github.com/bunup/bunup/blob/main/src/options.ts#L70).
 
+## Custom Root Directory
+
+The build function accepts an optional second parameter to specify a custom root directory. By default, it uses `process.cwd()`.
+
+```typescript
+import { build } from 'bunup';
+
+await build({
+  entry: 'src/index.ts',
+}, '/path/to/your/project');
+
+await build({
+  entry: 'src/index.ts',
+}, './my-project');
+```
+
 ## Using Plugins
 
 Plugins can be used programmatically the same way they are used in the configuration file:
