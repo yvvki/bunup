@@ -29,4 +29,4 @@ jobs:
                     continue-on-error: true
                     env:
                           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-                  - run: npm i -g npm@latest && npm publish --workspaces
+                  - run: npm i -g npm@latest && npm publish --workspace packages/
