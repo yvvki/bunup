@@ -7,6 +7,7 @@ Quickly scaffold modern TypeScript and React libraries in just 10 seconds with B
 - 🛠️ **DX First**: Integrated Bun-powered testing, Biome linting and formatting that just works out of the box
 - 🚢 **Publishing**: One-command releases with automatic semantic versioning, GitHub tags, and detailed release notes
 - ⚡️ **Mind-Blowing Speed**: Build times so fast they feel instantaneous - a library building experience you've never experienced before
+- ✨ **Best Practices**: Follows industry standards and modern development conventions out of the box
 
 ## Getting Started
 
@@ -16,7 +17,13 @@ You can create a new project by using:
 bunx @bunup/cli@latest create
 ```
 
-That's it! You can now start coding.
+You will be greeted with a few simple questions and that's it! You can now start coding.
+
+You'll choose between two variants:
+- **Basic**: Minimal setup with just Bunup config, perfect for building your own setup
+- **Full**: Complete modern library setup—just focus on code and publish
+
+If you selected `basic`, you can skip the next sections which is for those who selected `full` to learn more about the commands and how to release your package. If you selected `basic`, you set up these things yourself.
 
 ## Setup for Releases
 
