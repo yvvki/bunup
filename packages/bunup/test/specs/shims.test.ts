@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'bun:test'
-import { shims } from '../../../src/plugins'
-import { cleanProjectDir, createProject, findFile, runBuild } from '../../utils'
+import { shims } from '../../src/plugins'
+import { cleanProjectDir, createProject, findFile, runBuild } from '../utils'
 
 describe('shims plugin', () => {
 	beforeEach(() => {

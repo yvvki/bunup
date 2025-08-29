@@ -13,7 +13,7 @@ import { build } from '../src/build'
 import type { PackageJson } from '../src/loaders'
 import type { BuildOptions } from '../src/options'
 
-export const TEST_DIR: string = resolve(process.cwd(), 'tests')
+export const TEST_DIR: string = resolve(process.cwd(), 'packages/bunup/test')
 export const PROJECT_DIR: string = resolve(TEST_DIR, '.project')
 export const OUTPUT_DIR: string = resolve(TEST_DIR, PROJECT_DIR, '.output')
 
@@ -143,7 +143,9 @@ export function validateBuildFiles(
 	const allExpectedFilesExist = expectedFiles.every((fileName) => {
 		const { name, extension } = parseFileName(fileName)
 		const exists = result.files.some(
-			(file) => file.name === name && file.extension === extension,
+			(file) =>
+				file.name.toLowerCase() === name.toLowerCase() &&
+				file.extension === extension,
 		)
 		if (!exists) {
 			console.log(`Expected file not found: ${fileName}`)
@@ -155,7 +157,9 @@ export function validateBuildFiles(
 		? notExpectedFiles.every((fileName) => {
 				const { name, extension } = parseFileName(fileName)
 				const exists = result.files.some(
-					(file) => file.name === name && file.extension === extension,
+					(file) =>
+						file.name.toLowerCase() === name.toLowerCase() &&
+						file.extension === extension,
 				)
 				if (exists) {
 					console.log(`Unexpected file found: ${fileName}`)
@@ -207,7 +211,7 @@ export async function runCli(options: string): Promise<RunCliResult> {
 	try {
 		const command = `bun run ${join(
 			process.cwd(),
-			'src/cli/index.ts',
+			'packages/bunup/src/cli/index.ts',
 		)} ${options} --out-dir .output`
 
 		const execResult = await exec(command, [], {

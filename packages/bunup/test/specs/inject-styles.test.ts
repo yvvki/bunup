@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'bun:test'
-import { injectStyles } from '../../../src/plugins'
-import { cleanProjectDir, createProject, findFile, runBuild } from '../../utils'
+import { injectStyles } from '../../src/plugins'
+import { cleanProjectDir, createProject, findFile, runBuild } from '../utils'
 
 describe('injectStyles plugin', () => {
 	beforeEach(() => {
