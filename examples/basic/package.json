@@ -1,7 +1,7 @@
 {
 	"name": "basic",
 	"description": "A typescript library",
-	"version": "0.11.21",
+	"version": "0.11.22",
 	"type": "module",
 	"files": [
 		"dist"
