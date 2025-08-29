@@ -1,6 +1,6 @@
 # Scaffold with Bunup
 
-Quickly scaffold modern TypeScript and React libraries in just 10 seconds with Bun. Powered by Bunup - the fastest bundler available ⚡️.
+Quickly scaffold modern TypeScript and React libraries in just 10 seconds with Bun. Powered by Bunup - the fastest library bundler available.
 
 - 🚀 **Instant Setup**: Scaffold, code, edit README, and publish with a single command - with nothing to rename or configure
 - 📦 **Modern**: ESM by default, TypeScript declarations, and optional monorepo support
@@ -13,7 +13,7 @@ Quickly scaffold modern TypeScript and React libraries in just 10 seconds with B
 You can create a new project by using:
 
 ```sh
-bunx @bunup/cli create
+bunx @bunup/cli@latest create
 ```
 
 That's it! You can now start coding.
@@ -35,10 +35,8 @@ That's it! You can now start coding.
 
 After completing the setup, here's how to use your project:
 
-### TypeScript Library Commands
-
 ```sh
-bun run dev        # Start development mode with automatic rebuilds
+bun run dev        # Start development mode
 bun run test       # Run test suite
 bun run lint       # Check code style and find problems
 bun run lint:fix   # Fix linting and formatting issues automatically
@@ -47,28 +45,13 @@ bun run tsc        # Type check TypeScript code
 bun run build      # Build production bundle
 ```
 
-### React Library Development
+### Development Mode
 
-React libraries have a special development workflow optimized for component development:
+The `bun run dev` command behaves differently based on your project type:
 
-```sh
-bun run dev        # Watch source files and rebuild library instantly
-bun run test:ui    # Start a Bun + React preview app at http://localhost:3000
-bun run lint       # Check code style and find problems
-bun run lint:fix   # Fix linting and formatting issues automatically
-bun run format:fix # Fix code formatting issues
-bun run tsc        # Type check TypeScript code
-bun run build      # Build production bundle
-```
+**React Library**: Launches a Bun + React preview app at `http://localhost:3000` where you can see your components in action.
 
-#### Full Development Mode
-
-For the ultimate development experience with React libraries:
-
-1. **Terminal 1**: Run `bun run dev` - Watches your source files and rebuilds the library instantly on any change
-2. **Terminal 2**: Run `bun run test:ui` - Starts a Bun + React preview app at http://localhost:3000 to test components realtime.
-
-🔥 Instant reflection of changes in the live preview app
+**TypeScript Library**: Starts watch mode that automatically rebuilds your library whenever you make changes.
 
 ## CI/CD Workflows
 
