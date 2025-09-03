@@ -359,10 +359,7 @@ export interface BuildOptions {
 	 *
 	 * @example
 	 * plugins: [
-	 *   {
-	 *     type: "bun",
-	 *     plugin: myBunPlugin()
-	 *   },
+	 * 	myBunPlugin(),
 	 *   {
 	 *     type: "bunup",
 	 *     hooks: {

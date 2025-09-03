@@ -52,7 +52,6 @@ interface FileEntry {
  */
 export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 	return {
-		type: 'bunup',
 		name: 'exports',
 		hooks: {
 			onBuildDone: async (ctx) => {
