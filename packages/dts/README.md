@@ -1,18 +1,18 @@
-# typeroll
+# @bunup/dts
 
 A blazing-fast `.d.ts` bundler written in Bun, designed to generate and merge TypeScript declarations from an entry point into a single `index.d.ts`, with advanced features like splitting and minification.
 
-Typeroll powers [Bunup's TypeScript declarations feature](https://bunup.dev/docs/guide/typescript-declarations). Learn more at [bunup.dev](https://bunup.dev/).
+@bunup/dts powers [Bunup's TypeScript declarations feature](https://bunup.dev/docs/guide/typescript-declarations). Learn more at [bunup.dev](https://bunup.dev/).
 
 ## How It Works
 
-Typeroll leverages **Bun's native bundler** under the hood to achieve blazing-fast TypeScript declaration bundling. Since Bun's bundler is designed for JavaScript and outputs JavaScript (not built for types or `.d.ts` files), we employ some clever tricks to make Bun bundle TypeScript declarations while supporting advanced features like code splitting and minification.
+@bunup/dts leverages **Bun's native bundler** under the hood to achieve blazing-fast TypeScript declaration bundling. Since Bun's bundler is designed for JavaScript and outputs JavaScript (not built for types or `.d.ts` files), we employ some clever tricks to make Bun bundle TypeScript declarations while supporting advanced features like code splitting and minification.
 
 ### The Process
 
 **1. Declaration Generation**
 
-First, `typeroll` generates `.d.ts` files from TypeScript sources using **isolated declarations** via `oxc-transform`.
+First, `@bunup/dts` generates `.d.ts` files from TypeScript sources using **isolated declarations** via `oxc-transform`.
 
 **2. FakeJS Transformation**
 
