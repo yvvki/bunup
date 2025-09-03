@@ -38,6 +38,13 @@ interface ExportsPluginOptions {
 	 * @default false
 	 */
 	excludeCss?: boolean
+	/**
+	 * Whether to include "./package.json": "./package.json" in the exports field
+	 *
+	 * @default true
+	 * @see https://bunup.dev/docs/plugins/exports#includepackagejson
+	 */
+	includePackageJson?: boolean
 }
 
 interface FileEntry {
@@ -90,10 +97,15 @@ async function processPackageJsonExports(
 			ctx,
 		)
 
+		const finalExports = addPackageJsonExport(
+			mergedExports,
+			options.includePackageJson,
+		)
+
 		const newPackageJson = createUpdatedPackageJson(
 			meta.packageJson.data,
 			entryPoints,
-			mergedExports,
+			finalExports,
 			updatedFiles,
 		)
 
@@ -467,6 +479,23 @@ function getCssExportKey(pathRelativeToOutdir: string): string {
 		// e.g., button.css -> ./button.css, components/button.css -> ./components/button.css
 		return `./${pathSegments.join('/')}.css`
 	}
+}
+
+function addPackageJsonExport(
+	exports: CustomExports,
+	includePackageJson?: boolean,
+): CustomExports {
+	if (includePackageJson === false) {
+		return exports
+	}
+
+	// Add package.json export at the end if not already present
+	const finalExports = { ...exports }
+	if (!finalExports['./package.json']) {
+		finalExports['./package.json'] = './package.json'
+	}
+
+	return finalExports
 }
 
 function exportFieldToEntryPoint(exportField: ExportField): EntryPoint {
