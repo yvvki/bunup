@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { CSS_RE, JS_DTS_RE } from '../../constants/re'
 import { logger } from '../../logger'
-import { cleanPath } from '../../utils'
+import { cleanPath, detectFileFormatting } from '../../utils'
 import type { BuildContext, BuildOutputFile, BunupPlugin } from '../types'
 
 type ExportField = 'require' | 'import' | 'types'
@@ -113,10 +113,19 @@ async function processPackageJsonExports(
 			return
 		}
 
-		await Bun.write(
-			meta.packageJson.path,
-			JSON.stringify(newPackageJson, null, 2),
+		const formatting = await detectFileFormatting(meta.packageJson.path)
+
+		let jsonContent = JSON.stringify(
+			newPackageJson,
+			null,
+			formatting.indentation,
 		)
+
+		if (formatting.hasTrailingNewline) {
+			jsonContent += '\n'
+		}
+
+		await Bun.write(meta.packageJson.path, jsonContent)
 	} catch {
 		logger.error('Failed to update package.json')
 	}
