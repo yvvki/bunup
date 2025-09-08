@@ -12,7 +12,7 @@ Traditional TypeScript declaration generation analyzes your entire project depen
 
 ### Why Enable Now
 
-- **50x faster builds**: Declaration generation becomes nearly instantaneous
+- **50x faster builds**: Declaration generation becomes nearly instantaneous and efficient
 - **Modern tooling**: Essential for next-gen tools like Bun and other high-performance bundlers
 - **Better DX**: Consumers get predictable, reliable, and clean types that are exactly what you define, not TypeScript's inferences
 - **Future-proof**: Stay ahead of the curve with tooling that's becoming the new standard
