@@ -1,40 +1,47 @@
 # TypeScript Declarations
 
-Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library based on your output format, ensuring full type safety for consumers.
+Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library based on your output format, with advanced features like declaration splitting.
 
 ## Isolated Declarations
 
-Make your library lightning-fast and future-ready. TypeScript 5.5's [`isolatedDeclarations`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations) generates `.d.ts` files in parallel at blazing speed, reducing build times from seconds to milliseconds.
+Enable TypeScript 5.5's [`isolatedDeclarations`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations) for dramatically faster declaration generation and modern tooling compatibility.
 
-### Why This Matters
+### What It Does
 
-Traditional declaration generation required analyzing entire projects, creating bottlenecks. With `isolatedDeclarations`, tools can generate declarations extremely quickly without the full TypeScript compiler. **This is the future** - Bun and other modern tools are adopting this for extremely fast declarations generation.
+Traditional TypeScript declaration generation analyzes your entire project dependency graph and infers types across files, which is slow and expensive. With `isolatedDeclarations`, each file can be processed independently and in parallel, reducing build times from seconds to milliseconds.
 
-### Benefits
+### Why Enable Now
 
-- **Dramatically faster builds**
-- **Universal compatibility** with cutting-edge tools
-- **Future-proofing** for the modern ecosystem
+- **50x faster builds**: Declaration generation becomes nearly instantaneous
+- **Modern tooling**: Essential for next-gen tools like Bun and other high-performance bundlers
+- **Better DX**: Consumers get predictable, reliable, and clean types that are exactly what you define, not TypeScript's inferences
+- **Future-proof**: Stay ahead of the curve with tooling that's becoming the new standard
 
 ### How It Works
 
-Add explicit types to public exports only. Internal code stays unchanged.
+Add explicit types only to your public exports and internal code remains unchanged.
 
-```typescript [src/index.ts]
-// Before: TypeScript infers
+::: code-group
+```typescript [Before (TypeScript must infer types)]
 export function createUser(name: string) {
-  return { id: generateId(), name };
-}
-
-// After: Clear public interface
-export function createUser(name: string): User {
-  return { id: generateId(), name };
+  return { id: generateId(), name, role: 'user' };
 }
 ```
 
-### Enable It Now
+```typescript [After (Explicit public interface)]
+export function createUser(name: string): User {
+  return { id: generateId(), name, role: 'user' };
+}
+```
+:::
 
-```json [tsconfig.json] {4}
+Adding explicit types to your public exports is also a good practice - it won't add any overhead, but instead provides benefits like compatibility with future tooling. Doing this from the start keeps your codebase always ready, so you won't need to worry about when this becomes the standard.
+
+### Enable Now
+
+Add one line to your `tsconfig.json`:
+
+```json {4}
 {
   "compilerOptions": {
     "declaration": true,
@@ -43,7 +50,7 @@ export function createUser(name: string): User {
 }
 ```
 
-TypeScript will guide you through adding missing types on exports. Your library is now future-ready with perfect ecosystem compatibility.
+TypeScript will guide you through adding missing types on public exports.
 
 ## Basic
 

@@ -21,7 +21,7 @@ You will be greeted with a few simple questions and that's it! You can now start
 
 You'll choose between two variants:
 - **Basic**: Minimal setup with just Bunup config, perfect for building your own setup
-- **Full**: Complete modern library setup—just focus on code and publish
+- **Full**: Complete modern library setup, just focus on code and publish
 
 If you selected `basic`, you can skip the next sections which is for those who selected `full` to learn more about the commands and how to release your package. If you selected `basic`, you set up these things yourself.
 
