@@ -7,10 +7,10 @@ export default [
 		config: {
 			target: 'bun',
 			entry: ['src/index.ts', 'src/plugins.ts', 'src/cli/index.ts'],
-			plugins: [exports(), unused()],
 			dts: {
 				splitting: true,
 			},
+			plugins: [exports(), unused()],
 		},
 	},
 	{

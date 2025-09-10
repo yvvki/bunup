@@ -44,6 +44,7 @@ export default defineConfig({
 						text: 'TypeScript Declarations',
 						link: '/docs/guide/typescript-declarations',
 					},
+					{ text: 'CSS', link: '/docs/guide/css' },
 					{ text: 'Workspaces', link: '/docs/guide/workspaces' },
 					{ text: 'CLI Options', link: '/docs/guide/cli-options' },
 				],
