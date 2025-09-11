@@ -1,10 +1,10 @@
 # CSS
 
-Bunup supports CSS out of the box with powerful bundling capabilities.
+Bunup supports CSS out of the box.
 
 ## Usage
 
-You can provide CSS files as entry points or import CSS files in your JavaScript/TypeScript files. 
+You can provide CSS files as entry points or import CSS files in your source files. 
 
 All CSS files encountered during the build process are bundled into cross-browser compatible CSS files in the build output with vendor prefixing and syntax lowering.
 
@@ -19,7 +19,7 @@ export default defineConfig({
   entry: [
     'src/index.ts', 
     'src/components/button.css', 
-    'src/components/alert.css'
+    'src/components/card.css'
   ],
 });
 ```
@@ -33,16 +33,18 @@ dist/
 ├── index.js
 ├── components/
 │   ├── button.css
-│   └── alert.css
+│   └── card.css
 ```
 
-### Importing CSS in JavaScript/TypeScript
+### Importing CSS in Source Files
 
 The most common approach is importing CSS files in your main entry point, especially when building component libraries:
 
-```typescript [src/index.tsx]
+::: code-group
+
+```typescript [src/index.ts]
 import './styles.css';
-import { Button } from './components/Button';
+import { Button } from './components/button';
 
 export { Button };
 ```
@@ -61,7 +63,9 @@ export { Button };
 }
 ```
 
-Unlike specifying CSS files as entry points, if you import CSS files in your JavaScript/TypeScript files, Bunup will bundle them together into a single CSS file named `index.css` in the build output:
+:::
+
+Unlike specifying CSS files as entry points, if you import CSS files in your source files, Bunup will bundle them together into a single CSS file named `index.css` in the build output:
 
 ```plaintext
 dist/
@@ -77,7 +81,9 @@ Bunup supports CSS modules out of the box with zero configuration. CSS modules a
 
 Create a CSS file with the `.module.css` extension:
 
-```css [Button.module.css]
+::: code-group
+
+```css [src/components/button.module.css]
 .primary {
   background-color: #007bff;
   color: white;
@@ -95,10 +101,8 @@ Create a CSS file with the `.module.css` extension:
 }
 ```
 
-Import and use the CSS module in your component:
-
-```tsx [src/components/Button.tsx]
-import styles from "./Button.module.css";
+```tsx [src/components/button.tsx]
+import styles from "./button.module.css";
 
 export function Button({ variant = "primary", children }) {
   return (
@@ -109,11 +113,13 @@ export function Button({ variant = "primary", children }) {
 }
 ```
 
+:::
+
 ### Composition
 
 CSS modules support the `composes` property to reuse style rules across multiple classes:
 
-```css [Button.module.css]
+```css [src/components/button.module.css]
 .base {
   padding: 8px 16px;
   border: none;
@@ -162,7 +168,9 @@ CSS modules support the `composes` property to reuse style rules across multiple
 
 You can compose classes from separate CSS module files:
 
-```css [shared.module.css]
+::: code-group
+
+```css [src/shared.module.css]
 .base {
   padding: 8px 16px;
   border-radius: 4px;
@@ -170,14 +178,16 @@ You can compose classes from separate CSS module files:
 }
 ```
 
-```css [Button.module.css]
+```css [src/components/button.module.css]
 .primary {
-  composes: base from "./shared.module.css";
+  composes: base from "../shared.module.css";
   background-color: #007bff;
   color: white;
   border: none;
 }
 ```
+
+:::
 
 ::: warning
 When composing classes from separate files, ensure they don't contain conflicting properties, as this can lead to undefined behavior.
@@ -205,9 +215,11 @@ Consumers can then import your CSS in their applications:
 import 'your-package/styles.css';
 ```
 
-When using the [exports plugin](/docs/plugins/exports), CSS entry points are automatically added to your package's exports field.
-
 Alternatively, you can use the [inject styles plugin](/docs/plugins/inject-styles) to automatically include CSS in your JavaScript bundle, eliminating the need for consumers to manually import CSS files.
+
+::: tip
+When using the [exports plugin](/docs/plugins/exports), CSS or style exports are automatically added to your package's exports field.
+:::
 
 ## Browser Compatibility
 
@@ -215,7 +227,7 @@ Bunup automatically handles browser compatibility by:
 
 - **Syntax Lowering**: Converts modern CSS syntax into backwards-compatible equivalents
 - **Vendor Prefixing**: Automatically adds vendor prefixes where needed
-- **Target Browsers**: By default, targets ES2020 and modern browsers:
+- **Target Browsers**: By default, targets ES2020 and the following browsers:
   - Edge 88+
   - Firefox 78+
   - Chrome 87+
@@ -225,14 +237,16 @@ Bunup automatically handles browser compatibility by:
 
 When using CSS modules with TypeScript, you may encounter import errors. To resolve this, create a global type declaration file:
 
+Make sure to include this file in your TypeScript configuration:
+
+::: code-group
+
 ```typescript [global.d.ts]
 declare module '*.module.css' {
   const classes: { [key: string]: string };
   export default classes;
 }
 ```
-
-Make sure to include this file in your TypeScript configuration:
 
 ```json [tsconfig.json]
 {
@@ -242,5 +256,7 @@ Make sure to include this file in your TypeScript configuration:
   ]
 }
 ```
+
+:::
 
 This declaration file tells TypeScript that CSS module imports return an object with string keys and values, allowing you to use CSS modules without type errors.
