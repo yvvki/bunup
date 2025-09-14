@@ -1,42 +1,127 @@
-import { basename, join } from 'node:path'
-import { ensureArray, isDirectoryPath } from '../../utils'
+import { basename, extname, join } from 'node:path'
+import { logger } from '../../logger'
+import { ensureArray } from '../../utils'
 import type { BunupPlugin } from '../types'
 
-/**
- * A plugin that copies files and directories to the output directory.
- *
- * @param pattern - String or array of glob patterns to match files for copying. Patterns starting with '!' exclude matching files.
- * @param outPath - Optional output path. If not provided, uses the build output directory
- * @see https://bunup.dev/docs/plugins/copy
- */
-export function copy(
-	pattern: string | string[],
-	outPath?: string,
-): BunupPlugin {
-	return {
-		name: 'copy',
-		hooks: {
-			onBuildDone: async ({ options, meta }) => {
-				const destinationPath = outPath || options.outDir
+type CopyOptions = {
+	/** Whether to follow symbolic links when copying files. */
+	followSymlinks?: boolean
+	/** Whether to exclude dotfiles (files starting with a dot) from being copied. */
+	excludeDotfiles?: boolean
+}
 
-				for (const p of ensureArray(pattern)) {
-					const glob = new Bun.Glob(p)
+export function copy(pattern: string | string[]): BunupPlugin & CopyBuilder {
+	return new CopyBuilder(pattern)
+}
 
-					for await (const filePath of glob.scan({
-						cwd: meta.rootDir,
-						dot: true,
-					})) {
-						const sourceFile = Bun.file(join(meta.rootDir, filePath))
+class CopyBuilder {
+	private _patterns: string[]
+	private _destination?: string
+	private _options?: CopyOptions
 
-						await Bun.write(
-							isDirectoryPath(destinationPath)
-								? join(meta.rootDir, destinationPath, basename(filePath))
-								: join(meta.rootDir, destinationPath),
-							sourceFile,
+	constructor(pattern: string | string[]) {
+		this._patterns = ensureArray(pattern)
+	}
+
+	to(destination: string): this {
+		this._destination = destination
+		return this
+	}
+
+	with(options: CopyOptions): this {
+		this._options = options
+		return this
+	}
+
+	get name() {
+		return 'copy'
+	}
+
+	get hooks(): BunupPlugin['hooks'] {
+		return {
+			onBuildDone: async ({ options: buildOptions, meta }) => {
+				let destinationPath = ''
+
+				if (this._destination) {
+					if (this._destination.startsWith(buildOptions.outDir)) {
+						logger.warn(
+							"You don't need to include the output directory in the destination path for the copy plugin. Files are copied to the output directory by default.",
+							{
+								verticalSpace: true,
+							},
 						)
+						destinationPath = this._destination
+					} else {
+						destinationPath = join(buildOptions.outDir, this._destination)
+					}
+				} else {
+					destinationPath = buildOptions.outDir
+				}
+
+				for (const pattern of this._patterns) {
+					const glob = new Bun.Glob(pattern)
+
+					for await (const scannedPath of glob.scan({
+						cwd: meta.rootDir,
+						dot: !this._options?.excludeDotfiles,
+						onlyFiles: !isPatternFolder(pattern),
+						followSymlinks: this._options?.followSymlinks,
+					})) {
+						const sourcePath = join(meta.rootDir, scannedPath)
+
+						const destinationDir = resolveDestinationPath(
+							destinationPath,
+							scannedPath,
+							meta.rootDir,
+						)
+
+						if (isPathDir(sourcePath)) {
+							await copyDirectory(sourcePath, destinationDir)
+						} else {
+							await copyFile(sourcePath, destinationDir)
+						}
 					}
 				}
 			},
-		},
+		}
 	}
+}
+
+function resolveDestinationPath(
+	destinationPath: string,
+	scannedPath: string,
+	rootDir: string,
+): string {
+	const fullDestinationPath = join(rootDir, destinationPath)
+	const isScannedPathDir = isPathDir(scannedPath)
+	const isDestinationDir = isPathDir(fullDestinationPath)
+
+	if (isDestinationDir && !isScannedPathDir) {
+		return join(fullDestinationPath, basename(scannedPath))
+	}
+
+	return fullDestinationPath
+}
+
+function isPatternFolder(pattern: string): boolean {
+	return !pattern.includes('/')
+}
+
+function isPathDir(filePath: string): boolean {
+	return extname(filePath) === ''
+}
+
+async function copyDirectory(
+	sourcePath: string,
+	destinationPath: string,
+): Promise<void> {
+	await Bun.$`cp -r ${sourcePath} ${destinationPath}`
+}
+
+async function copyFile(
+	sourcePath: string,
+	destinationPath: string,
+): Promise<void> {
+	const sourceFile = Bun.file(sourcePath)
+	await Bun.write(destinationPath, sourceFile)
 }

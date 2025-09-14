@@ -14,7 +14,7 @@
 			}
 		},
 		"./styles.css": "./dist/index.css",
-		"./*": "./*"
+		"./package.json": "./package.json"
 	},
 	"dependencies": {
 		"chalk": "^5.6.0",

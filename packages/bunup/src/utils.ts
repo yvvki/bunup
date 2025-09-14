@@ -99,10 +99,6 @@ export function cleanPath(path: string): string {
 	return cleaned
 }
 
-export function isDirectoryPath(filePath: string): boolean {
-	return path.extname(filePath) === ''
-}
-
 export function formatListWithAnd(arr: string[]): string {
 	return new Intl.ListFormat('en', {
 		style: 'long',
