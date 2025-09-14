@@ -12,7 +12,6 @@ import {
 	getDefaultJsOutputExtension,
 	getPackageDeps,
 	getShortFilePath,
-	isDirectoryPath,
 } from '../../src/utils'
 
 describe('Utils', () => {
@@ -253,53 +252,6 @@ describe('Utils', () => {
 
 		it('handles multiple consecutive backslashes', () => {
 			expect(cleanPath('path\\\\to\\\\file.js')).toBe('path/to/file.js')
-		})
-	})
-
-	describe('isDirectoryPath', () => {
-		it('returns true for paths without extensions', () => {
-			expect(isDirectoryPath('path/to/directory')).toBe(true)
-		})
-
-		it('returns false for paths with extensions', () => {
-			expect(isDirectoryPath('path/to/file.js')).toBe(false)
-		})
-
-		it('returns true for single directory name', () => {
-			expect(isDirectoryPath('directory')).toBe(true)
-		})
-
-		it('returns false for filename with extension', () => {
-			expect(isDirectoryPath('file.txt')).toBe(false)
-		})
-
-		it('returns false for paths with multiple dots in filename', () => {
-			expect(isDirectoryPath('path/to/file.min.js')).toBe(false)
-		})
-
-		it('returns true for paths ending with slash', () => {
-			expect(isDirectoryPath('path/to/directory/')).toBe(true)
-		})
-
-		it('returns true for empty string', () => {
-			expect(isDirectoryPath('')).toBe(true)
-		})
-
-		it('returns true for root path', () => {
-			expect(isDirectoryPath('/')).toBe(true)
-		})
-
-		it('returns true for relative directory paths', () => {
-			expect(isDirectoryPath('./directory')).toBe(true)
-			expect(isDirectoryPath('../directory')).toBe(true)
-		})
-
-		it('returns false for hidden files with extensions', () => {
-			expect(isDirectoryPath('.hidden.txt')).toBe(false)
-		})
-
-		it('returns true for hidden directories', () => {
-			expect(isDirectoryPath('.hidden')).toBe(true)
 		})
 	})
 })
