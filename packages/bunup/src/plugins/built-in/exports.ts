@@ -45,6 +45,16 @@ interface ExportsPluginOptions {
 	 * @see https://bunup.dev/docs/plugins/exports#includepackagejson
 	 */
 	includePackageJson?: boolean
+	/**
+	 * Whether to add a wildcard export that allows deep imports
+	 *
+	 * When true, adds "./*": "./*" to exports, making all files accessible
+	 * When false (default), only explicit exports are accessible
+	 *
+	 * @default false
+	 * @see https://bunup.dev/docs/plugins/exports#all
+	 */
+	all?: boolean
 }
 
 interface FileEntry {
@@ -97,9 +107,10 @@ async function processPackageJsonExports(
 			ctx,
 		)
 
-		const finalExports = addPackageJsonExport(
+		const finalExports = addPackageJsonOrWildcardExport(
 			mergedExports,
 			options.includePackageJson,
+			options.all,
 		)
 
 		const newPackageJson = createUpdatedPackageJson(
@@ -490,18 +501,19 @@ function getCssExportKey(pathRelativeToOutdir: string): string {
 	}
 }
 
-function addPackageJsonExport(
+function addPackageJsonOrWildcardExport(
 	exports: CustomExports,
 	includePackageJson?: boolean,
+	all?: boolean,
 ): CustomExports {
-	if (includePackageJson === false) {
-		return exports
-	}
-
-	// Add package.json export at the end if not already present
 	const finalExports = { ...exports }
-	if (!finalExports['./package.json']) {
-		finalExports['./package.json'] = './package.json'
+
+	if (all) {
+		finalExports['./*'] = './*'
+	} else if (includePackageJson !== false) {
+		if (!finalExports['./package.json']) {
+			finalExports['./package.json'] = './package.json'
+		}
 	}
 
 	return finalExports

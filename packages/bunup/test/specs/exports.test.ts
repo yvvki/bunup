@@ -977,4 +977,216 @@ describe('exports plugin', () => {
 			)
 		})
 	})
+
+	describe('all option handling', () => {
+		it('should add wildcard export when all is true', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': 'export const hello: string = "world";',
+			})
+
+			const result = await runBuild({
+				entry: 'src/index.ts',
+				format: 'esm',
+				plugins: [
+					exports({
+						all: true,
+					}),
+				],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['./*']).toBe('./*')
+		})
+
+		it('should not include package.json export when all is true', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': 'export const hello: string = "world";',
+			})
+
+			const result = await runBuild({
+				entry: 'src/index.ts',
+				format: 'esm',
+				plugins: [
+					exports({
+						all: true,
+					}),
+				],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['./*']).toBe('./*')
+			expect(result.packageJson.data.exports['./package.json']).toBeUndefined()
+		})
+
+		it('should use default behavior when all is false', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': 'export const hello: string = "world";',
+			})
+
+			const result = await runBuild({
+				entry: 'src/index.ts',
+				format: 'esm',
+				plugins: [
+					exports({
+						all: false,
+					}),
+				],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['./*']).toBeUndefined()
+			expect(result.packageJson.data.exports['./package.json']).toBe(
+				'./package.json',
+			)
+		})
+
+		it('should use default behavior when all is not specified', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': 'export const hello: string = "world";',
+			})
+
+			const result = await runBuild({
+				entry: 'src/index.ts',
+				format: 'esm',
+				plugins: [exports()],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['./*']).toBeUndefined()
+			expect(result.packageJson.data.exports['./package.json']).toBe(
+				'./package.json',
+			)
+		})
+
+		it('should work with other options when all is true', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': 'export const main = "main";',
+				'src/utils.ts': 'export const util = "util";',
+				'src/styles.css': '.button { color: blue; }',
+			})
+
+			const result = await runBuild({
+				entry: ['src/index.ts', 'src/utils.ts', 'src/styles.css'],
+				format: ['esm', 'cjs'],
+				dts: true,
+				plugins: [
+					exports({
+						all: true,
+						customExports: () => ({
+							'./custom': './custom.js',
+						}),
+					}),
+				],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['.']).toBeDefined()
+			expect(result.packageJson.data.exports['./utils']).toBeDefined()
+			expect(result.packageJson.data.exports['./styles.css']).toBeDefined()
+			expect(result.packageJson.data.exports['./custom']).toBe('./custom.js')
+			expect(result.packageJson.data.exports['./*']).toBe('./*')
+			expect(result.packageJson.data.exports['./package.json']).toBeUndefined()
+		})
+
+		it('should respect includePackageJson when all is false', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': 'export const hello: string = "world";',
+			})
+
+			const result = await runBuild({
+				entry: 'src/index.ts',
+				format: 'esm',
+				plugins: [
+					exports({
+						all: false,
+						includePackageJson: false,
+					}),
+				],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['./*']).toBeUndefined()
+			expect(result.packageJson.data.exports['./package.json']).toBeUndefined()
+		})
+
+		it('should ignore includePackageJson when all is true', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': 'export const hello: string = "world";',
+			})
+
+			const result = await runBuild({
+				entry: 'src/index.ts',
+				format: 'esm',
+				plugins: [
+					exports({
+						all: true,
+						includePackageJson: true,
+					}),
+				],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['./*']).toBe('./*')
+			expect(result.packageJson.data.exports['./package.json']).toBeUndefined()
+		})
+
+		it('should work with multiple entry points and subpath exports when all is true', async () => {
+			createProject({
+				'package.json': JSON.stringify({
+					name: 'test-package',
+					version: '1.0.0',
+				}),
+				'src/index.ts': 'export const main = "main";',
+				'src/utils.ts': 'export const util = "util";',
+				'src/components/Button.ts': 'export const Button = () => "button";',
+			})
+
+			const result = await runBuild({
+				entry: ['src/index.ts', 'src/utils.ts', 'src/components/Button.ts'],
+				format: 'esm',
+				plugins: [
+					exports({
+						all: true,
+					}),
+				],
+			})
+
+			expect(result.success).toBe(true)
+			expect(result.packageJson.data.exports['.']).toBeDefined()
+			expect(result.packageJson.data.exports['./utils']).toBeDefined()
+			expect(
+				result.packageJson.data.exports['./components/Button'],
+			).toBeDefined()
+			expect(result.packageJson.data.exports['./*']).toBe('./*')
+			expect(result.packageJson.data.exports['./package.json']).toBeUndefined()
+		})
+	})
 })

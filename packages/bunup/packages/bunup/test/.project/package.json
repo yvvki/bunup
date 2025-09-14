@@ -1,0 +1,14 @@
+{
+	"name": "test-package",
+	"version": "1.0.0",
+	"files": [
+		".output"
+	],
+	"module": "./.output/index.mjs",
+	"exports": {
+		".": {
+			"import": "./.output/index.mjs"
+		},
+		"./package.json": "./package.json"
+	}
+}
