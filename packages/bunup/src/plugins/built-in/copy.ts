@@ -23,11 +23,17 @@ class CopyBuilder {
 		this._patterns = ensureArray(pattern)
 	}
 
+	/**
+	 * Sets the destination directory where files will be copied.
+	 */
 	to(destination: string): this {
 		this._destination = destination
 		return this
 	}
 
+	/**
+	 * Sets additional options for the copy operation.
+	 */
 	with(options: CopyOptions): this {
 		this._options = options
 		return this
