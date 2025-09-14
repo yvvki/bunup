@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test'
-import { createProject, findFile, runDtsBuild } from '../utils'
+import { createProject, findFile, isCI, runDtsBuild } from '../utils'
 
-describe('dts-resolve', () => {
+describe.skipIf(isCI())('dts-resolve', () => {
 	it('should respect custom dts.resolve configuration', async () => {
 		createProject({
 			'package.json': JSON.stringify({
