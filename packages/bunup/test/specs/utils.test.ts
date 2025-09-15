@@ -12,6 +12,7 @@ import {
 	getDefaultJsOutputExtension,
 	getPackageDeps,
 	getShortFilePath,
+	isGlobPattern,
 } from '../../src/utils'
 
 describe('Utils', () => {
@@ -252,6 +253,60 @@ describe('Utils', () => {
 
 		it('handles multiple consecutive backslashes', () => {
 			expect(cleanPath('path\\\\to\\\\file.js')).toBe('path/to/file.js')
+		})
+	})
+
+	describe('isGlobPattern', () => {
+		it('returns true for asterisk wildcard', () => {
+			expect(isGlobPattern('*.js')).toBe(true)
+		})
+
+		it('returns true for question mark wildcard', () => {
+			expect(isGlobPattern('file?.js')).toBe(true)
+		})
+
+		it('returns true for character class brackets', () => {
+			expect(isGlobPattern('file[0-9].js')).toBe(true)
+		})
+
+		it('returns true for closing bracket', () => {
+			expect(isGlobPattern('file].js')).toBe(true)
+		})
+
+		it('returns true for opening brace', () => {
+			expect(isGlobPattern('file{1,2}.js')).toBe(true)
+		})
+
+		it('returns true for closing brace', () => {
+			expect(isGlobPattern('file}.js')).toBe(true)
+		})
+
+		it('returns true for multiple glob characters', () => {
+			expect(isGlobPattern('**/*.{js,ts}')).toBe(true)
+		})
+
+		it('returns true for complex glob pattern', () => {
+			expect(isGlobPattern('src/**/*[0-9]?.{js,ts,jsx,tsx}')).toBe(true)
+		})
+
+		it('returns false for regular file path', () => {
+			expect(isGlobPattern('src/index.js')).toBe(false)
+		})
+
+		it('returns false for directory path', () => {
+			expect(isGlobPattern('src/components')).toBe(false)
+		})
+
+		it('returns false for empty string', () => {
+			expect(isGlobPattern('')).toBe(false)
+		})
+
+		it('returns false for simple filename', () => {
+			expect(isGlobPattern('package.json')).toBe(false)
+		})
+
+		it('returns false for path with dots and slashes only', () => {
+			expect(isGlobPattern('./src/../dist/index.js')).toBe(false)
 		})
 	})
 })

@@ -205,3 +205,7 @@ export async function detectFileFormatting(filePath: string): Promise<{
 		return { indentation: '  ', hasTrailingNewline: true }
 	}
 }
+
+export function isGlobPattern(pattern: string): boolean {
+	return /[*?[\]{}]/.test(pattern)
+}

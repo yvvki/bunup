@@ -1,6 +1,6 @@
 import { basename, extname, join } from 'node:path'
 import { logger } from '../../logger'
-import { ensureArray } from '../../utils'
+import { ensureArray, isGlobPattern } from '../../utils'
 import type { BunupPlugin } from '../types'
 
 type CopyOptions = {
@@ -10,6 +10,11 @@ type CopyOptions = {
 	excludeDotfiles?: boolean
 }
 
+/**
+ * A plugin that copies files and directories to the output directory.
+ *
+ * @see https://bunup.dev/docs/plugins/copy
+ */
 export function copy(pattern: string | string[]): BunupPlugin & CopyBuilder {
 	return new CopyBuilder(pattern)
 }
@@ -24,7 +29,8 @@ class CopyBuilder {
 	}
 
 	/**
-	 * Sets the destination directory where files will be copied.
+	 * Sets the destination directory or file path where files will be copied.
+	 * Relative to the output directory.
 	 */
 	to(destination: string): this {
 		this._destination = destination
@@ -70,7 +76,7 @@ class CopyBuilder {
 					for await (const scannedPath of glob.scan({
 						cwd: meta.rootDir,
 						dot: !this._options?.excludeDotfiles,
-						onlyFiles: !isPatternFolder(pattern),
+						onlyFiles: isGlobPattern(pattern),
 						followSymlinks: this._options?.followSymlinks,
 					})) {
 						const sourcePath = join(meta.rootDir, scannedPath)
@@ -107,10 +113,6 @@ function resolveDestinationPath(
 	}
 
 	return fullDestinationPath
-}
-
-function isPatternFolder(pattern: string): boolean {
-	return !pattern.includes('/')
 }
 
 function isPathDir(filePath: string): boolean {
