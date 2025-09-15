@@ -235,11 +235,11 @@ Bunup automatically handles browser compatibility by:
 
 ## CSS Modules and TypeScript
 
-Bunup provides seamless TypeScript integration for CSS modules, offering full type safety and autocomplete for your CSS class names.
+Bunup automatically generates TypeScript definitions for CSS modules, providing type safety and autocomplete.
 
 ### Automatic Type Generation
 
-When you build your project, Bunup automatically generates type definition files for each `.module.css` file, providing complete type safety for your CSS module imports.
+Bunup generates `.d.ts` files for each `.module.css` file:
 
 ::: code-group
 
@@ -272,49 +272,35 @@ export default classes;
 
 :::
 
-### Type Safety Benefits
+### Benefits
 
-With generated type definitions, you get:
-
-- **Autocomplete**: TypeScript will suggest available class names when you type `styles.`
-- **Compile-time Error Checking**: Accessing non-existent classes will show TypeScript errors
-- **Refactoring Safety**: Renaming classes in CSS will immediately highlight usage errors
-
-```tsx [src/components/button.tsx]
-import styles from "./button.module.css";
-
-export function Button({ children }) {
-  return (
-    <button className={styles.primary}>
-      {children}
-    </button>
-  );
-}
-```
+- **Autocomplete**: TypeScript suggests available class names when typing `styles.`
+- **Compile-time Error Checking**: Accessing non-existent classes shows TypeScript errors
+- **Refactoring Safety**: Renaming classes in CSS immediately highlights usage errors
 
 ### Development Workflow
 
 #### Watch Mode <Badge type="info" text="Recommended" />
 
-For the best development experience, use watch mode to get instant type updates:
+Use watch mode for instant type updates:
 
 ```sh
-bun run dev # bunup --watch
+bunup --watch
 ```
 
-When you save changes to CSS module files, type definitions are regenerated immediately. For example, if you rename `.primary` to `.primary-button`, you'll get instant TypeScript errors wherever `styles.primary` is used.
+Type definitions regenerate immediately when you save CSS module changes. Renaming `.primary` to `.primary-button` will instantly show TypeScript errors wherever `styles.primary` is used.
 
 #### Build Mode
 
-If you're not using watch mode, run the build command to regenerate types after making changes to CSS modules:
+Run the build command to regenerate types after CSS module changes:
 
 ```sh
-bun run build
+bunup
 ```
 
 ### Git Configuration
 
-Since type definition files are generated automatically, you should exclude them from version control:
+Exclude generated type definition files from version control:
 
 ```plaintext [.gitignore]
 # Generated CSS module type definitions
@@ -323,7 +309,7 @@ Since type definition files are generated automatically, you should exclude them
 
 ### Disabling Type Generation
 
-If you prefer to handle CSS module types manually, you can disable automatic type generation:
+Disable automatic type generation if you prefer manual handling:
 
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
@@ -335,29 +321,3 @@ export default defineConfig({
   }
 });
 ```
-
-### Manual Type Setup <Badge type="info" text="Alternative" />
-
-If you've disabled automatic type generation, you can create a global declaration file to prevent TypeScript errors when importing CSS modules:
-
-```ts [src/global.d.ts]
-declare module '*.module.css' {
-  const classes: { [key: string]: string };
-  export default classes;
-}
-```
-
-Then include this file in your `tsconfig.json`:
-
-```json [tsconfig.json]
-{
-  "include": [
-    "src/**/*",
-    "src/global.d.ts"
-  ]
-}
-```
-
-::: tip
-With automatic type generation enabled (default), you don't need this manual setup. The generated types provide better type safety and autocomplete than the generic fallback.
-:::
