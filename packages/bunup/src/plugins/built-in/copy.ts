@@ -1,7 +1,7 @@
 import { basename, extname, join } from 'node:path'
 import { logger } from '../../logger'
 import { ensureArray, isGlobPattern } from '../../utils'
-import type { BunupPlugin } from '../types'
+import type { BunupPlugin, BunupPluginHooks } from '../types'
 
 type CopyOptions = {
 	/** Whether to follow symbolic links when copying files. */
@@ -49,7 +49,7 @@ class CopyBuilder {
 		return 'copy'
 	}
 
-	get hooks(): BunupPlugin['hooks'] {
+	get hooks(): BunupPluginHooks {
 		return {
 			onBuildDone: async ({ options: buildOptions, meta }) => {
 				let destinationPath = ''

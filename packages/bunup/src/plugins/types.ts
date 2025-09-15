@@ -56,7 +56,7 @@ export type BuildContext = {
 /**
  * Hooks that can be implemented by Bunup plugins
  */
-type BunupPluginHooks = {
+export type BunupPluginHooks = {
 	/**
 	 * Called when a build is successfully completed
 	 * @param ctx Build context containing options and output
