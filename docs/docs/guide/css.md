@@ -235,7 +235,7 @@ Bunup automatically handles browser compatibility by:
 
 ## CSS Modules and TypeScript
 
-Bunup provides seamless TypeScript integration for CSS modules, offering full type safety and intelligent autocomplete for your CSS class names.
+Bunup provides seamless TypeScript integration for CSS modules, offering full type safety and autocomplete for your CSS class names.
 
 ### Automatic Type Generation
 
