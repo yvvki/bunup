@@ -81,16 +81,16 @@ class CopyBuilder {
 					})) {
 						const sourcePath = join(meta.rootDir, scannedPath)
 
-						const destinationDir = resolveDestinationPath(
+						const finalDestinationPath = resolveDestinationPath(
 							destinationPath,
 							scannedPath,
 							meta.rootDir,
 						)
 
 						if (isDirectoryPath(sourcePath)) {
-							await copyDirectory(sourcePath, destinationDir)
+							await copyDirectory(sourcePath, finalDestinationPath)
 						} else {
-							await copyFile(sourcePath, destinationDir)
+							await copyFile(sourcePath, finalDestinationPath)
 						}
 					}
 				}
@@ -121,15 +121,15 @@ function isDirectoryPath(filePath: string): boolean {
 
 async function copyDirectory(
 	sourcePath: string,
-	destinationPath: string,
+	finalDestinationPath: string,
 ): Promise<void> {
-	await Bun.$`cp -r ${sourcePath} ${destinationPath}`
+	await Bun.$`cp -r ${sourcePath} ${finalDestinationPath}`
 }
 
 async function copyFile(
 	sourcePath: string,
-	destinationPath: string,
+	finalDestinationPath: string,
 ): Promise<void> {
 	const sourceFile = Bun.file(sourcePath)
-	await Bun.write(destinationPath, sourceFile)
+	await Bun.write(finalDestinationPath, sourceFile)
 }
