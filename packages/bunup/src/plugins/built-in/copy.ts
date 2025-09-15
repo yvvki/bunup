@@ -87,7 +87,7 @@ class CopyBuilder {
 							meta.rootDir,
 						)
 
-						if (isPathDir(sourcePath)) {
+						if (isDirectoryPath(sourcePath)) {
 							await copyDirectory(sourcePath, destinationDir)
 						} else {
 							await copyFile(sourcePath, destinationDir)
@@ -105,8 +105,8 @@ function resolveDestinationPath(
 	rootDir: string,
 ): string {
 	const fullDestinationPath = join(rootDir, destinationPath)
-	const isScannedPathDir = isPathDir(scannedPath)
-	const isDestinationDir = isPathDir(fullDestinationPath)
+	const isScannedPathDir = isDirectoryPath(scannedPath)
+	const isDestinationDir = isDirectoryPath(fullDestinationPath)
 
 	if (isDestinationDir && !isScannedPathDir) {
 		return join(fullDestinationPath, basename(scannedPath))
@@ -115,7 +115,7 @@ function resolveDestinationPath(
 	return fullDestinationPath
 }
 
-function isPathDir(filePath: string): boolean {
+function isDirectoryPath(filePath: string): boolean {
 	return extname(filePath) === ''
 }
 
