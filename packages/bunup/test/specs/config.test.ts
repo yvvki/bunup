@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it } from 'bun:test'
-import { cleanProjectDir, createProject, isCI, runDtsBuild } from '../utils'
+import { cleanProjectDir, createProject, runDtsBuild } from '../utils'
 
 describe('Config', () => {
 	beforeEach(() => {
 		cleanProjectDir()
 	})
 
-	it.skipIf(isCI())('should use preferred tsconfig when provided', async () => {
+	it('should use preferred tsconfig when provided', async () => {
 		createProject({
 			'tsconfig.json': JSON.stringify({
 				compilerOptions: {
