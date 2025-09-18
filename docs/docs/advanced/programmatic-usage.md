@@ -33,7 +33,7 @@ const options: BuildOptions = {
 await build(options);
 ```
 
-The full type definition can be found in the [bunup source code](https://github.com/bunup/bunup/blob/main/src/options.ts#L70).
+The full type definition can be found in the [bunup source code](https://github.com/bunup/bunup/blob/454c78fad5d9c79f2d4472f1f6d9c6137a54cd75/packages/bunup/src/options.ts#L77).
 
 ## Custom Root Directory
 
@@ -63,8 +63,7 @@ await build({
   entry: 'src/index.ts',
   plugins: [
   	injectStyles({
-    	minify: true,
-     	targets: { chrome: 95 }
+    	minify: false,
    	})
   ]
 });

@@ -1,46 +1,10 @@
 # CSS
 
-Bunup supports CSS out of the box.
+Bunup handles CSS automatically. Just import it and it works.
 
-## Usage
+## Quick Start
 
-You can provide standalone CSS files as entry points or import CSS files in your source files. 
-
-All CSS files encountered during the build process are bundled into cross-browser compatible CSS files in the build output with vendor prefixing and syntax lowering.
-
-### CSS Entry Points
-
-You can specify CSS files as entry points in your configuration:
-
-```typescript [bunup.config.ts]
-import { defineConfig } from 'bunup';
-
-export default defineConfig({
-  entry: [
-    'src/index.ts', 
-    'src/components/button.css', 
-    'src/components/card.css'
-  ],
-});
-```
-
-Specifying CSS files as entry points will create separate CSS files in the build output for each entry point. 
-
-In this example:
-
-```plaintext
-dist/
-├── index.js
-├── components/
-│   ├── button.css
-│   └── card.css
-```
-
-### Importing CSS in Source Files
-
-The most common approach is importing CSS files in your main entry point, especially when building component libraries:
-
-::: code-group
+Import CSS in your TypeScript files:
 
 ```typescript [src/index.ts]
 import './styles.css';
@@ -57,31 +21,41 @@ export { Button };
   border: none;
   border-radius: 4px;
 }
-
-.button:hover {
-  background-color: #0056b3;
-}
 ```
 
-:::
+Bunup automatically bundles your CSS into `dist/index.css` with cross-browser compatibility.
 
-Unlike specifying CSS files as entry points, if you import CSS files in your source files, Bunup will bundle them together into a single CSS file named `index.css` in the build output:
+## Entry Points
+
+For separate CSS files, add them as entry points:
+
+```typescript [bunup.config.ts]
+import { defineConfig } from 'bunup';
+
+export default defineConfig({
+  entry: [
+    'src/index.ts', 
+    'src/components/button.css'
+  ],
+});
+```
+
+This creates individual CSS files in your build output:
 
 ```plaintext
 dist/
 ├── index.js
-└── index.css
+└── components/
+    └── button.css
 ```
 
 ## CSS Modules
 
-Bunup supports CSS modules out of the box with zero configuration. CSS modules automatically scope class names to prevent collisions.
+CSS modules prevent style conflicts by automatically scoping class names. Just add `.module.css` to your filename:
 
-### Getting Started
-
-Create a CSS file with the `.module.css` extension:
-
-::: code-group
+::: tip
+New to CSS modules? Check out [this guide](https://css-tricks.com/css-modules-part-1-need/) to learn what they are and why they're useful.
+:::
 
 ```css [src/components/button.module.css]
 .primary {
@@ -89,14 +63,6 @@ Create a CSS file with the `.module.css` extension:
   color: white;
   padding: 8px 16px;
   border: none;
-  border-radius: 4px;
-}
-
-.secondary {
-  background-color: transparent;
-  color: #007bff;
-  padding: 8px 16px;
-  border: 1px solid #007bff;
   border-radius: 4px;
 }
 ```
@@ -104,22 +70,22 @@ Create a CSS file with the `.module.css` extension:
 ```tsx [src/components/button.tsx]
 import styles from "./button.module.css";
 
-export function Button({ variant = "primary", children }) {
+export function Button({ children }) {
   return (
-    <button className={styles[variant]}>
+    <button className={styles.primary}>
       {children}
     </button>
   );
 }
 ```
 
-:::
+That's it! Bunup handles the rest automatically.
 
-### Composition
+### Sharing Styles
 
-CSS modules support the `composes` property to reuse style rules across multiple classes:
+Reuse styles with the `composes` property:
 
-```css [src/components/button.module.css]
+```css [src/components/button.module.css] {9,15}
 .base {
   padding: 8px 16px;
   border: none;
@@ -141,61 +107,27 @@ CSS modules support the `composes` property to reuse style rules across multiple
 }
 ```
 
-#### Composition Rules
+**Rules:**
+- `composes` must come first in the class
+- Works only with single class selectors (not `#id` or `.class1, .class2`)
 
-- The `composes` property must come before any regular CSS properties
-- You can only use `composes` on simple selectors with a single class name
+**From other files:**
 
-```css
-/* Invalid - not a class selector */
-#button {
-  composes: background;
-}
-
-/* Invalid - not a simple selector */
-.button,
-.button-secondary {
-  composes: background;
-}
-
-/* Valid */
-.button {
-  composes: background;
-}
-```
-
-#### Composing from Separate Files
-
-You can compose classes from separate CSS module files:
-
-::: code-group
-
-```css [src/shared.module.css]
-.base {
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-```
-
-```css [src/components/button.module.css]
+```css [src/components/button.module.css] {2}
 .primary {
   composes: base from "../shared.module.css";
   background-color: #007bff;
   color: white;
-  border: none;
 }
 ```
 
-:::
-
 ::: warning
-When composing classes from separate files, ensure they don't contain conflicting properties, as this can lead to undefined behavior.
+Avoid conflicting properties when composing from separate files.
 :::
 
-## CSS Exports
+## Distributing CSS
 
-When you include CSS files as entry points, they are bundled and available for consumers to import. You can export CSS files in your package's exports field:
+Export CSS files for package consumers:
 
 ```json [package.json]
 {
@@ -209,57 +141,43 @@ When you include CSS files as entry points, they are bundled and available for c
 }
 ```
 
-Consumers can then import your CSS in their applications:
+Users can then import your styles:
 
 ```javascript
 import 'your-package/styles.css';
 ```
 
-Alternatively, you can use the [inject styles plugin](/docs/plugins/inject-styles) to automatically include CSS in your JavaScript bundle, eliminating the need for consumers to manually import CSS files.
+**Auto-inject option:** Use the [inject styles plugin](/docs/plugins/inject-styles) to bundle CSS directly into JavaScript. No separate imports needed.
 
 ::: tip
-When using the [exports plugin](/docs/plugins/exports), CSS or style exports are automatically added to your package's exports field.
+The [exports plugin](/docs/plugins/exports) automatically adds CSS exports to your `package.json`.
 :::
 
-## Browser Compatibility
+## Browser Support
 
-Bunup automatically handles browser compatibility by:
+Bunup automatically ensures cross-browser compatibility:
 
-- **Syntax Lowering**: Converts modern CSS syntax into backwards-compatible equivalents
-- **Vendor Prefixing**: Automatically adds vendor prefixes where needed
-- **Target Browsers**: By default, targets the following browsers:
-  - Edge 88+
-  - Firefox 78+
-  - Chrome 87+
-  - Safari 14+
+- Converts modern CSS syntax to work in older browsers
+- Adds vendor prefixes (`-webkit-`, `-moz-`, etc.) where needed
+- Targets: Chrome 87+, Firefox 78+, Safari 14+, Edge 88+
 
-## CSS Modules and TypeScript
+## TypeScript Support
 
-Bunup automatically generates TypeScript definitions for CSS modules, providing type safety and autocomplete.
-
-### Automatic Type Generation
-
-Bunup generates `.d.ts` files for each `.module.css` file:
-
-::: code-group
+Bunup automatically creates TypeScript definitions for CSS modules. Get autocomplete and type safety for free.
 
 ```css [src/components/button.module.css]
 .primary {
   background-color: #007bff;
   color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
 }
 
 .secondary {
   background-color: transparent;
   color: #007bff;
-  padding: 8px 16px;
-  border: 1px solid #007bff;
-  border-radius: 4px;
 }
 ```
+
+Bunup generates this TypeScript file:
 
 ```ts [src/components/button.module.css.d.ts]
 declare const classes: {
@@ -270,52 +188,39 @@ declare const classes: {
 export default classes;
 ```
 
-:::
+**You get:**
+- Autocomplete when typing `styles.`
+- Errors for typos like `styles.primry`
+- Safe refactoring when renaming CSS classes
 
-### Benefits
+### Development
 
-- **Autocomplete**: TypeScript suggests available class names when typing `styles.`
-- **Compile-time Error Checking**: Accessing non-existent classes shows TypeScript errors
-- **Refactoring Safety**: Renaming classes in CSS immediately highlights usage errors
-
-### Development Workflow
-
-#### Watch Mode <Badge type="info" text="Recommended" />
-
-Use watch mode for instant type updates:
+Type definitions generate automatically when you build. For the best experience with CSS modules, use watch mode:
 
 ```sh
 bunup --watch
 ```
 
-Type definitions regenerate immediately when you save CSS module changes. Renaming `.primary` to `.primary-button` will instantly show TypeScript errors wherever `styles.primary` is used.
+Watch mode instantly regenerates type definitions when CSS module files change. Change a class name and save, you'll immediately see TypeScript errors wherever the old class name is used.
 
-#### Build Mode
+### Configuration
 
-Run the build command to regenerate types after CSS module changes:
+#### Exclude from Git
 
-```sh
-bunup
-```
-
-### Git Configuration
-
-Exclude generated type definition files from version control:
+Since type definitions are auto-generated, exclude them from version control:
 
 ```plaintext [.gitignore]
-# Generated CSS module type definitions
 **/*.module.*.d.ts
 ```
 
-### Disabling Type Generation
+#### Disable type generation
 
-Disable automatic type generation if you prefer manual handling:
+Turn off automatic type generation if you prefer to handle it manually:
 
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
 
 export default defineConfig({
-  entry: ['src/index.tsx'],
   css: {
     typedModules: false
   }

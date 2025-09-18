@@ -501,17 +501,6 @@ Bunup provides flexible options for handling environment variables in your bundl
 
 ::: code-group
 
-```sh [CLI]
-# Inline all environment variables available at build time
-FOO=bar API_KEY=secret bunup src/index.ts --env inline
-
-# Disable all environment variable inlining
-bunup src/index.ts --env disable
-
-# Only inline environment variables with a specific prefix (e.g., PUBLIC_)
-PUBLIC_URL=https://example.com bunup src/index.ts --env PUBLIC_*
-```
-
 ```ts [bunup.config.ts]
 export default defineConfig({
 	entry: 'src/index.ts',
@@ -532,6 +521,17 @@ export default defineConfig({
 	//   DEBUG: "false",
 	// },
 });
+```
+
+```sh [CLI]
+# Inline all environment variables available at build time
+FOO=bar API_KEY=secret bunup src/index.ts --env inline
+
+# Disable all environment variable inlining
+bunup src/index.ts --env disable
+
+# Only inline environment variables with a specific prefix (e.g., PUBLIC_)
+PUBLIC_URL=https://example.com bunup src/index.ts --env PUBLIC_*
 ```
 
 :::
