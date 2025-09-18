@@ -147,10 +147,8 @@ Users can then import your styles:
 import 'your-package/styles.css';
 ```
 
-**Auto-inject option:** Use the [inject styles plugin](/docs/plugins/inject-styles) to bundle CSS directly into JavaScript. No separate imports needed.
-
 ::: tip
-The [exports plugin](/docs/plugins/exports) automatically adds CSS exports to your `package.json`.
+Use the [inject styles plugin](/docs/plugins/inject-styles) to bundle CSS directly into JavaScript. No separate imports needed.
 :::
 
 ## Browser Support
