@@ -4,7 +4,7 @@ import { cssTypedModulesPlugin } from './plugins/internal/css-typed-modules'
 import { report } from './plugins/internal/report'
 import { useClient } from './plugins/internal/use-client'
 import type { BunupPlugin } from './plugins/types'
-import type { MaybePromise, WithRequired } from './types'
+import type { MaybePromise } from './types'
 
 type Loader =
 	| 'js'
@@ -94,14 +94,13 @@ export interface BuildOptions {
 
 	/**
 	 * Output directory for the bundled files
-	 * Defaults to 'dist' if not specified
+	 * If not specified, the built files will not be written to output directory. Instead, you can use the BuildOutput returned by the build function to handle file writing yourself.
 	 */
 	outDir: string
 
 	/**
 	 * Output formats for the bundle
 	 * Can include 'esm', 'cjs', and/or 'iife'
-	 * Defaults to ['esm'] if not specified
 	 */
 	format: Format | Format[]
 
@@ -152,7 +151,7 @@ export interface BuildOptions {
 	/**
 	 * Whether to generate TypeScript declaration files (.d.ts)
 	 * When set to true, generates declaration files for all entry points
-	 * Can also be configured with DtsOptions for more control
+	 * Can also be configured with GenerateDtsOptions for more control
 	 */
 	dts?:
 		| boolean
@@ -202,7 +201,6 @@ export interface BuildOptions {
 	/**
 	 * Whether to clean the output directory before building
 	 * When true, removes all files in the outDir before starting a new build
-	 * Defaults to true if not specified
 	 */
 	clean?: boolean
 	/**
@@ -289,7 +287,7 @@ export interface BuildOptions {
 	 *
 	 * @example
 	 * loader: {
-	 *   ".png": "dataurl",
+	 *   ".css": "text",
 	 *   ".txt": "file",
 	 * }
 	 */
@@ -390,28 +388,13 @@ export interface BuildOptions {
 	css?: CSSOptions
 }
 
-const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
-	entry: 'src/index.ts',
-	format: 'esm',
-	outDir: 'dist',
-	target: 'node',
-	clean: true,
-}
-
-export function createBuildOptions(
-	partialOptions: Partial<BuildOptions>,
-): BuildOptions {
-	const options = {
-		...DEFAULT_OPTIONS,
-		...partialOptions,
-	}
-
-	const typedModulesEnabled = options.css?.typedModules !== false
+export function createBuildOptions(userOptions: BuildOptions): BuildOptions {
+	const typedModulesEnabled = userOptions.css?.typedModules !== false
 
 	return {
-		...options,
+		...userOptions,
 		plugins: [
-			...(options.plugins ?? []),
+			...(userOptions.plugins ?? []),
 			...(typedModulesEnabled ? [cssTypedModulesPlugin()] : []),
 			useClient(),
 			report(),
@@ -432,6 +415,13 @@ export function getResolvedMinify(options: BuildOptions): {
 		identifiers: minifyIdentifiers ?? defaultValue,
 		syntax: minifySyntax ?? defaultValue,
 	}
+}
+
+// Bun defaults target to browser; default to node if not specified, as node is standard for library builds.
+export function getResolvedTarget(
+	target: Target | undefined,
+): BuildConfig['target'] {
+	return target ?? 'node'
 }
 
 export function getResolvedSourcemap(

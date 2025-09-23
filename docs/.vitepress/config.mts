@@ -127,8 +127,8 @@ export default defineConfig({
 	],
 	markdown: {
 		theme: {
-			light: 'one-light',
 			dark: 'one-dark-pro',
+			light: 'github-light',
 		},
 		config(md) {
 			md.use(groupIconMdPlugin)

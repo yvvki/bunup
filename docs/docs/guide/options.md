@@ -36,8 +36,10 @@ You can specify multiple entry points in several ways:
 bunup src/index.ts src/cli.ts
 ```
 
-```sh [CLI - method 2]
+```sh [CLI - using --entry flag]
 bunup --entry src/index.ts --entry src/cli.ts
+# or using alias
+bunup -e src/index.ts -e src/cli.ts
 ```
 
 ```ts [bunup.config.ts]
@@ -91,12 +93,16 @@ You can specify one or more formats:
 
 ::: code-group
 
-```sh [CLI - single format]
+```sh [CLI]
+# Single format
 bunup src/index.ts --format esm
-```
+# or using alias
+bunup src/index.ts -f esm
 
-```sh [CLI - multiple formats]
+# Multiple formats
 bunup src/index.ts --format esm,cjs,iife
+# or using alias
+bunup src/index.ts -f esm,cjs,iife
 ```
 
 ```ts [bunup.config.ts]
@@ -198,7 +204,11 @@ If you want to make sure a package is not bundled (even if it's not in your `pac
 ::: code-group
 
 ```sh [CLI]
+# Single package
 bunup src/index.ts --external lodash
+
+# Multiple packages
+bunup src/index.ts --external lodash,react,vue
 ```
 
 ```ts [bunup.config.ts]
@@ -217,7 +227,11 @@ If you want to include a package in your bundle (even if it's normally external)
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --no-external lodash
+# Single package
+bunup src/index.ts --noExternal lodash
+
+# Multiple packages
+bunup src/index.ts --noExternal lodash,react,vue
 ```
 
 ```ts [bunup.config.ts]
@@ -259,7 +273,7 @@ You can explicitly enable or disable code splitting:
 bunup src/index.ts --splitting
 
 # Disable code splitting
-bunup src/index.ts --splitting=false
+bunup src/index.ts --no-splitting
 ```
 
 ```ts [bunup.config.ts]
@@ -307,14 +321,12 @@ You can configure individual minification options:
 
 ::: code-group
 
-```sh [CLI - single option]
-# Minify whitespace only
-bunup src/index.ts --minify-whitespace
-```
+```sh [CLI]
+# Single option - minify whitespace only
+bunup src/index.ts --minifyWhitespace
 
-```sh [CLI - multiple options]
-# Minify whitespace and syntax, but not identifiers
-bunup src/index.ts --minify-whitespace --minify-syntax
+# Multiple options - minify whitespace and syntax, but not identifiers
+bunup src/index.ts --minifyWhitespace --minifySyntax
 ```
 
 ```ts [bunup.config.ts]
@@ -337,12 +349,11 @@ Bunup can generate source maps for your bundled code:
 
 ::: code-group
 
-```sh [CLI - linked]
+```sh [CLI]
+# Linked source maps
 bunup src/index.ts --sourcemap linked
-```
 
-```sh [CLI - inline]
-# Use --sourcemap for inline source maps
+# Inline source maps
 bunup src/index.ts --sourcemap
 ```
 
@@ -371,7 +382,13 @@ For detailed explanations of these values, see the [Bun documentation on source 
 
 Bunup allows you to define global constants that will be replaced at build time. This is useful for feature flags, version numbers, or any other build-time constants.
 
-```typescript
+::: code-group
+
+```sh [CLI]
+bunup src/index.ts --define.PACKAGE_VERSION='"1.0.0"' --define.DEBUG='false'
+```
+
+```typescript [bunup.config.ts]
 export default defineConfig({
 	entry: 'src/index.ts',
 	define: {
@@ -380,6 +397,8 @@ export default defineConfig({
 	},
 });
 ```
+
+:::
 
 The `define` option takes an object where:
 
@@ -420,30 +439,126 @@ For more information, see the Bun documentation on [banner](https://bun.sh/docs/
 
 You can remove specific function calls from your bundle:
 
-```typescript
+::: code-group
+
+```sh [CLI]
+# Single function
+bunup src/index.ts --drop console
+
+# Multiple functions
+bunup src/index.ts --drop console,debugger
+```
+
+```typescript [bunup.config.ts]
 export default defineConfig({
 	entry: 'src/index.ts',
 	drop: ['console', 'debugger', 'anyIdentifier.or.propertyAccess'],
 });
 ```
 
+:::
+
 The `drop` option removes function calls specified in the array. For example, `drop: ["console"]` will remove all calls to `console.log`. Arguments to calls will also be removed, regardless of if those arguments may have side effects. Dropping `debugger` will remove all `debugger` statements.
 
 For more information, see the [Bun documentation on drop](https://bun.sh/docs/bundler#drop).
+
+## Package.json Export Conditions
+
+You can specify custom package.json export conditions for import resolution:
+
+::: code-group
+
+```sh [CLI]
+# Single condition
+bunup src/index.ts --conditions development
+
+# Multiple conditions
+bunup src/index.ts --conditions development,node
+```
+
+```typescript [bunup.config.ts]
+export default defineConfig({
+	entry: 'src/index.ts',
+	conditions: ['development', 'node'],
+});
+```
+
+:::
+
+This allows you to control which conditional exports are used when resolving imports.
+
+## Dead Code Elimination
+
+Control how dead code elimination annotations are handled:
+
+::: code-group
+
+```sh [CLI]
+# Ignore @__PURE__ annotations and sideEffects
+bunup src/index.ts --ignoreDCEAnnotations
+
+# Force emit @__PURE__ annotations even with minification
+bunup src/index.ts --emitDCEAnnotations
+```
+
+```typescript [bunup.config.ts]
+export default defineConfig({
+	entry: 'src/index.ts',
+	ignoreDCEAnnotations: true,
+	// or
+	emitDCEAnnotations: true,
+});
+```
+
+:::
+
+- `ignoreDCEAnnotations`: Ignores dead code elimination annotations like `@__PURE__` and `sideEffects` in package.json
+- `emitDCEAnnotations`: Forces emission of `@__PURE__` annotations even when minification is enabled
+
+## Silent Mode
+
+Disable logging during the build process:
+
+::: code-group
+
+```sh [CLI]
+bunup src/index.ts --silent
+# or using alias
+bunup src/index.ts -q
+```
+
+```typescript [bunup.config.ts]
+export default defineConfig({
+	entry: 'src/index.ts',
+	silent: true,
+});
+```
+
+:::
+
+This is useful when you want minimal output, such as in CI/CD environments.
 
 ## Custom Loaders
 
 You can configure how different file types are loaded:
 
-```typescript
+::: code-group
+
+```sh [CLI]
+bunup src/index.ts --loader.'.css'=text --loader.'.txt'=file
+```
+
+```typescript [bunup.config.ts]
 export default defineConfig({
 	entry: 'src/index.ts',
 	loader: {
-		'.png': 'dataurl',
+		'.css': 'text',
 		'.txt': 'file',
 	},
 });
 ```
+
+:::
 
 The `loader` option takes a map of file extensions to built-in loader names, allowing you to customize how different file types are processed during bundling.
 
@@ -456,7 +571,7 @@ You can specify a prefix to be added to specific import paths in your bundled co
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --public-path https://cdn.example.com/
+bunup src/index.ts --publicPath https://cdn.example.com/
 ```
 
 ```ts [bunup.config.ts]
@@ -500,6 +615,19 @@ For more information, see the [Bun documentation on publicPath](https://bun.sh/d
 Bunup provides flexible options for handling environment variables in your bundled code:
 
 ::: code-group
+```sh [CLI]
+# Inline all environment variables available at build time
+FOO=bar API_KEY=secret bunup src/index.ts --env inline
+
+# Disable all environment variable inlining
+bunup src/index.ts --env disable
+
+# Only inline environment variables with a specific prefix (e.g., PUBLIC_)
+PUBLIC_URL=https://example.com bunup src/index.ts --env PUBLIC_*
+
+# Explicitly provide specific environment variables
+bunup src/index.ts --env.NODE_ENV="production" --env.API_URL="https://api.example.com"
+```
 
 ```ts [bunup.config.ts]
 export default defineConfig({
@@ -522,18 +650,6 @@ export default defineConfig({
 	// },
 });
 ```
-
-```sh [CLI]
-# Inline all environment variables available at build time
-FOO=bar API_KEY=secret bunup src/index.ts --env inline
-
-# Disable all environment variable inlining
-bunup src/index.ts --env disable
-
-# Only inline environment variables with a specific prefix (e.g., PUBLIC_)
-PUBLIC_URL=https://example.com bunup src/index.ts --env PUBLIC_*
-```
-
 :::
 
 ### How it Works
@@ -557,6 +673,8 @@ Bunup allows you to specify the target environment for your bundle:
 
 ```sh [CLI]
 bunup src/index.ts --target browser
+# or using alias
+bunup src/index.ts -t browser
 ```
 
 ```ts [bunup.config.ts]
@@ -585,7 +703,9 @@ You can specify where Bunup should output the bundled files:
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --out-dir build
+bunup src/index.ts --outDir build
+# or using alias
+bunup src/index.ts -o build
 ```
 
 ```ts [bunup.config.ts]
@@ -606,7 +726,7 @@ By default, Bunup cleans the output directory before each build. You can disable
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --clean=false
+bunup src/index.ts --no-clean
 ```
 
 ```ts [bunup.config.ts]
@@ -686,4 +806,8 @@ Available command options:
 
 ::: info
 In watch mode, `onSuccess` runs after each successful rebuild.
+:::
+
+::: warning
+The function callback and advanced command options for `onSuccess` are only available in the configuration file, not via CLI flags.
 :::

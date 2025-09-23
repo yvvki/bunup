@@ -15,7 +15,7 @@ import { logger, logTime, setSilent } from '../logger'
 import type { BuildOptions } from '../options'
 import { ensureArray, getShortFilePath } from '../utils'
 import { watch } from '../watch'
-import { type CliOptions, parseCliOptions } from './options'
+import { type CliOnlyOptions, parseCliOptions } from './options'
 
 async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 	const cliOptions = parseCliOptions(args)
@@ -46,23 +46,23 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 		})
 	}
 
-	const startTime = performance.now()
-
 	logger.info('Build started')
+
+	const startTime = performance.now()
 
 	await Promise.all(
 		configsToProcess.flatMap(({ options, rootDir }) => {
 			const optionsArray = ensureArray(options)
 			return optionsArray.map(async (o) => {
-				const partialOptions: Partial<BuildOptions> = {
-					...o,
+				const userOptions: BuildOptions = {
 					...removeCliOnlyOptions(cliOptions),
+					...o,
 				}
 
-				if (partialOptions.watch) {
-					await watch(partialOptions, rootDir)
+				if (userOptions.watch) {
+					await watch(userOptions, rootDir)
 				} else {
-					await build(partialOptions, rootDir)
+					await build(userOptions, rootDir)
 				}
 			})
 		}),
@@ -81,12 +81,14 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 	}
 }
 
-function removeCliOnlyOptions(options: Partial<CliOptions>) {
-	return {
-		...options,
-		config: undefined,
-		filter: undefined,
+const CLI_ONLY_OPTIONS: (keyof CliOnlyOptions)[] = ['config', 'filter']
+
+function removeCliOnlyOptions(options: CliOnlyOptions & BuildOptions) {
+	const cleanedOptions = { ...options }
+	for (const option of CLI_ONLY_OPTIONS) {
+		delete cleanedOptions[option]
 	}
+	return cleanedOptions
 }
 
 main().catch((error) => handleErrorAndExit(error))

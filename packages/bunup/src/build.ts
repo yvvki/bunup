@@ -20,6 +20,7 @@ import {
 	getResolvedMinify,
 	getResolvedSourcemap,
 	getResolvedSplitting,
+	getResolvedTarget,
 } from './options'
 import { externalOptionPlugin } from './plugins/internal/external-option'
 import type { BuildOutput } from './plugins/types'
@@ -38,16 +39,15 @@ import {
 	getFilesFromGlobs,
 	getShortFilePath,
 	isJavascriptFile,
-	isTypeScriptFile,
 	replaceExtension,
 } from './utils'
 
 let ac: AbortController | null = null
 
 export async function build(
-	partialOptions: Partial<BuildOptions>,
+	userOptions: BuildOptions,
 	rootDir: string = process.cwd(),
-): Promise<void> {
+): Promise<BuildOutput> {
 	if (ac) {
 		ac.abort()
 	}
@@ -58,7 +58,7 @@ export async function build(
 		files: [],
 	}
 
-	const options = createBuildOptions(partialOptions)
+	const options = createBuildOptions(userOptions)
 
 	if (!options.entry || options.entry.length === 0 || !options.outDir) {
 		throw new BunupBuildError(
@@ -112,7 +112,7 @@ export async function build(
 			splitting: getResolvedSplitting(options.splitting, fmt),
 			define: getResolvedDefine(options.define, options.env),
 			minify: getResolvedMinify(options),
-			target: options.target,
+			target: getResolvedTarget(options.target),
 			sourcemap: getResolvedSourcemap(options.sourcemap),
 			loader: options.loader,
 			drop: options.drop,
@@ -188,7 +188,7 @@ export async function build(
 
 	await Promise.all(buildPromises)
 
-	if (options.dts ?? entrypoints.some(isTypeScriptFile)) {
+	if (options.dts) {
 		try {
 			const { entry, splitting, ...dtsOptions } =
 				typeof options.dts === 'object' ? options.dts : {}
@@ -260,4 +260,6 @@ export async function build(
 	if (options.onSuccess) {
 		await executeOnSuccess(options.onSuccess, options, ac.signal)
 	}
+
+	return buildOutput
 }
