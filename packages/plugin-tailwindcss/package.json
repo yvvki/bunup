@@ -1,6 +1,6 @@
 {
 	"name": "@bunup/plugin-tailwindcss",
-	"version": "0.13.0",
+	"version": "0.13.1",
 	"author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
 	"repository": {
 		"type": "git",
