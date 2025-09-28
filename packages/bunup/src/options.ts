@@ -423,7 +423,15 @@ export interface BuildOptions {
 }
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
-	entry: 'src/index.ts',
+	// It's safe to provide multiple entry points as default since we use Bun.glob, so it only returns the available files. No errors will be thrown if the entries are not found or can't be resolved. For these entries, users don't need to provide the entry.
+	entry: [
+		'src/index.ts',
+		'src/index.tsx',
+		'src/main.ts',
+		'src/main.tsx',
+		'index.ts',
+		'index.tsx',
+	],
 	format: 'esm',
 	outDir: 'dist',
 	target: 'node',

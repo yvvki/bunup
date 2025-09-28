@@ -6,6 +6,12 @@ Bunup provides a rich set of options to customize your build. Use the table of c
 
 Bunup supports multiple ways to define entry points. Entry points are the source files that Bunup will use as starting points for bundling.
 
+::: tip
+If your entry point is one of these common paths: `src/index.ts`, `src/index.tsx`, `src/main.ts`, `src/main.tsx`, `index.ts`, or `index.tsx`, you don't need to specify the entry point explicitly. Just run `bunx bunup` or omit the `entry` field from your config file.
+
+Throughout this documentation, you'll still see these paths used explicitly in examples for clarity and demonstration purposes.
+:::
+
 ### Single Entry Point
 
 The simplest way to define an entry point is to provide a single file path:
