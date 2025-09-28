@@ -2,6 +2,8 @@
 
 The official Bunup plugin for Tailwind CSS v4. No PostCSS setup. No extra config. It just works.
 
+You can also use Tailwind CSS to style components in your React component libraries, but the consumers don't have to install Tailwind CSS, it works everywhere.
+
 ## Quick Start
 
 Install the plugin:
@@ -45,7 +47,7 @@ export function Button(): React.ReactNode {
 Run the build:
 
 ```sh
-bun run build # bunup src/index.tsx
+bunx bunup src/index.tsx
 ```
 
 That is it. You will find the compiled CSS in your output directory as `index.css`:
@@ -62,7 +64,7 @@ You can use all Tailwind CSS (v4) features as usual. Bunup handles processing au
 
 Style your React component library with Tailwind without requiring consumers to install Tailwind. The plugin outputs scoped, tree‑shaken CSS that works anywhere.
 
-Scoping CSS classes is essential to prevent conflicts when your library's classes, such as `bg-red-500`, collide with a consumer's existing Tailwind setup if they are using Tailwind in their project. By implementing proper scoping, you can avoid unexpected style overrides and ensure your library's styling remains isolated and predictable.
+Scoping CSS classes is essential to prevent conflicts when your library's classes collide with a consumer's existing Tailwind setup if they are using Tailwind in their project. For example, if your library uses `bg-red-500` and the consumer also uses `bg-red-500`, the styles may conflict. By implementing proper scoping, you can avoid unexpected style overrides and ensure your library's styling remains isolated and predictable.
 
 Use Tailwind's [prefix](https://tailwindcss.com/docs/upgrade-guide#using-a-prefix) feature to scope your classes. In your entry CSS file, add a prefix with your project name. Example using yuku:
 

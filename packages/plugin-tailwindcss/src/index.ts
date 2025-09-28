@@ -131,11 +131,13 @@ function preprocessSource(source: string, preflight: boolean | undefined) {
 	const prefix = extractPrefix(source)
 	const removedTailwindImports = source.replace(TAILWIND_IMPORT_RE, '')
 
+	const importEnd = prefix ? ` prefix(${prefix});` : ';'
+
 	return `
 	@layer theme, base, components, utilities;
-	@import "tailwindcss/theme.css" layer(theme)${prefix ? ` prefix(${prefix});` : ';'};
-	${preflight ? `@import "tailwindcss/preflight.css" layer(base)${prefix ? ` prefix(${prefix});` : ';'};` : ''}
-	@import "tailwindcss/utilities.css" layer(utilities)${prefix ? ` prefix(${prefix});` : ';'};
+	@import "tailwindcss/theme.css" layer(theme)${importEnd};
+	${preflight ? `@import "tailwindcss/preflight.css" layer(base)${importEnd};` : ''}
+	@import "tailwindcss/utilities.css" layer(utilities)${importEnd};
 	@source not inline("{contents,filter,transform}");
 	${removedTailwindImports}
 `.trim()
