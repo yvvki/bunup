@@ -45,9 +45,9 @@ Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for 
 </table>
 </div>
 
-## Quick Start
+## Scaffold
 
-Quickly scaffold a new modern TypeScript or React library with Bunup in just 10 seconds.
+Quickly scaffold a new modern, ready-to-publish TypeScript or React component library, or a basic starter package with Bunup in just 10 seconds.
 
 ```sh
 bunx @bunup/cli@latest create
@@ -55,13 +55,7 @@ bunx @bunup/cli@latest create
 
 See the [Scaffold with Bunup](./docs/scaffold-with-bunup.md) page for more details.
 
-Or, initialize bunup in an existing project:
-
-```sh
-bunx @bunup/cli@latest init
-```
-
-## Getting Started
+## Quick Start
 
 Get started with Bunup in seconds - install, configure, and build your TypeScript projects with minimal setup.
 
@@ -176,6 +170,4 @@ bunup --exports --unused
 
 This command builds your entry files (like `src/index.ts`) to ESM format, generates TypeScript declarations, syncs your `package.json` exports, and reports unused dependencies, making your package publish-ready.
 
-Bunup also includes built-in plugins for copying files, Tailwind CSS, and more. 
-
-Check the documentation for additional features like CSS processing.
+Bunup also includes built-in plugins for copying files, Tailwind CSS, and more. Check the documentation for additional features like CSS processing.

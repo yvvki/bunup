@@ -1,6 +1,6 @@
 # Copy
 
-The copy plugin copies files and directories to your build output. It supports glob patterns, direct folder copying, and can copy to specific destinations or rename files and folders.
+The copy plugin copies files and directories to your build output. It supports glob patterns, direct folder copying, file transformation with filename changes, and can copy to specific destinations or rename files and folders.
 
 ## Basic Usage
 
@@ -15,12 +15,11 @@ export default defineConfig({
 
 This will copy the `README.md` file and all files in the `assets` directory to your build output directory.
 
-Use `copy(pattern)` to copy files or folders. Optionally, add `.to(destination)` to set the output name or location, and `.with(options)` for extra settings. By default, everything is copied to your build output directory.
+Use `copy(pattern)` to copy files or folders. Optionally, add `.to(destination)` to set the output name or location, `.with(options)` for extra settings, and `.transform(fn)` to modify files during copy. By default, everything is copied to your build output directory.
 
 ## Examples
 
 Below are some examples of how to use the copy plugin.
-
 
 ### Basic File Operations
 
@@ -98,9 +97,46 @@ export default defineConfig({
 	plugins: [
 		copy('README.md'),
 		copy('assets/**/*').to('static'),
-		copy('docs/**/*.md').to('documentation')
+		copy('docs/**/*.md').to('documentation'),
 	],
 });
+```
+
+## Transform Files
+
+Transform files on the fly during the copy operation using the `transform()` method. The transform function receives a context object with file content, paths, and build options.
+
+```ts
+// Simple transformation - minify JSON files
+copy('data/**/*.json')
+	.transform(({ content }) => {
+		// Return content only - keeps original filename
+		return JSON.stringify(JSON.parse(content.toString()))
+	})
+
+// Transform with filename change - TypeScript to JavaScript
+copy('scripts/**/*.ts')
+	.transform(async ({ content, path }) => {
+		const transpiler = new Bun.Transpiler({ loader: 'ts' })
+		
+		// Return object to change both content and filename
+		return {
+			content: transpiler.transformSync(content.toString()),
+			filename: basename(path).replace('.ts', '.js')
+		}
+	})
+
+// Access full context including build options
+copy('config/**/*')
+	.transform(({ content, path, destination, options }) => {
+		// options contains build configuration (outDir, minify, etc.)
+		// destination is where the file will be written
+		const processed = content.toString()
+			.replace('__BUILD_MODE__', options.watch ? 'development' : 'production')
+			.replace('__OUT_DIR__', options.outDir)
+		
+		return processed
+	})
 ```
 
 ## Options
@@ -112,16 +148,9 @@ The copy plugin supports additional options via the `with()` method to customize
 Whether to follow symbolic links when copying files. By default, symbolic links are not followed.
 
 ```ts [bunup.config.ts]
-import { defineConfig } from 'bunup';
-import { copy } from 'bunup/plugins';
-
-export default defineConfig({
-	plugins: [
-		copy('assets/**/*').with({
-			followSymlinks: true
-		})
-	],
-});
+copy('assets/**/*').with({
+	followSymlinks: true
+})
 ```
 
 ### `excludeDotfiles`
@@ -129,14 +158,43 @@ export default defineConfig({
 Whether to exclude dotfiles (files starting with a dot) from being copied. By default, dotfiles are included in the copy operation.
 
 ```ts [bunup.config.ts]
-import { defineConfig } from 'bunup';
-import { copy } from 'bunup/plugins';
+copy('assets/**/*').with({
+	excludeDotfiles: true
+})
+```
 
-export default defineConfig({
-	plugins: [
-		copy('assets/**/*').with({
-			excludeDotfiles: true
-		})
-	],
-});
+### `override`
+
+Whether to override existing files in the destination. By default, existing files are overwritten.
+
+```ts [bunup.config.ts]
+// Skip files that already exist in the destination
+copy('assets/**/*').with({
+	override: false
+})
+```
+
+### `watchMode`
+
+Controls the behavior of the copy plugin in watch mode. Available options:
+
+- `'changed'` (default): Only copy files that have been modified since the last build
+- `'always'`: Copy all files on every build, regardless of changes
+- `'skip'`: Skip copying entirely in watch mode
+
+```ts [bunup.config.ts]
+// Only copy changed files in watch mode (default)
+copy('assets/**/*').with({
+	watchMode: 'changed'
+})
+
+// Always copy all files, even in watch mode
+copy('config/**/*').with({
+	watchMode: 'always'
+})
+
+// Skip copying in watch mode (useful for large static assets)
+copy('videos/**/*').with({
+	watchMode: 'skip'
+})
 ```

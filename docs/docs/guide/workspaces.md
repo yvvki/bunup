@@ -2,9 +2,7 @@
 
 Effortlessly manage multiple packages in monorepos with Bunup's workspace support. Define and build multiple packages with a single configuration file and command.
 
-## Configuration Structure
-
-### Creating a Workspace Configuration
+## Creating a Workspace Configuration
 
 Use the `defineWorkspace` function to define your monorepo structure:
 
@@ -25,6 +23,8 @@ Each package in your workspace requires:
 | `name` | `string` | Unique identifier for the package |
 | `root` | `string` | Relative path to the package directory |
 | `config` | `BunupConfig \| BunupConfig[]` | Build configuration(s) for this package |
+
+The config property is optional and can be omitted if you want to use the defaults, for example ESM-only output, and the entry point of each package is one of the [default entry points](/docs/introduction#default-entry-points), like `src/index.ts`.
 
 ## Basic Usage
 
