@@ -20,7 +20,7 @@ import {
 	getResolvedTarget,
 	resolveBuildOptions,
 } from './options'
-import { shims } from './plugins'
+import { shims } from './plugins/built-in/shims'
 import { cssTypedModulesPlugin } from './plugins/internal/css-typed-modules'
 import { externalOptionPlugin } from './plugins/internal/external-option'
 import { useClient } from './plugins/internal/use-client'

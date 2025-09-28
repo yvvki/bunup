@@ -9,9 +9,7 @@ export default defineWorkspace(
 			config: {
 				target: 'bun',
 				entry: ['src/index.ts', 'src/plugins.ts', 'src/cli/index.ts'],
-				dts: {
-					splitting: true,
-				},
+				splitting: true,
 			},
 		},
 		{
@@ -28,6 +26,9 @@ export default defineWorkspace(
 		},
 	],
 	{
+		dts: {
+			splitting: true,
+		},
 		plugins: [exports(), unused()],
 	},
 )
