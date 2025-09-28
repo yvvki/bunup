@@ -1,12 +1,9 @@
 import type { GenerateDtsOptions } from '@bunup/dts'
 import type { BuildConfig, BunPlugin } from 'bun'
-import { cssTypedModulesPlugin } from './plugins/internal/css-typed-modules'
-import { report } from './plugins/internal/report'
-import { useClient } from './plugins/internal/use-client'
 import type { BunupPlugin } from './plugins/types'
 import type { MaybePromise, WithRequired } from './types'
 
-type Loader =
+export type Loader =
 	| 'js'
 	| 'jsx'
 	| 'ts'
@@ -73,6 +70,31 @@ export type OnSuccess =
 				killSignal?: NodeJS.Signals | number
 			}
 	  }
+
+type ReportOptions = {
+	/**
+	 * Enable gzip compression size calculation.
+	 *
+	 * Note: For huge output files, this may slow down the build process. In this case, consider disabling this option.
+	 *
+	 * @default true
+	 */
+	gzip?: boolean
+	/**
+	 * Enable brotli compression size calculation.
+	 *
+	 * Note: For huge output files, this may slow down the build process. In this case, consider disabling this option.
+	 *
+	 * @default false
+	 */
+	brotli?: boolean
+	/**
+	 * Maximum bundle size in bytes. Will warn if exceeded.
+	 *
+	 * @default undefined
+	 */
+	maxBundleSize?: number
+}
 
 export interface BuildOptions {
 	/**
@@ -344,6 +366,16 @@ export interface BuildOptions {
 	 */
 	env?: Env
 	/**
+	 * Whether to enable shims for Node.js globals and ESM/CJS interoperability.
+	 *
+	 * @default false
+	 */
+	shims?: boolean
+	/**
+	 * Configuration for the build report that shows file sizes and compression stats.
+	 */
+	report?: ReportOptions
+	/**
 	 * Ignore dead code elimination/tree-shaking annotations such as @__PURE__ and package.json
 	 * "sideEffects" fields. This should only be used as a temporary workaround for incorrect
 	 * annotations in libraries.
@@ -399,25 +431,15 @@ const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
 	clean: true,
 }
 
-export function createBuildOptions(
+export function resolveBuildOptions(
 	userOptions: Partial<BuildOptions>,
 ): BuildOptions {
-	const options = {
+	const resolved = {
 		...DEFAULT_OPTIONS,
 		...userOptions,
 	}
 
-	const typedModulesEnabled = userOptions.css?.typedModules !== false
-
-	return {
-		...options,
-		plugins: [
-			...(options.plugins ?? []),
-			...(typedModulesEnabled ? [cssTypedModulesPlugin()] : []),
-			useClient(),
-			report(),
-		],
-	}
+	return resolved
 }
 
 export function getResolvedMinify(options: BuildOptions): {

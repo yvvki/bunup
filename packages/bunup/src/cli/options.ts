@@ -197,7 +197,33 @@ const program = cli()
 			.describe('Packages that should be bundled even if listed in external')
 			.optional(),
 	)
-
+	.option(
+		'shims',
+		z
+			.boolean()
+			.describe('Enable shims for Node.js globals and ESM/CJS interoperability')
+			.optional(),
+	)
+	.option(
+		'report',
+		z
+			.object({
+				gzip: z
+					.boolean()
+					.describe('Enable gzip compression size calculation')
+					.default(true),
+				brotli: z
+					.boolean()
+					.describe('Enable brotli compression size calculation')
+					.optional(),
+				'max-bundle-size': z
+					.number()
+					.describe('Maximum bundle size in bytes. Will warn if exceeded')
+					.optional(),
+			})
+			.describe('Configuration for the build report')
+			.optional(),
+	)
 	.option(
 		'dts',
 		z
@@ -338,6 +364,7 @@ const program = cli()
 					]),
 			)
 			.describe('File extension to loader mapping')
+			.example("--loader.'.css'=text --loader.'.txt'=file")
 			.optional(),
 	)
 	.option(

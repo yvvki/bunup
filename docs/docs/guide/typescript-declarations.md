@@ -2,46 +2,11 @@
 
 Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library based on your output format, with advanced features like declaration splitting.
 
-## Isolated Declarations
+## Prerequisites
 
-Enable TypeScript 5.5's [`isolatedDeclarations`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations) for dramatically faster declaration generation and modern tooling compatibility.
+Enable `isolatedDeclarations` in your tsconfig:
 
-### What It Does
-
-Traditional TypeScript declaration generation analyzes your entire project dependency graph and infers types across files, which is slow and expensive. With `isolatedDeclarations`, each file can be processed independently and in parallel, reducing build times from seconds to milliseconds.
-
-### Why Enable Now
-
-- **50x faster builds**: Declaration generation becomes nearly instantaneous and efficient
-- **Modern tooling**: Essential for next-gen tools like Bun and other high-performance bundlers
-- **Better DX**: Consumers get predictable, reliable, and clean types that are exactly what you define, not TypeScript's inferences
-- **Future-proof**: Stay ahead of the curve with tooling that's becoming the new standard
-
-### How It Works
-
-Add explicit types only to your public exports and internal code remains unchanged.
-
-::: code-group
-```typescript [Before (TypeScript must infer types)]
-export function createUser(name: string) {
-  return { id: generateId(), name, role: 'user' };
-}
-```
-
-```typescript [After (Explicit public interface)]
-export function createUser(name: string): User {
-  return { id: generateId(), name, role: 'user' };
-}
-```
-:::
-
-Adding explicit types to your public exports is also a good practice - it won't add any overhead, but instead provides benefits like compatibility with future tooling. Doing this from the start keeps your codebase always ready, so you won't need to worry about when this becomes the standard.
-
-### Enable Now
-
-Add one line to your `tsconfig.json`:
-
-```json {4}
+```json [tsconfig.json] {4}
 {
   "compilerOptions": {
     "declaration": true,
@@ -50,69 +15,13 @@ Add one line to your `tsconfig.json`:
 }
 ```
 
-TypeScript will guide you through adding missing types on public exports.
+Bunup uses TypeScript's new isolated declarations feature to generate type declarations quickly and accurately.
+
+Learn more about the benefits and why you need to enable this [here](https://arshadyaseen.com/writing/isolated-declarations).
 
 ## Basic
 
-Bunup automatically generates TypeScript declaration files for entry points that contain exports. CLI entries and other files without exports are skipped.
-
-## Custom Entry Points
-
-For more control, you can specify custom entry points for declarations:
-
-::: code-group
-
-```sh [CLI]
-# Single entry
-bunup src/index.ts src/utils.ts --dts.entry src/index.ts
-
-# Multiple entries
-bunup src/index.ts src/utils.ts src/types.ts --dts.entry src/index.ts,src/types.ts
-```
-
-```typescript [bunup.config.ts]
-export default defineConfig({
-	entry: ['src/index.ts', 'src/utils.ts'],
-	dts: {
-		// Only generate declarations for index.ts
-		entry: ['src/index.ts'],
-	},
-});
-```
-
-:::
-
-### Using Glob Patterns
-
-Bunup supports glob patterns for both main entries and declaration file entries:
-
-::: code-group
-
-```sh [CLI]
-# Single glob pattern
-bunup src/index.ts --dts.entry "src/public/**/*.ts"
-
-# Multiple patterns (including exclusions)
-bunup src/index.ts --dts.entry "src/public/**/*.ts,!src/public/dev/**/*"
-```
-
-```typescript [bunup.config.ts]
-export default defineConfig({
-	dts: {
-		entry: [
-			'src/public/**/*.ts',
-			'!src/public/dev/**/*'
-		]
-	}
-});
-```
-
-:::
-
-You can use:
-- Simple patterns like `src/**/*.ts` to include files
-- Exclude patterns starting with `!` to filter out specific files
-- Both for main entries and declaration entries
+Bunup automatically generates TypeScript declaration files for all TypeScript entry points that require them. Files that do not contain exports, or for which declarations are unnecessary, are skipped.
 
 ## Declaration Splitting
 
@@ -178,7 +87,7 @@ export default defineConfig({
 
 :::
 
-When enabled, minification preserves public (exported) API names while minifying internal type names and removes documentation comments. This provides significant size reduction especially for large declaration files, making it valuable when bundle size is a priority and JSDoc comments aren't essential.
+Minifying TypeScript declarations is uncommon, but bunup supports it. When enabled, minification keeps public (exported) API names intact, shortens internal type names, and removes documentation comments. This can greatly reduce file size, which is useful if bundle size matters and you don't need JSDoc or readable type definitions for consumers.
 
 ### Example
 
@@ -200,6 +109,65 @@ export { fetchData, Response, DeepPartial };
 ```ts
 type e<T>={[P in keyof T]?:e<T[P]>};interface t<T>{data:T;error?:string;meta?:Record<string,unknown>;}declare function n<T>(url:string,options?:RequestInit): Promise<t<T>>;export{n as fetchData,t as Response,e as DeepPartial};
 ```
+
+
+## Custom Entry Points
+
+For more control, you can specify custom entry points for declarations:
+
+::: code-group
+
+```sh [CLI]
+# Single entry
+bunup src/index.ts src/utils.ts --dts.entry src/index.ts
+
+# Multiple entries
+bunup src/index.ts src/utils.ts src/types.ts --dts.entry src/index.ts,src/types.ts
+```
+
+```typescript [bunup.config.ts]
+export default defineConfig({
+	entry: ['src/index.ts', 'src/utils.ts'],
+	dts: {
+		// Only generate declarations for index.ts
+		entry: ['src/index.ts'],
+	},
+});
+```
+
+:::
+
+### Using Glob Patterns
+
+Bunup supports glob patterns for both main entries and declaration file entries:
+
+::: code-group
+
+```sh [CLI]
+# Single glob pattern
+bunup src/index.ts --dts.entry "src/public/**/*.ts"
+
+# Multiple patterns (including exclusions)
+bunup src/index.ts --dts.entry "src/public/**/*.ts,!src/public/dev/**/*"
+```
+
+```typescript [bunup.config.ts]
+export default defineConfig({
+	dts: {
+		entry: [
+			'src/public/**/*.ts',
+			'!src/public/dev/**/*'
+		]
+	}
+});
+```
+
+:::
+
+You can use:
+- Simple patterns like `src/**/*.ts` to include files
+- Exclude patterns starting with `!` to filter out specific files
+- Both for main entries and declaration entries
 
 
 ## TypeScript Configuration

@@ -1,7 +1,6 @@
 import path from 'node:path'
 import { generateDts, logIsolatedDeclarationErrors } from '@bunup/dts'
 import type { BunPlugin } from 'bun'
-import pc from 'picocolors'
 import {
 	BunupBuildError,
 	BunupDTSBuildError,
@@ -9,10 +8,8 @@ import {
 } from './errors'
 import { executeOnSuccess } from './helpers/on-success'
 import { loadPackageJson } from './loaders'
-import { logger, setSilent, silent } from './logger'
 import {
 	type BuildOptions,
-	createBuildOptions,
 	getDefaultChunkNaming,
 	getResolvedDefine,
 	getResolvedDtsSplitting,
@@ -21,8 +18,12 @@ import {
 	getResolvedSourcemap,
 	getResolvedSplitting,
 	getResolvedTarget,
+	resolveBuildOptions,
 } from './options'
+import { shims } from './plugins'
+import { cssTypedModulesPlugin } from './plugins/internal/css-typed-modules'
 import { externalOptionPlugin } from './plugins/internal/external-option'
+import { useClient } from './plugins/internal/use-client'
 import type { BuildOutput } from './plugins/types'
 import {
 	filterBunPlugins,
@@ -30,6 +31,8 @@ import {
 	runPluginBuildDoneHooks,
 	runPluginBuildStartHooks,
 } from './plugins/utils'
+import { logger } from './printer/logger'
+import { printBuildReport } from './printer/print-build-report'
 import {
 	cleanOutDir,
 	cleanPath,
@@ -58,7 +61,11 @@ export async function build(
 		files: [],
 	}
 
-	const options = createBuildOptions(userOptions)
+	const options = resolveBuildOptions(userOptions)
+
+	if (options.silent) {
+		logger.setSilent(options.silent)
+	}
 
 	if (!options.entry || options.entry.length === 0 || !options.outDir) {
 		throw new BunupBuildError(
@@ -70,8 +77,6 @@ export async function build(
 		cleanOutDir(rootDir, options.outDir)
 	}
 
-	setSilent(options.silent)
-
 	const packageJson = await loadPackageJson(rootDir)
 
 	if (packageJson.data && packageJson.path) {
@@ -82,15 +87,19 @@ export async function build(
 		})
 	}
 
-	const bunupPlugins = filterBunupPlugins(options.plugins)
+	const packageType = packageJson.data?.type as string | undefined
+
+	const bunupPlugins = [...filterBunupPlugins(options.plugins), useClient()]
 
 	await runPluginBuildStartHooks(bunupPlugins, options)
-
-	const packageType = packageJson.data?.type as string | undefined
 
 	const plugins: BunPlugin[] = [
 		externalOptionPlugin(options, packageJson.data),
 		...filterBunPlugins(options.plugins),
+		...(userOptions.css?.typedModules !== false
+			? [cssTypedModulesPlugin()]
+			: []),
+		...(userOptions.shims ? [shims()] : []),
 	]
 
 	const entrypoints = await getFilesFromGlobs(
@@ -108,7 +117,6 @@ export async function build(
 		const result = await Bun.build({
 			entrypoints: entrypoints.map((file) => `${rootDir}/${file}`),
 			format: fmt,
-			// @ts-expect-error - seems like BuildConfig type from bun don't have splitting property
 			splitting: getResolvedSplitting(options.splitting, fmt),
 			define: getResolvedDefine(options.define, options.env),
 			minify: getResolvedMinify(options),
@@ -161,10 +169,6 @@ export async function build(
 
 			await Bun.write(fullPath, content)
 
-			logger.success(`${pc.dim(`${options.outDir}/`)}${pathRelativeToOutdir}`, {
-				identifier: options.name,
-			})
-
 			if (!buildOutput.files.some((f) => f.fullPath === fullPath)) {
 				buildOutput.files.push({
 					fullPath,
@@ -203,7 +207,7 @@ export async function build(
 				...dtsOptions,
 			})
 
-			if (dtsResult.errors.length && !silent) {
+			if (dtsResult.errors.length && !logger.isSilent()) {
 				logIsolatedDeclarationErrors(dtsResult.errors)
 			}
 
@@ -220,15 +224,6 @@ export async function build(
 					const pathRelativeToRootDir = cleanPath(
 						`${options.outDir}/${pathRelativeToOutdir}`,
 					)
-
-					if (file.kind === 'entry-point') {
-						logger.success(
-							`${pc.dim(`${options.outDir}/`)}${pathRelativeToOutdir}`,
-							{
-								identifier: options.name,
-							},
-						)
-					}
 
 					const fullPath = path.join(rootDir, pathRelativeToRootDir)
 
@@ -259,6 +254,10 @@ export async function build(
 
 	if (options.onSuccess) {
 		await executeOnSuccess(options.onSuccess, options, ac.signal)
+	}
+
+	if (!options.watch && !logger.isSilent()) {
+		await printBuildReport(buildOutput, options)
 	}
 
 	return buildOutput

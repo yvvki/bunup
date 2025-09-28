@@ -52,7 +52,6 @@ export default defineConfig({
 			{
 				text: 'Built-in Plugins',
 				items: [
-					{ text: 'Shims', link: '/docs/builtin-plugins/shims' },
 					{ text: 'Exports', link: '/docs/builtin-plugins/exports' },
 					{ text: 'Copy', link: '/docs/builtin-plugins/copy' },
 					{
@@ -61,6 +60,10 @@ export default defineConfig({
 					},
 					{ text: 'Unused', link: '/docs/builtin-plugins/unused' },
 				],
+			},
+			{
+				text: 'Add-ons',
+				items: [{ text: 'Tailwind CSS', link: '/docs/addons/tailwindcss' }],
 			},
 			{
 				text: 'Advanced',
