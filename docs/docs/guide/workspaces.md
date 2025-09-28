@@ -44,9 +44,9 @@ export default defineWorkspace([
   },
   {
     name: "utils",
-    root: "packages/utils",
+    root: "packages/client",
     config: {
-      entry: "src/index.ts",
+      entry: ["src/index.ts", "src/cli.ts"]
       format: "esm",
     },
   },

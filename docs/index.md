@@ -114,7 +114,7 @@ Then run:
 bun run build
 ```
 
-## Entry Points
+## Default Entry Points
 
 If your entry point is one of these common paths, you don't need to specify it explicitly. Just run `bunx bunup` or omit the `entry` field from your config file.
 
@@ -128,6 +128,11 @@ If your entry point is one of these common paths, you don't need to specify it e
 
 For example, if you have `src/index.ts` and `src/cli.ts`, Bunup will build both automatically. If you don't need to bundle the CLI or have different entry points, you can explicitly specify them to override the defaults. Refer to the [Entry Points](/docs/guide/options#entry-points) section for more details.
 
+For example:
+
+```sh
+bunx bunup src/index.ts src/plugins.ts
+```
 
 ## Watch Mode
 
