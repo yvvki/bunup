@@ -8,7 +8,6 @@
 	},
 	"scripts": {
 		"prepublishOnly": "bun run build",
-		"postinstall": "cd packages/shared && bunx bunup@latest && cd ../dts && bunx bunup@latest",
 		"build": "bun packages/bunup/src/cli/index.ts",
 		"build:docs": "bun run --cwd docs build",
 		"dev": "bun packages/bunup/src/cli/index.ts --watch",
