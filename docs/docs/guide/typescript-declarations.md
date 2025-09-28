@@ -30,7 +30,7 @@ Declaration splitting optimizes TypeScript `.d.ts` files when multiple entry poi
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --dts.splitting
+bunup --dts.splitting
 ```
 
 ```typescript [bunup.config.ts]
@@ -74,7 +74,7 @@ You can minify the generated declaration files to reduce their size:
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --dts.minify
+bunup --dts.minify
 ```
 
 ```typescript [bunup.config.ts]
@@ -145,10 +145,10 @@ Bunup supports glob patterns for both main entries and declaration file entries:
 
 ```sh [CLI]
 # Single glob pattern
-bunup src/index.ts --dts.entry "src/public/**/*.ts"
+bunup --dts.entry "src/public/**/*.ts"
 
 # Multiple patterns (including exclusions)
-bunup src/index.ts --dts.entry "src/public/**/*.ts,!src/public/dev/**/*"
+bunup --dts.entry "src/public/**/*.ts,!src/public/dev/**/*"
 ```
 
 ```typescript [bunup.config.ts]
@@ -177,7 +177,7 @@ You can specify a custom tsconfig file for declaration generation:
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --preferred-tsconfig-path ./tsconfig.build.json
+bunup --preferred-tsconfig-path ./tsconfig.build.json
 ```
 
 ```ts [bunup.config.ts]
@@ -197,12 +197,11 @@ When generating declaration files, you might need to include type references fro
 
 ```sh [CLI]
 # Enable resolving all external types
-bunup src/index.ts --dts.resolve
+bunup --dts.resolve
 ```
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-      entry: 'src/index.ts',
       dts: {
             // Enable resolving all external types
             resolve: true,
@@ -220,15 +219,14 @@ You can also specify which packages to resolve types for:
 
 ```sh [CLI]
 # Single package
-bunup src/index.ts --dts.resolve react
+bunup --dts.resolve react
 
 # Multiple packages
-bunup src/index.ts --dts.resolve react,lodash,@types/node
+bunup --dts.resolve react,lodash,@types/node
 ```
 
 ```typescript [bunup.config.ts]
 export default defineConfig({
-	entry: 'src/index.ts',
 	dts: {
 		// Only resolve types from these specific packages
 		resolve: ['react', 'lodash', /^@types\//],
@@ -245,7 +243,7 @@ While Bunup automatically generates declaration files for TypeScript entries, yo
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --no-dts
+bunup --no-dts
 ```
 
 ```ts [bunup.config.ts]

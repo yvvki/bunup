@@ -9,7 +9,6 @@ import { defineConfig } from 'bunup';
 import { copy } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: 'src/index.ts',
 	plugins: [copy(['README.md', 'assets/**/*'])],
 });
 ```
@@ -96,7 +95,6 @@ You can add multiple copy plugins for different copy operations:
 
 ```ts
 export default defineConfig({
-	entry: 'src/index.ts',
 	plugins: [
 		copy('README.md'),
 		copy('assets/**/*').to('static'),
@@ -118,7 +116,6 @@ import { defineConfig } from 'bunup';
 import { copy } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: 'src/index.ts',
 	plugins: [
 		copy('assets/**/*').with({
 			followSymlinks: true
@@ -136,7 +133,6 @@ import { defineConfig } from 'bunup';
 import { copy } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: 'src/index.ts',
 	plugins: [
 		copy('assets/**/*').with({
 			excludeDotfiles: true

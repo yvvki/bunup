@@ -1,7 +1,15 @@
 import type { GenerateDtsOptions } from '@bunup/dts'
 import type { BuildConfig, BunPlugin } from 'bun'
+import { type ExportsOptions, exports } from './plugins/exports'
+import { type InjectStylesOptions, injectStyles } from './plugins/inject-styles'
+import { cssTypedModulesPlugin } from './plugins/internal/css-typed-modules'
+import { externalOptionPlugin } from './plugins/internal/external-option'
+import { useClient } from './plugins/internal/use-client'
+import { shims } from './plugins/shims'
 import type { BunupPlugin } from './plugins/types'
+import { type UnusedOptions, unused } from './plugins/unused'
 import type { MaybePromise, WithRequired } from './types'
+import { ensureObject } from './utils'
 
 export type Loader =
 	| 'js'
@@ -36,6 +44,15 @@ type CSSOptions = {
 	 * @see https://bunup.dev/docs/guide/css#css-modules-and-typescript
 	 */
 	typedModules?: boolean
+	/**
+	 * Inject CSS styles into the document head at runtime instead of bundling them to the build output.
+	 *
+	 * When `true`, enables CSS injection with default settings.
+	 * When an object is provided, allows customization of the injection behavior.
+	 *
+	 * @see https://bunup.dev/docs/extra-options/inject-styles
+	 */
+	inject?: boolean | InjectStylesOptions
 }
 
 export type OnSuccess =
@@ -366,16 +383,6 @@ export interface BuildOptions {
 	 */
 	env?: Env
 	/**
-	 * Whether to enable shims for Node.js globals and ESM/CJS interoperability.
-	 *
-	 * @default false
-	 */
-	shims?: boolean
-	/**
-	 * Configuration for the build report that shows file sizes and compression stats.
-	 */
-	report?: ReportOptions
-	/**
 	 * Ignore dead code elimination/tree-shaking annotations such as @__PURE__ and package.json
 	 * "sideEffects" fields. This should only be used as a temporary workaround for incorrect
 	 * annotations in libraries.
@@ -420,17 +427,49 @@ export interface BuildOptions {
 	 * Options for CSS handling in the build process.
 	 */
 	css?: CSSOptions
+
+	/**
+	 * Whether to enable shims for Node.js globals and ESM/CJS interoperability.
+	 *
+	 * @default false
+	 */
+	shims?: boolean
+	/**
+	 * Configuration for the build report that shows file sizes and compression stats.
+	 */
+	report?: ReportOptions
+	/**
+	 * Automatically generate the exports field in package.json based on build outputs.
+	 *
+	 * When `true`, enables automatic exports generation with default settings.
+	 * When an object is provided, allows customization of export generation behavior,
+	 * including custom exports, exclusions, and package.json inclusion options.
+	 *
+	 * @see https://bunup.dev/docs/extra-options/exports
+	 */
+	exports?: boolean | ExportsOptions
+	/**
+	 * Detect and report unused dependencies in your project.
+	 *
+	 * When `true`, enables unused dependency detection with default warning level.
+	 * When an object is provided, allows customization of the detection behavior,
+	 * including report level (warn/error) and dependencies to ignore.
+	 *
+	 * @see https://bunup.dev/docs/extra-options/unused
+	 */
+	unused?: boolean | UnusedOptions
 }
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
 	// It's safe to provide multiple entry points as default since we use Bun.glob, so it only returns the available files. No errors will be thrown if the entries are not found or can't be resolved. For these entries, users don't need to provide the entry.
 	entry: [
-		'src/index.ts',
-		'src/index.tsx',
-		'src/main.ts',
-		'src/main.tsx',
 		'index.ts',
 		'index.tsx',
+		'src/index.ts',
+		'src/index.tsx',
+		'cli.ts',
+		'src/cli.ts',
+		'src/cli/index.ts',
 	],
 	format: 'esm',
 	outDir: 'dist',
@@ -448,6 +487,44 @@ export function resolveBuildOptions(
 	}
 
 	return resolved
+}
+
+export function resolvePlugins(
+	options: BuildOptions,
+	packageJsonData: Record<string, unknown> | null,
+): (BunPlugin | BunupPlugin)[] {
+	const plugins: (BunPlugin | BunupPlugin)[] = []
+	// user provided plugins
+	if (options.plugins) {
+		plugins.push(...options.plugins)
+	}
+
+	// plugins based on user provided options
+	if (options.css?.typedModules !== false) {
+		plugins.push(cssTypedModulesPlugin())
+	}
+
+	if (options.css?.inject) {
+		plugins.push(injectStyles(ensureObject(options.css.inject)))
+	}
+
+	if (options.shims) {
+		plugins.push(shims())
+	}
+
+	if (options.exports) {
+		plugins.push(exports(ensureObject(options.exports)))
+	}
+
+	if (options.unused) {
+		plugins.push(unused(ensureObject(options.unused)))
+	}
+
+	// always enabled plugins
+	plugins.push(useClient())
+	plugins.push(externalOptionPlugin(options, packageJsonData))
+
+	return plugins
 }
 
 export function getResolvedMinify(options: BuildOptions): {

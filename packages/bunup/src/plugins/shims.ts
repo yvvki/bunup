@@ -1,5 +1,5 @@
 import type { BunPlugin } from 'bun'
-import { JS_TS_RE } from '../../constants/re'
+import { JS_TS_RE } from '../constants/re'
 
 /**
  * A plugin that provides shims for Node.js globals and ESM/CJS interoperability.

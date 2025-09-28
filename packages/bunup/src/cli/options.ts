@@ -19,29 +19,26 @@ const program = cli()
 		ignoreOptionDefaultValue: true,
 	})
 	.example([
+		pc.gray(`${pc.blue('bunup')}                            # Basic build`),
 		pc.gray(
-			`${pc.blue('bunup src/index.ts')}                            # Basic build`,
+			`${pc.blue('bunup src/index.ts')}               # Single entry file`,
 		),
 		pc.gray(
 			`${pc.blue('bunup src/**/*.ts')}                             # Glob pattern for multiple files`,
 		),
+		pc.gray(`${pc.blue('bunup --watch')}                    # Watch mode`),
 		pc.gray(
-			`${pc.blue('bunup src/index.ts --watch')}                    # Watch mode`,
+			`${pc.blue('bunup --format cjs,esm')}           # Multiple formats`,
+		),
+		pc.gray(`${pc.blue('bunup --target bun')}               # Bun target`),
+		pc.gray(
+			`${pc.blue('bunup src/cli.ts')}                 # Multiple entries`,
 		),
 		pc.gray(
-			`${pc.blue('bunup src/index.ts --format cjs,esm')}           # Multiple formats`,
+			`${pc.blue('bunup --dts.splitting')}            # Declaration splitting`,
 		),
 		pc.gray(
-			`${pc.blue('bunup src/index.ts --target bun')}               # Bun target`,
-		),
-		pc.gray(
-			`${pc.blue('bunup src/index.ts src/cli.ts')}                 # Multiple entries`,
-		),
-		pc.gray(
-			`${pc.blue('bunup src/index.ts --dts.splitting')}            # Declaration splitting`,
-		),
-		pc.gray(
-			`${pc.blue('bunup src/index.ts --no-clean')}                 # Disable cleaning output directory before build`,
+			`${pc.blue('bunup --no-clean')}                 # Disable cleaning output directory before build`,
 		),
 	])
 
@@ -397,6 +394,56 @@ const program = cli()
 	)
 
 	.option(
+		'exports',
+		z
+			.union(
+				z.boolean(),
+				z.object({
+					exclude: z
+						.array(z.string())
+						.describe('Entry points to exclude from exports field')
+						.optional(),
+					'exclude-css': z
+						.boolean()
+						.describe('Whether to exclude CSS files from exports field')
+						.optional(),
+					'include-package-json': z
+						.boolean()
+						.describe('Whether to include "./package.json" in exports field')
+						.default(true),
+					all: z
+						.boolean()
+						.describe('Whether to add wildcard export for deep imports')
+						.optional(),
+				}),
+			)
+			.describe('Configure automatic package.json exports generation')
+			.optional(),
+	)
+	.option(
+		'unused',
+		z
+			.union(
+				z.boolean(),
+				z.object({
+					level: z
+						.string()
+						.choices(['warn', 'error'])
+						.describe('The level of reporting for unused dependencies')
+						.default('warn'),
+					ignore: z
+						.array(z.string())
+						.describe(
+							'Dependencies to ignore when checking for unused dependencies',
+						)
+						.optional(),
+				}),
+			)
+			.describe('Detect and report unused dependencies')
+			.optional(),
+	)
+
+	.option(
 		'css',
 		z
 			.object({
@@ -404,6 +451,18 @@ const program = cli()
 					.boolean()
 					.describe('Generate TypeScript definitions for CSS modules')
 					.default(true),
+				inject: z
+					.union(
+						z.boolean(),
+						z.object({
+							minify: z
+								.boolean()
+								.describe('Whether to minify the styles being injected')
+								.optional(),
+						}),
+					)
+					.describe('Inject CSS styles into document head at runtime')
+					.optional(),
 			})
 			.optional(),
 	)

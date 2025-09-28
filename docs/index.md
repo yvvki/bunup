@@ -1,10 +1,10 @@
 # Introduction
 
-Bunup is the ⚡️ **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
+Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
 
 ## Performance
 
-**Bunup** delivers instant builds by design. With Bun's native speed, builds and rebuilds are extremely quick, even in monorepos. See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
+**Bunup** delivers instant builds by design. With Bun's native speed, builds and rebuilds are extremely quick, even in monorepos, making you feel more productive and providing a more enjoyable development experience. See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
 
 <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;" aria-hidden="false">
 <table>
@@ -78,10 +78,16 @@ export function greet(name: string): string {
 Bundle it with bunup:
 
 ```sh
-bunx bunup src/index.ts
+bunx bunup
 ```
 
 That's it! This creates bundled output in the `dist` directory in ESM format (the default), plus TypeScript declaration files (`.d.ts`), since the entry point is a TypeScript file and has exports.
+
+Or if you want to build for multiple formats like ESM and CJS, use the `--format` option:
+
+```sh
+bunx bunup --format esm,cjs
+```
 
 ### Using with package.json
 
@@ -97,7 +103,7 @@ Add a build script to your `package.json`:
 {
 	"name": "my-package",
 	"scripts": {
-		"build": "bunup src/index.ts"
+		"build": "bunup"
 	}
 }
 ```
@@ -108,60 +114,27 @@ Then run:
 bun run build
 ```
 
-## Configuration
+## Entry Points
 
-While most build options can be set directly via the CLI, you'll want to use a configuration file if you need to add plugins or perform advanced tasks, such as running a custom operation after a successful build.
+If your entry point is one of these common paths, you don't need to specify it explicitly. Just run `bunx bunup` or omit the `entry` field from your config file.
 
-To do this, create a `bunup.config.ts` file in your project root.
+- `index.ts`
+- `index.tsx`
+- `src/index.ts`
+- `src/index.tsx`
+- `cli.ts`
+- `src/cli.ts`
+- `src/cli/index.ts`
 
-For example, you can use the [exports](/docs/plugins/exports) plugin to automatically keep your `package.json` exports in sync on every build, eliminating the need for manual export management.
+For example, if you have `src/index.ts` and `src/cli.ts`, Bunup will build both automatically. If you don't need to bundle the CLI or have different entry points, you can explicitly specify them to override the defaults. Refer to the [Entry Points](/docs/guide/options#entry-points) section for more details.
 
-```typescript [bunup.config.ts]
-import { defineConfig } from 'bunup';
-import { exports } from 'bunup/plugins';
-
-export default defineConfig({
-	entry: 'src/index.ts',
-	plugins: [exports()],
-});
-```
-
-You can also export an array of configurations:
-
-```typescript [bunup.config.ts]
-export default defineConfig([
-	{
-		name: 'node',
-		entry: 'src/index.ts',
-		format: 'esm',
-		target: 'node',
-	},
-	{
-		name: 'browser',
-		entry: 'src/index.ts',
-		format: ['esm', 'iife'],
-		target: 'browser',
-		outDir: "dist/browser",
-	},
-]);
-```
-
-### Custom Configuration Path
-
-If you need to use a configuration file with a non-standard name or location, you can specify its path using the `--config` CLI option:
-
-```sh
-bunup --config ./configs/custom.bunup.config.ts
-# or using alias
-bunup -c ./configs/custom.bunup.config.ts
-```
 
 ## Watch Mode
 
 Bunup can watch your files for changes and rebuild automatically:
 
 ```sh
-bunup src/index.ts --watch
+bunx bunup --watch
 ```
 
 Or in package.json:
@@ -170,8 +143,8 @@ Or in package.json:
 {
 	"name": "my-package",
 	"scripts": {
-		"build": "bunup src/index.ts",
-		"dev": "bunup src/index.ts --watch"
+		"build": "bunup",
+		"dev": "bunup --watch"
 	}
 }
 ```
@@ -181,3 +154,23 @@ Then run:
 ```sh
 bun run dev
 ```
+
+## Next Steps
+
+This introduction covers the basic usage of Bunup. For additional functionality, explore:
+
+- **[Options](/docs/guide/options)** - Configuration options and CLI flags
+- **[Workspaces](/docs/guide/workspaces)** - Monorepo support with single-command builds
+- **[Extra Options](/docs/extra-options/exports)** - Quality-of-life improvements
+
+Basically, you only need this to start and publish a fully-ready package:
+
+```sh
+bunup --exports --unused
+```
+
+This command builds your entry files (like `src/index.ts`) to ESM format, generates TypeScript declarations, syncs your `package.json` exports, and reports unused dependencies, making your package publish-ready.
+
+Bunup also includes built-in plugins for copying files, Tailwind CSS, and more. 
+
+Check the documentation for additional features like CSS processing.

@@ -32,6 +32,13 @@
   [36m -t, --target                   [39m  [2m<bun|node|browser>[22m               Target environment for the bundle [2m(default: "node")[22m
   [36m     --external                 [39m  [2m<val,...>[22m                        External packages that should not be bundled
   [36m     --no-external              [39m  [2m<val,...>[22m                        Packages that should be bundled even if listed in external
+  [36m     --shims                    [39m[2m[22m                                   Enable shims for Node.js globals and ESM/CJS interoperability
+  [36m     --no-shims                 [39m[2m[22m                                   Explicitly disable shims
+  [36m     --report.gzip              [39m[2m[22m                                   Enable gzip compression size calculation [2m(default: true)[22m
+  [36m     --no-report.gzip           [39m[2m[22m                                   Explicitly disable report gzip
+  [36m     --report.brotli            [39m[2m[22m                                   Enable brotli compression size calculation
+  [36m     --no-report.brotli         [39m[2m[22m                                   Explicitly disable report brotli
+  [36m     --report.max-bundle-size   [39m  [2m<n>[22m                              Maximum bundle size in bytes. Will warn if exceeded
   [36m     --dts.entry                [39m  [2m<val>[22m                            Single entrypoint for declaration file generation
   [36m     --dts.entry                [39m  [2m<val,...>[22m                        Multiple entrypoints for declaration file generation
   [36m     --dts.resolve              [39m[2m[22m                                   Resolve types from dependencies
@@ -54,7 +61,7 @@
   [36m     --banner                   [39m  [2m<val>[22m                            Banner text added to the top of bundle files
   [36m     --footer                   [39m  [2m<val>[22m                            Footer text added to the bottom of bundle files
   [36m     --drop                     [39m  [2m<val,...>[22m                        Remove function calls from bundle [2mExample: --drop console,debugger[22m
-  [36m     --loader.<key>             [39m  [2m<js|jsx|ts|tsx|...>[22m              File extension to loader mapping
+  [36m     --loader.<key>             [39m  [2m<js|jsx|ts|tsx|...>[22m              File extension to loader mapping [2mExample: --loader.'.css'=text --loader.'.txt'=file[22m
   [36m     --public-path              [39m  [2m<val>[22m                            Public path prefix for assets and chunk files [2mExample: https://cdn.example.com/[22m
   [36m     --ignore-dce-annotations   [39m[2m[22m                                   Ignore dead code elimination annotations (@__PURE__, sideEffects)
   [36m     --no-ignore-dce-annotations[39m[2m[22m                                   Explicitly disable ignore dce annotations
@@ -66,19 +73,21 @@
   [36m-h, --help                      [39m[2m[22m                                   [2mDisplay this menu and exit[22m
 
 [1mExamples:[22m
-  [90m[34mbunup src/index.ts[90m                            # Basic build[39m
+  [90m[34mbunup[90m                            # Basic build[39m
+
+  [90m[34mbunup src/index.ts[90m               # Single entry file[39m
 
   [90m[34mbunup src/**/*.ts[90m                             # Glob pattern for multiple files[39m
 
-  [90m[34mbunup src/index.ts --watch[90m                    # Watch mode[39m
+  [90m[34mbunup --watch[90m                    # Watch mode[39m
 
-  [90m[34mbunup src/index.ts --format cjs,esm[90m           # Multiple formats[39m
+  [90m[34mbunup --format cjs,esm[90m           # Multiple formats[39m
 
-  [90m[34mbunup src/index.ts --target bun[90m               # Bun target[39m
+  [90m[34mbunup --target bun[90m               # Bun target[39m
 
-  [90m[34mbunup src/index.ts src/cli.ts[90m                 # Multiple entries[39m
+  [90m[34mbunup src/cli.ts[90m                 # Multiple entries[39m
 
-  [90m[34mbunup src/index.ts --dts.splitting[90m            # Declaration splitting[39m
+  [90m[34mbunup --dts.splitting[90m            # Declaration splitting[39m
 
-  [90m[34mbunup src/index.ts --no-clean[90m                 # Disable cleaning output directory before build[39m
+  [90m[34mbunup --no-clean[90m                 # Disable cleaning output directory before build[39m
 

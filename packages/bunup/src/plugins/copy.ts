@@ -1,7 +1,7 @@
 import { basename, extname, join } from 'node:path'
-import { logger } from '../../printer/logger'
-import { ensureArray, isGlobPattern } from '../../utils'
-import type { BunupPlugin, BunupPluginHooks } from '../types'
+import { logger } from '../printer/logger'
+import { ensureArray, isGlobPattern } from '../utils'
+import type { BunupPlugin, BunupPluginHooks } from './types'
 
 type CopyOptions = {
 	/** Whether to follow symbolic links when copying files. */

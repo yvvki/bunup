@@ -1,5 +1,3 @@
-import './styles.css'
-
 export function Button(): React.ReactNode {
 	return (
 		<button

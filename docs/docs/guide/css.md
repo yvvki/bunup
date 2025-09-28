@@ -151,7 +151,7 @@ import { Button } from 'your-package';
 ```
 
 ::: tip
-Use the [inject styles plugin](/docs/plugins/inject-styles) to bundle CSS directly into JavaScript so users do not need a separate CSS import.
+Use the [inject styles plugin](/docs/extra-options/inject-styles) to bundle CSS directly into JavaScript so users do not need a separate CSS import.
 :::
 
 ## Browser Compatibility

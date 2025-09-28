@@ -1,5 +1,4 @@
 import { defineWorkspace } from './packages/bunup/src'
-import { exports, unused } from './packages/bunup/src/plugins'
 
 export default defineWorkspace(
 	[
@@ -29,6 +28,7 @@ export default defineWorkspace(
 		dts: {
 			splitting: true,
 		},
-		plugins: [exports(), unused()],
+		exports: true,
+		unused: true,
 	},
 )

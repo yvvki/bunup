@@ -2,11 +2,11 @@ import path from 'node:path'
 import { getDefaultCssBrowserTargets } from '@bunup/shared'
 import type { BunPlugin } from 'bun'
 import { transform } from 'lightningcss'
-import { CSS_RE } from '../../constants/re'
-import { logger } from '../../printer/logger'
-import type { MaybePromise } from '../../types'
+import { CSS_RE } from '../constants/re'
+import { logger } from '../printer/logger'
+import type { MaybePromise } from '../types'
 
-type InjectStylesPluginOptions = {
+export type InjectStylesOptions = {
 	/**
 	 * Custom function to inject CSS into the document head.
 	 *
@@ -46,9 +46,9 @@ type InjectStylesPluginOptions = {
 /**
  * A plugin that injects styles into the document head at runtime instead of bundling them to the build output.
  *
- * @see https://bunup.dev/docs/builtin-plugins/inject-styles
+ * @see https://bunup.dev/docs/extra-options/inject-styles
  */
-export function injectStyles(options?: InjectStylesPluginOptions): BunPlugin {
+export function injectStyles(options?: InjectStylesOptions): BunPlugin {
 	const { inject, minify = true } = options ?? {}
 
 	return {

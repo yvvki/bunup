@@ -1,22 +1,28 @@
 # Exports
 
-This plugin automatically generates and updates the `exports` field in your package.json file after each build.
+Bunup automatically generates and updates the `exports` field in your package.json file after each build.
 
 Bunup handles mapping all entry points to their corresponding output files, including ESM/CJS formats and type declarations. The exports field stays perfectly in sync with your build configuration always - no manual updates needed when you make any change to config.
 
-## Quick Start
+## Usage
 
-Add the plugin to your Bunup configuration:
+Enable exports generation in your Bunup configuration:
+
+::: code-group
+
+```sh [CLI]
+bunup --exports
+```
 
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
-import { exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: 'src/index.ts',
-	plugins: [exports()],
+	exports: true,
 });
 ```
+
+:::
 
 This will automatically update your package.json with the correct exports field each time you build. For example:
 
@@ -54,17 +60,13 @@ The `customExports` option allows you to specify additional export fields that w
 
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
-import { exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: 'src/index.ts',
-	plugins: [
-		exports({
-			customExports: (ctx) => ({
-				'./package.json': './package.json',
-			})
+	exports: {
+		customExports: (ctx) => ({
+			'./package.json': './package.json',
 		})
-	],
+	},
 });
 ```
 
@@ -72,53 +74,46 @@ export default defineConfig({
 
 The `exclude` option allows you to prevent specific entry points from being included in the exports field. You can provide either an array of glob patterns or exact entry point names, or a function that returns such an array.
 
+::: code-group
+
+```sh [CLI]
+# Single exclusion
+bunup --exports.exclude=src/utils.ts
+
+# Multiple exclusions  
+bunup --exports.exclude=src/utils.ts,src/cli.ts
+
+# Using glob patterns
+bunup --exports.exclude="src/cli/*"
+```
+
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
-import { exports } from 'bunup/plugins';
 
 export default defineConfig({
 	entry: ['src/index.ts', 'src/cli.ts', 'src/utils.ts'],
-	plugins: [
-		exports({
-			exclude: ['src/utils.ts']
-		})
-	],
+	exports: {
+		exclude: ['src/utils.ts']
+	},
 });
 ```
 
-You can also use glob patterns:
+:::
+
+For more dynamic control, you can use a function (config only):
 
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
-import { exports } from 'bunup/plugins';
-
-export default defineConfig({
-	entry: ['src/index.ts', 'src/cli/*.ts', 'src/plugins.ts'],
-	plugins: [
-		exports({
-			exclude: ['src/cli/*']
-		})
-	],
-});
-```
-
-For more dynamic control, you can use a function:
-
-```ts [bunup.config.ts]
-import { defineConfig } from 'bunup';
-import { exports } from 'bunup/plugins';
 
 export default defineConfig({
 	entry: ['src/index.ts', 'src/cli.ts', 'src/utils.ts'],
-	plugins: [
-		exports({
-			exclude: (ctx) => {
-				// Access build context information
-				const { options, output, meta } = ctx;
-				return ['src/utils.ts'];
-			}
-		})
-	],
+	exports: {
+		exclude: (ctx) => {
+			// Access build context information
+			const { options, output, meta } = ctx;
+			return ['src/utils.ts'];
+		}
+	},
 });
 ```
 
@@ -128,23 +123,27 @@ When you use CSS files and import them in your JavaScript files, Bun will bundle
 
 The `excludeCss` option allows you to prevent CSS files from being included in the exports field if you prefer to handle CSS distribution manually or don't want to expose CSS files as part of your package's public API.
 
+::: code-group
+
+```sh [CLI]
+bunup --exports.exclude-css
+```
+
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
-import { exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: 'src/index.ts',
-	plugins: [
-		exports({
-			excludeCss: true
-		})
-	],
+	exports: {
+		excludeCss: true
+	},
 });
 ```
 
+:::
+
 ### `includePackageJson`
 
-By default, the exports plugin automatically adds `"./package.json": "./package.json"` to your package's exports field. This export is useful for:
+By default, exports generation automatically adds `"./package.json": "./package.json"` to your package's exports field. This export is useful for:
 
 - **Package introspection**: Allowing consumers to access your package's metadata programmatically
 - **Tooling compatibility**: Many development tools and package managers expect to be able to import package.json
@@ -152,19 +151,23 @@ By default, the exports plugin automatically adds `"./package.json": "./package.
 
 The `includePackageJson` option allows you to control this behavior:
 
+::: code-group
+
+```sh [CLI]
+bunup --no-exports.include-package-json
+```
+
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
-import { exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: 'src/index.ts',
-	plugins: [
-		exports({
-			includePackageJson: false // Disable package.json export
-		})
-	],
+	exports: {
+		includePackageJson: false // Disable package.json export
+	},
 });
 ```
+
+:::
 
 When enabled (default), your exports field will include:
 
@@ -186,19 +189,23 @@ The `all` option controls how open your package exports are. This affects what f
 
 When `all: true`, a wildcard subpath export is added that allows importing any file from your package:
 
+::: code-group
+
+```sh [CLI]
+bunup --exports.all
+```
+
 ```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
-import { exports } from 'bunup/plugins';
 
 export default defineConfig({
-	entry: 'src/index.ts',
-	plugins: [
-		exports({
-			all: true
-		})
-	],
+	exports: {
+		all: true
+	},
 });
 ```
+
+:::
 
 This generates:
 

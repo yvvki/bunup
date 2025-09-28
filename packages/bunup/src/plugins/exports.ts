@@ -1,8 +1,8 @@
 import path from 'node:path'
-import { CSS_RE, JS_DTS_RE } from '../../constants/re'
-import { logger } from '../../printer/logger'
-import { cleanPath, detectFileFormatting } from '../../utils'
-import type { BuildContext, BuildOutputFile, BunupPlugin } from '../types'
+import { CSS_RE, JS_DTS_RE } from '../constants/re'
+import { logger } from '../printer/logger'
+import { cleanPath, detectFileFormatting } from '../utils'
+import type { BuildContext, BuildOutputFile, BunupPlugin } from './types'
 
 type ExportField = 'require' | 'import' | 'types'
 type EntryPoint = 'main' | 'module' | 'types'
@@ -19,17 +19,17 @@ type CustomExports = Record<
 
 type Exclude = ((ctx: BuildContext) => string[] | undefined) | string[]
 
-interface ExportsPluginOptions {
+export interface ExportsOptions {
 	/**
 	 * Additional export fields to preserve alongside automatically generated exports
 	 *
-	 * @see https://bunup.dev/docs/builtin-plugins/exports#customexports
+	 * @see https://bunup.dev/docs/extra-options/exports#customexports
 	 */
 	customExports?: (ctx: BuildContext) => CustomExports | undefined
 	/**
 	 * Entry points to exclude from the exports field
 	 *
-	 * @see https://bunup.dev/docs/builtin-plugins/exports#exclude
+	 * @see https://bunup.dev/docs/extra-options/exports#exclude
 	 */
 	exclude?: Exclude
 	/**
@@ -42,7 +42,7 @@ interface ExportsPluginOptions {
 	 * Whether to include "./package.json": "./package.json" in the exports field
 	 *
 	 * @default true
-	 * @see https://bunup.dev/docs/builtin-plugins/exports#includepackagejson
+	 * @see https://bunup.dev/docs/extra-options/exports#includepackagejson
 	 */
 	includePackageJson?: boolean
 	/**
@@ -52,7 +52,7 @@ interface ExportsPluginOptions {
 	 * When false (default), only explicit exports are accessible
 	 *
 	 * @default false
-	 * @see https://bunup.dev/docs/builtin-plugins/exports#all
+	 * @see https://bunup.dev/docs/extra-options/exports#all
 	 */
 	all?: boolean
 }
@@ -65,9 +65,9 @@ interface FileEntry {
 /**
  * A plugin that generates the exports field in the package.json file automatically.
  *
- * @see https://bunup.dev/docs/builtin-plugins/exports
+ * @see https://bunup.dev/docs/extra-options/exports
  */
-export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
+export function exports(options: ExportsOptions = {}): BunupPlugin {
 	return {
 		name: 'exports',
 		hooks: {
@@ -80,7 +80,7 @@ export function exports(options: ExportsPluginOptions = {}): BunupPlugin {
 
 async function processPackageJsonExports(
 	ctx: BuildContext,
-	options: ExportsPluginOptions,
+	options: ExportsOptions,
 ): Promise<void> {
 	const { output, options: buildOptions, meta } = ctx
 
@@ -339,7 +339,7 @@ function createUpdatedFilesArray(
 
 function mergeCustomExportsWithGenerated(
 	baseExports: ExportsField,
-	customExportsProvider: ExportsPluginOptions['customExports'],
+	customExportsProvider: ExportsOptions['customExports'],
 	ctx: BuildContext,
 ): CustomExports {
 	const mergedExports: CustomExports = { ...baseExports }

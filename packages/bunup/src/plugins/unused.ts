@@ -1,9 +1,9 @@
 import pc from 'picocolors'
-import { logger } from '../../printer/logger'
-import { formatListWithAnd } from '../../utils'
-import type { BunupPlugin } from '../types'
+import { logger } from '../printer/logger'
+import { formatListWithAnd } from '../utils'
+import type { BunupPlugin } from './types'
 
-interface UnusedOptions {
+export interface UnusedOptions {
 	/**
 	 * The level of reporting for unused dependencies
 	 * @default 'warn'
@@ -19,7 +19,7 @@ interface UnusedOptions {
 /**
  * A plugin that detects and reports unused dependencies.
  *
- * @see https://bunup.dev/docs/builtin-plugins/unused
+ * @see https://bunup.dev/docs/extra-options/unused
  */
 export function unused(options: UnusedOptions = {}): BunupPlugin {
 	const { level = 'warn', ignore = [] } = options

@@ -47,7 +47,7 @@ export function Button(): React.ReactNode {
 Run the build:
 
 ```sh
-bunx bunup src/index.tsx
+bunx bunup
 ```
 
 That is it. You will find the compiled CSS in your output directory as `index.css`:
@@ -157,7 +157,7 @@ import { Button } from 'your-package';
 ```
 
 ::: tip
-Use the [inject option](/docs/addons/tailwindcss#inject) to bundle CSS directly into JavaScript so users do not need a separate CSS import.
+Use the [inject option](/docs/builtin-plugins/tailwindcss#inject) to bundle CSS directly into JavaScript so users do not need a separate CSS import.
 :::
 
 ## Options

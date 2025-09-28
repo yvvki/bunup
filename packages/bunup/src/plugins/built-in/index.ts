@@ -1,5 +1,0 @@
-export { copy } from './copy'
-export { exports } from './exports'
-export { injectStyles } from './inject-styles'
-export { shims } from './shims'
-export { unused } from './unused'

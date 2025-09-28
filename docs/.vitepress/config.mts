@@ -36,8 +36,9 @@ export default defineConfig({
 				text: 'Guide',
 				items: [
 					{ text: 'Introduction', link: '/' },
+					{ text: 'Configuration File', link: '/docs/guide/config-file' },
 					{
-						text: 'Options',
+						text: 'Build Options',
 						link: '/docs/guide/options',
 					},
 					{
@@ -50,20 +51,19 @@ export default defineConfig({
 				],
 			},
 			{
-				text: 'Built-in Plugins',
+				text: 'Extra Options',
 				items: [
-					{ text: 'Exports', link: '/docs/builtin-plugins/exports' },
-					{ text: 'Copy', link: '/docs/builtin-plugins/copy' },
-					{
-						text: 'Inject Styles',
-						link: '/docs/builtin-plugins/inject-styles',
-					},
-					{ text: 'Unused', link: '/docs/builtin-plugins/unused' },
+					{ text: 'Exports', link: '/docs/extra-options/exports' },
+					{ text: 'Inject Styles', link: '/docs/extra-options/inject-styles' },
+					{ text: 'Unused', link: '/docs/extra-options/unused' },
 				],
 			},
 			{
-				text: 'Add-ons',
-				items: [{ text: 'Tailwind CSS', link: '/docs/addons/tailwindcss' }],
+				text: 'Built-in Plugins',
+				items: [
+					{ text: 'Copy', link: '/docs/builtin-plugins/copy' },
+					{ text: 'Tailwind CSS', link: '/docs/builtin-plugins/tailwindcss' },
+				],
 			},
 			{
 				text: 'Advanced',

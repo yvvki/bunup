@@ -1,6 +1,5 @@
 import path from 'node:path'
 import { generateDts, logIsolatedDeclarationErrors } from '@bunup/dts'
-import type { BunPlugin } from 'bun'
 import {
 	BunupBuildError,
 	BunupDTSBuildError,
@@ -19,11 +18,8 @@ import {
 	getResolvedSplitting,
 	getResolvedTarget,
 	resolveBuildOptions,
+	resolvePlugins,
 } from './options'
-import { shims } from './plugins/built-in/shims'
-import { cssTypedModulesPlugin } from './plugins/internal/css-typed-modules'
-import { externalOptionPlugin } from './plugins/internal/external-option'
-import { useClient } from './plugins/internal/use-client'
 import type { BuildOutput } from './plugins/types'
 import {
 	filterBunPlugins,
@@ -89,19 +85,13 @@ export async function build(
 
 	const packageType = packageJson.data?.type as string | undefined
 
-	const bunupPlugins = [...filterBunupPlugins(options.plugins), useClient()]
+	const allPlugins = resolvePlugins(options, packageJson.data)
+
+	const bunupPlugins = filterBunupPlugins(allPlugins)
+
+	const bunPlugins = filterBunPlugins(allPlugins)
 
 	await runPluginBuildStartHooks(bunupPlugins, options)
-
-	const plugins: BunPlugin[] = [
-		externalOptionPlugin(options, packageJson.data),
-		...filterBunPlugins(options.plugins),
-		...(userOptions.css?.typedModules !== false
-			? [cssTypedModulesPlugin()]
-			: []),
-		...(userOptions.shims ? [shims()] : []),
-	]
-
 	const entrypoints = await getFilesFromGlobs(
 		ensureArray(options.entry),
 		rootDir,
@@ -135,7 +125,7 @@ export async function build(
 			ignoreDCEAnnotations: options.ignoreDCEAnnotations,
 			emitDCEAnnotations: options.emitDCEAnnotations,
 			throw: false,
-			plugins,
+			plugins: bunPlugins,
 		})
 
 		for (const log of result.logs) {
