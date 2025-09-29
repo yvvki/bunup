@@ -1,40 +1,53 @@
 # Configuration File
 
-While most build options can be set directly through the CLI, you'll need a configuration file for more advanced scenarios. This includes adding plugins, implementing custom functionality (like post-build operations or style injection functions), or setting up Bunup [workspaces](/docs/guide/workspaces). Since functions cannot be defined using strings in the CLI, a configuration file is essential for these use cases.
+Most build options can be set directly on the CLI, but a configuration file is recommended for **advanced scenarios**.  
 
-To get started, create a `bunup.config.ts` file in your project root:
+You’ll need it when you want to:
 
-```typescript [bunup.config.ts]
+- Add plugins  
+- Implement custom logic (e.g. post-build operations, style injection)  
+- Configure Bunup [workspaces](/docs/guide/workspaces)  
+- Manage multiple build targets  
+
+## Getting Started
+
+Create a `bunup.config.ts` file in your project root:
+
+```ts [bunup.config.ts]
 import { defineConfig } from 'bunup';
 
 export default defineConfig({
-	// ...your configuration options go here
+  // ...your configuration options go here
 });
 ```
 
+This is the simplest way to centralize and reuse your build configuration.
+
 ## Multiple Configurations
 
-You can also export an array of configurations for multiple build targets:
+Bunup supports exporting an **array of configurations**, useful when you want to build for multiple environments or formats in a single run:
 
-```typescript [bunup.config.ts]
+```ts [bunup.config.ts]
 export default defineConfig([
-	{
-		name: 'node',
-		format: 'esm',
-		target: 'node',
-	},
-	{
-		name: 'browser',
-		format: ['esm', 'iife'],
-		target: 'browser',
-		outDir: 'dist/browser',
-	},
+  {
+    name: 'node',
+    format: 'esm',
+    target: 'node',
+  },
+  {
+    name: 'browser',
+    format: ['esm', 'iife'],
+    target: 'browser',
+    outDir: 'dist/browser',
+  },
 ]);
 ```
 
+With this setup, Bunup will build both Node.js and browser bundles.
+
 ## Named Configurations
 
-You can give your build configurations names for better logging:
+Each build configuration can have a **name**. This improves log readability, especially when running multiple builds.
 
 ::: code-group
 
@@ -44,26 +57,27 @@ bunup --name my-library
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-    name: 'my-library',
+  name: 'my-library',
 });
 ```
 
 :::
 
-This is especially useful when you have multiple configurations:
+When working with multiple configurations, naming helps identify each build clearly:
 
-```typescript
+```ts [bunup.config.ts]
 export default defineConfig([
-	{
-		name: 'node-build',
-		format: 'esm',
-		target: 'node',
-		// ... other options
-	},
-	{
-		name: 'browser-build',
-		format: ['esm', 'iife'],
-		// ... other options
-	},
+  {
+    name: 'node-build',
+    format: 'esm',
+    target: 'node',
+    // ...other options
+  },
+  {
+    name: 'browser-build',
+    format: ['esm', 'iife'],
+    target: 'browser',
+    // ...other options
+  },
 ]);
 ```

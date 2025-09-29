@@ -13,7 +13,7 @@ const program = cli()
 	.name('bunup')
 	.version(version)
 	.description(
-		'A blazing-fast build tool for your TypeScript/React libraries — built on Bun',
+		'A blazing-fast build tool for your TypeScript/React libraries - built on Bun',
 	)
 	.with({
 		ignoreOptionDefaultValue: true,

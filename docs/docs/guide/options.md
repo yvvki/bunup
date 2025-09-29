@@ -1,4 +1,4 @@
-# Build Options
+# Options
 
 Bunup provides a rich set of options to customize your build. Use the table of contents on the right side or search to quickly navigate to the option you are looking for.
 

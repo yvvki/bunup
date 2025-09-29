@@ -140,14 +140,14 @@ export async function printBuildReport(
 		if (gzip) {
 			const gzipStr = file.gzipSize
 				? formatFileSize(file.gzipSize)
-				: pc.dim('—')
+				: pc.dim('-')
 			fileRow.push(pad(gzipStr, gzipWidth, 'right'))
 		}
 
 		if (brotli) {
 			const brotliStr = file.brotliSize
 				? formatFileSize(file.brotliSize)
-				: pc.dim('—')
+				: pc.dim('-')
 			fileRow.push(pad(brotliStr, brotliWidth, 'right'))
 		}
 
