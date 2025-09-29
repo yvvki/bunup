@@ -25,7 +25,8 @@ Instant builds by design. With Bun’s native speed, builds and rebuilds are ext
 
 Create a TypeScript file:
 
-```ts [src/index.ts]
+```ts
+// src/index.ts
 export function greet(name: string): string {
   return `Hello, ${name}!`;
 }
