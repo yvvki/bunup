@@ -45,7 +45,7 @@ Need CommonJS too?
 bunx bunup --format esm,cjs
 ```
 
-Publish-ready in one step — builds, generates types, syncs exports, and reports unused deps:
+Publish-ready in one step — builds, generates types, syncs package exports, and reports unused deps:
 
 ```sh
 bunx bunup --exports --unused
