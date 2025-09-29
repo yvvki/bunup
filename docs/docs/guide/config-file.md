@@ -5,9 +5,9 @@ Most build options can be set directly on the CLI, but a configuration file is r
 You’ll need it when you want to:
 
 - Add plugins  
-- Implement custom logic (e.g. post-build operations, style injection)  
+- Implement custom logic (e.g. complex post-build operations, custom style injection)  
 - Configure Bunup [workspaces](/docs/guide/workspaces)  
-- Manage multiple build targets  
+- Manage multiple build targets
 
 ## Getting Started
 
