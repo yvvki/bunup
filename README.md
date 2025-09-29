@@ -19,8 +19,6 @@
 
 </div>
 
-## ✨ Features
-
 - ⚡ **Instant Builds** — Lightning-fast builds & rebuilds by default  
 - 🎨 **CSS & Tailwind CSS Support** — Import CSS files directly, with built-in support for CSS Modules and Tailwind CSS for React component libraries
 - 📝 **TypeScript Declarations** — Clean, accurate `.d.ts` files generated automatically  
