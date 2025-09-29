@@ -22,6 +22,16 @@ Bunup helps you ship TypeScript/React libraries faster with great DX — built o
 
 Bunup delivers instant builds by design. With Bun's native speed, builds and rebuilds are extremely quick, even in monorepos. You get faster feedback loops, higher productivity, and a more enjoyable development experience.
 
+## Scaffold
+
+Quickly scaffold a new modern, ready-to-publish TypeScript or React component library, or a basic starter package with Bunup in just 10 seconds:
+
+```sh
+bunx @bunup/cli@latest create
+```
+
+See [Scaffold with Bunup](./docs/scaffold-with-bunup.md) for details.
+
 ## Features
 
 - ⚡ **Instant Builds** — Lightning-fast builds & rebuilds by default  
