@@ -4,8 +4,7 @@ Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for 
 
 ## Performance
 
-**Bunup** delivers instant builds by design. With Bun's native speed, builds and rebuilds are extremely quick, even in monorepos. You get faster feedback loops, higher productivity, and a more enjoyable development experience.  
-See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
+Instant builds by design. With Bun’s native speed, builds and rebuilds are extremely quick, even in monorepos. Faster feedback loops, higher productivity, calmer flow. See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
 
 <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;" aria-hidden="false">
 <table>
@@ -49,20 +48,15 @@ See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
 
 ## Scaffold
 
-Quickly scaffold a new modern, ready-to-publish TypeScript or React component library, or a basic starter package with Bunup in just 10 seconds:
+Spin up a modern, ready-to-publish TypeScript or React component library (or a basic starter) in ~10 seconds:
 
 ```sh
 bunx @bunup/cli@latest create
 ```
 
-See [Scaffold with Bunup](./docs/scaffold-with-bunup.md) for details.
-
+See more in [Scaffold with Bunup](./docs/scaffold-with-bunup.md).
 
 ## Quick Start
-
-Get started with Bunup in seconds - install and build your TypeScript projects immediately.
-
-### Basic Usage
 
 Create a TypeScript file:
 
@@ -72,20 +66,24 @@ export function greet(name: string): string {
 }
 ```
 
-Bundle it with bunup:
+Build it instantly:
 
 ```sh
 bunx bunup
 ```
 
-Done!
+Outputs to `dist/` with ESM and `.d.ts` types.
 
-This creates bundled output in the `dist` directory in ESM format (the default), plus TypeScript declaration files (`.d.ts`).
-
-Want multiple formats like ESM + CJS? Use the `--format` option:
+Need CommonJS too?
 
 ```sh
 bunx bunup --format esm,cjs
+```
+
+Publish-ready in one step — builds, generates types, syncs package exports, and reports unused deps:
+
+```sh
+bunx bunup --exports --unused
 ```
 
 ### Using with package.json
@@ -113,7 +111,6 @@ Then run:
 bun run build
 ```
 
-
 ## Default Entry Points
 
 Bunup automatically detects common entry points. If your project contains any of the following, you can just run `bunup` with **no config**:
@@ -134,7 +131,6 @@ bunx bunup src/index.ts src/plugins.ts
 
 See [Entry Points](/docs/guide/options#entry-points) for details.
 
-
 ## Watch Mode
 
 Bunup can watch files for changes and rebuild automatically:
@@ -145,7 +141,7 @@ bunx bunup --watch
 
 Or configure it in `package.json`:
 
-```json [package.json] 5
+```json [package.json] {5}
 {
   "name": "my-package",
   "scripts": {
@@ -160,29 +156,3 @@ Then run:
 ```sh
 bun run dev
 ```
-
-
-## Next Steps
-
-This introduction covers the basics of Bunup. From here, explore:
-
-* **[Options](/docs/guide/options)** - Full configuration and CLI flags
-* **[Workspaces](/docs/guide/workspaces)** - Monorepo support with single-command builds
-* **[Extra Options](/docs/extra-options/exports)** - Tools like auto-generating package exports
-
-In fact, to build and publish a ready-to-go package, you usually just need:
-
-```sh
-bunup --exports --unused
-```
-
-This command:
-
-* Builds your entry files (like `src/index.ts`) to ESM
-* Generates TypeScript declarations
-* Syncs your `package.json` exports
-* Reports unused dependencies
-
-All in one step, making your package **publish-ready**.
-
-Bunup also ships with built-in CSS support, plugins for copying files, Tailwind CSS, and more. Check the docs for all features.
