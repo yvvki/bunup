@@ -46,10 +46,10 @@ Need CommonJS too?
 bunx bunup --format esm,cjs
 ```
 
-Publish-ready in one step — builds, generates types, syncs package exports, and reports unused deps:
+Want to generate and sync package exports automatically?
 
 ```bash
-bunx bunup --exports --unused
+bunx bunup --exports
 ```
 
 ## Scaffold
