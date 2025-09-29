@@ -121,7 +121,7 @@ Bunup automatically detects common entry points. If your project contains any of
 
 For example, if your project has both `src/index.ts` and `src/cli.ts`, Bunup will build both automatically.
 
-If you want to override the defaults, simply specify entries explicitly:
+To override the defaults or exclude certain entries, specify them explicitly:
 
 ```sh
 bunx bunup src/index.ts src/plugins.ts
