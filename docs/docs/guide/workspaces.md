@@ -83,10 +83,11 @@ export default defineWorkspace(
   ],
   {
     // Shared options
-    entry: "src/index.ts",
     format: "esm",
     minify: true,
     target: "node",
+    exports: true,
+    unused: true,
   }
 );
 ```
@@ -104,16 +105,17 @@ export default defineWorkspace([
     root: "packages/web",
     config: [
       {
-        name: "browser-esm",
         entry: "src/index.ts",
+        name: "node",
         format: "esm",
-        target: "browser",
+        target: "node",
       },
       {
-        name: "node-cjs",
         entry: "src/index.ts",
-        format: "cjs",
-        target: "node",
+        name: "browser",
+        format: ["esm", "iife"],
+        target: "browser",
+        outDir: "dist/browser",
       },
     ],
   },
