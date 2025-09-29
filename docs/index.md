@@ -83,7 +83,7 @@ bunx bunup --format esm,cjs
 Want to generate and sync package exports automatically?
 
 ```sh
-bunx bunup --exports --unused
+bunx bunup --exports
 ```
 
 ### Using with package.json
