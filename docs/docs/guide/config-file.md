@@ -30,11 +30,13 @@ Bunup supports exporting an **array of configurations**, useful when you want to
 ```ts [bunup.config.ts]
 export default defineConfig([
   {
+    entry: "src/index.ts",
     name: 'node',
     format: 'esm',
     target: 'node',
   },
   {
+    entry: "src/index.ts",
     name: 'browser',
     format: ['esm', 'iife'],
     target: 'browser',

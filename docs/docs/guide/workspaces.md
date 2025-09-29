@@ -72,7 +72,7 @@ export default defineWorkspace(
       name: "core",
       root: "packages/core",
       config: {
-        format: ["esm", "cjs"], // overrides shared format
+        format: ["esm"], // overrides shared format
       },
     },
     {
@@ -83,9 +83,7 @@ export default defineWorkspace(
   ],
   {
     // Shared options
-    format: "esm",
-    minify: true,
-    target: "node",
+    format: ["esm", "cjs"],
     exports: true,
     unused: true,
   }
