@@ -71,12 +71,14 @@ When working with multiple configurations, naming helps identify each build clea
 export default defineConfig([
   {
     name: 'node-build',
+    entry: "src/index.ts",
     format: 'esm',
     target: 'node',
     // ...other options
   },
   {
     name: 'browser-build',
+    entry: "src/index.ts",
     format: ['esm', 'iife'],
     target: 'browser',
     // ...other options
