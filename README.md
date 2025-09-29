@@ -19,8 +19,10 @@
 
 </div>
 
+## Features
+
 - ⚡ **Instant Builds** — Lightning-fast builds & rebuilds by default  
-- 🎨 **CSS & Tailwind CSS Support** — Import CSS files directly, with built-in support for CSS Modules and Tailwind CSS for React component libraries
+- 🎨 **CSS Support Out of the Box**: Import CSS files directly, with built-in support for CSS Modules.
 - 📝 **TypeScript Declarations** — Clean, accurate `.d.ts` files generated automatically  
 - 🪓 **[Declaration Splitting](https://bunup.dev/docs/guide/typescript-declarations#declaration-splitting)** — Smaller, cleaner `.d.ts` bundles  
 - 🔋 **Batteries Included** — Auto-exports, unused dependency detection, and more  
