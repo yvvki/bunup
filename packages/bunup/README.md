@@ -1,28 +1,27 @@
 <!-- markdownlint-disable first-line-h1 -->
-<!-- markdownlint-disable-file no-inline-html -->
 
+<!-- markdownlint-start-capture -->
+<!-- markdownlint-disable-file no-inline-html -->
 <div align="center">
 
-  <!-- Logo -->
-  <img src="docs/public/logo.svg" height="120" alt="Bunup logo" />
+  <!-- markdownlint-disable-next-line no-alt-text -->
 
-  <!-- Title -->
-  <img src="assets/bunup-title.svg" height="60" alt="Bunup" />
 
-  <br />
+![Logo](docs/public/logo.svg)
 
-  [![NPM Version](https://img.shields.io/npm/v/bunup?logo=npm&logoColor=212121&label=version&labelColor=ffc44e&color=212121)](https://npmjs.com/package/bunup)
-  [![Built with Bun](https://img.shields.io/badge/Built_with-Bun-fbf0df?logo=bun&labelColor=212121)](https://bun.sh)
-  [![Sponsor](https://img.shields.io/badge/sponsor-EA4AAA?logo=githubsponsors&labelColor=FAFAFA)](https://github.com/sponsors/arshad-yaseen)
+![Bunup](assets/bunup-title.svg)
 
-  <p><b>Bunup helps you ship TypeScript/React libraries faster with zero-config builds, great DX, and Bun’s native speed.</b></p>
+[![NPM Version](https://img.shields.io/npm/v/bunup?logo=npm&logoColor=212121&label=version&labelColor=ffc44e&color=212121)](https://npmjs.com/package/bunup) [![Built with Bun](https://img.shields.io/badge/Built_with-Bun-fbf0df?logo=bun&labelColor=212121)](https://bun.sh) [![sponsor](https://img.shields.io/badge/sponsor-EA4AAA?logo=githubsponsors&labelColor=FAFAFA)](https://github.com/sponsors/arshad-yaseen)
+
+Bunup helps you ship TypeScript/React libraries faster with great DX — built on Bun.
 
 </div>
+<!-- markdownlint-restore -->
 
-## ✨ Features
+## Features
 
 - ⚡ **Instant Builds** — Lightning-fast builds & rebuilds by default  
-- 🎨 **CSS & Tailwind CSS Support** — Import CSS files directly, with built-in support for CSS Modules and Tailwind CSS for React component libraries
+- 🎨 **CSS Support Out of the Box**: Import CSS files directly, with built-in support for CSS Modules.
 - 📝 **TypeScript Declarations** — Clean, accurate `.d.ts` files generated automatically  
 - 🪓 **[Declaration Splitting](https://bunup.dev/docs/guide/typescript-declarations#declaration-splitting)** — Smaller, cleaner `.d.ts` bundles  
 - 🔋 **Batteries Included** — Auto-exports, unused dependency detection, and more  
