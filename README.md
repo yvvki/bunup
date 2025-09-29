@@ -33,7 +33,7 @@ export function greet(name: string): string {
 
 Build it instantly:
 
-```sh
+```bash
 bunx bunup
 ```
 
@@ -41,13 +41,13 @@ Outputs to `dist/` with ESM and `.d.ts` types.
 
 Need CommonJS too?
 
-```sh
+```bash
 bunx bunup --format esm,cjs
 ```
 
 Publish-ready in one step — builds, generates types, syncs package exports, and reports unused deps:
 
-```sh
+```bash
 bunx bunup --exports --unused
 ```
 
@@ -55,7 +55,7 @@ bunx bunup --exports --unused
 
 Spin up a modern, ready-to-publish TypeScript or React component library (or a basic starter) in ~10 seconds:
 
-```sh
+```bash
 bunx @bunup/cli@latest create
 ```
 
