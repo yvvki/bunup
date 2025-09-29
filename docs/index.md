@@ -117,9 +117,7 @@ Bunup automatically detects common entry points. If your project contains any of
 
 * `index.ts` / `index.tsx`
 * `src/index.ts` / `src/index.tsx`
-* `cli.ts`
-* `src/cli.ts`
-* `src/cli/index.ts`
+* `cli.ts` / `src/cli.ts` / `src/cli/index.ts`
 
 For example, if your project has both `src/index.ts` and `src/cli.ts`, Bunup will build both automatically.
 
