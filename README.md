@@ -18,6 +18,10 @@ Bunup helps you ship TypeScript/React libraries faster with great DX — built o
 </div>
 <!-- markdownlint-restore -->
 
+## Performance
+
+Bunup delivers instant builds by design. With Bun's native speed, builds and rebuilds are extremely quick, even in monorepos. You get faster feedback loops, higher productivity, and a more enjoyable development experience.
+
 ## Features
 
 - ⚡ **Instant Builds** — Lightning-fast builds & rebuilds by default  
@@ -51,7 +55,9 @@ Want CommonJS too?
 bunx bunup --format esm,cjs
 ```
 
-That’s it. You’re done.
+That's it. You're done.
+
+For publish-ready packages, `bunup --exports --unused` builds, generates types, syncs exports, and reports unused deps in one step.
 
 For more, see the full [documentation →](https://bunup.dev)
 
