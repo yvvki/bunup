@@ -77,6 +77,8 @@ For more, see the full documentation: https://bunup.dev
 
 We welcome contributions! Please read the [contributing guide](CONTRIBUTING.md).
 
+![Contributors](https://contributors-table.vercel.app/image?repo=bunup/bunup&width=50&columns=15)
+
 <div align="center">
 
   <img src="https://cdn.jsdelivr.net/gh/arshad-yaseen/static/sponsors.svg" alt="Sponsors" />
