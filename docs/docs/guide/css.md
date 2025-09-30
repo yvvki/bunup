@@ -25,9 +25,9 @@ export { Button };
 
 Bunup automatically bundles your CSS into `dist/index.css` with cross-browser compatibility.
 
-## Entry Points
+Any CSS imports encountered in your files will be bundled together into `dist/index.css`.
 
-For separate CSS files, add them as entry points:
+To generate separate CSS files instead of a single `index.css` output, add them as entry points rather than importing them in your files:
 
 ```typescript [bunup.config.ts]
 import { defineConfig } from 'bunup';
@@ -36,6 +36,7 @@ export default defineConfig({
   entry: [
     'src/index.ts',
     'src/components/button.css'
+    'src/components/alert.css'
   ],
 });
 ```
@@ -46,7 +47,8 @@ This creates individual CSS files in your build output:
 dist/
 ├── index.js
 └── components/
-    └── button.css
+    ├── button.css
+    └── alert.css
 ```
 
 ## CSS Modules
