@@ -1,37 +1,33 @@
 {
-	"name": "react",
-	"description": "A react component library",
-	"version": "0.14.9",
+	"name": "react-with-tailwindss",
+	"description": "React component library with Tailwind CSS",
+	"version": "0.1.0",
 	"type": "module",
 	"files": [
 		"dist"
 	],
 	"module": "./dist/index.js",
-	"main": "./dist/index.cjs",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"import": {
 				"types": "./dist/index.d.ts",
 				"default": "./dist/index.js"
-			},
-			"require": {
-				"types": "./dist/index.d.cts",
-				"default": "./dist/index.cjs"
 			}
 		},
-		"./styles.css": "./dist/index.css"
+		"./styles.css": "./dist/index.css",
+		"./package.json": "./package.json"
 	},
 	"scripts": {
 		"build": "bunup",
 		"dev": "bunup --watch"
 	},
 	"devDependencies": {
+		"@bunup/plugin-tailwindcss": "^0.14.9",
 		"@types/bun": "^1.2.20",
 		"@types/react": "^19.1.10",
 		"@types/react-dom": "^19.1.9",
-		"bunup": "^0.8.72",
-		"lightningcss": "^1.30.1",
+		"bunup": "^0.14.9",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
 		"typescript": "^5.9.2"
@@ -45,6 +41,5 @@
 		"typescript": {
 			"optional": true
 		}
-	},
-	"license": "MIT"
+	}
 }
