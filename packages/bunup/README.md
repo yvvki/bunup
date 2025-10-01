@@ -5,9 +5,9 @@
 <div align="center">
 
   <!-- markdownlint-disable-next-line no-alt-text -->
-  ![Logo](docs/public/logo.svg)
+  ![Logo](/docs/public/logo.svg)
 
-  ![Bunup](assets/bunup-title.svg)
+  ![Bunup](/assets/bunup-title.svg)
 
   [![NPM Version](https://img.shields.io/npm/v/bunup?logo=npm&logoColor=212121&label=version&labelColor=ffc44e&color=212121)](https://npmjs.com/package/bunup)
   [![Built with Bun](https://img.shields.io/badge/Built_with-Bun-fbf0df?logo=bun&labelColor=212121)](https://bun.sh)
