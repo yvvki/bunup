@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { loadConfig } from 'coffi'
+import { type LoadConfigResult, loadConfig } from 'coffi'
 import pc from 'picocolors'
 
 import { version } from '../../package.json'
@@ -22,13 +22,20 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
 	const cwd = process.cwd()
 
-	const { config, filepath } = await loadConfig<LoadedConfig>({
-		name: 'bunup.config',
-		extensions: ['.ts', '.js', '.mjs', '.cjs'],
-		maxDepth: 1,
-		preferredPath: cliOptions.config,
-		packageJsonProperty: 'bunup',
-	})
+	let loadedConfig: LoadConfigResult<LoadedConfig> | undefined
+
+	if (cliOptions.config !== false) {
+		loadedConfig = await loadConfig<LoadedConfig>({
+			name: 'bunup.config',
+			extensions: ['.ts', '.js', '.mjs', '.cjs'],
+			maxDepth: 1,
+			preferredPath:
+				typeof cliOptions.config === 'string' ? cliOptions.config : undefined,
+			packageJsonProperty: 'bunup',
+		})
+	}
+
+	const { config, filepath } = loadedConfig ?? {}
 
 	const configsToProcess: ProcessableConfig[] = !config
 		? [{ rootDir: cwd, options: cliOptions }]

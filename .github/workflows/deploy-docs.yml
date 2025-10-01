@@ -31,6 +31,11 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Generate CLI help documentation
+        run: |
+          FORCE_COLOR=true bun run test:build --help >docs/snippets/cli-options.ansi 2>&1
+          sed -i '1,5d' docs/snippets/cli-options.ansi
+
       - name: Build
         run: bun run build:docs
 

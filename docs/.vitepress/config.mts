@@ -36,7 +36,7 @@ export default defineConfig({
 				text: 'Guide',
 				items: [
 					{ text: 'Introduction', link: '/' },
-					{ text: 'Configuration File', link: '/docs/guide/config-file' },
+					{ text: 'Config File', link: '/docs/guide/config-file' },
 					{
 						text: 'Options',
 						link: '/docs/guide/options',

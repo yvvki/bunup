@@ -137,22 +137,6 @@ The file extensions are determined automatically based on the format and your pa
 | cjs    | `.js`                | `.d.ts`                          |
 | iife   | `.global.js`         | `.global.d.ts`                   |
 
-## Custom Configuration Path
-
-If you need to use a configuration file with a non-standard name or location, you can specify its path using the `--config` CLI option:
-
-::: code-group
-
-```sh [CLI]
-bunup --config ./configs/custom.bunup.config.ts
-# or using alias
-bunup -c ./configs/custom.bunup.config.ts
-```
-
-:::
-
-This allows you to keep your configuration files organized in custom locations or use different configuration files for different environments.
-
 ## Output Directory
 
 You can specify where Bunup should output the bundled files:

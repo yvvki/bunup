@@ -113,15 +113,15 @@ bun run build
 
 ## Default Entry Points
 
-Bunup automatically detects common entry points. If your project contains any of the following, you can just run `bunup` with **no config**:
+Bunup automatically detects common entry points.
 
-* `index.ts` / `index.tsx`
-* `src/index.ts` / `src/index.tsx`
-* `cli.ts` / `src/cli.ts` / `src/cli/index.ts`
+`index.ts`, `index.tsx`, `src/index.ts`, `src/index.tsx`, `cli.ts`, `src/cli.ts`, `src/cli/index.ts`
+
+This is why simply running `bunx bunup` works out of the box.
 
 For example, if your project has both `src/index.ts` and `src/cli.ts`, Bunup will build both automatically.
 
-To override the defaults or exclude certain entries, specify them explicitly:
+To override the default entry points or specify exactly which files to build, list them explicitly:
 
 ```sh
 bunx bunup src/index.ts src/plugins.ts
@@ -154,3 +154,9 @@ Then run:
 ```sh
 bun run dev
 ```
+
+## Config File
+
+While most options can be set directly via the CLI, and the CLI works well on its own, in some cases you will need to use a configuration file. This is useful when you want to use plugins, leverage Bunup [workspaces](), target multiple environments with different configurations, or simply centralize your build settings.
+
+See [Config File](/docs/guide/config-file) for details and [Options](/docs/guide/options) for all the available build options with side-by-side configuration and CLI examples.

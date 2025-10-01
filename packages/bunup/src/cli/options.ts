@@ -5,7 +5,7 @@ import { BunupCLIError } from '../errors'
 import type { BuildOptions } from '../options'
 
 export type CliOnlyOptions = {
-	config: string | undefined
+	config?: boolean | string
 	filter?: string[]
 }
 
@@ -55,10 +55,17 @@ const program = cli()
 	.option(
 		'config',
 		z
-			.string()
-			.describe('Path to configuration file')
-			.alias('c')
-			.example('./configs/custom.bunup.config.js')
+			.union(
+				z
+					.string()
+					.describe('Path to a custom configuration file')
+					.alias('c')
+					.example('./configs/custom.bunup.config.js'),
+				z
+					.boolean()
+					.describe('Whether to use a configuration file')
+					.default(true),
+			)
 			.optional(),
 	)
 	.option(

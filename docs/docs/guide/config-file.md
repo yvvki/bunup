@@ -1,13 +1,6 @@
-# Configuration File
+# Config File
 
-Most build options can be set directly on the CLI, but a configuration file is recommended for **advanced scenarios**.  
-
-You’ll need it when you want to:
-
-- Add plugins  
-- Implement custom logic (e.g. complex post-build operations, custom style injection)  
-- Configure Bunup [workspaces](/docs/guide/workspaces)  
-- Manage multiple build targets
+Centralize your build settings with a configuration file when CLI options aren't enough.
 
 ## Getting Started
 
@@ -21,7 +14,7 @@ export default defineConfig({
 });
 ```
 
-This is the simplest way to centralize and reuse your build configuration.
+This is the simplest way to centralize and reuse your build configuration. See [Options](/docs/guide/options) for all the available options.
 
 ## Multiple Configurations
 
@@ -36,7 +29,7 @@ export default defineConfig([
     target: 'node',
   },
   {
-    entry: "src/index.ts",
+    entry: "src/browser.ts",
     name: 'browser',
     format: ['esm', 'iife'],
     target: 'browser',
@@ -46,6 +39,22 @@ export default defineConfig([
 ```
 
 With this setup, Bunup will build both Node.js and browser bundles.
+
+**Another example:** if you have a `src/index.ts` and a CLI entry point, you might want to build the main source for both ESM and CJS formats, while the CLI only needs ESM. You can configure it like this:
+
+```ts [bunup.config.ts]
+export default defineConfig([
+  {
+    entry: "src/index.ts",
+    format: ['esm', 'cjs'],
+  },
+  {
+    entry: "src/cli.ts",
+    format: ['esm'],
+  },
+]);
+```
+
 
 ## Named Configurations
 
@@ -78,10 +87,34 @@ export default defineConfig([
   },
   {
     name: 'browser-build',
-    entry: "src/index.ts",
+    entry: "src/browser.ts",
     format: ['esm', 'iife'],
     target: 'browser',
     // ...other options
   },
 ]);
+```
+
+## Custom Configuration Path
+
+If you need to use a configuration file with a non-standard name or location, you can specify its path using the `--config` CLI option:
+
+::: code-group
+
+```sh [CLI]
+bunup --config ./configs/custom.bunup.config.ts
+# or using alias
+bunup -c ./configs/custom.bunup.config.ts
+```
+
+:::
+
+This allows you to keep your configuration files organized in custom locations or use different configuration files for different environments.
+
+## Disabling Configuration Files
+
+To explicitly disable config file usage and rely only on CLI options:
+
+```sh [CLI]
+bunup --no-config
 ```
