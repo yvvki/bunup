@@ -2,7 +2,7 @@
 
 Effortlessly manage **multiple packages in a monorepo** with Bunup’s built-in workspace support.  
 
-This eliminates the need for separate build configurations and multiple commands for each package.With a single configuration file and a single command, you can build all your packages at once.
+This eliminates the need for separate build configurations and multiple commands for each package. With a single configuration file and a single command, you can build all your packages at once.
 
 ## Creating a Workspace Configuration
 
@@ -65,8 +65,6 @@ Here, **`core`** has custom formats, while **`utils`** works out of the box with
 You can define **shared options** for all packages, reducing repetition:
 
 ```ts [bunup.config.ts]
-import { defineWorkspace } from "bunup";
-
 export default defineWorkspace(
   [
     {
@@ -96,8 +94,6 @@ export default defineWorkspace(
 Each package can have multiple builds by passing an array:
 
 ```ts [bunup.config.ts]
-import { defineWorkspace } from "bunup";
-
 export default defineWorkspace([
   {
     name: "web",
@@ -115,6 +111,27 @@ export default defineWorkspace([
         format: ["esm", "iife"],
         target: "browser",
         outDir: "dist/browser",
+      },
+    ],
+  },
+]);
+```
+
+**Another example:** if you have different entry points that need different build configurations, you can specify them separately. For instance, your main module might need both ESM and CJS formats, while a CLI entry point might only need ESM:
+
+```ts [bunup.config.ts]
+export default defineWorkspace([
+  {
+    name: "main",
+    root: "packages/main",
+    config: [
+      {
+        entry: "src/index.ts",
+        format: ["esm", "cjs"],
+      },
+      {
+        entry: "src/cli.ts",
+        format: ["esm"],
       },
     ],
   },

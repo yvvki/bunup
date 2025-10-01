@@ -40,7 +40,7 @@ export default defineConfig([
 
 With this setup, Bunup will build both Node.js and browser bundles.
 
-**Another example:** if you have a `src/index.ts` and a CLI entry point, you might want to build the main source for both ESM and CJS formats, while the CLI only needs ESM. You can configure it like this:
+**Another example:** if you have different entry points that need different build configurations, you can specify them separately. For instance, your main module might need both ESM and CJS formats, while a CLI entry point might only need ESM:
 
 ```ts [bunup.config.ts]
 export default defineConfig([
