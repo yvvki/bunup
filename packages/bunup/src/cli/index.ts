@@ -74,7 +74,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 				}
 
 				if (userOptions.watch) {
-					await watch(userOptions, rootDir)
+					await watch(userOptions, rootDir, filepath)
 				} else {
 					await build(userOptions, rootDir)
 				}
@@ -92,10 +92,6 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
 	logger.space()
 	logger.success(`Build completed in ${pc.green(logTime(buildTimeMs))}`)
-
-	if (!cliOptions.watch) {
-		process.exit(process.exitCode ?? 0)
-	}
 }
 
 const CLI_ONLY_OPTIONS: (keyof CliOnlyOptions)[] = ['config', 'filter']
