@@ -4,7 +4,7 @@ import {
 	BunupBuildError,
 	BunupDTSBuildError,
 	invalidEntryPointsError,
-	noDefaultEntryPointsError,
+	noEntryPointsFoundError,
 	parseErrorMessage,
 } from './errors'
 import { executeOnSuccess } from './helpers/on-success'
@@ -97,7 +97,7 @@ export async function build(
 
 	if (!entrypoints.length) {
 		if (!ensureArray(userOptions.entry).length) {
-			throw new BunupBuildError(noDefaultEntryPointsError(DEFAULT_ENTYPOINTS))
+			throw new BunupBuildError(noEntryPointsFoundError(DEFAULT_ENTYPOINTS))
 		}
 		throw new BunupBuildError(invalidEntryPointsError(entryArray))
 	}

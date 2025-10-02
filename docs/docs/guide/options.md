@@ -352,7 +352,7 @@ Available sourcemap values:
 - `inline`
 - `true` (equivalent to 'inline')
 
-For detailed explanations of these values, see the [Bun documentation on source maps](https://bun.sh/docs/bundler#sourcemap).
+For detailed explanations of these values, see the [Bun documentation on source maps](https://bun.com/docs/bundler#sourcemap).
 
 ## Define Global Constants
 
@@ -380,7 +380,7 @@ The `define` option takes an object where:
 - Keys are the identifiers to replace
 - Values are the strings to replace them with
 
-For more information on how define works, see the [Bun documentation on define](https://bun.sh/docs/bundler#define).
+For more information on how define works, see the [Bun documentation on define](https://bun.com/docs/bundler#define).
 
 ## Banner and Footer
 
@@ -407,7 +407,7 @@ The `banner` option adds text to the beginning of the bundle, useful for directi
 
 The `footer` option adds text to the end of the bundle, which can be used for license information or other closing comments.
 
-For more information, see the Bun documentation on [banner](https://bun.sh/docs/bundler#banner) and [footer](https://bun.sh/docs/bundler#footer).
+For more information, see the Bun documentation on [banner](https://bun.com/docs/bundler#banner) and [footer](https://bun.com/docs/bundler#footer).
 
 ## Drop Function Calls
 
@@ -433,7 +433,7 @@ export default defineConfig({
 
 The `drop` option removes function calls specified in the array. For example, `drop: ["console"]` will remove all calls to `console.log`. Arguments to calls will also be removed, regardless of if those arguments may have side effects. Dropping `debugger` will remove all `debugger` statements.
 
-For more information, see the [Bun documentation on drop](https://bun.sh/docs/bundler#drop).
+For more information, see the [Bun documentation on drop](https://bun.com/docs/bundler#drop).
 
 ## Package.json Export Conditions
 
@@ -570,7 +570,7 @@ export default defineConfig({
 
 The `loader` option takes a map of file extensions to built-in loader names, allowing you to customize how different file types are processed during bundling.
 
-For more information, see the [Bun documentation on loaders](https://bun.sh/docs/bundler#loader).
+For more information, see the [Bun documentation on loaders](https://bun.com/docs/bundler#loader).
 
 ## Public Path
 
@@ -615,7 +615,7 @@ var logo = 'https://cdn.example.com/logo-a7305bdef.svg';
 console.log(logo);
 ```
 
-For more information, see the [Bun documentation on publicPath](https://bun.sh/docs/bundler#publicpath).
+For more information, see the [Bun documentation on publicPath](https://bun.com/docs/bundler#publicpath).
 
 ## Environment Variables
 
@@ -668,7 +668,7 @@ The `env` option controls how `process.env.*` and `import.meta.env.*` expression
 | `"PREFIX_*"`     | Only inlines environment variables matching the given prefix (e.g. `PUBLIC_*`).                                                        |
 | `{ key: value }` | Replaces both `process.env.KEY` and `import.meta.env.KEY` with the provided values, regardless of the environment.                     |
 
-For more information, see the [Bun documentation on environment variables](https://bun.sh/docs/bundler#env).
+For more information, see the [Bun documentation on environment variables](https://bun.com/docs/bundler#env).
 
 ## Shims
 

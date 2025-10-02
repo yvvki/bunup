@@ -157,6 +157,6 @@ bun run dev
 
 ## Config File
 
-While most options can be set directly via the CLI, and the CLI works well on its own, in some cases you will need to use a configuration file. This is useful when you want to use plugins, leverage Bunup [workspaces](), target multiple environments with different configurations, or simply centralize your build settings.
+While most options can be set directly via the CLI, and the CLI works well on its own, in some cases you will need to use a configuration file. This is useful when you want to use plugins, leverage Bunup [workspaces](/docs/guide/workspaces), target multiple environments with different configurations, or simply centralize your build settings.
 
 See [Config File](/docs/guide/config-file) for details and [Options](/docs/guide/options) for all the available build options with side-by-side configuration and CLI examples.

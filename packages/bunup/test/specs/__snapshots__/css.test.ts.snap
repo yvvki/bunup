@@ -1,8 +1,8 @@
-// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+// Bun Snapshot v1, https://bun.com/docs/test/snapshots
 
 exports[`CSS Handling generates correct CSS output for standard imports 1`] = `
 {
-  "content": 
+  "content":
 "/* packages/bunup/test/.project/src/components/button.css */
 .buttons {
   background-color: #639;
@@ -22,7 +22,7 @@ exports[`CSS Handling generates correct CSS output for standard imports 1`] = `
 
 exports[`CSS Handling handles CSS Modules and generates correct output 1`] = `
 {
-  "content": 
+  "content":
 "/* packages/bunup/test/.project/src/button.module.css */
 .buttons_6hIi-w {
   background-color: #639;
@@ -42,7 +42,7 @@ exports[`CSS Handling handles CSS Modules and generates correct output 1`] = `
 
 exports[`CSS Handling handles CSS Modules and generates correct output 2`] = `
 {
-  "content": 
+  "content":
 "// packages/bunup/test/.project/src/button.module.css
 var button_module_default = {
   buttons: "buttons_6hIi-w",
@@ -71,7 +71,7 @@ export {
 
 exports[`CSS Handling builds standalone CSS entrypoints 1`] = `
 {
-  "content": 
+  "content":
 "/* packages/bunup/test/.project/src/entry.css */
 :root {
   --brand: rebeccapurple;
@@ -91,7 +91,7 @@ body {
 
 exports[`CSS Handling builds standalone CSS entrypoints 2`] = `
 {
-  "content": 
+  "content":
 "/* packages/bunup/test/.project/src/other.css */
 .button {
   color: red;

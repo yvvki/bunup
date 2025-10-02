@@ -50,29 +50,6 @@ export const parseErrorMessage = (error: unknown): string => {
 	return String(error)
 }
 
-export const noDefaultEntryPointsError = (
-	defaultEntrypoints: string[],
-): string => {
-	return (
-		`${pc.red(pc.bold('\nNo entry points found'))}\n\n` +
-		`Looked for these default entry points:\n\n` +
-		logger.list(defaultEntrypoints, { dim: true }) +
-		`\n\nYou can specify entry points via CLI like ${pc.green('bunup lib/main.ts')}, ` +
-		`use multiple entries like ${pc.green('bunup components/button.tsx utils/format.ts')}, or add the entry option in your bunup config.`
-	)
-}
-
-export const invalidEntryPointsError = (userEntrypoints: string[]): string => {
-	const entryPointsFormatted = logger.list(userEntrypoints, { dim: true })
-	const isMultiple = userEntrypoints.length > 1
-
-	return `${pc.red(pc.bold(`\nEntry ${isMultiple ? 'points do not exist' : 'point does not exist'}`))}
-
-${entryPointsFormatted}
-
-Please check that ${isMultiple ? 'these paths exist and point' : 'this path exists and points'} to ${isMultiple ? 'valid files' : 'a valid file'}.`
-}
-
 interface KnownErrorSolution {
 	pattern: RegExp
 	errorType: string
@@ -164,6 +141,29 @@ export const handleError = (error: unknown, context?: string): void => {
 				' with details about this error\n',
 		)
 	}
+}
+
+export const noEntryPointsFoundError = (
+	defaultEntrypoints: string[],
+): string => {
+	return (
+		`${pc.red(pc.bold('\nNo entry points found'))}\n\n` +
+		`Looked for these default entry points:\n\n` +
+		logger.list(defaultEntrypoints, { dim: true }) +
+		`\n\nYou can specify entry points via CLI like ${pc.green('bunup lib/main.ts')}, ` +
+		`use multiple entries like ${pc.green('bunup components/button.tsx utils/format.ts')}, or add the entry option in your bunup config.`
+	)
+}
+
+export const invalidEntryPointsError = (userEntrypoints: string[]): string => {
+	const entryPointsFormatted = logger.list(userEntrypoints, { dim: true })
+	const isMultiple = userEntrypoints.length > 1
+
+	return `${pc.red(pc.bold(`\nEntry ${isMultiple ? 'points do not exist' : 'point does not exist'}`))}
+
+${entryPointsFormatted}
+
+Please check that ${isMultiple ? 'these paths exist and point' : 'this path exists and points'} to ${isMultiple ? 'valid files' : 'a valid file'}.`
 }
 
 export const handleErrorAndExit = (error: unknown, context?: string): void => {

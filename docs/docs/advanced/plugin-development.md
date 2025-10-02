@@ -49,7 +49,7 @@ export default defineConfig({
 });
 ```
 
-For more information about creating Bun plugins, see the [Bun plugin documentation](https://bun.sh/docs/bundler/plugins).
+For more information about creating Bun plugins, see the [Bun plugin documentation](https://bun.com/docs/bundler/plugins).
 
 ## Creating a Bunup Plugin
 
@@ -70,7 +70,7 @@ export function myBunupPlugin(): BunupPlugin {
       onBuildDone: async ({ options, output, meta }: BuildContext) => {
         console.log("Build completed with files:", output.files.length);
         console.log("Package name:", meta.packageJson.data?.name);
-        
+
         for (const file of output.files) {
           console.log(`Generated: ${file.pathRelativeToOutdir} (${file.kind})`);
         }
@@ -244,7 +244,7 @@ export function bundleSizeReporter(maxSize?: number): BunupPlugin {
         for (const { path, size, format } of sizes) {
           const sizeKB = (size / 1024).toFixed(2);
           console.log(`  ${path} (${format}): ${sizeKB} KB`);
-          
+
           if (maxSize && size > maxSize) {
             throw new Error(`Bundle ${path} exceeds maximum size of ${maxSize} bytes`);
           }
@@ -257,6 +257,6 @@ export function bundleSizeReporter(maxSize?: number): BunupPlugin {
 
 ## Publishing Plugins
 
-If you've created a useful plugin for Bunup, consider publishing it as an npm package 
-for others to use. Use a naming convention like `bunup-plugin-*` to make it easily 
+If you've created a useful plugin for Bunup, consider publishing it as an npm package
+for others to use. Use a naming convention like `bunup-plugin-*` to make it easily
 discoverable.

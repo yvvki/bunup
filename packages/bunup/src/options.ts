@@ -249,7 +249,7 @@ export interface BuildOptions {
 	 * Can be 'none', 'linked', 'external', or 'inline'
 	 * Can also be a boolean - when true, it will use 'inline'
 	 *
-	 * @see https://bun.sh/docs/bundler#sourcemap
+	 * @see https://bun.com/docs/bundler#sourcemap
 	 *
 	 * @default 'none'
 	 *
@@ -263,7 +263,7 @@ export interface BuildOptions {
 	 * Define global constants for the build
 	 * These values will be replaced at build time
 	 *
-	 * @see https://bun.sh/docs/bundler#define
+	 * @see https://bun.com/docs/bundler#define
 	 *
 	 * @example
 	 * define: {
@@ -297,7 +297,7 @@ export interface BuildOptions {
 	/**
 	 * A banner to be added to the final bundle, this can be a directive like "use client" for react or a comment block such as a license for the code.
 	 *
-	 * @see https://bun.sh/docs/bundler#banner
+	 * @see https://bun.com/docs/bundler#banner
 	 *
 	 * @example
 	 * banner: '"use client";'
@@ -306,7 +306,7 @@ export interface BuildOptions {
 	/**
 	 * A footer to be added to the final bundle, this can be something like a comment block for a license or just a fun easter egg.
 	 *
-	 * @see https://bun.sh/docs/bundler#footer
+	 * @see https://bun.com/docs/bundler#footer
 	 *
 	 * @example
 	 * footer: '// built with love in SF'
@@ -315,16 +315,16 @@ export interface BuildOptions {
 	/**
 	 * Remove function calls from a bundle. For example, `drop: ["console"]` will remove all calls to `console.log`. Arguments to calls will also be removed, regardless of if those arguments may have side effects. Dropping `debugger` will remove all `debugger` statements.
 	 *
-	 * @see https://bun.sh/docs/bundler#drop
+	 * @see https://bun.com/docs/bundler#drop
 	 *
 	 * @example
 	 * drop: ["console", "debugger", "anyIdentifier.or.propertyAccess"]
 	 */
 	drop?: string[]
 	/**
-	 * A map of file extensions to [built-in loader names](https://bun.sh/docs/bundler/loaders#built-in-loaders). This can be used to quickly customize how certain files are loaded.
+	 * A map of file extensions to [built-in loader names](https://bun.com/docs/bundler/loaders#built-in-loaders). This can be used to quickly customize how certain files are loaded.
 	 *
-	 * @see https://bun.sh/docs/bundler#loader
+	 * @see https://bun.com/docs/bundler#loader
 	 *
 	 * @example
 	 * loader: {
@@ -366,7 +366,7 @@ export interface BuildOptions {
 	 * Note: Values are injected at build time. Secrets or private keys should be excluded
 	 * from inlining when targeting browser environments.
 	 *
-	 * @see https://bun.sh/docs/bundler#env to learn more about inline, disable, prefix, and object modes
+	 * @see https://bun.com/docs/bundler#env to learn more about inline, disable, prefix, and object modes
 	 *
 	 * @example
 	 * // Inline all environment variables available at build time
