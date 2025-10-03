@@ -87,6 +87,8 @@ export function tailwindcss(options: TailwindCSSOptions = {}): BunPlugin {
 					})
 				).css
 
+				console.log(preprocessSource(source, preflight))
+
 				const { code: css } = transform({
 					filename: path.basename(args.path),
 					code: Buffer.from(cssFromTailwind),
