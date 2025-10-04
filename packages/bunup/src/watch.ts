@@ -74,7 +74,7 @@ export async function watch(
 
 			const buildOutput = await build(userOptions, rootDir)
 
-			await printBuildReport(buildOutput, options)
+			await printBuildReport(buildOutput)
 
 			if (!initial) {
 				console.log(
