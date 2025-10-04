@@ -213,13 +213,13 @@ describe('Bundle functionality', () => {
 
 			expect(files[0].dts).toMatchInlineSnapshot(`
 			  "declare function fetchUser(): {
-			  	id: number
-			  	name: string
-			  	email: string
+			  	id: number;
+			  	name: string;
+			  	email: string;
 			  };
 			  declare function fetchData(): Promise<{
-			  	data: string
-			  	timestamp: number
+			  	data: string;
+			  	timestamp: number;
 			  }>;
 			  type User = ReturnType<typeof fetchUser>;
 			  type ApiResponse = ReturnType<typeof fetchData>;
@@ -330,7 +330,7 @@ describe('Bundle functionality', () => {
 			  "declare function process(data: string): string;
 			  declare function validate(input: string): boolean;
 			  declare const CONFIG: {
-			  	debug: boolean
+			  	debug: boolean;
 			  };
 			  declare function newFunction(): string;
 			  export { validate as validateInput, process as processString, newFunction, CONFIG as AppConfig };
@@ -382,9 +382,9 @@ describe('Bundle functionality', () => {
 			  	error(message: string): void;
 			  }
 			  declare const LOG_LEVELS: {
-			  	readonly INFO: "info"
-			  	readonly ERROR: "error"
-			  	readonly DEBUG: "debug"
+			  	readonly INFO: "info";
+			  	readonly ERROR: "error";
+			  	readonly DEBUG: "debug";
 			  };
 			  interface AppConfig {
 			  	apiUrl: string;
@@ -995,11 +995,11 @@ describe('Bundle functionality', () => {
 			  */
 			  declare function processValue(value: boolean): boolean;
 			  declare function createItem(name: string): {
-			  	name: string
+			  	name: string;
 			  };
 			  declare function createItem(id: number, name: string): {
-			  	id: number
-			  	name: string
+			  	id: number;
+			  	name: string;
 			  };
 			  export { processValue, createItem };
 			  "
@@ -1049,7 +1049,7 @@ describe('Bundle functionality', () => {
 
 			expect(files[0].dts).toMatchInlineSnapshot(`
 			  "type User = {
-			  	camelCase: string
+			  	camelCase: string;
 			  };
 			  declare function getUser(): User;
 			  type GetUserReturnType = Omit<ReturnType<typeof getUser>, "camelCase">;
@@ -1082,15 +1082,15 @@ describe('Bundle functionality', () => {
 
 			expect(files[0].dts).toMatchInlineSnapshot(`
 			  "declare const TWO_FACTOR_ERROR_CODES: {
-			  	readonly OTP_NOT_ENABLED: "OTP not enabled"
-			  	readonly OTP_HAS_EXPIRED: "OTP has expired"
-			  	readonly TOTP_NOT_ENABLED: "TOTP not enabled"
-			  	readonly TWO_FACTOR_NOT_ENABLED: "Two factor isn't enabled"
-			  	readonly BACKUP_CODES_NOT_ENABLED: "Backup codes aren't enabled"
-			  	readonly INVALID_BACKUP_CODE: "Invalid backup code"
-			  	readonly INVALID_CODE: "Invalid code"
-			  	readonly TOO_MANY_ATTEMPTS_REQUEST_NEW_CODE: "Too many attempts. Please request a new code."
-			  	readonly INVALID_TWO_FACTOR_COOKIE: "Invalid two factor cookie"
+			  	readonly OTP_NOT_ENABLED: "OTP not enabled";
+			  	readonly OTP_HAS_EXPIRED: "OTP has expired";
+			  	readonly TOTP_NOT_ENABLED: "TOTP not enabled";
+			  	readonly TWO_FACTOR_NOT_ENABLED: "Two factor isn't enabled";
+			  	readonly BACKUP_CODES_NOT_ENABLED: "Backup codes aren't enabled";
+			  	readonly INVALID_BACKUP_CODE: "Invalid backup code";
+			  	readonly INVALID_CODE: "Invalid code";
+			  	readonly TOO_MANY_ATTEMPTS_REQUEST_NEW_CODE: "Too many attempts. Please request a new code.";
+			  	readonly INVALID_TWO_FACTOR_COOKIE: "Invalid two factor cookie";
 			  };
 			  export { TWO_FACTOR_ERROR_CODES };
 			  "

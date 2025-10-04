@@ -99,7 +99,7 @@ describe('generateDts', () => {
 			expect(files[0].dts).toMatchInlineSnapshot(`
 			  "type Status = "pending" | "completed" | "failed";
 			  type UserWithStatus = User & {
-			  	status: Status
+			  	status: Status;
 			  };
 			  interface User {
 			  	id: number;
@@ -390,7 +390,7 @@ describe('generateDts', () => {
 
 			expect(files[0].dts).toMatchInlineSnapshot(`
 			  "interface Repository<T extends {
-			  	id: string
+			  	id: string;
 			  }> {
 			  	findById(id: string): Promise<T | null>;
 			  	save(entity: T): Promise<T>;

@@ -79,24 +79,24 @@ export type GenerateDtsOptions = {
 		  * Options for generating declaration file
 		  */
 		  type GenerateDtsOptions = {
-		  	naming?: Naming
+		  	naming?: Naming;
 		  	/**
 		  	* Path to the preferred tsconfig.json file
 		  	* By default, the closest tsconfig.json file will be used
 		  	*/
-		  	preferredTsConfigPath?: string
+		  	preferredTsConfigPath?: string;
 		  	/**
 		  	* Controls which external modules should be resolved
 		  	* - \`true\` to resolve all external modules
 		  	* - Array of strings or RegExp to match specific modules
 		  	* - \`false\` or \`undefined\` to disable external resolution
 		  	*/
-		  	resolve?: Resolve
+		  	resolve?: Resolve;
 		  	/**
 		  	* The directory where the plugin will look for the \`tsconfig.json\` file and \`node_modules\`
 		  	* By default, the current working directory will be used
 		  	*/
-		  	cwd?: string
+		  	cwd?: string;
 		  	/**
 		  	* Whether to split declaration files when multiple entrypoints import the same files,
 		  	* modules, or share types. When enabled, shared types will be extracted to separate
@@ -105,7 +105,7 @@ export type GenerateDtsOptions = {
 		  	* This helps reduce bundle size by preventing duplication of type definitions
 		  	* across multiple entrypoints.
 		  	*/
-		  	splitting?: boolean
+		  	splitting?: boolean;
 		  	/**
 		  	* Plugins to extend the build process functionality
 		  	*
@@ -136,7 +136,7 @@ export type GenerateDtsOptions = {
 		  	*   }
 		  	* ]
 		  	*/
-		  	minify?: boolean
+		  	minify?: boolean;
 		  };
 		  export { GenerateDtsOptions };
 		  "

@@ -18,11 +18,11 @@
 		"./package.json": "./package.json"
 	},
 	"dependencies": {
-		"@babel/parser": "^7.28.0",
-		"coffi": "^0.1.31",
-		"oxc-minify": "^0.77.2",
-		"oxc-resolver": "^8.0.0",
-		"oxc-transform": "^0.67.0",
+		"@babel/parser": "^7.28.4",
+		"coffi": "^0.1.37",
+		"oxc-minify": "^0.93.0",
+		"oxc-resolver": "^11.9.0",
+		"oxc-transform": "^0.93.0",
 		"picocolors": "^1.1.1",
 		"std-env": "^3.9.0",
 		"ts-import-resolver": "^0.1.23"
@@ -51,7 +51,7 @@
 	"funding": "https://github.com/sponsors/arshad-yaseen",
 	"homepage": "https://bunup.dev",
 	"peerDependencies": {
-		"typescript": ">=4.5.0"
+		"typescript": "latest"
 	},
 	"peerDependenciesMeta": {
 		"typescript": {
@@ -59,6 +59,6 @@
 		}
 	},
 	"devDependencies": {
-		"@babel/types": "^7.28.2"
+		"@babel/types": "^7.28.4"
 	}
 }

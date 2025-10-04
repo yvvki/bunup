@@ -32,8 +32,8 @@ describe('DTS Misc', () => {
 		  	}
 		  }
 		  type User = {
-		  	name: string
-		  	age: number
+		  	name: string;
+		  	age: number;
 		  };
 		  declare const user: User;
 		  export { user };
@@ -82,10 +82,10 @@ describe('DTS Misc', () => {
 
 		expect(files[0].dts).toMatchInlineSnapshot(`
 		  "type Socket2 = {
-		  	connect: () => void
+		  	connect: () => void;
 		  };
 		  type Manager2 = {
-		  	connect: () => void
+		  	connect: () => void;
 		  };
 		  declare namespace Hello {
 		  	type Socket = Socket2;
