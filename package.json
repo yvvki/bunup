@@ -24,7 +24,7 @@
 		"prepare": "bun simple-git-hooks"
 	},
 	"simple-git-hooks": {
-		"pre-commit": "bun run lint"
+		"pre-commit": "bun run lint && bun run tsc"
 	},
 	"workspaces": [
 		"docs",
