@@ -12,7 +12,9 @@ import {
 	processLoadedConfigs,
 } from '../loaders'
 import type { BuildOptions } from '../options'
+import type { BuildOutput } from '../plugins/types'
 import { logger, logTime } from '../printer/logger'
+import { printBuildReport } from '../printer/print-build-report'
 import { ensureArray, getShortFilePath } from '../utils'
 import { watch } from '../watch'
 import { type CliOnlyOptions, parseCliOptions } from './options'
@@ -64,6 +66,8 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
 	const startTime = performance.now()
 
+	const buildOutputs: BuildOutput[] = []
+
 	await Promise.all(
 		configsToProcess.flatMap(({ options, rootDir }) => {
 			const optionsArray = ensureArray(options)
@@ -76,19 +80,23 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 				if (userOptions.watch) {
 					await watch(userOptions, rootDir, filepath)
 				} else {
-					await build(userOptions, rootDir)
+					buildOutputs.push(await build(userOptions, rootDir))
 				}
 			})
 		}),
 	)
+
+	const buildTimeMs = performance.now() - startTime
+
+	if (!cliOptions.watch && !shouldSilent) {
+		await Promise.all(buildOutputs.map((o) => printBuildReport(o)))
+	}
 
 	if (cliOptions.watch) {
 		console.log(
 			`\n  ${pc.bgMagentaBright(' WATCH ')} Watching for file changes...\n`,
 		)
 	}
-
-	const buildTimeMs = performance.now() - startTime
 
 	logger.space()
 	logger.success(`Build completed in ${pc.green(logTime(buildTimeMs))}`)

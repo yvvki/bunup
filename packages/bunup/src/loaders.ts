@@ -60,6 +60,16 @@ export type PackageJson = {
 export async function loadPackageJson(
 	cwd: string = process.cwd(),
 ): Promise<PackageJson> {
+	const packageJsonPath = path.join(cwd, 'package.json')
+	try {
+		const data = await Bun.file(packageJsonPath).json()
+		return {
+			data,
+			path: packageJsonPath,
+		}
+	} catch {}
+
+	// search in parent directories
 	const { config, filepath } = await loadConfig<Record<string, any>>({
 		name: 'package',
 		cwd,

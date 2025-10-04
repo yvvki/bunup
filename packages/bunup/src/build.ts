@@ -31,7 +31,6 @@ import {
 	runPluginBuildStartHooks,
 } from './plugins/utils'
 import { logger } from './printer/logger'
-import { printBuildReport } from './printer/print-build-report'
 import {
 	cleanOutDir,
 	cleanPath,
@@ -57,11 +56,12 @@ export async function build(
 
 	ac = new AbortController()
 
+	const options = resolveBuildOptions(userOptions)
+
 	const buildOutput: BuildOutput = {
 		files: [],
+		options,
 	}
-
-	const options = resolveBuildOptions(userOptions)
 
 	if (options.silent) {
 		logger.setSilent(options.silent)
@@ -93,7 +93,7 @@ export async function build(
 
 	const entryArray = ensureArray(options.entry)
 
-	const entrypoints = await getFilesFromGlobs(entryArray, rootDir)
+	const entrypoints = getFilesFromGlobs(entryArray, rootDir)
 
 	if (!entrypoints.length) {
 		if (!ensureArray(userOptions.entry).length) {
@@ -108,25 +108,33 @@ export async function build(
 		muted: true,
 	})
 
-	const buildPromises = ensureArray(options.format).flatMap(async (fmt) => {
+	const absoluteEntrypoints = entrypoints.map((file) => `${rootDir}/${file}`)
+	const resolvedDefine = getResolvedDefine(options.define, options.env)
+	const resolvedMinify = getResolvedMinify(options)
+	const resolvedTarget = getResolvedTarget(options.target)
+	const resolvedSourcemap = getResolvedSourcemap(options.sourcemap)
+	const resolvedEnv = getResolvedEnv(options.env)
+	const chunkNaming = getDefaultChunkNaming(options.name)
+
+	const buildPromises = ensureArray(options.format).map(async (fmt) => {
 		const result = await Bun.build({
-			entrypoints: entrypoints.map((file) => `${rootDir}/${file}`),
+			entrypoints: absoluteEntrypoints,
 			format: fmt,
 			splitting: getResolvedSplitting(options.splitting, fmt),
-			define: getResolvedDefine(options.define, options.env),
-			minify: getResolvedMinify(options),
-			target: getResolvedTarget(options.target),
-			sourcemap: getResolvedSourcemap(options.sourcemap),
+			define: resolvedDefine,
+			minify: resolvedMinify,
+			target: resolvedTarget,
+			sourcemap: resolvedSourcemap,
 			loader: options.loader,
 			drop: options.drop,
 			naming: {
-				chunk: getDefaultChunkNaming(options.name),
+				chunk: chunkNaming,
 			},
 			conditions: options.conditions,
 			banner: options.banner,
 			footer: options.footer,
 			publicPath: options.publicPath,
-			env: getResolvedEnv(options.env),
+			env: resolvedEnv,
 			ignoreDCEAnnotations: options.ignoreDCEAnnotations,
 			emitDCEAnnotations: options.emitDCEAnnotations,
 			throw: false,
@@ -251,10 +259,6 @@ export async function build(
 
 	if (options.onSuccess) {
 		await executeOnSuccess(options.onSuccess, options, ac.signal)
-	}
-
-	if (!options.watch && !logger.isSilent()) {
-		await printBuildReport(buildOutput, options)
 	}
 
 	return buildOutput

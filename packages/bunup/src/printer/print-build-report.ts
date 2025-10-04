@@ -1,7 +1,6 @@
 import { promisify } from 'node:util'
 import { brotliCompress } from 'node:zlib'
 import pc from 'picocolors'
-import type { BuildOptions } from '../options'
 import type { BuildOutput } from '../plugins/types'
 import {
 	ensureArray,
@@ -14,8 +13,8 @@ const brotliAsync = promisify(brotliCompress)
 
 export async function printBuildReport(
 	buildOutput: BuildOutput,
-	options: BuildOptions,
 ): Promise<void> {
+	const options = buildOutput.options
 	const { gzip = true, brotli = false, maxBundleSize } = options.report ?? {}
 
 	const showCompression = gzip || brotli
@@ -23,7 +22,8 @@ export async function printBuildReport(
 	const files = await Promise.all(
 		buildOutput.files.map(async (file) => {
 			const pathRelative = file.pathRelativeToOutdir
-			const size = Bun.file(file.fullPath).size
+			const bunFile = Bun.file(file.fullPath)
+			const size = bunFile.size
 			const isDts = file.dts && file.kind === 'entry-point'
 
 			const isJs =
@@ -32,8 +32,7 @@ export async function printBuildReport(
 			let brotliSize: number | undefined
 
 			if (showCompression) {
-				const buffer = await Bun.file(file.fullPath).arrayBuffer()
-				const uint8 = new Uint8Array(buffer)
+				const uint8 = new Uint8Array(await bunFile.arrayBuffer())
 				const [gzipResult, brotliResult] = await Promise.all([
 					gzip ? Promise.resolve(Bun.gzipSync(uint8)) : Promise.resolve(null),
 					brotli ? brotliAsync(uint8) : Promise.resolve(null),

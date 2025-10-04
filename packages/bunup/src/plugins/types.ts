@@ -39,6 +39,8 @@ export type BuildOutputFile = {
 export type BuildOutput = {
 	/** Array of generated files with their paths and contents */
 	files: BuildOutputFile[]
+	/** Options used for the build */
+	options: BuildOptions
 }
 
 /**

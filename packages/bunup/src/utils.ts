@@ -113,28 +113,23 @@ export async function cleanOutDir(
 }
 
 export function cleanPath(path: string): string {
-	let cleaned = normalize(path).replace(/\\/g, '/')
-
-	cleaned = cleaned.replace(/^[a-zA-Z]:\//, '')
-
-	cleaned = cleaned.replace(/^\/+/, '')
-
-	cleaned = cleaned.replace(/\/+/g, '/')
-
-	return cleaned
+	return normalize(path)
+		.replace(/\\/g, '/')
+		.replace(/^[a-zA-Z]:\//, '')
+		.replace(/^\/+/, '')
+		.replace(/\/+/g, '/')
 }
+
+const listFormatter = new Intl.ListFormat('en', {
+	style: 'long',
+	type: 'conjunction',
+})
 
 export function formatListWithAnd(arr: string[]): string {
-	return new Intl.ListFormat('en', {
-		style: 'long',
-		type: 'conjunction',
-	}).format(arr)
+	return listFormatter.format(arr)
 }
 
-export async function getFilesFromGlobs(
-	patterns: string[],
-	cwd: string,
-): Promise<string[]> {
+export function getFilesFromGlobs(patterns: string[], cwd: string): string[] {
 	const includePatterns = patterns.filter((p) => !p.startsWith('!'))
 	const excludePatterns = patterns
 		.filter((p) => p.startsWith('!'))
@@ -144,7 +139,7 @@ export async function getFilesFromGlobs(
 
 	for (const pattern of includePatterns) {
 		const glob = new Bun.Glob(pattern)
-		for await (const file of glob.scan(cwd)) {
+		for (const file of glob.scanSync(cwd)) {
 			includedFiles.add(file)
 		}
 	}
@@ -152,7 +147,7 @@ export async function getFilesFromGlobs(
 	if (excludePatterns.length > 0) {
 		for (const pattern of excludePatterns) {
 			const glob = new Bun.Glob(pattern)
-			for await (const file of glob.scan(cwd)) {
+			for (const file of glob.scanSync(cwd)) {
 				includedFiles.delete(file)
 			}
 		}
