@@ -1,7 +1,8 @@
-import { defineConfig } from '../src'
+import { defineWorkspace } from '../src'
 
-export default defineConfig({
-	entry: ['fixtures/index.tsx'],
-	format: 'esm',
-	target: 'node',
-})
+export default defineWorkspace([
+	{
+		name: 'fix',
+		root: 'fixtures',
+	},
+])

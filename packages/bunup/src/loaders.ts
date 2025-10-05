@@ -21,7 +21,7 @@ export async function processLoadedConfigs(
 				.map((c) => ({
 					rootDir: path.resolve(cwd, c.root),
 					options: setOrSuffixField(
-						c.config,
+						c.config ?? {},
 						'name',
 						c.name,
 					) as unknown as Arrayable<BuildOptions>,
