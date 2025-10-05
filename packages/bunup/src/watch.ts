@@ -92,7 +92,7 @@ export async function watch(
 		if (configFilePath && changedPath === configFilePath) {
 			console.log(
 				pc.yellow(
-					`  Please restart watch mode to apply configuration changes.\n`,
+					`\n  Please restart watch mode to apply configuration changes.`,
 				),
 			)
 			cleanup()
