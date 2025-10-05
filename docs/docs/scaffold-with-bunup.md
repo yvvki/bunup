@@ -1,6 +1,6 @@
 # Scaffold with Bunup
 
-Quickly scaffold modern TypeScript and React libraries in just 10 seconds with Bunup.
+Spin up a modern, ready-to-publish TypeScript or React component library (or a basic starter) in ~10 seconds.
 
 - 🚀 **Instant Setup**: Scaffold, code, edit README, and publish with a single command - with nothing to rename or configure
 - 📦 **Modern**: ESM by default, TypeScript declarations, and optional monorepo support
@@ -20,17 +20,17 @@ bunx @bunup/cli@latest create
 You will be greeted with a few simple questions and that's it! You can now start coding.
 
 You'll choose between two variants:
-- **Basic**: Minimal setup with just Bunup config, perfect for building your own setup
+- **Minimal**: Minimal setup, perfect for building your own setup
 - **Full**: Complete modern library setup, just focus on code and publish
 
-If you selected `basic`, you can skip the next sections which is for those who selected `full` to learn more about the commands and how to release your package. If you selected `basic`, you set up these things yourself.
+If you selected `minimal`, you can skip the next sections which is for those who selected `full` to learn more about the commands and how to release your package. If you selected `basic`, you set up these things yourself.
 
 ## Setup for Releases
 
 1. Generate an npm token:
    - Visit [npmjs.com](https://www.npmjs.com/), sign in
    - Go to profile → Access Tokens → Generate New Token (Classic)
-   - Name it (e.g. "my-ts-lib publishing"), select "Automation"
+   - Name it (e.g. "Publish from CI"), select "Automation"
    - Generate and copy token
 
 2. Add token to GitHub:
