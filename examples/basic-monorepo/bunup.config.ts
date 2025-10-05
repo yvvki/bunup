@@ -9,7 +9,7 @@ export default defineWorkspace([
 		name: 'package-2',
 		root: 'packages/package-2',
 		config: {
-			format: ['esm', 'cjs'],
+			minify: true,
 		},
 	},
 ])

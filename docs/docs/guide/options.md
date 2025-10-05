@@ -89,8 +89,6 @@ Bunup supports three output formats:
 
 You can specify one or more formats:
 
-### Using the CLI
-
 ::: code-group
 
 ```sh [CLI]
