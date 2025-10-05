@@ -116,7 +116,7 @@ export const handleError = (error: unknown, context?: string): void => {
 
 	if (!knownError) {
 		console.error(
-			`\n${pc.bgRed(` ${errorType} `)}\n${contextPrefix}${errorMessage}`
+			`\n${pc.bgRed(` ${errorType} `)}\n\n${contextPrefix}${errorMessage}`
 				.split('\n')
 				.map((line) => `  ${line}`)
 				.join('\n'),
@@ -147,7 +147,7 @@ export const noEntryPointsFoundError = (
 	defaultEntrypoints: string[],
 ): string => {
 	return (
-		`${pc.red(pc.bold('\nNo entry points found'))}\n\n` +
+		`${pc.red(pc.bold('No entry points found'))}\n\n` +
 		`Looked for these default entry points:\n\n` +
 		logger.list(defaultEntrypoints, { dim: true }) +
 		`\n\nYou can specify entry points via CLI like ${pc.green('bunup lib/main.ts')}, ` +
@@ -159,7 +159,7 @@ export const invalidEntryPointsError = (userEntrypoints: string[]): string => {
 	const entryPointsFormatted = logger.list(userEntrypoints, { dim: true })
 	const isMultiple = userEntrypoints.length > 1
 
-	return `${pc.red(pc.bold(`\nEntry ${isMultiple ? 'points do not exist' : 'point does not exist'}`))}
+	return `${pc.red(pc.bold(`Entry ${isMultiple ? 'points do not exist' : 'point does not exist'}`))}
 
 ${entryPointsFormatted}
 
