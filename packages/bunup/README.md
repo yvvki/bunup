@@ -73,6 +73,16 @@ See more in [Scaffold with Bunup](./docs/scaffold-with-bunup.md).
 
 For more, see the full documentation: https://bunup.dev
 
+## 📚 Examples
+
+Check out the [examples directory](./examples) for example usage:
+
+- [Simple TypeScript library](./examples/basic)
+- [Workspace with multiple packages](./examples/basic-monorepo)
+- [React component library styled with plain CSS](./examples/react-with-pure-css)
+- [React component library styled with CSS Modules](./examples/react-with-css-modules)
+- [React component library styled with Tailwind CSS](./examples/react-with-tailwindcss)
+
 ## ❤️ Contributing
 
 We welcome contributions! Please read the [contributing guide](CONTRIBUTING.md).
