@@ -4,5 +4,10 @@ export default defineWorkspace([
 	{
 		name: 'fix',
 		root: 'fixtures',
+		config: {
+			jsx: {
+				development: true,
+			},
+		},
 	},
 ])

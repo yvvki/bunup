@@ -381,6 +381,34 @@ const program = cli()
 	)
 
 	.option(
+		'jsx',
+		z
+			.object({
+				runtime: z
+					.string()
+					.choices(['automatic', 'classic'])
+					.describe('JSX runtime mode')
+					.optional(),
+				'import-source': z
+					.string()
+					.describe('Import source for JSX functions')
+					.optional(),
+				factory: z.string().describe('JSX factory function name').optional(),
+				fragment: z.string().describe('JSX fragment function name').optional(),
+				'side-effects': z
+					.boolean()
+					.describe('Whether JSX functions have side effects')
+					.optional(),
+				development: z
+					.boolean()
+					.describe('Use jsx-dev runtime for development')
+					.optional(),
+			})
+			.describe('Configure JSX transform behavior')
+			.optional(),
+	)
+
+	.option(
 		'ignore-dce-annotations',
 		z
 			.boolean()

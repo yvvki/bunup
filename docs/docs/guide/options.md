@@ -615,6 +615,55 @@ console.log(logo);
 
 For more information, see the [Bun documentation on publicPath](https://bun.com/docs/bundler#publicpath).
 
+## JSX
+
+Configure JSX transform behavior:
+
+::: code-group
+
+```sh [CLI]
+# Set JSX runtime mode
+bunup --jsx.runtime automatic
+
+# Configure import source
+bunup --jsx.import-source preact
+
+# Configure factory and fragment
+bunup --jsx.factory h --jsx.fragment Fragment
+
+# Configure side effects
+bunup --jsx.side-effects
+
+# Enable development mode
+bunup --jsx.development
+```
+
+```ts [bunup.config.ts]
+export default defineConfig({
+	jsx: {
+		runtime: 'automatic', // or 'classic'
+		importSource: 'preact',
+		factory: 'h',
+		fragment: 'Fragment',
+		sideEffects: false,
+		development: false,
+	},
+});
+```
+
+:::
+
+Available JSX options:
+
+- **runtime**: JSX runtime mode (`automatic` or `classic`, default: `automatic`)
+- **importSource**: Import source for JSX functions (default: `react`)
+- **factory**: JSX factory function name (default: `React.createElement`)
+- **fragment**: JSX fragment function name (default: `React.Fragment`)
+- **sideEffects**: Whether JSX functions have side effects (default: `false`)
+- **development**: Use jsx-dev runtime for development (default: `false`)
+
+For more information, see the [Bun documentation on JSX](https://bun.com/docs/bundler#jsx).
+
 ## Environment Variables
 
 Bunup provides flexible options for handling environment variables in your bundled code:

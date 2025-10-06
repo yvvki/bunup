@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { generateDts, logIsolatedDeclarationErrors } from '@bunup/dts'
+import { ensureMinimumBunVersion } from './ensure-bun-version'
 import {
 	BunupBuildError,
 	BunupDTSBuildError,
@@ -50,6 +51,8 @@ export async function build(
 	userOptions: Partial<BuildOptions>,
 	rootDir: string = process.cwd(),
 ): Promise<BuildOutput> {
+	ensureMinimumBunVersion()
+
 	if (ac) {
 		ac.abort()
 	}

@@ -43,6 +43,13 @@ export class BunupPluginError extends BunupError {
 	}
 }
 
+export class BunupVersionError extends BunupError {
+	constructor(message: string) {
+		super(message)
+		this.name = 'BunupVersionError'
+	}
+}
+
 export const parseErrorMessage = (error: unknown): string => {
 	if (error instanceof Error) {
 		return error.message
@@ -104,6 +111,8 @@ export const handleError = (error: unknown, context?: string): void => {
 		errorType = 'WATCH ERROR'
 	} else if (error instanceof BunupPluginError) {
 		errorType = 'PLUGIN ERROR'
+	} else if (error instanceof BunupVersionError) {
+		errorType = 'VERSION ERROR'
 	} else if (error instanceof BunupError) {
 		errorType = 'BUNUP ERROR'
 	}

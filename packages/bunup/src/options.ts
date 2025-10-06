@@ -1,5 +1,6 @@
 import type { GenerateDtsOptions } from '@bunup/dts'
 import type { BuildConfig, BunPlugin } from 'bun'
+import { ensureBunVersion } from './ensure-bun-version'
 import { type ExportsOptions, exports } from './plugins/exports'
 import { type InjectStylesOptions, injectStyles } from './plugins/inject-styles'
 import { cssTypedModulesPlugin } from './plugins/internal/css-typed-modules'
@@ -111,6 +112,42 @@ type ReportOptions = {
 	 * @default undefined
 	 */
 	maxBundleSize?: number
+}
+
+type JSXOptions = {
+	/**
+	 * JSX runtime mode
+	 * @default "automatic"
+	 */
+	runtime?: 'automatic' | 'classic'
+	/**
+	 * Import source for JSX functions
+	 * @default "react"
+	 * @example "preact"
+	 */
+	importSource?: string
+	/**
+	 * JSX factory function name
+	 * @default "React.createElement"
+	 * @example "h"
+	 */
+	factory?: string
+	/**
+	 * JSX fragment function name
+	 * @default "React.Fragment"
+	 * @example "Fragment"
+	 */
+	fragment?: string
+	/**
+	 * Whether JSX functions have side effects
+	 * @default false
+	 */
+	sideEffects?: boolean
+	/**
+	 * Use jsx-dev runtime for development
+	 * @default false
+	 */
+	development?: boolean
 }
 
 export interface BuildOptions {
@@ -424,6 +461,10 @@ export interface BuildOptions {
 	 */
 	plugins?: (BunupPlugin | BunPlugin)[]
 	/**
+	 * Configure JSX transform behavior. Allows fine-grained control over how JSX is compiled.
+	 */
+	jsx?: JSXOptions
+	/**
 	 * Options for CSS handling in the build process.
 	 */
 	css?: CSSOptions
@@ -460,6 +501,7 @@ export interface BuildOptions {
 	unused?: boolean | UnusedOptions
 }
 
+// It's safe to provide multiple entry points as default since we use Bun.glob, so it only returns the available files. No errors will be thrown if the entries are not found or can't be resolved. For these entries, users don't need to provide the entry.
 export const DEFAULT_ENTYPOINTS: string[] = [
 	'index.ts',
 	'index.tsx',
@@ -471,7 +513,6 @@ export const DEFAULT_ENTYPOINTS: string[] = [
 ]
 
 const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
-	// It's safe to provide multiple entry points as default since we use Bun.glob, so it only returns the available files. No errors will be thrown if the entries are not found or can't be resolved. For these entries, users don't need to provide the entry.
 	entry: DEFAULT_ENTYPOINTS,
 	format: 'esm',
 	outDir: 'dist',
@@ -483,12 +524,16 @@ const DEFAULT_OPTIONS: WithRequired<BuildOptions, 'clean'> = {
 export function resolveBuildOptions(
 	userOptions: Partial<BuildOptions>,
 ): BuildOptions {
-	const resolved = {
+	const options = {
 		...DEFAULT_OPTIONS,
 		...userOptions,
 	}
 
-	return resolved
+	if (options.jsx) {
+		ensureBunVersion('1.2.23', 'jsx option')
+	}
+
+	return options
 }
 
 export function resolvePlugins(
