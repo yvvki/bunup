@@ -140,6 +140,7 @@ export async function build(
 			env: resolvedEnv,
 			ignoreDCEAnnotations: options.ignoreDCEAnnotations,
 			emitDCEAnnotations: options.emitDCEAnnotations,
+			jsx: options.jsx,
 			throw: false,
 			plugins: bunPlugins,
 		})
