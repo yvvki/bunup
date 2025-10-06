@@ -1,5 +1,6 @@
+import { isBuiltin } from 'node:module'
 import type { BunPlugin } from 'bun'
-import { isExternal } from '../../helpers/external'
+import { isExternalFromPackageJson } from '../../helpers/external'
 import type { BuildOptions } from '../../options'
 
 export function externalOptionPlugin(
@@ -12,7 +13,10 @@ export function externalOptionPlugin(
 			build.onResolve({ filter: /.*/ }, (args) => {
 				const importPath = args.path
 
-				if (isExternal(importPath, options, packageJson)) {
+				if (
+					isBuiltin(importPath) ||
+					isExternalFromPackageJson(importPath, options, packageJson)
+				) {
 					return {
 						path: importPath,
 						external: true,

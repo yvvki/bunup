@@ -60,7 +60,7 @@ Spin up a modern, ready-to-publish TypeScript or React component library (or a b
 bunx @bunup/cli@latest create
 ```
 
-See more in [Scaffold with Bunup](./docs/scaffold-with-bunup.md).
+See more in [Scaffold with Bunup](https://bunup.dev/docs/scaffold-with-bunup).
 
 ## Features
 

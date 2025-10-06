@@ -13,7 +13,7 @@ function matchesPattern(path: string, pattern: string | RegExp): boolean {
 	return typeof pattern === 'string' ? pattern === path : pattern.test(path)
 }
 
-export function isExternal(
+export function isExternalFromPackageJson(
 	path: string,
 	options: BuildOptions,
 	packageJson: Record<string, unknown> | null,
