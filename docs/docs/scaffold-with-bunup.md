@@ -45,8 +45,8 @@ After completing the setup, here's how to use your project:
 ```sh
 bun run dev        # Start development mode
 bun run test       # Run test suite
-bun run lint       # Check code style, find problems
-bun run format     # Format code automatically
+bun run lint       # Check for issues
+bun run format     # Format code
 bun run tsc        # Type check TypeScript code
 bun run build      # Build production bundle
 ```
