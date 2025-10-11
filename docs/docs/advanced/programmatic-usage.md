@@ -16,16 +16,19 @@ const output = await build({
 });
 
 console.log('Built files:', output.files);
+console.log('Build options:', output.options);
 ```
 
 ## Build Output
 
-The `build` function returns a `BuildOutput` object containing information about the generated files:
+The `build` function returns a `BuildOutput` object containing information about the generated files and the options used:
 
 ```typescript
 type BuildOutput = {
   /** Array of generated files with their paths and metadata */
   files: BuildOutputFile[]
+  /** Options used for the build */
+  options: BuildOptions
 }
 
 type BuildOutputFile = {
@@ -87,14 +90,16 @@ Plugins can be used programmatically the same way they are used in the configura
 
 ```typescript
 import { build } from 'bunup';
-import { injectStyles } from 'bunup/plugins';
+import { copy } from 'bunup/plugins';
+import { tailwindcss } from '@bunup/plugin-tailwindcss';
 
 await build({
   entry: 'src/index.ts',
   plugins: [
-    injectStyles({
-      minify: false,
-    })
+    tailwindcss({
+      minify: true,
+    }),
+    copy(['README.md', 'assets/**/*']),
   ]
 });
 ```

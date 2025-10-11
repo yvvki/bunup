@@ -1,55 +1,6 @@
 # Plugin Development Guide
 
-Bunup provides a flexible plugin system that allows you to extend its functionality to meet your specific needs. This guide will walk you through the process of creating your own plugins for Bunup.
-
-## Plugin Types
-
-Bunup supports two types of plugins:
-
-1. **Bun Plugins** - Native Bun plugins that are passed directly to the underlying `Bun.build` configuration
-2. **Bunup Plugins** - Custom plugins specifically designed for Bunup with lifecycle hooks
-
-## Creating a Bun Plugin
-
-Bun plugins work with Bun's native bundler and are passed directly to the `Bun.build` configuration. These plugins can be used to modify how modules are resolved, transformed, and loaded.
-
-```ts
-import type { BunPlugin } from "bun";
-
-const myBunPlugin = (): BunPlugin => {
-  return {
-    name: "my-bun-plugin",
-    setup(build) {
-      build.onLoad({ filter: /\.txt$/ }, async (args) => {
-        const text = await Bun.file(args.path).text();
-        return {
-          contents: `export default ${JSON.stringify(text)}`,
-          loader: "js",
-        };
-      });
-    },
-  };
-};
-
-export default myBunPlugin;
-```
-
-To use this plugin in Bunup, simply pass it directly to the plugins array:
-
-```ts
-import { defineConfig } from "bunup";
-import myBunPlugin from "./my-bun-plugin";
-
-export default defineConfig({
-  entry: "src/index.ts",
-  format: ["esm", "cjs"],
-  plugins: [
-    myBunPlugin()
-  ]
-});
-```
-
-For more information about creating Bun plugins, see the [Bun plugin documentation](https://bun.com/docs/bundler/plugins).
+This guide walks you through creating custom Bunup plugins with lifecycle hooks. For an overview of the plugin system and using Bun plugins, see the [Plugins guide](/docs/guide/plugins).
 
 ## Creating a Bunup Plugin
 
@@ -87,7 +38,7 @@ This example demonstrates both available hooks:
 | `onBuildStart` | Runs before the build starts | Setup tasks, modify build options |
 | `onBuildDone` | Runs after the build completes | Access build output, post-processing, reporting |
 
-To use this plugin in Bunup:
+To use this plugin:
 
 ```ts
 import { defineConfig } from "bunup";
@@ -98,28 +49,6 @@ export default defineConfig({
   format: ["esm", "cjs"],
   plugins: [
     myBunupPlugin()
-  ]
-});
-```
-
-## Mixing Plugin Types
-
-You can use both Bun plugins and Bunup plugins together:
-
-```ts
-import { defineConfig } from "bunup";
-import { copy, exports } from "bunup/plugins";
-import { myBunupPlugin } from "./my-bunup-plugin";
-import bunTailwindPlugin from "bun-plugin-tailwind";
-
-export default defineConfig({
-  entry: "src/index.ts",
-  format: ["esm", "cjs"],
-  plugins: [
-    bunTailwindPlugin,
-    myBunupPlugin(),
-    copy("assets/**/*"),
-    exports()
   ]
 });
 ```
