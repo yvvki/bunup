@@ -52,6 +52,15 @@ export default defineConfig({
 				],
 			},
 			{
+				text: 'Recipes',
+				items: [
+					{
+						text: 'React Component Library',
+						link: '/docs/recipes/react-component-library',
+					},
+				],
+			},
+			{
 				text: 'Extra Options',
 				items: [
 					{ text: 'Exports', link: '/docs/extra-options/exports' },
