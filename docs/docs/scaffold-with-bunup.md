@@ -23,7 +23,7 @@ You'll choose between two variants:
 - **Minimal**: Minimal setup, perfect for building your own setup
 - **Full**: Complete modern library setup, just focus on code and publish
 
-If you selected `minimal`, you can skip the next sections which is for those who selected `full` to learn more about the commands and how to release your package. If you selected `basic`, you set up these things yourself.
+If you selected `minimal`, you can skip the next sections which is for those who selected `full` to learn more about the commands and how to release your package. If you selected `minimal`, you set up these things yourself.
 
 ## Setup for Releases
 
