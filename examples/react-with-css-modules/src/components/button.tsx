@@ -1,5 +1,3 @@
-'use client'
-
 import styles from './button.module.css'
 
 type ButtonProps = React.ComponentProps<'button'> & {

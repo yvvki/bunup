@@ -4,7 +4,7 @@ Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for 
 
 ## Performance
 
-Instant builds by design. With Bun’s native speed, builds and rebuilds are extremely quick, even in monorepos. Faster feedback loops, higher productivity, calmer flow. See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
+Instant builds by design even with type declarations. With Bun’s native speed, builds and rebuilds are extremely quick, even in monorepos. Faster feedback loops, higher productivity, calmer flow. See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
 
 <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;" aria-hidden="false">
 <table>
@@ -44,7 +44,6 @@ Instant builds by design. With Bun’s native speed, builds and rebuilds are ext
 </tbody>
 </table>
 </div>
-
 
 ## Scaffold
 

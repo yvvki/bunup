@@ -2,55 +2,21 @@
 
 Build a production-ready React component library with Bunup in minutes. Zero config. Just works.
 
-## Setup
+## Quick Start
 
-Install dependencies:
+Scaffold a minimal starter or publish-ready React component library in seconds:
 
-```bash
-bun add --dev bunup typescript react react-dom @types/react @types/react-dom
+```sh
+bunx @bunup/cli@latest create
 ```
 
-Configure your project:
-
-::: code-group
-
-```json [package.json]
-{
-  // ... rest of your package.json
-  "type": "module",
-  "scripts": {
-    "build": "bunup",
-    "dev": "bunup --watch"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
-  }
-}
-```
-
-```json [tsconfig.json]
-{
-  "compilerOptions": {
-    // ... rest of your compilerOptions
-    "jsx": "react-jsx",
-    "declaration": true,
-    "isolatedDeclarations": true
-  }
-}
-```
-
-:::
-
-That's it! You're ready to build components.
+Select **React Component Library** from the options. Now you're ready to build components.
 
 ## Creating Components
 
 Create your first component:
 
 ```tsx [src/components/button.tsx]
-'use client'
-
 export function Button(props: React.ComponentProps<'button'>): React.ReactNode {
   return <button type="button" {...props} />
 }
@@ -62,10 +28,10 @@ Export it from your entry point:
 export { Button } from './components/button'
 ```
 
-Build and watch:
+Build it:
 
 ```bash
-bun run dev
+bunx bunup
 ```
 
 Your component is now compiled in `dist/index.js` with TypeScript declarations in `dist/index.d.ts`.
@@ -79,38 +45,21 @@ Bunup supports multiple styling approaches out of the box. Choose what works bes
 Import CSS directly in your components. Bunup bundles everything automatically.
 
 ```css [src/styles.css]
-:root {
-  --button-bg: hsl(211, 100%, 50%);
-  --button-bg-hover: hsl(211, 100%, 45%);
-  --button-text: hsl(0, 0%, 100%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --button-bg: hsl(211, 80%, 55%);
-    --button-bg-hover: hsl(211, 80%, 60%);
-  }
-}
-
 [data-slot="button"] {
-  background: var(--button-bg);
-  color: var(--button-text);
+  background: hsl(211, 100%, 50%);
+  color: white;
   padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 500;
 }
 
 [data-slot="button"]:hover {
-  background: var(--button-bg-hover);
+  background: hsl(211, 100%, 45%);
 }
 ```
 
 ```tsx [src/components/button.tsx]
-'use client'
-
 export function Button(props: React.ComponentProps<'button'>): React.ReactNode {
   return <button type="button" data-slot="button" {...props} />
 }
@@ -134,8 +83,6 @@ Get automatic class name scoping with CSS modules. Just use `.module.css`:
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
   color: white;
 }
 
@@ -146,41 +93,16 @@ Get automatic class name scoping with CSS modules. Just use `.module.css`:
 .primary:hover {
   background-color: #0056b3;
 }
-
-.secondary {
-  background-color: #6c757d;
-}
-
-.secondary:hover {
-  background-color: #565e64;
-}
-
-.danger {
-  background-color: #dc3545;
-}
-
-.danger:hover {
-  background-color: #a71d2a;
-}
 ```
 
 ```tsx [src/components/button.tsx]
-'use client'
-
 import styles from './button.module.css'
 
-type ButtonProps = React.ComponentProps<'button'> & {
-  variant?: 'primary' | 'secondary' | 'danger'
-}
-
-export function Button({
-  variant = 'primary',
-  ...props
-}: ButtonProps): React.ReactNode {
+export function Button(props: React.ComponentProps<'button'>): React.ReactNode {
   return (
     <button
       type="button"
-      className={`${styles.button} ${styles[variant]}`}
+      className={`${styles.button} ${styles.primary}`}
       {...props}
     />
   )
@@ -219,8 +141,6 @@ Create your styles with a scoped prefix to prevent conflicts:
 Use prefixed classes in your components:
 
 ```tsx [src/components/button.tsx]
-'use client'
-
 export function Button(props: React.ComponentProps<'button'>): React.ReactNode {
   return (
     <button
@@ -282,7 +202,7 @@ function App() {
 }
 ```
 
-### Inject Styles (Optional)
+### Inject Styles <Badge>Optional</Badge>
 
 Want to skip the separate CSS import? Use the [inject styles](/docs/extra-options/inject-styles) option to bundle CSS directly into JavaScript:
 
@@ -331,45 +251,10 @@ function App() {
 
 Styles are automatically injected at runtime.
 
-### Auto-generate Exports
-
-Let Bunup automatically manage your `exports` field with the [exports](/docs/extra-options/exports) option:
-
-::: code-group
-
-```sh [CLI]
-bunup --exports
-```
-
-```ts [bunup.config.ts]
-import { defineConfig } from 'bunup'
-
-export default defineConfig({
-  exports: true,
-})
-```
-
-:::
-
-Your `package.json` exports are updated automatically on every build - no manual sync needed.
-
 ## Examples
 
 Check out complete examples in the [examples directory](https://github.com/bunup/bunup/tree/main/examples):
 
-- [react-with-pure-css](https://github.com/bunup/bunup/tree/main/examples/react-with-pure-css) - React with pure CSS
-- [react-with-css-modules](https://github.com/bunup/bunup/tree/main/examples/react-with-css-modules) - React with CSS modules and type generation
-- [react-with-tailwindcss](https://github.com/bunup/bunup/tree/main/examples/react-with-tailwindcss) - React with Tailwind CSS and scoping
-
-## That's It
-
-You just built a production-ready React component library with:
-
-- TypeScript declarations
-- Multiple styling options (pure CSS, CSS modules, Tailwind)
-- Automatic CSS bundling and optimization
-- Cross-browser compatibility
-- Optional style injection
-- Clean package exports
-
-All with minimal configuration. Build what matters.
+- [React with Pure CSS](https://github.com/bunup/bunup/tree/main/examples/react-with-pure-css)
+- [React with CSS Modules](https://github.com/bunup/bunup/tree/main/examples/react-with-css-modules)
+- [React with Tailwind CSS](https://github.com/bunup/bunup/tree/main/examples/react-with-tailwindcss)
