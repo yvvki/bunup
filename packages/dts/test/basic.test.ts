@@ -713,7 +713,7 @@ describe('generateDts', () => {
 			})
 
 			const files = await runGenerateDts(['src/index.ts'], {
-				preferredTsConfigPath: 'project/tsconfig.custom.json',
+				preferredTsconfig: 'project/tsconfig.custom.json',
 			})
 
 			expect(files[0].dts).toMatchInlineSnapshot(`

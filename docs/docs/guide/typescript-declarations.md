@@ -172,22 +172,11 @@ You can use:
 
 ## TypeScript Configuration
 
-You can specify a custom tsconfig file for declaration generation:
+You can specify a custom tsconfig file to use for TypeScript declaration generation. This is mainly used for path resolution during declaration generation.
 
-::: code-group
+See [Custom Tsconfig Path](/docs/guide/options#custom-tsconfig-path) for details.
 
-```sh [CLI]
-bunup --preferred-tsconfig-path ./tsconfig.build.json
-```
-
-```ts [bunup.config.ts]
-export default defineConfig({
-  entry: "src/index.ts",
-  preferredTsconfigPath: "./tsconfig.build.json",
-});
-```
-
-:::
+By default, the nearest `tsconfig.json` file will be used.
 
 ## Resolving External Types
 

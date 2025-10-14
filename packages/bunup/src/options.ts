@@ -237,16 +237,15 @@ export interface BuildOptions {
 		  })
 
 	/**
-	 * Path to a preferred tsconfig.json file to use for declaration generation
+	 * Path to a custom tsconfig.json file used for path resolution during
+	 * both bundling and TypeScript declaration generation.
 	 *
-	 * If not specified, the tsconfig.json in the project root will be used.
-	 * This option allows you to use a different TypeScript configuration
-	 * specifically for declaration file generation.
+	 * If not specified, the nearest tsconfig.json will be used.
 	 *
 	 * @example
-	 * preferredTsconfigPath: './tsconfig.build.json'
+	 * preferredTsconfig: './tsconfig.build.json'
 	 */
-	preferredTsconfigPath?: string
+	preferredTsconfig?: string
 
 	/**
 	 * External packages that should not be bundled

@@ -1,13 +1,5 @@
-import { defineWorkspace } from '../src'
+import { defineConfig } from '../src'
 
-export default defineWorkspace([
-	{
-		name: 'fix',
-		root: 'fixtures',
-		config: {
-			jsx: {
-				development: true,
-			},
-		},
-	},
-])
+export default defineConfig({
+	entry: 'fixtures/index.ts',
+})

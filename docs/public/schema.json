@@ -161,9 +161,9 @@
 						}
 					]
 				},
-				"preferredTsconfigPath": {
+				"preferredTsconfig": {
 					"type": "string",
-					"description": "Path to a preferred tsconfig.json file to use for declaration generation. If not specified, the tsconfig.json in the project root will be used."
+					"description": "Path to a custom tsconfig.json file to use for both TypeScript declaration generation and build path resolution. If not specified, the nearest tsconfig.json will be used."
 				},
 				"external": {
 					"type": "array",

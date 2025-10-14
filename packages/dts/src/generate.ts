@@ -31,10 +31,10 @@ export async function generateDts(
 	entrypoints: string[],
 	options: GenerateDtsOptions = {},
 ): Promise<GenerateDtsResult> {
-	const { resolve, preferredTsConfigPath, naming } = options
+	const { resolve, preferredTsconfig, naming } = options
 	const cwd = options.cwd ? path.resolve(options.cwd) : process.cwd()
 
-	const tsconfig = await loadTsConfig(cwd, preferredTsConfigPath)
+	const tsconfig = await loadTsConfig(cwd, preferredTsconfig)
 
 	const nonAbsoluteEntrypoints = entrypoints.filter(
 		(entrypoint) => !path.isAbsolute(entrypoint),

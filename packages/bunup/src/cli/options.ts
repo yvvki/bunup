@@ -269,10 +269,12 @@ const program = cli()
 			.default(true),
 	)
 	.option(
-		'preferred-tsconfig-path',
+		'preferred-tsconfig',
 		z
 			.string()
-			.describe('Path to preferred tsconfig.json for declaration generation')
+			.describe(
+				'Path to a custom tsconfig.json file used for path resolution during both bundling and TypeScript declaration generation.',
+			)
 			.example('./tsconfig.build.json')
 			.optional(),
 	)

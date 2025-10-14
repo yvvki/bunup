@@ -774,6 +774,29 @@ If a file contains a Bun shebang (`#!/usr/bin/env bun`), the `bun` target will b
 
 When targeting `bun`, bundles are marked with a special `// @bun` pragma that tells the Bun runtime not to re-transpile the file before execution. While bundling isn't always necessary for server-side code, it can improve startup times and runtime performance.
 
+## Custom Tsconfig Path
+
+You can specify a custom tsconfig file to use for both build path resolution and TypeScript declaration generation:
+
+::: code-group
+
+```sh [CLI]
+bunup --preferred-tsconfig ./tsconfig.build.json
+```
+
+```ts [bunup.config.ts]
+export default defineConfig({
+  entry: "src/index.ts",
+  preferredTsconfig: "./tsconfig.build.json",
+});
+```
+
+:::
+
+This option is useful when you want to use a different TypeScript configuration for your build than your development environment. The specified tsconfig is used for path resolution during both bundling and TypeScript declaration generation.
+
+By default, the nearest `tsconfig.json` file will be used if this option is not specified.
+
 ## Cleaning the Output Directory
 
 By default, Bunup cleans the output directory before each build. You can disable this behavior:

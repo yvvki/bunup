@@ -143,6 +143,9 @@ export async function build(
 			jsx: options.jsx,
 			throw: false,
 			plugins: bunPlugins,
+			tsconfig: options.preferredTsconfig
+				? path.resolve(rootDir, options.preferredTsconfig)
+				: undefined,
 		})
 
 		for (const log of result.logs) {
@@ -206,7 +209,7 @@ export async function build(
 
 			const dtsResult = await generateDts(ensureArray(entry ?? entrypoints), {
 				cwd: rootDir,
-				preferredTsConfigPath: options.preferredTsconfigPath,
+				preferredTsconfig: options.preferredTsconfig,
 				splitting: getResolvedDtsSplitting(options.splitting, splitting),
 				naming: {
 					chunk: getDefaultChunkNaming(options.name),

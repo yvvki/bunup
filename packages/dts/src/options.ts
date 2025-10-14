@@ -17,7 +17,7 @@ export type GenerateDtsOptions = {
 	 * Path to the preferred tsconfig.json file
 	 * By default, the closest tsconfig.json file will be used
 	 */
-	preferredTsConfigPath?: string
+	preferredTsconfig?: string
 	/**
 	 * Controls which external modules should be resolved
 	 * - `true` to resolve all external modules

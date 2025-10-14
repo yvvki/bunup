@@ -32,7 +32,7 @@ describe('Config', () => {
 		const result = await runDtsBuild({
 			entry: 'src/index.ts',
 			format: 'esm',
-			preferredTsconfigPath: 'tsconfig.build.json',
+			preferredTsconfig: 'tsconfig.build.json',
 		})
 
 		expect(result.success).toBe(true)
