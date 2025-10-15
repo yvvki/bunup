@@ -4,8 +4,9 @@ import { ensureMinimumBunVersion } from './ensure-bun-version'
 import {
 	BunupBuildError,
 	BunupDTSBuildError,
-	invalidEntryPointsError,
-	noEntryPointsFoundError,
+	formatBunBuildError,
+	formatInvalidEntryPointsError,
+	formatNoEntryPointsFoundError,
 	parseErrorMessage,
 } from './errors'
 import { executeOnSuccess } from './helpers/on-success'
@@ -32,18 +33,15 @@ import {
 	runPluginBuildStartHooks,
 } from './plugins/utils'
 import { logger } from './printer/logger'
+import { ensureArray } from './utils/common'
 import {
-	cleanOutDir,
-	cleanPath,
-	ensureArray,
-	formatListWithAnd,
 	getDefaultDtsOutputExtention,
 	getDefaultJsOutputExtension,
-	getFilesFromGlobs,
-	getShortFilePath,
-	isJavascriptFile,
 	replaceExtension,
-} from './utils'
+} from './utils/extension'
+import { cleanOutDir, getFilesFromGlobs, isJavascriptFile } from './utils/file'
+import { formatListWithAnd } from './utils/format'
+import { cleanPath, getShortFilePath } from './utils/path'
 
 let ac: AbortController | null = null
 
@@ -100,9 +98,11 @@ export async function build(
 
 	if (!entrypoints.length) {
 		if (!ensureArray(userOptions.entry).length) {
-			throw new BunupBuildError(noEntryPointsFoundError(DEFAULT_ENTYPOINTS))
+			throw new BunupBuildError(
+				formatNoEntryPointsFoundError(DEFAULT_ENTYPOINTS),
+			)
 		}
-		throw new BunupBuildError(invalidEntryPointsError(entryArray))
+		throw new BunupBuildError(formatInvalidEntryPointsError(entryArray))
 	}
 
 	logger.info(`entry: ${formatListWithAnd(entrypoints)}`, {
@@ -150,9 +150,10 @@ export async function build(
 
 		for (const log of result.logs) {
 			if (log.level === 'error') {
-				throw new BunupBuildError(log.message)
+				throw new BunupBuildError(formatBunBuildError(log))
 			}
 			if (log.level === 'warning') logger.warn(log.message)
+			if (log.level === 'verbose') logger.log(log.message)
 			else if (log.level === 'info') logger.info(log.message)
 		}
 
@@ -191,6 +192,7 @@ export async function build(
 						file.kind === 'entry-point'
 							? cleanPath(entrypoints[entrypointIndex])
 							: undefined,
+					size: file.size,
 				})
 
 				if (file.kind === 'entry-point') {
@@ -251,6 +253,7 @@ export async function build(
 						entrypoint: file.entrypoint
 							? cleanPath(file.entrypoint)
 							: undefined,
+						size: file.dts.length,
 					})
 				}
 			}

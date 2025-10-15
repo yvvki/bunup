@@ -6,7 +6,8 @@ import { BunupWatchError, handleError, parseErrorMessage } from './errors'
 import { type BuildOptions, resolveBuildOptions } from './options'
 import { logTime } from './printer/logger'
 import { printBuildReport } from './printer/print-build-report'
-import { ensureArray, getShortFilePath } from './utils'
+import { ensureArray } from './utils/common'
+import { getShortFilePath } from './utils/path'
 
 export async function watch(
 	userOptions: Partial<BuildOptions>,
@@ -14,7 +15,6 @@ export async function watch(
 	configFilePath?: string | null,
 ): Promise<void> {
 	const watchPaths = new Set<string>()
-
 	const options = resolveBuildOptions(userOptions)
 
 	const uniqueEntries = new Set(ensureArray(options.entry))
@@ -92,7 +92,7 @@ export async function watch(
 		if (configFilePath && changedPath === configFilePath) {
 			console.log(
 				pc.yellow(
-					`\n  Please restart watch mode to apply configuration changes.`,
+					`\n  Please restart watch mode to apply configuration changes.\n`,
 				),
 			)
 			cleanup()

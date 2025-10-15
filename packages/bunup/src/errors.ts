@@ -1,5 +1,7 @@
 import pc from 'picocolors'
 import { link, logger } from './printer/logger'
+import { stripAnsiSafe } from './utils/format'
+import { getShortFilePath } from './utils/path'
 
 class BunupError extends Error {
 	constructor(message?: string) {
@@ -124,27 +126,31 @@ export const handleError = (error: unknown, context?: string): void => {
 	)
 
 	if (!knownError) {
-		console.error(
+		logger.error(
 			`\n${pc.bgRed(` ${errorType} `)}\n\n${contextPrefix}${errorMessage}`
 				.split('\n')
-				.map((line) => `  ${line}`)
+				.map((line) => pc.white(`  ${line}`))
 				.join('\n'),
+			{ noIcon: true },
 		)
 	}
 
 	if (knownError) {
-		console.log('\n')
+		logger.space()
 		knownError.logSolution(errorMessage)
-		console.log('\n')
+		logger.space()
 	} else {
 		const issueUrl = new URL('https://github.com/bunup/bunup/issues/new')
-		issueUrl.searchParams.set('title', `[${errorType}] Error encountered`)
+		issueUrl.searchParams.set(
+			'title',
+			`[${errorType}] [give a descriptive title]`,
+		)
 		issueUrl.searchParams.set(
 			'body',
-			`## Error Details\n\n**Error Type:** ${errorType}\n**Error Message:** ${errorMessage}\n\n## Additional Context\n\n<!-- Please provide any additional context about what you were trying to do when the error occurred -->`,
+			`## Error Details\n\n**Error Type:** ${errorType}\n**Error Message:** ${stripAnsiSafe(errorMessage)}\n\n## Additional Context\n\n<!-- Please provide any additional context about what you were trying to do when the error occurred -->`,
 		)
 
-		console.error(
+		logger.log(
 			pc.white('\n  If you think this is a bug, please ') +
 				link(issueUrl.toString(), 'open an issue') +
 				' with details about this error\n',
@@ -152,7 +158,7 @@ export const handleError = (error: unknown, context?: string): void => {
 	}
 }
 
-export const noEntryPointsFoundError = (
+export const formatNoEntryPointsFoundError = (
 	defaultEntrypoints: string[],
 ): string => {
 	return (
@@ -164,7 +170,9 @@ export const noEntryPointsFoundError = (
 	)
 }
 
-export const invalidEntryPointsError = (userEntrypoints: string[]): string => {
+export const formatInvalidEntryPointsError = (
+	userEntrypoints: string[],
+): string => {
 	const entryPointsFormatted = logger.list(userEntrypoints, { dim: true })
 	const isMultiple = userEntrypoints.length > 1
 
@@ -173,6 +181,26 @@ export const invalidEntryPointsError = (userEntrypoints: string[]): string => {
 ${entryPointsFormatted}
 
 Please check that ${isMultiple ? 'these paths exist and point' : 'this path exists and points'} to ${isMultiple ? 'valid files' : 'a valid file'}.`
+}
+
+export function formatBunBuildError(
+	error: BuildMessage | ResolveMessage,
+): string {
+	const pos = error.position
+
+	if (!pos) {
+		return error.message
+	}
+
+	const lineNum = String(pos.line)
+	const padding = ' '.repeat(lineNum.length)
+	const caretPos = pos.column
+
+	return `${pc.dim(`${lineNum} |`)} ${logger.highlight(pos.lineText)}
+${pc.dim(`${padding} |`)} ${' '.repeat(caretPos)}${pc.red('^')}
+
+${pc.bold(error.message)}
+    ${pc.dim('at')} ${pc.cyan(getShortFilePath(pos.file))}${pc.dim(':')}${pc.yellow(lineNum)}${pc.dim(':')}${pc.yellow(String(pos.column))}`
 }
 
 export const handleErrorAndExit = (error: unknown, context?: string): void => {
