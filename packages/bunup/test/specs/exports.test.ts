@@ -80,6 +80,31 @@ describe('exports plugin', () => {
 		)
 	})
 
+	it('should handle single non-index entrypoint with correct export key', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/utils.ts': 'export const util: string = "helper";',
+		})
+
+		const result = await runBuild({
+			entry: 'src/utils.ts',
+			format: 'esm',
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data.exports['.']).toBeUndefined()
+		expect(result.packageJson.data.exports['./utils']).toBeDefined()
+		expect(result.packageJson.data.exports['./utils'].import).toContain(
+			'.output/utils.mjs',
+		)
+		expect(result.packageJson.data.main).toBeUndefined()
+		expect(result.packageJson.data.module).toBeUndefined()
+	})
+
 	it('should handle TypeScript declarations (dts)', async () => {
 		createProject({
 			'package.json': JSON.stringify({
