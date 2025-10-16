@@ -17,6 +17,9 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"scripts": {
+		"type-check": "tsc --noEmit"
+	},
 	"peerDependencies": {
 		"typescript": ">=4.5.0"
 	},
