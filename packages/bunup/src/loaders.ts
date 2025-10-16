@@ -15,7 +15,7 @@ export async function processLoadedConfigs(
 	cwd: string,
 	filter?: string[],
 ): Promise<ProcessableConfig[]> {
-	return Array.isArray(config) && 'root' in config[0]
+	return Array.isArray(config) && config[0] && 'root' in config[0]
 		? (config as DefineWorkspaceItem[])
 				.filter((c) => (filter ? filter.includes(c.name) : true))
 				.map((c) => ({

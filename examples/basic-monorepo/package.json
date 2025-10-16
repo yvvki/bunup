@@ -4,7 +4,8 @@
 	"private": true,
 	"scripts": {
 		"build": "bunup",
-		"dev": "bunup --watch"
+		"dev": "bunup --watch",
+		"type-check": "bun run --filter '*' type-check"
 	},
 	"devDependencies": {
 		"@types/bun": "^1.2.23",

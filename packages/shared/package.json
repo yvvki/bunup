@@ -17,6 +17,9 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"scripts": {
+		"type-check": "tsc --noEmit"
+	},
 	"license": "MIT",
 	"author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
 	"maintainers": [

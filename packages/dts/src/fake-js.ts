@@ -290,8 +290,8 @@ function handleNamespace(stmt: ExpressionStatement): string | null {
 		expr.type !== 'CallExpression' ||
 		expr.callee?.type !== 'Identifier' ||
 		expr.arguments?.length !== 2 ||
-		expr.arguments[0].type !== 'Identifier' ||
-		expr.arguments[1].type !== 'ObjectExpression'
+		expr.arguments[0]?.type !== 'Identifier' ||
+		expr.arguments[1]?.type !== 'ObjectExpression'
 	) {
 		return null
 	}

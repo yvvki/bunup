@@ -47,7 +47,7 @@ bun run dev        # Start development mode
 bun run test       # Run test suite
 bun run lint       # Check code style and find problems
 bun run lint:fix   # Fix linting and formatting issues automatically
-bun run tsc        # Type check TypeScript code
+bun run type-check # Type check TypeScript code
 bun run build      # Build production bundle
 ```
 

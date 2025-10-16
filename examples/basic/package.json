@@ -19,7 +19,8 @@
 	},
 	"scripts": {
 		"build": "bunup",
-		"dev": "bunup --watch"
+		"dev": "bunup --watch",
+		"type-check": "tsc --noEmit"
 	},
 	"devDependencies": {
 		"@types/bun": "^1.2.20",

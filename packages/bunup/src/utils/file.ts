@@ -89,10 +89,10 @@ export async function detectFileFormatting(filePath: string): Promise<{
 			const match = line.match(/^(\s+)/)
 			if (match) {
 				const indent = match[1]
-				if (indent.startsWith('\t')) {
+				if (indent?.startsWith('\t')) {
 					return { indentation: '\t', hasTrailingNewline }
 				}
-				return { indentation: indent, hasTrailingNewline }
+				return { indentation: indent ?? '  ', hasTrailingNewline }
 			}
 		}
 

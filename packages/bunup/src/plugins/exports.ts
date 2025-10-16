@@ -444,7 +444,7 @@ function getExportKey(pathRelativeToOutdir: string): string {
 		'/',
 	)
 
-	if (pathSegments.length === 1 && pathSegments[0].startsWith('index')) {
+	if (pathSegments.length === 1 && pathSegments[0]?.startsWith('index')) {
 		return '.'
 	}
 

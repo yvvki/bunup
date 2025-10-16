@@ -20,7 +20,8 @@
 	},
 	"scripts": {
 		"build": "bunup",
-		"dev": "bunup --watch"
+		"dev": "bunup --watch",
+		"type-check": "tsc --noEmit"
 	},
 	"devDependencies": {
 		"@bunup/plugin-tailwindcss": "^0.14.9",

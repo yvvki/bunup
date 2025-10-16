@@ -19,11 +19,11 @@
 		"test": "bun test",
 		"test:coverage": "bun test --coverage",
 		"test:build": "bun run --cwd packages/bunup/test build",
-		"tsc": "tsc --noEmit",
+		"type-check": "bun run --filter './packages/*' type-check",
 		"release": "bumpp -r --commit --push --tag"
 	},
 	"simple-git-hooks": {
-		"pre-commit": "bun run lint"
+		"pre-commit": "bun run lint && bun run type-check"
 	},
 	"workspaces": [
 		"docs",

@@ -102,7 +102,7 @@ function logSingle({ error, file, content }: IsolatedDeclarationError): void {
 }
 
 function extractErrorCode(message: string): string {
-	return message.split(':')[0]
+	return message.split(':')[0] ?? ''
 }
 
 function getSeverityFormatting(severity: Severity): SeverityFormatting {
@@ -115,7 +115,9 @@ function calculatePosition(sourceText: string, labelStart: number): string {
 
 	const lines = sourceText.slice(0, labelStart).split('\n')
 	const lineNumber = lines.length
-	const columnStart = lines[lines.length - 1].length + 1
+	const lastLine = lines[lines.length - 1]
+	if (!lastLine) return ''
+	const columnStart = lastLine.length + 1
 
 	return ` (${lineNumber}:${columnStart})`
 }
@@ -132,7 +134,7 @@ export function generateOxcCodeFrame(
 	const lastNewlineIndex = sourceText.slice(0, start).lastIndexOf('\n')
 	const startCol = start - lastNewlineIndex - 1
 	const endCol = end
-		? Math.min(end - lastNewlineIndex - 1, lineContent.length)
+		? Math.min(end - lastNewlineIndex - 1, lineContent?.length ?? 0)
 		: startCol + 1
 
 	const underlineLength = Math.max(1, endCol - startCol)

@@ -46,6 +46,9 @@
 	"bin": {
 		"bunup": "dist/cli/index.js"
 	},
+	"scripts": {
+		"type-check": "tsc --noEmit"
+	},
 	"dependencies": {
 		"@bunup/dts": "workspace:*",
 		"chokidar": "^4.0.3",

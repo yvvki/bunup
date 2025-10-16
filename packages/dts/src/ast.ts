@@ -105,7 +105,7 @@ export function getName(
 			const declarations = node.declarations
 			if (
 				declarations?.length === 1 &&
-				declarations[0].id?.type === 'Identifier'
+				declarations[0]?.id?.type === 'Identifier'
 			) {
 				return declarations[0].id.name
 			}

@@ -122,7 +122,7 @@ function extractPrefix(source: string): string | null {
 	const match = source.match(PREFIX_RE)
 	if (match) {
 		const prefixMatch = match[0].match(/prefix\(([^)]+)\)/)
-		return prefixMatch ? prefixMatch[1] : null
+		return prefixMatch ? (prefixMatch[1] ?? null) : null
 	}
 	return null
 }

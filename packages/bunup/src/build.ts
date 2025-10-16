@@ -190,7 +190,7 @@ export async function build(
 					kind: file.kind,
 					entrypoint:
 						file.kind === 'entry-point'
-							? cleanPath(entrypoints[entrypointIndex])
+							? cleanPath(entrypoints[entrypointIndex] ?? '')
 							: undefined,
 					size: file.size,
 				})
