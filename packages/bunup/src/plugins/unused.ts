@@ -1,5 +1,6 @@
 import pc from 'picocolors'
 import { logger } from '../printer/logger'
+import { isJavascriptFile } from '../utils/file'
 import { formatListWithAnd } from '../utils/format'
 import type { BunupPlugin } from './types'
 
@@ -39,7 +40,7 @@ export function unused(options: UnusedOptions = {}): BunupPlugin {
 				})
 
 				const jsFiles = output.files.filter((file) =>
-					file.fullPath.endsWith('.js'),
+					isJavascriptFile(file.fullPath),
 				)
 
 				const packageDependencies =
@@ -102,6 +103,7 @@ export function unused(options: UnusedOptions = {}): BunupPlugin {
 					const message = [
 						`\n  Your project${buildOptions.name ? ` ${buildOptions.name}` : ''} has ${count} unused ${depText}: ${coloredDeps}.`,
 						`You can remove ${count === 1 ? 'it' : 'them'} with ${removeCommand}`,
+						`or move to devDependencies if you are using ${count === 1 ? 'it' : 'them'} only for types.`,
 					].join(' ')
 
 					if (level === 'error') {
