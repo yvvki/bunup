@@ -8,6 +8,7 @@ interface LogOptions {
 	tick?: boolean
 	icon?: string
 	noIcon?: boolean
+	leftPadding?: boolean | number
 }
 
 export type LogLevel = 'info' | 'warn' | 'error'
@@ -77,6 +78,7 @@ export class Logger {
 			tick = false,
 			type = 'info',
 			noIcon = false,
+			leftPadding,
 		} = options
 
 		const icon = noIcon ? '' : (options.icon ?? this.getIcon(type, tick))
@@ -90,7 +92,23 @@ export class Logger {
 
 		const identifierPart = this.formatIdentifier(identifier)
 		const iconPart = icon ? `${icon} ` : ''
-		return `${iconPart}${styledMessage}${identifierPart}`
+		const baseMessage = `${iconPart}${styledMessage}${identifierPart}`
+
+		const paddingCount =
+			leftPadding === true
+				? 2
+				: typeof leftPadding === 'number'
+					? leftPadding
+					: 0
+		if (paddingCount > 0) {
+			const padding = ' '.repeat(paddingCount)
+			return baseMessage
+				.split('\n')
+				.map((line) => `${padding}${line}`)
+				.join('\n')
+		}
+
+		return baseMessage
 	}
 
 	private output(
@@ -155,10 +173,14 @@ export class Logger {
 		}
 	}
 
-	public log(...args: any[]): void {
-		if (!this.silent) {
-			console.log(...args)
-		}
+	public log(message: string, options: LogOptions = {}): void {
+		const formattedMessage = this.formatMessage({
+			...options,
+			message,
+			type: 'info',
+			noIcon: true,
+		})
+		this.output(formattedMessage, options)
 	}
 
 	public list(items: string[], options?: { dim?: boolean }): string {

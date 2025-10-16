@@ -127,11 +127,8 @@ export const handleError = (error: unknown, context?: string): void => {
 
 	if (!knownError) {
 		logger.error(
-			`\n${pc.bgRed(` ${errorType} `)}\n\n${contextPrefix}${errorMessage}`
-				.split('\n')
-				.map((line) => pc.white(`  ${line}`))
-				.join('\n'),
-			{ noIcon: true },
+			`\n${pc.bgRed(` ${errorType} `)}\n\n${contextPrefix}${errorMessage}`,
+			{ noIcon: true, leftPadding: true },
 		)
 	}
 

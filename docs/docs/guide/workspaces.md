@@ -84,7 +84,6 @@ export default defineWorkspace(
     // Shared options
     format: ["esm", "cjs"],
     exports: true,
-    unused: true,
   }
 );
 ```

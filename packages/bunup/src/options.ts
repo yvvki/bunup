@@ -34,7 +34,7 @@ export type Format = 'esm' | 'cjs' | 'iife'
 
 type Target = 'bun' | 'node' | 'browser'
 
-type External = (string | RegExp)[]
+export type External = (string | RegExp)[]
 
 type Env = 'inline' | 'disable' | `${string}*` | Record<string, string>
 
@@ -489,11 +489,9 @@ export interface BuildOptions {
 	 */
 	exports?: boolean | ExportsOptions
 	/**
-	 * Detect and report unused dependencies in your project.
-	 *
-	 * When `true`, enables unused dependency detection with default warning level.
-	 * When an object is provided, allows customization of the detection behavior,
-	 * including report level (warn/error) and dependencies to ignore.
+	 * Detect and report dependencies that are unused or incorrectly categorized.
+	 * This includes dependencies not used in your build output, as well as dependencies
+	 * that don't need to be packed with your library.
 	 *
 	 * @see https://bunup.dev/docs/extra-options/unused
 	 */

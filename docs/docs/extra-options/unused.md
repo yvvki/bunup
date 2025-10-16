@@ -1,6 +1,6 @@
 # Unused
 
-Bunup detects and reports unused dependencies in your project.
+Bunup detects and reports unused or incorrectly categorized dependencies in your project, helping you maintain a clean dependency tree and keep your `package.json` up to date.
 
 ## Usage
 
@@ -25,7 +25,7 @@ export default defineConfig({
 ::: code-group
 
 ```sh [CLI]
-# Set warning level to error 
+# Set warning level to error
 bunup --unused.level=error
 
 # Ignore specific dependencies

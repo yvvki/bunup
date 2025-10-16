@@ -466,17 +466,17 @@ const program = cli()
 					level: z
 						.string()
 						.choices(['warn', 'error'])
-						.describe('The level of reporting for unused dependencies')
+						.describe(
+							'The level of reporting for unused or incorrectly categorized dependencies',
+						)
 						.default('warn'),
 					ignore: z
 						.array(z.string())
-						.describe(
-							'Dependencies to ignore when checking for unused dependencies',
-						)
+						.describe('Dependencies to ignore when checking')
 						.optional(),
 				}),
 			)
-			.describe('Detect and report unused dependencies')
+			.describe('Detect unused or incorrectly categorized dependencies')
 			.optional(),
 	)
 
