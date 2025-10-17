@@ -267,7 +267,13 @@ const program = cli()
 					'infer-types': z
 						.boolean()
 						.describe(
-							'Use typescript native compiler for declarations generation (removes need for explicit type annotations)',
+							'Use TypeScript compiler (tsc) for declarations generation (removes need for explicit type annotations)',
+						)
+						.optional(),
+					tsgo: z
+						.boolean()
+						.describe(
+							"Use TypeScript's native compiler (tsgo), 10x faster than tsc (only applicable with inferTypes enabled)",
 						)
 						.optional(),
 				}),

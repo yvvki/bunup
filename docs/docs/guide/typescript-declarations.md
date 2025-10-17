@@ -1,6 +1,6 @@
 # TypeScript Declarations
 
-Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library based on your output format, with advanced features like declaration splitting.
+Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library. These files tell other developers (and TypeScript) what types your library exports, enabling proper type checking and autocomplete when others use your code.
 
 ## Isolated Declarations
 
@@ -15,13 +15,27 @@ Enable `isolatedDeclarations` in your tsconfig:
 }
 ```
 
-TypeScript 5.5's [isolated declarations](https://devblogs.microsoft.com/typescript/announcing-typescript-5-5-beta/#isolated-declarations) eliminates slow declaration generation by processing files independently rather than analyzing entire dependency graphs. By requiring explicit return types on public exports only, it transforms builds from seconds/minutes to milliseconds (**50-100x faster**), enabling instant builds and faster iteration. This creates clearer, predictable APIs defined by you instead of TypeScript's inference, while ensuring compatibility with next-generation build tools for the modern JavaScript ecosystem.
+TypeScript 5.5's [isolated declarations](https://devblogs.microsoft.com/typescript/announcing-typescript-5-5-beta/#isolated-declarations) changes how declaration files are generated. Instead of analyzing your entire project to figure out types (slow), it processes each file independently (instant). This requires explicit return types on your **public exports only** - a good practice that makes your API clearer and more predictable.
+
+This transforms builds from seconds/minutes to milliseconds (**50-100x faster**), enabling instant builds and rebuilds, creates clearer APIs, and ensures compatibility with modern build tools.
+
+```ts
+// Required: Explicit return type on public exports
+export function getData(): Promise<User> {
+  return fetchUser();
+}
+
+// Internal functions don't need explicit types
+function fetchUser() {
+  return api.get('/user');
+}
+```
 
 Learn more about isolated declarations [here](https://arshadyaseen.com/writing/isolated-declarations).
 
-For new projects, we strongly recommend enabling isolated declarations to achieve instant builds, clearer APIs, and ensure your library remains compatible with future JavaScript tooling.
+For new projects, we strongly recommend isolated declarations for instant builds and rebuilds and clearer APIs. Explicitly typing your public exports is considered a best practice for library development.
 
-For some projects (though uncommon), you might need to disable isolated declarations when you rely on TypeScript's type inference. This is particularly relevant when working with complex generic types that depend heavily on inference. In such cases, explicitly annotating return types for all public exports might be challenging or verbose. Check the [Infer Types](#infer-types) section for more details.
+You only need to disable isolated declarations in rare cases with complex generic types that are genuinely difficult to type explicitly (like some advanced Zod schemas). Check the [Infer Types](#infer-types) section for this alternative approach.
 
 ## Basic
 
@@ -29,7 +43,7 @@ Bunup automatically generates TypeScript declaration files for all TypeScript en
 
 ## Declaration Splitting
 
-Declaration splitting optimizes TypeScript `.d.ts` files when multiple entry points share types. Instead of duplicating shared types across declaration files, Bunup extracts them into shared chunk files that are imported where needed.
+Declaration splitting prevents code duplication when multiple entry points share the same types. Instead of copying shared types into every declaration file, Bunup extracts them into separate chunk files that get imported where needed.
 
 ::: code-group
 
@@ -51,25 +65,20 @@ export default defineConfig({
 
 ```
 dist/
-├── index.d.ts           # ~45KB
-└── utils.d.ts           # ~40KB
+├── index.d.ts           # ~45KB (includes duplicated types)
+└── utils.d.ts           # ~40KB (includes duplicated types)
 ```
 
 **With splitting:**
 
 ```
 dist/
-├── index.d.ts					# ~15KB, imports from shared chunk
-├── utils.d.ts					# ~10KB, imports from shared chunk
-└── shared/chunk-abc123.d.ts	# ~30KB, shared types
+├── index.d.ts					# ~15KB, imports shared types
+├── utils.d.ts					# ~10KB, imports shared types
+└── shared/chunk-abc123.d.ts	# ~30KB, shared types extracted here
 ```
 
-The result is clean declarations with no duplicates, improved readability, and reduced bundle size.
-
-<!-- TODO: Uncomment this once Bun fixes the issue with splitting and declaration splitting can be enabled by default when build splitting is enabled
-::: info
-Declaration splitting is enabled by default if code splitting is enabled.
-::: -->
+The result is smaller files with no duplicate type definitions.
 
 ## Minification
 
@@ -91,7 +100,7 @@ export default defineConfig({
 
 :::
 
-Minifying TypeScript declarations is uncommon, but bunup supports it. When enabled, minification keeps public (exported) API names intact, shortens internal type names, and removes documentation comments. This can greatly reduce file size, which is useful if bundle size matters and you don't need JSDoc or readable type definitions for consumers.
+Minification keeps your public API names unchanged but shortens internal type names and removes comments. This reduces file size significantly, useful when bundle size matters more than readable type definitions.
 
 ### Example
 
@@ -116,17 +125,9 @@ type e<T>={[P in keyof T]?:e<T[P]>};interface t<T>{data:T;error?:string;meta?:Re
 
 ## Infer Types
 
-By default, Bunup uses TypeScript's isolated declarations mode, which requires explicit type annotations on public exports. While this provides excellent performance and clearer APIs, some projects may rely heavily on TypeScript's type inference for complex generic types (like working with Zod schemas).
+By default, Bunup uses isolated declarations which require explicit type annotations. The `inferTypes` option switches back to traditional TypeScript compilation, allowing you to rely on TypeScript's automatic type inference instead of writing explicit return types.
 
-The `inferTypes` option uses the TypeScript native compiler via [tsgo](https://github.com/microsoft/typescript-go) to generate declarations, which will infer types for you automatically. This eliminates the need for explicit return type annotations while still maintaining excellent performance (10x faster than traditional `tsc`).
-
-First, you need to install the `@typescript/native-preview` package:
-
-```sh
-bun add --dev @typescript/native-preview
-```
-
-Then, you can enable the `inferTypes` option:
+This is useful for projects with complex generic types where explicit typing is verbose or challenging.
 
 ::: code-group
 
@@ -145,12 +146,45 @@ export default defineConfig({
 :::
 
 ::: tip
-For new projects, it's recommended to use [isolated declarations](#prerequisites) (default behavior) without `inferTypes`. This provides the best performance and encourages clearer, more maintainable APIs through explicit type annotations.
+For new projects, stick with [isolated declarations](#isolated-declarations) (default behavior) for instant builds and rebuilds and clearer APIs. Only use `inferTypes` when explicit typing becomes impractical.
+:::
+
+### Tsgo
+
+When `inferTypes` is enabled, Bunup uses the regular TypeScript compiler (tsc) by default. You can switch to TypeScript's experimental native compiler ([tsgo](https://devblogs.microsoft.com/typescript/typescript-native-port/)) for ~10x faster declaration generation.
+
+First, install the required package:
+
+```sh
+bun add --dev @typescript/native-preview
+```
+
+Then enable tsgo:
+
+::: code-group
+
+```sh [CLI]
+bunup --dts.infer-types --dts.tsgo
+```
+
+```typescript [bunup.config.ts]
+export default defineConfig({
+	dts: {
+		inferTypes: true,
+		tsgo: true,
+	},
+});
+```
+
+:::
+
+::: info
+`tsgo` only works with `inferTypes` enabled. It's experimental but stable for declaration generation. Once TypeScript officially releases it, Bunup will use tsgo by default when `inferTypes` is enabled.
 :::
 
 ## Custom Entry Points
 
-For more control, you can specify custom entry points for declarations:
+By default, Bunup generates declarations for all your entry points. You can specify which files should have declarations generated:
 
 ::: code-group
 
@@ -176,7 +210,7 @@ export default defineConfig({
 
 ### Using Glob Patterns
 
-Bunup supports glob patterns for both main entries and declaration file entries:
+Bunup supports glob patterns to match multiple files:
 
 ::: code-group
 
@@ -206,10 +240,9 @@ You can use:
 - Exclude patterns starting with `!` to filter out specific files
 - Both for main entries and declaration entries
 
-
 ## TypeScript Configuration
 
-You can specify a custom tsconfig file to use for TypeScript declaration generation. This is mainly used for path resolution during declaration generation.
+You can specify a custom tsconfig file for declaration generation. This mainly affects how TypeScript resolves import paths during the declaration generation process.
 
 See [Custom Tsconfig Path](/docs/guide/options#custom-tsconfig-path) for details.
 
@@ -217,7 +250,7 @@ By default, the nearest `tsconfig.json` file will be used.
 
 ## Resolving External Types
 
-When generating declaration files, you might need to include type references from external dependencies. Bunup can automatically resolve these external types:
+When your code imports types from external packages, you might need to include those type definitions in your declaration files. The `resolve` option tells Bunup to look up and include external types from your dependencies.
 
 ::: code-group
 
@@ -236,8 +269,6 @@ export default defineConfig({
 ```
 
 :::
-
-The `resolve` option helps when your TypeScript code imports types from external packages. Bunup will look for type definitions in `node_modules` and include them in your declaration files.
 
 You can also specify which packages to resolve types for:
 
@@ -264,7 +295,7 @@ export default defineConfig({
 
 ## Disabling Declaration Generation
 
-While Bunup automatically generates declaration files for TypeScript entries, you can disable this feature if needed:
+You can completely disable automatic declaration file generation:
 
 ::: code-group
 
@@ -281,4 +312,4 @@ export default defineConfig({
 
 :::
 
-This can be useful when you want to handle declaration generation yourself or when you're working on a project that doesn't need declaration files.
+This is useful when you want to handle declaration generation yourself or when working on projects that don't need type definitions.

@@ -234,7 +234,7 @@ export interface BuildOptions {
 		| boolean
 		| (Pick<
 				GenerateDtsOptions,
-				'resolve' | 'splitting' | 'minify' | 'inferTypes'
+				'resolve' | 'splitting' | 'minify' | 'inferTypes' | 'tsgo'
 		  > & {
 				entry?: string | string[]
 		  })
