@@ -179,7 +179,7 @@ export default defineConfig({
 :::
 
 ::: info
-`tsgo` only works with `inferTypes` enabled. It's experimental but stable for declaration generation. Once TypeScript officially releases it, Bunup will use tsgo by default when `inferTypes` is enabled.
+`tsgo` only works with `inferTypes` enabled. It's experimental but stable enough for declaration generation. Once TypeScript officially releases it, Bunup will use tsgo by default when `inferTypes` is enabled.
 :::
 
 ## Custom Entry Points
