@@ -23,12 +23,12 @@
     },
     "packages/bunup": {
       "name": "bunup",
-      "version": "0.15.0",
+      "version": "0.15.1",
       "bin": {
         "bunup": "dist/cli/index.js",
       },
       "dependencies": {
-        "@bunup/dts": "^0.14.26",
+        "@bunup/dts": "^0.14.28",
         "@bunup/shared": "workspace:*",
         "chokidar": "^4.0.3",
         "coffi": "^0.1.37",
@@ -79,7 +79,7 @@
     },
     "packages/plugin-tailwindcss": {
       "name": "@bunup/plugin-tailwindcss",
-      "version": "0.15.0",
+      "version": "0.15.1",
       "dependencies": {
         "@bunup/shared": "workspace:*",
         "@tailwindcss/postcss": "^4.1.14",
@@ -95,7 +95,7 @@
     },
     "packages/shared": {
       "name": "@bunup/shared",
-      "version": "0.15.0",
+      "version": "0.15.1",
       "peerDependencies": {
         "typescript": ">=4.5.0",
       },
@@ -173,7 +173,7 @@
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@2.2.5", "", { "os": "win32", "cpu": "x64" }, "sha512-F/jhuXCssPFAuciMhHKk00xnCAxJRS/pUzVfXYmOMUp//XW7mO6QeCjsjvnm8L4AO/dG2VOB0O+fJPiJ2uXtIw=="],
 
-    "@bunup/dts": ["@bunup/dts@0.14.26", "", { "dependencies": { "@babel/parser": "^7.28.4", "@typescript/native-preview": "^7.0.0-dev.20251016.1", "coffi": "^0.1.37", "oxc-minify": "^0.93.0", "oxc-resolver": "^11.9.0", "oxc-transform": "^0.93.0", "picocolors": "^1.1.1", "std-env": "^3.9.0", "ts-import-resolver": "^0.1.23" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-QTXOu+e4wHLn7pV4uvQ/k3LlppBc6zchXJvNpdRBa6wlEQjby4KOj1skc0XwuC7a8500RF1G2vFtyVc/0ktNmw=="],
+    "@bunup/dts": ["@bunup/dts@0.14.28", "", { "dependencies": { "@babel/parser": "^7.28.4", "@typescript/native-preview": "^7.0.0-dev.20251016.1", "coffi": "^0.1.37", "oxc-minify": "^0.93.0", "oxc-resolver": "^11.9.0", "oxc-transform": "^0.93.0", "picocolors": "^1.1.1", "std-env": "^3.9.0", "ts-import-resolver": "^0.1.23" }, "peerDependencies": { "typescript": ">=4.5.0" }, "optionalPeers": ["typescript"] }, "sha512-c2hX7PEBVOqdeHrWOSnk0Rj5Tw3rIKdikQuchN+JjzulgRT9uRQECYGgiQINgk0phi84JThKeZYKRWW9nENAUg=="],
 
     "@bunup/plugin-tailwindcss": ["@bunup/plugin-tailwindcss@workspace:packages/plugin-tailwindcss"],
 
