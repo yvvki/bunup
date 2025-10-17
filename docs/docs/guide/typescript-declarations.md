@@ -116,7 +116,7 @@ type e<T>={[P in keyof T]?:e<T[P]>};interface t<T>{data:T;error?:string;meta?:Re
 
 ## Infer Types
 
-By default, Bunup uses TypeScript's isolated declarations mode, which requires explicit type annotations on public exports. While this provides excellent performance and clearer APIs, some projects may rely heavily on TypeScript's type inference for complex generic types (like working with Zod in your project).
+By default, Bunup uses TypeScript's isolated declarations mode, which requires explicit type annotations on public exports. While this provides excellent performance and clearer APIs, some projects may rely heavily on TypeScript's type inference for complex generic types (like working with Zod schemas).
 
 The `inferTypes` option uses the TypeScript native compiler via [tsgo](https://github.com/microsoft/typescript-go) to generate declarations, which will infer types for you automatically. This eliminates the need for explicit return type annotations while still maintaining excellent performance (10x faster than traditional `tsc`).
 
