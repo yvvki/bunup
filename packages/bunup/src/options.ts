@@ -1,9 +1,9 @@
 import type { GenerateDtsOptions } from '@bunup/dts'
 import type { BuildConfig, BunPlugin } from 'bun'
 import { ensureBunVersion } from './ensure-bun-version'
+import { cssTypedModulesPlugin } from './plugins/css-typed-modules'
 import { type ExportsOptions, exports } from './plugins/exports'
 import { type InjectStylesOptions, injectStyles } from './plugins/inject-styles'
-import { cssTypedModulesPlugin } from './plugins/internal/css-typed-modules'
 import { externalOptionPlugin } from './plugins/internal/external-option'
 import { useClient } from './plugins/internal/use-client'
 import { shims } from './plugins/shims'
@@ -232,7 +232,10 @@ export interface BuildOptions {
 	 */
 	dts?:
 		| boolean
-		| (Pick<GenerateDtsOptions, 'resolve' | 'splitting' | 'minify'> & {
+		| (Pick<
+				GenerateDtsOptions,
+				'resolve' | 'splitting' | 'minify' | 'inferTypes'
+		  > & {
 				entry?: string | string[]
 		  })
 

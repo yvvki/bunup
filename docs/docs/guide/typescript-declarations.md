@@ -2,11 +2,11 @@
 
 Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library based on your output format, with advanced features like declaration splitting.
 
-## Prerequisites
+## Isolated Declarations
 
 Enable `isolatedDeclarations` in your tsconfig:
 
-```json [tsconfig.json] {4}
+```json [tsconfig.json] {3-4}
 {
   "compilerOptions": {
     "declaration": true,
@@ -15,9 +15,13 @@ Enable `isolatedDeclarations` in your tsconfig:
 }
 ```
 
-Bunup uses TypeScript's new isolated declarations feature to generate type declarations quickly and accurately.
+TypeScript 5.5's [isolated declarations](https://devblogs.microsoft.com/typescript/announcing-typescript-5-5-beta/#isolated-declarations) eliminates slow declaration generation by processing files independently rather than analyzing entire dependency graphs. By requiring explicit return types on public exports only, it transforms builds from seconds/minutes to milliseconds (**50-100x faster**), enabling instant builds and faster iteration. This creates clearer, predictable APIs defined by you instead of TypeScript's inference, while ensuring compatibility with next-generation build tools for the modern JavaScript ecosystem.
 
-Learn more about the benefits and why you need to enable this [here](https://arshadyaseen.com/writing/isolated-declarations).
+Learn more about isolated declarations [here](https://arshadyaseen.com/writing/isolated-declarations).
+
+For new projects, we strongly recommend enabling isolated declarations to achieve instant builds, clearer APIs, and ensure your library remains compatible with future JavaScript tooling.
+
+For some projects (though uncommon), you might need to disable isolated declarations when you rely on TypeScript's type inference. This is particularly relevant when working with complex generic types that depend heavily on inference. In such cases, explicitly annotating return types for all public exports might be challenging or verbose. Check the [Infer Types](#infer-types) section for more details.
 
 ## Basic
 
@@ -110,6 +114,39 @@ export { fetchData, Response, DeepPartial };
 type e<T>={[P in keyof T]?:e<T[P]>};interface t<T>{data:T;error?:string;meta?:Record<string,unknown>;}declare function n<T>(url:string,options?:RequestInit): Promise<t<T>>;export{n as fetchData,t as Response,e as DeepPartial};
 ```
 
+## Infer Types
+
+By default, Bunup uses TypeScript's isolated declarations mode, which requires explicit type annotations on public exports. While this provides excellent performance and clearer APIs, some projects may rely heavily on TypeScript's type inference for complex generic types (like working with Zod in your project).
+
+The `inferTypes` option uses the TypeScript native compiler via [tsgo](https://github.com/microsoft/typescript-go) to generate declarations, which will infer types for you automatically. This eliminates the need for explicit return type annotations while still maintaining excellent performance (10x faster than traditional `tsc`).
+
+First, you need to install the `@typescript/native-preview` package:
+
+```sh
+bun add --dev @typescript/native-preview
+```
+
+Then, you can enable the `inferTypes` option:
+
+::: code-group
+
+```sh [CLI]
+bunup --dts.infer-types
+```
+
+```typescript [bunup.config.ts]
+export default defineConfig({
+	dts: {
+		inferTypes: true,
+	},
+});
+```
+
+:::
+
+::: tip
+For new projects, it's recommended to use [isolated declarations](#prerequisites) (default behavior) without `inferTypes`. This provides the best performance and encourages clearer, more maintainable APIs through explicit type annotations.
+:::
 
 ## Custom Entry Points
 

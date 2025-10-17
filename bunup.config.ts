@@ -12,10 +12,6 @@ export default defineWorkspace(
 			},
 		},
 		{
-			name: '@bunup/dts',
-			root: 'packages/dts',
-		},
-		{
 			name: '@bunup/plugin-tailwindcss',
 			root: 'packages/plugin-tailwindcss',
 		},

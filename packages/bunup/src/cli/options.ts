@@ -264,6 +264,12 @@ const program = cli()
 						.boolean()
 						.describe('Minify generated declaration files')
 						.optional(),
+					'infer-types': z
+						.boolean()
+						.describe(
+							'Use typescript native compiler for declarations generation (removes need for explicit type annotations)',
+						)
+						.optional(),
 				}),
 			)
 			.default(true),
