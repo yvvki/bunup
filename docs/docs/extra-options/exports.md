@@ -117,6 +117,37 @@ export default defineConfig({
 });
 ```
 
+### `excludeCli`
+
+By default, CLI-related entry points are automatically excluded from the package exports field. This prevents binary/command-line tools from being exposed as importable package exports, which is the correct behavior in most cases since CLI entries are typically used via the `bin` field in package.json.
+
+The plugin uses glob patterns to automatically detect and exclude common CLI entry point patterns:
+- Files or directories named `cli` (e.g., `cli.ts`, `cli/index.ts`)
+- Files or directories named `bin` (e.g., `bin.ts`, `bin/index.ts`)
+- CLI-related paths in any directory (e.g., `src/cli.ts`, `tools/bin/index.ts`)
+
+If you want to include CLI entries in your exports (which is rarely needed), you can disable this behavior:
+
+::: code-group
+
+```sh [CLI]
+bunup --no-exports.exclude-cli
+```
+
+```ts [bunup.config.ts]
+import { defineConfig } from 'bunup';
+
+export default defineConfig({
+	exports: {
+		excludeCli: false // Include CLI entries in exports
+	},
+});
+```
+
+:::
+
+When disabled, CLI entries will be treated like any other entry point and included in the exports field.
+
 ### `excludeCss`
 
 When you use CSS files and import them in your JavaScript files, Bun will bundle the CSS and include it in the build output. As a result, these CSS files will be automatically added to the exports field with appropriate export keys.

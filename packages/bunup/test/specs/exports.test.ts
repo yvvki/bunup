@@ -570,6 +570,136 @@ describe('exports plugin', () => {
 		expect(result.packageJson.data.exports['./internal']).toBeUndefined()
 	})
 
+	it('should include CLI files when excludeCli is false', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/utils.ts': 'export const hello: string = "world";',
+			'src/cli.ts': 'export const cli = "cli command";',
+			'bin.ts': 'export const rootBin = "root binary";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/utils.ts', 'src/cli.ts', 'bin.ts'],
+			format: 'esm',
+			plugins: [
+				exports({
+					excludeCli: false,
+				}),
+			],
+		})
+
+		expect(result.success).toBe(true)
+		const exportKeys = Object.keys(result.packageJson.data.exports)
+
+		expect(exportKeys.some((key) => key.includes('utils'))).toBe(true)
+		expect(exportKeys.some((key) => key.includes('cli'))).toBe(true)
+		expect(exportKeys.some((key) => key.includes('bin'))).toBe(true)
+	})
+
+	it('should exclude bin files by default', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+			'src/bin.ts': 'console.log("Binary command");',
+			'bin/index.ts': 'console.log("Root binary");',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'src/bin.ts', 'bin/index.ts'],
+			format: 'esm',
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
+		const exportKeys = Object.keys(result.packageJson.data.exports)
+		expect(exportKeys).toBeDefined()
+		expect(exportKeys.some((key) => key.includes('bin'))).toBe(false)
+	})
+
+	it('should include bin files when excludeCli is false', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+			'src/bin.ts': 'export const bin = "binary command";',
+			'bin/index.ts': 'export const rootBin = "root binary";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'src/bin.ts', 'bin/index.ts'],
+			format: 'esm',
+			plugins: [
+				exports({
+					excludeCli: false,
+				}),
+			],
+		})
+
+		expect(result.success).toBe(true)
+		const exportKeys = Object.keys(result.packageJson.data.exports)
+		expect(exportKeys).toBeDefined()
+		expect(exportKeys.some((key) => key.includes('bin'))).toBe(true)
+	})
+
+	it('should work with excludeCli false and custom exclude patterns', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+			'src/cli.ts': 'export const cli = "cli command";',
+			'src/internal.ts': 'export const internal = "internal";',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'src/cli.ts', 'src/internal.ts'],
+			format: 'esm',
+			plugins: [
+				exports({
+					excludeCli: false,
+					exclude: ['src/internal.ts'],
+				}),
+			],
+		})
+
+		expect(result.success).toBe(true)
+		expect(result.packageJson.data.exports['.']).toBeDefined()
+		expect(result.packageJson.data.exports['./cli']).toBeDefined()
+		expect(result.packageJson.data.exports['./internal']).toBeUndefined()
+	})
+
+	it('should match CLI files with various extensions', async () => {
+		createProject({
+			'package.json': JSON.stringify({
+				name: 'test-package',
+				version: '1.0.0',
+			}),
+			'src/index.ts': 'export const hello: string = "world";',
+			'cli.ts': 'console.log("CLI ts");',
+			'tools/bin.tsx': 'console.log("Bin tsx");',
+		})
+
+		const result = await runBuild({
+			entry: ['src/index.ts', 'cli.ts', 'tools/bin.tsx'],
+			format: 'esm',
+			plugins: [exports()],
+		})
+
+		expect(result.success).toBe(true)
+		const exportKeys = Object.keys(result.packageJson.data.exports)
+		expect(exportKeys.some((key) => key.includes('cli'))).toBe(false)
+		expect(exportKeys.some((key) => key.includes('bin'))).toBe(false)
+	})
+
 	describe('CSS file handling', () => {
 		it('should include CSS files in exports by default', async () => {
 			createProject({

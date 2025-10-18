@@ -1,8 +1,9 @@
 import path from 'node:path'
+import pc from 'picocolors'
 import { CSS_RE, JS_DTS_RE } from '../constants/re'
 import { logger } from '../printer/logger'
 import { detectFileFormatting } from '../utils/file'
-import { cleanPath } from '../utils/path'
+import { cleanPath, getShortFilePath } from '../utils/path'
 import type { BuildContext, BuildOutputFile, BunupPlugin } from './types'
 
 type ExportField = 'require' | 'import' | 'types'
@@ -33,6 +34,25 @@ export interface ExportsOptions {
 	 * @see https://bunup.dev/docs/extra-options/exports#exclude
 	 */
 	exclude?: Exclude
+	/**
+	 * Whether to automatically exclude CLI entry points from the exports field
+	 *
+	 * When enabled (default), CLI-related entry points are automatically excluded
+	 * from package exports since they are typically used for binaries and should
+	 * not be exposed as importable package exports.
+	 *
+	 * The plugin uses glob patterns to match common CLI entry point patterns:
+	 * - Files or directories named "cli" (e.g., `cli.ts`, `cli/index.ts`)
+	 * - Files or directories named "bin" (e.g., `bin.ts`, `bin/index.ts`)
+	 * - CLI-related paths in src directory (e.g., `src/cli.ts`, `src/bin/index.ts`)
+	 *
+	 * If you want to include CLI entries in your exports, set this to `false` and
+	 * optionally use the `exclude` option for more granular control.
+	 *
+	 * @default true
+	 * @see https://bunup.dev/docs/extra-options/exports#excludecli
+	 */
+	excludeCli?: boolean
 	/**
 	 * Whether to exclude CSS files from being added to the exports field
 	 *
@@ -93,6 +113,7 @@ async function processPackageJsonExports(
 		const { exportsField, entryPoints } = generateExportsFields(
 			output.files,
 			options.exclude,
+			options.excludeCli,
 			options.excludeCss,
 			ctx,
 		)
@@ -121,6 +142,12 @@ async function processPackageJsonExports(
 			updatedFiles,
 		)
 
+		await validateBinFields(
+			meta.packageJson.data,
+			buildOptions.name,
+			meta.packageJson.path,
+		)
+
 		if (Bun.deepEquals(newPackageJson, meta.packageJson.data)) {
 			return
 		}
@@ -146,13 +173,14 @@ async function processPackageJsonExports(
 function generateExportsFields(
 	files: BuildOutputFile[],
 	exclude: Exclude | undefined,
+	excludeCli: boolean | undefined,
 	excludeCss: boolean | undefined,
 	ctx: BuildContext,
 ): {
 	exportsField: ExportsField
 	entryPoints: Partial<Record<EntryPoint, string>>
 } {
-	const filteredFiles = filterFiles(files, exclude, ctx)
+	const filteredFiles = filterFiles(files, exclude, excludeCli, ctx)
 	const { filesByExportKey, allDtsFiles, cssFiles } =
 		groupFilesByExportKey(filteredFiles)
 	const exportsField = createExportEntries(filesByExportKey)
@@ -408,6 +436,7 @@ function createUpdatedPackageJson(
 function filterFiles(
 	files: BuildOutputFile[],
 	exclude: Exclude | undefined,
+	excludeCli: boolean | undefined,
 	ctx: BuildContext,
 ): BuildOutputFile[] {
 	return files.filter(
@@ -417,24 +446,31 @@ function filterFiles(
 			(file.format === 'esm' ||
 				file.format === 'cjs' ||
 				CSS_RE.test(file.fullPath)) &&
-			(!file.entrypoint || !isExcluded(file.entrypoint, exclude, ctx)),
+			(!file.entrypoint ||
+				!isExcluded(file.entrypoint, exclude, excludeCli, ctx)),
 	)
 }
 
-const DEFAULT_CLI_EXCLUSIONS = [
-	'cli.ts',
-	'cli/index.ts',
-	'src/cli.ts',
-	'src/cli/index.ts',
+/**
+ * Glob patterns to match common CLI entry points
+ * These patterns match files and directories commonly used for CLI/binary entry points
+ */
+const CLI_EXCLUSION_PATTERNS = [
+	'**/cli.{ts,tsx,js,jsx,mjs,cjs}',
+	'**/cli/index.{ts,tsx,js,jsx,mjs,cjs}',
+	'**/bin.{ts,tsx,js,jsx,mjs,cjs}',
+	'**/bin/index.{ts,tsx,js,jsx,mjs,cjs}',
 ]
 
 function isExcluded(
 	entrypoint: string,
 	exclude: Exclude | undefined,
+	excludeCli: boolean | undefined,
 	ctx: BuildContext,
 ): boolean {
 	const userPatterns = typeof exclude === 'function' ? exclude(ctx) : exclude
-	const allPatterns = [...DEFAULT_CLI_EXCLUSIONS, ...(userPatterns ?? [])]
+	const cliPatterns = excludeCli !== false ? CLI_EXCLUSION_PATTERNS : []
+	const allPatterns = [...cliPatterns, ...(userPatterns ?? [])]
 
 	return allPatterns.some((pattern) => new Bun.Glob(pattern).match(entrypoint))
 }
@@ -529,4 +565,49 @@ function exportFieldToEntryPoint(exportField: ExportField): EntryPoint {
 		default:
 			return 'module'
 	}
+}
+
+async function validateBinFields(
+	packageJsonData: Record<string, unknown> | undefined,
+	projectName: string | undefined,
+	packageJsonPath: string | undefined,
+): Promise<void> {
+	if (!packageJsonData?.bin) return
+
+	const bin = packageJsonData.bin
+	const invalidBins: string[] = []
+
+	if (typeof bin === 'string') {
+		const exists = await Bun.file(bin).exists()
+		if (!exists) {
+			invalidBins.push(`bin field points to ${pc.yellow(bin)}`)
+		}
+	} else if (typeof bin === 'object' && bin !== null) {
+		for (const [name, binPath] of Object.entries(bin)) {
+			if (typeof binPath === 'string') {
+				const exists = await Bun.file(binPath).exists()
+				if (!exists) {
+					invalidBins.push(
+						`${pc.yellow(pc.bold(name))} points to ${pc.red(binPath)}`,
+					)
+				}
+			}
+		}
+	}
+
+	if (invalidBins.length === 0) return
+
+	const project = projectName ? ` ${projectName}` : ''
+	const count = invalidBins.length
+	const depText = count === 1 ? 'binary' : 'binaries'
+	const verb = count === 1 ? 'points' : 'point'
+	const fileText = count === 1 ? 'file' : 'files'
+
+	const pathPrefix = packageJsonPath
+		? pc.cyan(getShortFilePath(packageJsonPath))
+		: ''
+
+	const message = `\nYour project${project} has ${count} ${depText} in the bin field that ${verb} to invalid ${fileText}:\n\n  ${pathPrefix}:\n    ${invalidBins.join('\n    ')}`
+
+	logger.log(message, { leftPadding: true })
 }

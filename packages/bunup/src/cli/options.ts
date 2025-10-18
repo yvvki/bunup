@@ -452,6 +452,12 @@ const program = cli()
 						.array(z.string())
 						.describe('Entry points to exclude from exports field')
 						.optional(),
+					'exclude-cli': z
+						.boolean()
+						.describe(
+							'Whether to exclude CLI entry points (cli/bin files) from exports field',
+						)
+						.default(true),
 					'exclude-css': z
 						.boolean()
 						.describe('Whether to exclude CSS files from exports field')
