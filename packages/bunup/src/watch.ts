@@ -72,9 +72,9 @@ export async function watch(
 
 			const start = performance.now()
 
-			const buildOutput = await build(userOptions, rootDir)
+			const buildResult = await build(userOptions, rootDir)
 
-			await printBuildReport(buildOutput)
+			await printBuildReport(buildResult)
 
 			if (!initial) {
 				console.log(
