@@ -15,8 +15,8 @@ export function useClient(): BunupPlugin {
 	return {
 		name: 'use-client',
 		hooks: {
-			onBuildDone: async ({ output }) => {
-				for (const file of output.files) {
+			onBuildDone: async ({ files }) => {
+				for (const file of files) {
 					let text = await Bun.file(file.fullPath).text()
 
 					const hasUseClient = text

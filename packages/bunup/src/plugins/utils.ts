@@ -1,6 +1,5 @@
 import type { BunPlugin } from 'bun'
-import type { BuildOptions } from '../options'
-import type { BuildMeta, BuildOutput, BunupPlugin } from './types'
+import type { BunupPlugin, OnBuildDoneCtx, OnBuildStartCtx } from './types'
 
 export function filterBunPlugins(
 	plugins: (BunPlugin | BunupPlugin)[] | undefined,
@@ -18,28 +17,26 @@ export function filterBunupPlugins(
 
 export async function runPluginBuildStartHooks(
 	bunupPlugins: BunupPlugin[] | undefined,
-	options: BuildOptions,
+	ctx: OnBuildStartCtx,
 ): Promise<void> {
 	if (!bunupPlugins) return
 
 	for (const plugin of bunupPlugins) {
 		if (plugin.hooks.onBuildStart) {
-			await plugin.hooks.onBuildStart(options)
+			await plugin.hooks.onBuildStart(ctx)
 		}
 	}
 }
 
 export async function runPluginBuildDoneHooks(
 	bunupPlugins: BunupPlugin[] | undefined,
-	options: BuildOptions,
-	output: BuildOutput,
-	meta: BuildMeta,
+	ctx: OnBuildDoneCtx,
 ): Promise<void> {
 	if (!bunupPlugins) return
 
 	for (const plugin of bunupPlugins) {
 		if (plugin.hooks.onBuildDone) {
-			await plugin.hooks.onBuildDone({ options, output, meta })
+			await plugin.hooks.onBuildDone(ctx)
 		}
 	}
 }

@@ -12,7 +12,7 @@ import {
 	processLoadedConfigs,
 } from '../loaders'
 import type { BuildOptions } from '../options'
-import type { BuildOutput } from '../plugins/types'
+import type { BuildResult } from '../plugins/types'
 import { logger, logTime } from '../printer/logger'
 import { printBuildReport } from '../printer/print-build-report'
 import { ensureArray } from '../utils/common'
@@ -67,7 +67,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
 	const startTime = performance.now()
 
-	const buildOutputs: BuildOutput[] = []
+	const buildResults: BuildResult[] = []
 
 	await Promise.all(
 		configsToProcess.flatMap(({ options, rootDir }) => {
@@ -81,7 +81,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 				if (userOptions.watch) {
 					await watch(userOptions, rootDir, filepath)
 				} else {
-					buildOutputs.push(await build(userOptions, rootDir))
+					buildResults.push(await build(userOptions, rootDir))
 				}
 			})
 		}),
@@ -90,7 +90,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 	const buildTimeMs = performance.now() - startTime
 
 	if (!cliOptions.watch && !shouldSilent) {
-		await Promise.all(buildOutputs.map((o) => printBuildReport(o)))
+		await Promise.all(buildResults.map((o) => printBuildReport(o)))
 	}
 
 	if (cliOptions.watch) {

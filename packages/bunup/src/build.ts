@@ -25,7 +25,7 @@ import {
 	resolveBuildOptions,
 	resolvePlugins,
 } from './options'
-import type { BuildOutput } from './plugins/types'
+import type { BuildOutputFile, BuildResult } from './plugins/types'
 import {
 	filterBunPlugins,
 	filterBunupPlugins,
@@ -48,7 +48,7 @@ let ac: AbortController | null = null
 export async function build(
 	userOptions: Partial<BuildOptions>,
 	rootDir: string = process.cwd(),
-): Promise<BuildOutput> {
+): Promise<BuildResult> {
 	ensureMinimumBunVersion()
 
 	if (ac) {
@@ -58,11 +58,6 @@ export async function build(
 	ac = new AbortController()
 
 	const options = resolveBuildOptions(userOptions)
-
-	const buildOutput: BuildOutput = {
-		files: [],
-		options,
-	}
 
 	if (options.silent) {
 		logger.setSilent(options.silent)
@@ -90,7 +85,7 @@ export async function build(
 
 	const bunPlugins = filterBunPlugins(allPlugins)
 
-	await runPluginBuildStartHooks(bunupPlugins, options)
+	await runPluginBuildStartHooks(bunupPlugins, { options })
 
 	const entryArray = ensureArray(options.entry)
 
@@ -110,6 +105,8 @@ export async function build(
 		once: options.name,
 		muted: true,
 	})
+
+	const buildOutputFiles: BuildOutputFile[] = []
 
 	const absoluteEntrypoints = entrypoints.map((file) => `${rootDir}/${file}`)
 	const resolvedDefine = getResolvedDefine(options.define, options.env)
@@ -180,8 +177,8 @@ export async function build(
 
 			await Bun.write(fullPath, content)
 
-			if (!buildOutput.files.some((f) => f.fullPath === fullPath)) {
-				buildOutput.files.push({
+			if (!buildOutputFiles.some((f) => f.fullPath === fullPath)) {
+				buildOutputFiles.push({
 					fullPath,
 					pathRelativeToRootDir,
 					pathRelativeToOutdir,
@@ -243,7 +240,7 @@ export async function build(
 
 					await Bun.write(fullPath, file.dts)
 
-					buildOutput.files.push({
+					buildOutputFiles.push({
 						fullPath,
 						pathRelativeToRootDir,
 						pathRelativeToOutdir,
@@ -262,14 +259,29 @@ export async function build(
 		}
 	}
 
-	await runPluginBuildDoneHooks(bunupPlugins, options, buildOutput, {
-		packageJson,
-		rootDir,
+	const buildResult: BuildResult = {
+		files: buildOutputFiles,
+		build: {
+			options,
+			meta: {
+				packageJson,
+				rootDir,
+			},
+		},
+	}
+
+	await runPluginBuildDoneHooks(bunupPlugins, {
+		files: buildOutputFiles,
+		options,
+		meta: {
+			packageJson,
+			rootDir,
+		},
 	})
 
 	if (options.onSuccess) {
 		await executeOnSuccess(options.onSuccess, options, ac.signal)
 	}
 
-	return buildOutput
+	return buildResult
 }

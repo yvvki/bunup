@@ -4,7 +4,12 @@ import { CSS_RE, JS_DTS_RE } from '../constants/re'
 import { logger } from '../printer/logger'
 import { detectFileFormatting } from '../utils/file'
 import { cleanPath, getShortFilePath } from '../utils/path'
-import type { BuildContext, BuildOutputFile, BunupPlugin } from './types'
+import type {
+	BuildContext,
+	BuildOutputFile,
+	BunupPlugin,
+	OnBuildDoneCtx,
+} from './types'
 
 type ExportField = 'require' | 'import' | 'types'
 type EntryPoint = 'main' | 'module' | 'types'
@@ -100,10 +105,10 @@ export function exports(options: ExportsOptions = {}): BunupPlugin {
 }
 
 async function processPackageJsonExports(
-	ctx: BuildContext,
+	ctx: OnBuildDoneCtx,
 	options: ExportsOptions,
 ): Promise<void> {
-	const { output, options: buildOptions, meta } = ctx
+	const { files, options: buildOptions, meta } = ctx
 
 	if (!meta.packageJson.path || !meta.packageJson.data) {
 		return
@@ -111,7 +116,7 @@ async function processPackageJsonExports(
 
 	try {
 		const { exportsField, entryPoints } = generateExportsFields(
-			output.files,
+			files,
 			options.exclude,
 			options.excludeCli,
 			options.excludeCss,
@@ -146,6 +151,7 @@ async function processPackageJsonExports(
 			meta.packageJson.data,
 			buildOptions.name,
 			meta.packageJson.path,
+			meta.rootDir,
 		)
 
 		if (Bun.deepEquals(newPackageJson, meta.packageJson.data)) {
@@ -175,7 +181,7 @@ function generateExportsFields(
 	exclude: Exclude | undefined,
 	excludeCli: boolean | undefined,
 	excludeCss: boolean | undefined,
-	ctx: BuildContext,
+	ctx: OnBuildDoneCtx,
 ): {
 	exportsField: ExportsField
 	entryPoints: Partial<Record<EntryPoint, string>>
@@ -369,7 +375,7 @@ function createUpdatedFilesArray(
 function mergeCustomExportsWithGenerated(
 	baseExports: ExportsField,
 	customExportsProvider: ExportsOptions['customExports'],
-	ctx: BuildContext,
+	ctx: OnBuildDoneCtx,
 ): CustomExports {
 	const mergedExports: CustomExports = { ...baseExports }
 
@@ -377,7 +383,10 @@ function mergeCustomExportsWithGenerated(
 		return mergedExports
 	}
 
-	const customExports = customExportsProvider(ctx)
+	const customExports = customExportsProvider({
+		options: ctx.options,
+		meta: ctx.meta,
+	})
 	if (!customExports) {
 		return mergedExports
 	}
@@ -437,7 +446,7 @@ function filterFiles(
 	files: BuildOutputFile[],
 	exclude: Exclude | undefined,
 	excludeCli: boolean | undefined,
-	ctx: BuildContext,
+	ctx: OnBuildDoneCtx,
 ): BuildOutputFile[] {
 	return files.filter(
 		(file) =>
@@ -466,9 +475,12 @@ function isExcluded(
 	entrypoint: string,
 	exclude: Exclude | undefined,
 	excludeCli: boolean | undefined,
-	ctx: BuildContext,
+	ctx: OnBuildDoneCtx,
 ): boolean {
-	const userPatterns = typeof exclude === 'function' ? exclude(ctx) : exclude
+	const userPatterns =
+		typeof exclude === 'function'
+			? exclude({ options: ctx.options, meta: ctx.meta })
+			: exclude
 	const cliPatterns = excludeCli !== false ? CLI_EXCLUSION_PATTERNS : []
 	const allPatterns = [...cliPatterns, ...(userPatterns ?? [])]
 
@@ -571,21 +583,24 @@ async function validateBinFields(
 	packageJsonData: Record<string, unknown> | undefined,
 	projectName: string | undefined,
 	packageJsonPath: string | undefined,
+	rootDir: string | undefined,
 ): Promise<void> {
-	if (!packageJsonData?.bin) return
+	if (!packageJsonData?.bin || !rootDir) return
 
 	const bin = packageJsonData.bin
 	const invalidBins: string[] = []
 
 	if (typeof bin === 'string') {
-		const exists = await Bun.file(bin).exists()
+		const fullPath = path.resolve(rootDir, bin)
+		const exists = await Bun.file(fullPath).exists()
 		if (!exists) {
 			invalidBins.push(`bin field points to ${pc.yellow(bin)}`)
 		}
 	} else if (typeof bin === 'object' && bin !== null) {
 		for (const [name, binPath] of Object.entries(bin)) {
 			if (typeof binPath === 'string') {
-				const exists = await Bun.file(binPath).exists()
+				const fullPath = path.resolve(rootDir, binPath)
+				const exists = await Bun.file(fullPath).exists()
 				if (!exists) {
 					invalidBins.push(
 						`${pc.yellow(pc.bold(name))} points to ${pc.red(binPath)}`,

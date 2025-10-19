@@ -4,8 +4,8 @@ export type { BuildOptions } from './options'
 export type {
 	BuildContext,
 	BuildMeta,
-	BuildOutput,
 	BuildOutputFile,
+	BuildResult,
 	BunupPlugin,
 } from './plugins/types'
 export type {

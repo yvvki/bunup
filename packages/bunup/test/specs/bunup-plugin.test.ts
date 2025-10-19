@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
-import type { BuildOptions } from '../../src/options'
-import type { BuildContext, BunupPlugin } from '../../src/plugins/types'
+import type {
+	BunupPlugin,
+	OnBuildDoneCtx,
+	OnBuildStartCtx,
+} from '../../src/plugins/types'
 import {
 	cleanProjectDir,
 	createProject,
@@ -35,8 +38,10 @@ describe('Bunup Plugin', () => {
 		expect(onBuildStartMock).toHaveBeenCalledTimes(1)
 		expect(onBuildStartMock).toHaveBeenCalledWith(
 			expect.objectContaining({
-				entry: 'src/index.ts',
-				format: 'esm',
+				options: expect.objectContaining({
+					entry: 'src/index.ts',
+					format: 'esm',
+				}),
 			}),
 		)
 	})
@@ -63,14 +68,13 @@ describe('Bunup Plugin', () => {
 		expect(onBuildDoneMock).toHaveBeenCalledTimes(1)
 		expect(onBuildDoneMock).toHaveBeenCalledWith(
 			expect.objectContaining({
+				files: expect.arrayContaining([
+					expect.objectContaining({
+						fullPath: expect.stringContaining('index.mjs'),
+					}),
+				]),
 				options: expect.any(Object),
-				output: expect.objectContaining({
-					files: expect.arrayContaining([
-						expect.objectContaining({
-							fullPath: expect.stringContaining('index.mjs'),
-						}),
-					]),
-				}),
+				meta: expect.any(Object),
 			}),
 		)
 	})
@@ -220,8 +224,8 @@ describe('Bunup Plugin', () => {
 		const testPlugin: BunupPlugin = {
 			name: 'options-modifier-plugin',
 			hooks: {
-				onBuildStart: mock((options: BuildOptions) => {
-					options.banner = '/* Modified by plugin */'
+				onBuildStart: mock((ctx: OnBuildStartCtx) => {
+					ctx.options.banner = '/* Modified by plugin */'
 				}),
 			},
 		}
@@ -266,8 +270,8 @@ describe('Bunup Plugin', () => {
 		const outputAccessPlugin: BunupPlugin = {
 			name: 'output-access-plugin',
 			hooks: {
-				onBuildDone: mock((ctx: BuildContext) => {
-					outputFiles = ctx.output.files.map((file) => file.fullPath)
+				onBuildDone: mock((ctx: OnBuildDoneCtx) => {
+					outputFiles = ctx.files.map((file) => file.fullPath)
 				}),
 			},
 		}
@@ -306,12 +310,12 @@ describe('Bunup Plugin', () => {
 	it('should correctly set entrypoint for entry-point files in output', async () => {
 		createProject({ 'src/index.ts': 'export const x = 1;' })
 
-		let buildContext: BuildContext | undefined
+		let buildContext: OnBuildDoneCtx | undefined
 
 		const entrypointCheckPlugin: BunupPlugin = {
 			name: 'entrypoint-check-plugin',
 			hooks: {
-				onBuildDone: mock((ctx: BuildContext) => {
+				onBuildDone: mock((ctx: OnBuildDoneCtx) => {
 					buildContext = ctx
 				}),
 			},
@@ -325,7 +329,7 @@ describe('Bunup Plugin', () => {
 
 		expect(buildContext).toBeDefined()
 
-		const entryPointFile = buildContext.output.files.find(
+		const entryPointFile = buildContext.files.find(
 			(file) =>
 				file.kind === 'entry-point' && file.fullPath.endsWith('index.mjs'),
 		)
@@ -341,12 +345,12 @@ describe('Bunup Plugin', () => {
 			'src/other.ts': 'export const y = 2;',
 		})
 
-		let buildContext: BuildContext | undefined
+		let buildContext: OnBuildDoneCtx | undefined
 
 		const multiEntrypointPlugin: BunupPlugin = {
 			name: 'multi-entrypoint-plugin',
 			hooks: {
-				onBuildDone: mock((ctx: BuildContext) => {
+				onBuildDone: mock((ctx: OnBuildDoneCtx) => {
 					buildContext = ctx
 				}),
 			},
@@ -360,7 +364,7 @@ describe('Bunup Plugin', () => {
 
 		expect(buildContext).toBeDefined()
 
-		const entryPointFiles = buildContext.output.files.filter(
+		const entryPointFiles = buildContext.files.filter(
 			(file) => file.kind === 'entry-point',
 		)
 
@@ -387,12 +391,12 @@ describe('Bunup Plugin', () => {
 			'src/other.ts': 'export { shared } from "./shared";',
 		})
 
-		let buildContext: BuildContext | undefined
+		let buildContext: OnBuildDoneCtx | undefined
 
 		const chunkCheckPlugin: BunupPlugin = {
 			name: 'chunk-check-plugin',
 			hooks: {
-				onBuildDone: mock((ctx: BuildContext) => {
+				onBuildDone: mock((ctx: OnBuildDoneCtx) => {
 					buildContext = ctx
 				}),
 			},
@@ -407,7 +411,7 @@ describe('Bunup Plugin', () => {
 
 		expect(buildContext).toBeDefined()
 
-		const entryPointFiles = buildContext.output.files.filter(
+		const entryPointFiles = buildContext.files.filter(
 			(file) => file.kind === 'entry-point',
 		)
 		expect(entryPointFiles.length).toBe(2)
@@ -424,7 +428,7 @@ describe('Bunup Plugin', () => {
 		expect(indexFile.entrypoint).toBe('src/index.ts')
 		expect(otherFile.entrypoint).toBe('src/other.ts')
 
-		const chunkFiles = buildContext.output.files.filter(
+		const chunkFiles = buildContext.files.filter(
 			(file) => file.kind === 'chunk',
 		)
 		expect(chunkFiles.length).toBeGreaterThan(0)
@@ -438,12 +442,12 @@ describe('Bunup Plugin', () => {
 			'src/other.ts': 'export { Shared } from "./shared";',
 		})
 
-		let buildContext: BuildContext | undefined
+		let buildContext: OnBuildDoneCtx | undefined
 
 		const dtsChunkPlugin: BunupPlugin = {
 			name: 'dts-chunk-plugin',
 			hooks: {
-				onBuildDone: mock((ctx: BuildContext) => {
+				onBuildDone: mock((ctx: OnBuildDoneCtx) => {
 					buildContext = ctx
 				}),
 			},
@@ -461,7 +465,7 @@ describe('Bunup Plugin', () => {
 
 		expect(buildContext).toBeDefined()
 
-		const dtsFiles = buildContext.output.files.filter((file) => file.dts)
+		const dtsFiles = buildContext.files.filter((file) => file.dts)
 		expect(dtsFiles.length).toBeGreaterThan(0)
 
 		const dtsEntryPoints = dtsFiles.filter(
@@ -566,12 +570,12 @@ describe('Bunup Plugin', () => {
 			`,
 		})
 
-		let buildContext: BuildContext | undefined
+		let buildContext: OnBuildDoneCtx | undefined
 
 		const complexProjectPlugin: BunupPlugin = {
 			name: 'complex-project-plugin',
 			hooks: {
-				onBuildDone: mock((ctx: BuildContext) => {
+				onBuildDone: mock((ctx: OnBuildDoneCtx) => {
 					buildContext = ctx
 				}),
 			},
@@ -589,16 +593,16 @@ describe('Bunup Plugin', () => {
 
 		expect(buildContext).toBeDefined()
 
-		const entryPointFiles = buildContext.output.files.filter(
+		const entryPointFiles = buildContext.files.filter(
 			(file) => file.kind === 'entry-point' && !file.dts,
 		)
-		const chunkFiles = buildContext.output.files.filter(
+		const chunkFiles = buildContext.files.filter(
 			(file) => file.kind === 'chunk' && !file.dts,
 		)
-		const dtsEntryPointFiles = buildContext.output.files.filter(
+		const dtsEntryPointFiles = buildContext.files.filter(
 			(file) => file.kind === 'entry-point' && file.dts,
 		)
-		const dtsChunkFiles = buildContext.output.files.filter(
+		const dtsChunkFiles = buildContext.files.filter(
 			(file) => file.kind === 'chunk' && file.dts,
 		)
 
@@ -667,7 +671,7 @@ describe('Bunup Plugin', () => {
 		expect(sharedTypesChunk).toBeDefined()
 		expect(sharedTypesChunk.entrypoint).toBeUndefined()
 
-		const allFiles = buildContext.output.files
+		const allFiles = buildContext.files
 
 		expect(
 			allFiles.every((file) =>

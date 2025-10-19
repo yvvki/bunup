@@ -7,22 +7,23 @@ This guide walks you through creating custom Bunup plugins with lifecycle hooks.
 Bunup plugins provide additional hooks into the build process beyond what Bun's native plugin system offers. These plugins can be used to extend Bunup's functionality with custom build steps, reporting, and more.
 
 ```ts
-import type { BunupPlugin, BuildOptions, BuildContext } from "bunup";
+import type { BunupPlugin } from "bunup";
 
 export function myBunupPlugin(): BunupPlugin {
   return {
     name: "my-bunup-plugin",
     hooks: {
-      onBuildStart: async (options: BuildOptions) => {
-        console.log("Starting build with options:", options);
-        options.banner = "/* Built with my plugin */";
+      onBuildStart: async (ctx) => {
+        console.log("Starting build with options:", ctx.options);
+        ctx.options.banner = "/* Built with my plugin */";
       },
 
-      onBuildDone: async ({ options, output, meta }: BuildContext) => {
-        console.log("Build completed with files:", output.files.length);
+      onBuildDone: async (ctx) => {
+        const { files, options, meta } = ctx;
+        console.log("Build completed with files:", files.length);
         console.log("Package name:", meta.packageJson.data?.name);
 
-        for (const file of output.files) {
+        for (const file of files) {
           console.log(`Generated: ${file.pathRelativeToOutdir} (${file.kind})`);
         }
       }
@@ -62,36 +63,36 @@ Bunup plugins support the following hooks:
 Called before a build starts, allowing you to perform setup or preprocessing tasks.
 
 ```ts
-onBuildStart: (options: BuildOptions) => Promise<void> | void
+onBuildStart: (ctx: OnBuildStartCtx) => Promise<void> | void
 ```
 
-- `options`: The build options configured for this build. You can modify these options to affect the build process.
+- `ctx.options`: The build options that will be used for this build. You can modify these options to affect the build process.
 
 ### `onBuildDone`
 
-Called after a build is successfully completed, providing access to the build output.
+Called after a build is successfully completed, providing access to the build result.
 
 ```ts
-onBuildDone: (ctx: BuildContext) => Promise<void> | void
+onBuildDone: (ctx: OnBuildDoneCtx) => Promise<void> | void
 ```
 
-Where `BuildContext` contains:
-- `options`: The build options that were used for the build
-- `output`: Information about the generated files
-- `meta`: Metadata about the build, including package.json and root directory
+Where `OnBuildDoneCtx` contains:
+- `files`: Array of generated output files
+- `options`: The build configuration options that were used
+- `meta`: Build execution metadata (package.json and root directory)
 
-## BuildContext Details
+## OnBuildDoneCtx Details
 
-The `BuildContext` object provides comprehensive information about the build:
+The `OnBuildDoneCtx` provides comprehensive information about the build with a flattened structure for easy access:
 
-### `BuildContext.output`
+### `files`
 
-The `output` object contains an array of `BuildOutputFile` objects:
+The `files` property is an array of `BuildOutputFile` objects representing all generated output files:
 
 ```ts
 type BuildOutputFile = {
   entrypoint: string | undefined;
-  kind: 'entry-point' | 'chunk' | 'asset' | 'sourcemap'
+  kind: 'entry-point' | 'chunk' | 'asset' | 'sourcemap' | 'bytecode'
   fullPath: string;
   pathRelativeToRootDir: string;
   pathRelativeToOutdir: string;
@@ -112,7 +113,7 @@ type BuildOutputFile = {
 | `format` | `Format` | Output format (esm, cjs, etc.) |
 | `size` | `number` | The size of the file in bytes |
 
-### `BuildContext.meta`
+### `meta`
 
 The `meta` object contains build metadata:
 
@@ -137,9 +138,9 @@ export function robustPlugin(): BunupPlugin {
   return {
     name: "robust-plugin",
     hooks: {
-      onBuildDone: async ({ output }) => {
+      onBuildDone: async ({ files }) => {
         try {
-          await processFiles(output.files);
+          await processFiles(files);
         } catch (error) {
           console.error("Plugin failed:", error);
           throw new Error(`robust-plugin failed: ${error.message}`);
@@ -157,9 +158,9 @@ export function bundleSizeReporter(maxSize?: number): BunupPlugin {
   return {
     name: "bundle-size-reporter",
     hooks: {
-      onBuildDone: async ({ output }) => {
+      onBuildDone: async ({ files }) => {
         const sizes = await Promise.all(
-          output.files
+          files
             .filter(f => f.kind === 'entry-point')
             .map(async (file) => {
               const buffer = await Bun.file(file.fullPath).arrayBuffer();

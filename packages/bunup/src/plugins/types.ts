@@ -36,42 +36,59 @@ export type BuildOutputFile = {
 }
 
 /**
- * Represents the output of a build operation
- */
-export type BuildOutput = {
-	/** Array of generated files with their paths and contents */
-	files: BuildOutputFile[]
-	/** Options used for the build */
-	options: BuildOptions
-}
-
-/**
- * Context provided to build hooks
+ * Build configuration and metadata used during build execution.
  */
 export type BuildContext = {
-	/** The build options that were used */
+	/** Build configuration options that were used */
 	options: BuildOptions
-	/** The output of the build */
-	output: BuildOutput
-	/** The meta data of the build */
+	/** Build execution metadata */
 	meta: BuildMeta
 }
 
 /**
- * Hooks that can be implemented by Bunup plugins
+ * Build output containing generated files and build context.
+ */
+export type BuildResult = {
+	/** Generated output files */
+	files: BuildOutputFile[]
+	/** Build configuration and metadata that were used */
+	build: BuildContext
+}
+
+/**
+ * Context provided when build starts.
+ */
+export type OnBuildStartCtx = {
+	/** Build configuration options that will be used */
+	options: BuildOptions
+}
+
+/**
+ * Context provided when build completes.
+ * Flattened structure for easy access in plugin hooks.
+ */
+export type OnBuildDoneCtx = {
+	/** Generated output files */
+	files: BuildOutputFile[]
+	/** Build configuration options that were used */
+	options: BuildOptions
+	/** Build execution metadata */
+	meta: BuildMeta
+}
+
+/**
+ * Hooks that can be implemented by Bunup plugins.
  */
 export type BunupPluginHooks = {
 	/**
-	 * Called when a build is successfully completed
-	 * @param ctx Build context containing options and output
+	 * Called when a build is successfully completed.
 	 */
-	onBuildDone?: (ctx: BuildContext) => MaybePromise<void>
+	onBuildDone?: (ctx: OnBuildDoneCtx) => MaybePromise<void>
 
 	/**
-	 * Called before a build starts
-	 * @param options Build options that will be used
+	 * Called before a build starts.
 	 */
-	onBuildStart?: (options: BuildOptions) => MaybePromise<void>
+	onBuildStart?: (ctx: OnBuildStartCtx) => MaybePromise<void>
 }
 
 /**

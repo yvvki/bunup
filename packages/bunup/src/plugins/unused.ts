@@ -31,14 +31,11 @@ export function unused(options: UnusedOptions = {}): BunupPlugin {
 		name: 'unused',
 		hooks: {
 			onBuildDone: async (ctx) => {
-				const { options: buildOptions, output, meta } = ctx
+				const { options: buildOptions, meta, files } = ctx
 
 				if (buildOptions.watch) return
 
-				const usedDeps = await collectUsedDependencies(
-					output.files,
-					buildOptions,
-				)
+				const usedDeps = await collectUsedDependencies(files, buildOptions)
 				const pkgDeps = extractPackageDependencies(
 					meta.packageJson.data?.dependencies,
 				)

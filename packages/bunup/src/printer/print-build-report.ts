@@ -1,7 +1,7 @@
 import { promisify } from 'node:util'
 import { brotliCompress } from 'node:zlib'
 import pc from 'picocolors'
-import type { BuildOutput } from '../plugins/types'
+import type { BuildResult } from '../plugins/types'
 import { ensureArray } from '../utils/common'
 import { isJavascriptFile, isTypeScriptFile } from '../utils/file'
 import { formatFileSize } from '../utils/format'
@@ -9,15 +9,15 @@ import { formatFileSize } from '../utils/format'
 const brotliAsync = promisify(brotliCompress)
 
 export async function printBuildReport(
-	buildOutput: BuildOutput,
+	buildResult: BuildResult,
 ): Promise<void> {
-	const options = buildOutput.options
+	const options = buildResult.build.options
 	const { gzip = true, brotli = false, maxBundleSize } = options.report ?? {}
 
 	const showCompression = gzip || brotli
 
 	const files = await Promise.all(
-		buildOutput.files.map(async (file) => {
+		buildResult.files.map(async (file) => {
 			const pathRelative = file.pathRelativeToOutdir
 			const size = file.size
 			const isDts = file.dts && file.kind === 'entry-point'

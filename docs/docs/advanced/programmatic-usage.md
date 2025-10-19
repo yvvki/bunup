@@ -11,24 +11,29 @@ The build function must be run in the Bun runtime.
 ```typescript
 import { build } from 'bunup';
 
-const output = await build({
+const result = await build({
   entry: 'src/index.ts',
 });
 
-console.log('Built files:', output.files);
-console.log('Build options:', output.options);
+console.log('Built files:', result.files);
+console.log('Build context:', result.build);
 ```
 
-## Build Output
+## Build Result
 
-The `build` function returns a `BuildOutput` object containing information about the generated files and the options used:
+The `build` function returns a `BuildResult` object containing information about the generated files and build context:
 
 ```typescript
-type BuildOutput = {
+type BuildResult = {
   /** Array of generated files with their paths and metadata */
   files: BuildOutputFile[]
-  /** Options used for the build */
-  options: BuildOptions
+  /** Build configuration and metadata that were used */
+  build: {
+    /** Build configuration options that were used */
+    options: BuildOptions
+    /** Build execution metadata */
+    meta: BuildMeta
+  }
 }
 
 type BuildOutputFile = {
