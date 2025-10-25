@@ -389,6 +389,15 @@ export interface BuildOptions {
 	 * publicPath: 'https://cdn.example.com/'
 	 */
 	publicPath?: string
+	/**
+	 * The root directory for the project.
+	 *
+	 * @see https://bun.com/docs/bundler#root
+	 *
+	 * @example
+	 * root: './src'
+	 */
+	root?: string
 
 	/**
 	 * Controls how environment variables are handled during bundling.
