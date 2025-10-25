@@ -392,6 +392,8 @@ export interface BuildOptions {
 	/**
 	 * The root directory for the project.
 	 *
+	 * It is computed to be the first common ancestor of all entrypoint files.
+	 *
 	 * @see https://bun.com/docs/bundler#root
 	 *
 	 * @example
